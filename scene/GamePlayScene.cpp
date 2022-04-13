@@ -46,8 +46,8 @@ void GamePlayScene::Update()
 
 	
 	//—Ž‚¿‚éˆ—
-
-	y -= 0.1f;
+	DropValue += gravity / 60.0f;
+	y -= DropValue;
 	objectX->SetPosition(XMFLOAT3(x, y, z));
 
 
@@ -70,7 +70,7 @@ void GamePlayScene::Update()
 
 	DebugText::GetInstance()->Print(50, 30 * 1, 2, "Camera:%f", camera->GetEye().x);
 	DebugText::GetInstance()->Print(50, 30 * 2, 2, "Camera:%f", camera->GetEye().y);
-
+	DebugText::GetInstance()->Print(50, 30 * 3, 2, "  posY:%f", objectX->GetPosition().y);
 	if (input->TriggerKey(DIK_SPACE))
 	{
 		//BGMŽ~‚ß‚é
