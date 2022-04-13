@@ -44,22 +44,15 @@ void GamePlayScene::Update()
 	
 	Input *input = Input::GetInstance();
 
-	//オブジェクト移動
-	if (input->PushKey(DIK_UP) || input->PushKey(DIK_DOWN) || input->PushKey(DIK_RIGHT) || input->PushKey(DIK_LEFT))
-	{
-		// 現在の座標を取得
-		XMFLOAT3 position = objectX->GetPosition();
+	
+	//落ちる処理
 
-		// 移動後の座標を計算
-		if (input->PushKey(DIK_UP)) { position.y += 1.0f; }
-		else if (input->PushKey(DIK_DOWN)) { position.y -= 1.0f; }
-		if (input->PushKey(DIK_RIGHT)) { position.x += 1.0f; }
-		else if (input->PushKey(DIK_LEFT)) { position.x -= 1.0f; }
+	y -= 0.1f;
+	objectX->SetPosition(XMFLOAT3(x, y, z));
 
-		// 座標の変更を反映
-		objectX->SetPosition(position);
-	}
 
+
+	//カメラの移動
 	if (input->PushKey(DIK_W) || input->PushKey(DIK_S) || input->PushKey(DIK_D) || input->PushKey(DIK_A))
 	{
 		// 現在の座標を取得
@@ -75,8 +68,8 @@ void GamePlayScene::Update()
 		camera->SetEye(position);
 	}
 
-	DebugText::GetInstance()->Print(50, 30 * 1, 2, "%f", camera->GetEye().x);
-	DebugText::GetInstance()->Print(50, 30 * 2, 2, "%f", camera->GetEye().y);
+	DebugText::GetInstance()->Print(50, 30 * 1, 2, "Camera:%f", camera->GetEye().x);
+	DebugText::GetInstance()->Print(50, 30 * 2, 2, "Camera:%f", camera->GetEye().y);
 
 	if (input->TriggerKey(DIK_SPACE))
 	{
