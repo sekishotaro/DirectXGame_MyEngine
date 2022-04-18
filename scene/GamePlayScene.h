@@ -54,10 +54,10 @@ public:
 	Camera *camera = nullptr;
 
 	//”Šwö‹Æ—p
-	float x = 0.0f;
+	float x = -50.0f;
 	float y = 0.0f;
 	float z = 0.0f;
 	float gravity = 9.8f;
-	float DropValue = 0.0f;
+	float DropValue =  -600.0f / 600.0f;
 };
 

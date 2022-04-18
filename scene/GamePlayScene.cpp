@@ -17,7 +17,9 @@ void GamePlayScene::Initialize()
 
 	// カメラセット
 	Object3d::SetCamera(camera);
-
+	XMFLOAT3 position = { 0.0f, 0.0f, -100.0f };
+	// 座標の変更を反映
+	camera->SetEye(position);
 	// テクスチャ読み込み
 
 	Sprite::LoadTexture(1, L"Resources/background.png");
@@ -46,7 +48,8 @@ void GamePlayScene::Update()
 
 	
 	//落ちる処理
-	DropValue += gravity / 60.0f;
+	x++;
+	DropValue += gravity / 600.0f;
 	y -= DropValue;
 	objectX->SetPosition(XMFLOAT3(x, y, z));
 
