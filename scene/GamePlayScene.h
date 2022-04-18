@@ -3,6 +3,7 @@
 #include "BaseScene.h"
 #include "Sprite.h"
 #include "Object3d.h"
+#include "FbxObject3d.h"
 #include <DirectXMath.h>
 
 #include <memory>
@@ -19,7 +20,6 @@ private: // エイリアス
 	using XMFLOAT3 = DirectX::XMFLOAT3;
 	using XMFLOAT4 = DirectX::XMFLOAT4;
 	using XMMATRIX = DirectX::XMMATRIX;
-
 
 public:
 
@@ -52,5 +52,7 @@ public:
 	std::unique_ptr<Object3d> objectX;
 	Model *model = nullptr;
 	Camera *camera = nullptr;
+	FbxModel *fbxModel1 = nullptr;
+	FbxObject3d *fbxObject1 = nullptr;
 };
 

@@ -1,9 +1,12 @@
+
 #include "GamePlayScene.h"
 #include "SceneManager.h"
 #include "Audio.h"
 #include "Input.h"
 #include "DebugText.h"
 #include "DirectXCommon.h"
+#include "FbxLoader.h"
+#include "FbxObject3d.h"
 
 void GamePlayScene::Initialize()
 {
@@ -15,33 +18,49 @@ void GamePlayScene::Initialize()
 	// カメラ生成
 	camera = new Camera(WinApp::window_width, WinApp::window_height);
 
+	//デバイスのセット
+	FbxObject3d::SetDevice(DirectXCommon::GetInstance()->GetDev());
+
 	// カメラセット
 	Object3d::SetCamera(camera);
+	//camera->SetEye({ 0, 0, 100 });			//prinding時
+	camera->SetEye({ 300, 0, 300 });		//prin時
+	FbxObject3d::SetCamera(camera);
+
+	//グラフィックスパイプライン生成
+	FbxObject3d::CreateGraphicsPipeline();
 
 	// テクスチャ読み込み
-
 	Sprite::LoadTexture(1, L"Resources/background.png");
 	// 背景スプライト生成
 	spriteBG = Sprite::Create(1, { 0.0f,0.0f });
 
 	// オブジェクト生成
 	model = Model::LoadFromOBJ("sphere");
-
 	objectX = Object3d::Create();
-
 	//オブジェクトにモデルをひも付ける
 	objectX->SetModel(model);
+
+	//モデル名を指定してファイル読み込み
+	fbxModel1 = FbxLoader::GetInstance()->LoadModelFromFile("prin");
+
+	//3Dオブジェクト生成とモデルのセット
+	fbxObject1 = new FbxObject3d;
+	fbxObject1->Initialize();
+	fbxObject1->SetModel(fbxModel1);
+
 }
 
 void GamePlayScene::Finalize()
 {
 	delete model;
+	delete fbxObject1;
+	//delete fbxModel1;
 }
 
 void GamePlayScene::Update()
 {
 	// ゲームシーンの毎フレーム処理
-	
 	Input *input = Input::GetInstance();
 
 	//オブジェクト移動
@@ -60,7 +79,7 @@ void GamePlayScene::Update()
 		objectX->SetPosition(position);
 	}
 
-	if (input->PushKey(DIK_W) || input->PushKey(DIK_S) || input->PushKey(DIK_D) || input->PushKey(DIK_A))
+	if (input->PushKey(DIK_W) || input->PushKey(DIK_S) || input->PushKey(DIK_D) || input->PushKey(DIK_A) || input->PushKey(DIK_E) || input->PushKey(DIK_Z))
 	{
 		// 現在の座標を取得
 		XMFLOAT3 position = camera->GetEye();
@@ -70,13 +89,15 @@ void GamePlayScene::Update()
 		else if (input->PushKey(DIK_S)) { position.y -= 1.0f; }
 		if (input->PushKey(DIK_D)) { position.x += 1.0f; }
 		else if (input->PushKey(DIK_A)) { position.x -= 1.0f; }
-
+		if (input->PushKey(DIK_E)) { position.z += 1.0f; }
+		else if (input->PushKey(DIK_Z)) { position.z -= 1.0f; }
 		// 座標の変更を反映
 		camera->SetEye(position);
 	}
 
-	DebugText::GetInstance()->Print(50, 30 * 1, 2, "%f", camera->GetEye().x);
-	DebugText::GetInstance()->Print(50, 30 * 2, 2, "%f", camera->GetEye().y);
+	DebugText::GetInstance()->Print(50, 30 * 1, 2, "X:%f", camera->GetEye().x);
+	DebugText::GetInstance()->Print(50, 30 * 2, 2, "Y:%f", camera->GetEye().y);
+	DebugText::GetInstance()->Print(50, 30 * 3, 2, "Z:%f", camera->GetEye().z);
 
 	if (input->TriggerKey(DIK_SPACE))
 	{
@@ -87,9 +108,16 @@ void GamePlayScene::Update()
 		SceneManager::GetInstance()->ChangeScene("TITLE");
 	}
 
+	camera->SetTarget({ 0, 0, 0 });
+	
+
+	fbxObject1->AnimationFlag = true;
+	fbxObject1->AnimationNum = 1;
 	//アップデート
 	camera->Update();
 	objectX->Update();
+	fbxObject1->Update();
+	DebugText::GetInstance()->Print(50, 30 * 3, 2, "%d", fbxObject1->GetisPlay());
 }
 
 void GamePlayScene::Draw()
@@ -117,7 +145,10 @@ void GamePlayScene::Draw()
 	Object3d::PreDraw(cmdList);
 
 	// 3Dオブクジェクトの描画
-	objectX->Draw();
+	//objectX->Draw();
+
+	//FBX3Dオブジェクトの描画
+	fbxObject1->Draw(cmdList);
 
 	/// <summary>
 	/// ここに3Dオブジェクトの描画処理を追加できる
