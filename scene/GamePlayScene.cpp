@@ -48,7 +48,12 @@ void GamePlayScene::Update()
 
 	
 	//—Ž‚¿‚éˆ—
-	x++;
+	x += moveX;
+	if (moveX > 0.0f) //‹^Ž—‹ó‹C’ïR
+	{
+		moveX -= 0.002f;
+	}
+	
 	DropValue += gravity / 600.0f;
 	y -= DropValue;
 	objectX->SetPosition(XMFLOAT3(x, y, z));

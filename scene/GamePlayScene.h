@@ -55,6 +55,7 @@ public:
 
 	//”Šwö‹Æ—p
 	float x = -50.0f;
+	float moveX = 1.0f;
 	float y = 0.0f;
 	float z = 0.0f;
 	float gravity = 9.8f;
