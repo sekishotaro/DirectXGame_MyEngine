@@ -13,6 +13,8 @@
 #include <memory>
 #include "Camera.h"
 
+#include "PostEffect.h"
+
 /// <summary>
 /// フレームワーク
 /// </summary>
@@ -64,5 +66,7 @@ protected:
 
 	//シーンファクトリー
 	std::unique_ptr<AbstractSceneFactory> sceneFactory_;
+
+	PostEffect* postEffect = nullptr;
 };
 

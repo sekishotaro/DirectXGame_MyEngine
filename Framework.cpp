@@ -40,6 +40,12 @@ void Framework::Initialize()
 	}
 
 	FbxLoader::GetInstance()->Initialize(DirectXCommon::GetInstance()->GetDev());
+
+	//ポストエフェクト用テクスチャの読み込み
+	Sprite::LoadTexture(100, L"Resources/tex1.png");
+	//ポストエフェクトの初期化
+	postEffect = new PostEffect();
+	postEffect->Initialize();
 }
 
 void Framework::Finalize()
@@ -54,6 +60,8 @@ void Framework::Finalize()
 	safe_delete(winApp);
 
 	FbxLoader::GetInstance()->Finalize();
+
+	delete postEffect;
 }
 
 void Framework::Update()
@@ -81,7 +89,8 @@ void Framework::Draw()
 	// コマンドリストの取得
 	ID3D12GraphicsCommandList *cmdList = dxCommon->GetCmdList();
 
-	SceneManager::GetInstance()->Draw();
+	//SceneManager::GetInstance()->Draw();
+	postEffect->Draw(dxCommon->GetCmdList());
 
 	// 描画終了
 	dxCommon->PostDraw();

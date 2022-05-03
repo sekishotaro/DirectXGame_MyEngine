@@ -82,7 +82,7 @@ public: //静的メンバ関数
 
 
 
-private: //静的メンバ変数
+protected: //静的メンバ変数
 
 	//デバイス
 	static ID3D12Device *dev;
@@ -170,7 +170,7 @@ public: //メンバ関数
 
 
 
-private: //メンバ変数
+protected: //メンバ変数
 	//頂点バッファ
 	ComPtr<ID3D12Resource> vertBuff;
 	//頂点バッファビュー
