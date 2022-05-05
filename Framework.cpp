@@ -84,14 +84,14 @@ void Framework::Update()
 
 void Framework::Draw()
 {
+	postEffect->PreDrawScene(dxCommon->GetCmdList());
+	SceneManager::GetInstance()->Draw();
+	postEffect->PostDrawScene(dxCommon->GetCmdList());
 	// 描画開始
 	dxCommon->PreDraw();
 	// コマンドリストの取得
 	ID3D12GraphicsCommandList *cmdList = dxCommon->GetCmdList();
-
-	//SceneManager::GetInstance()->Draw();
 	postEffect->Draw(dxCommon->GetCmdList());
-
 	// 描画終了
 	dxCommon->PostDraw();
 }
