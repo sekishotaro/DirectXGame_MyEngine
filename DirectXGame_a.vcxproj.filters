@@ -19,6 +19,7 @@
     <None Include="Resources\shaders\Sprite.hlsli" />
     <None Include="Resources\shaders\OBJShaderHeader.hlsli" />
     <None Include="Resources\shaders\FBX.hlsli" />
+    <None Include="Resources\shaders\PostEffectTest.hlsli" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Resources\shaders\BasicPS.hlsl" />
@@ -29,6 +30,8 @@
     <FxCompile Include="Resources\shaders\OBJVertexShader.hlsl" />
     <FxCompile Include="Resources\shaders\FBXPS.hlsl" />
     <FxCompile Include="Resources\shaders\FBXVS.hlsl" />
+    <FxCompile Include="Resources\shaders\PostEffectTestPS.hlsl" />
+    <FxCompile Include="Resources\shaders\PostEffectTestVS.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">

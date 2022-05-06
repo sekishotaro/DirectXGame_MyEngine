@@ -128,18 +128,18 @@ void GamePlayScene::Draw()
 	ID3D12GraphicsCommandList *cmdList = DirectXCommon::GetInstance()->GetCmdList();
 
 	// 背景スプライト描画前処理
-	Sprite::PreDraw(cmdList);
+	//Sprite::PreDraw(cmdList);
 	// 背景スプライト描画
-	spriteBG->Draw();
+	//spriteBG->Draw();
 
 	/// <summary>
 	/// ここに背景スプライトの描画処理を追加できる
 	/// </summary>
 
 	// スプライト描画後処理
-	Sprite::PostDraw();
+	//Sprite::PostDraw();
 	// 深度バッファクリア
-	DirectXCommon::GetInstance()->ClearDepthBuffer();
+	//DirectXCommon::GetInstance()->ClearDepthBuffer();
 
 	// 3Dオブジェクト描画前処理
 	Object3d::PreDraw(cmdList);
@@ -158,11 +158,11 @@ void GamePlayScene::Draw()
 	Object3d::PostDraw();
 
 	// 前景スプライト描画前処理
-	Sprite::PreDraw(cmdList);
+	//Sprite::PreDraw(cmdList);
 
 	// デバッグテキストの描画
-	DebugText::GetInstance()->DrawAll(cmdList);
+	//DebugText::GetInstance()->DrawAll(cmdList);
 
 	// スプライト描画後処理
-	Sprite::PostDraw();
+	//Sprite::PostDraw();
 }

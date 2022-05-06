@@ -41,8 +41,6 @@ void Framework::Initialize()
 
 	FbxLoader::GetInstance()->Initialize(DirectXCommon::GetInstance()->GetDev());
 
-	//ポストエフェクト用テクスチャの読み込み
-	Sprite::LoadTexture(100, L"Resources/tex1.png");
 	//ポストエフェクトの初期化
 	postEffect = new PostEffect();
 	postEffect->Initialize();

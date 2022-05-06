@@ -23,6 +23,11 @@ public:
 	void Initialize();
 
 	/// <summary>
+	/// パイプライン生成
+	/// </summary>
+	void CreateGraphicsPipelineState();
+
+	/// <summary>
 	/// シーン描画前処理
 	/// </summary>
 	/// <param name="cmdList">コマンドリスト</param>
@@ -50,6 +55,9 @@ public:
 	ComPtr<ID3D12DescriptorHeap> descHeapRTV;
 	//DSV用デスクリプタヒープ
 	ComPtr<ID3D12DescriptorHeap> descHeapDSV;
+	//グラフィックスパイプライン
+	ComPtr<ID3D12PipelineState> pipelineState;
+	ComPtr<ID3D12RootSignature> rootSignature;
 
 	//画面クリアカラー
 	static const float clearColor[4];
