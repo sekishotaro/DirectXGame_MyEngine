@@ -46,7 +46,7 @@ public:
 	void Draw(ID3D12GraphicsCommandList* cmdList);
 
 	//テクスチャバッファ
-	ComPtr<ID3D12Resource> texBuff[2];
+	ComPtr<ID3D12Resource> texBuff;
 	//SRV用デスクリプタヒープ
 	ComPtr<ID3D12DescriptorHeap> descHeapSRV;
 	//深度バッファ
