@@ -29,10 +29,12 @@ void GamePlayScene::Initialize()
 	// オブジェクト生成
 	model = Model::LoadFromOBJ("sphere");
 
-	objectX = Object3d::Create();
+	object1 = Object3d::Create();
+	object2 = Object3d::Create();
 
 	//オブジェクトにモデルをひも付ける
-	objectX->SetModel(model);
+	object1->SetModel(model);
+	object2->SetModel(model);
 }
 
 void GamePlayScene::Finalize()
@@ -48,15 +50,24 @@ void GamePlayScene::Update()
 
 	
 	//落ちる処理
-	x += moveX;
-	if (moveX > 0.0f) //疑似空気抵抗
+	d1b = k * move1X;
+	move1XValue = move1X - d1b;
+	x1 += move1XValue;
+
+	d1a = k * dropValue;
+	dropValue += (gravity / 600.0f) - d1a;
+	y1 -= dropValue;
+
+
+	//摩擦
+	//地面についていると仮定
+	move2XValue -= k2;
+	if (move2XValue > 0)
 	{
-		moveX -= 0.002f;
+		x2 += move2XValue;
 	}
 	
-	DropValue += gravity / 600.0f;
-	y -= DropValue;
-	objectX->SetPosition(XMFLOAT3(x, y, z));
+	
 
 
 
@@ -75,10 +86,14 @@ void GamePlayScene::Update()
 		// 座標の変更を反映
 		camera->SetEye(position);
 	}
+	object1->SetPosition(XMFLOAT3(x1, y1, z1));
+	object2->SetPosition(XMFLOAT3(x2, y2, z2));
 
-	DebugText::GetInstance()->Print(50, 30 * 1, 2, "Camera:%f", camera->GetEye().x);
-	DebugText::GetInstance()->Print(50, 30 * 2, 2, "Camera:%f", camera->GetEye().y);
-	DebugText::GetInstance()->Print(50, 30 * 3, 2, "  posY:%f", objectX->GetPosition().y);
+	DebugText::GetInstance()->Print(50, 30 * 1, 2, "     Camera:%f", camera->GetEye().x);
+	DebugText::GetInstance()->Print(50, 30 * 2, 2, "     Camera:%f", camera->GetEye().y);
+	DebugText::GetInstance()->Print(50, 30 * 3, 2, "       posY:%f", object1->GetPosition().y);
+	DebugText::GetInstance()->Print(50, 30 * 4, 2, "  DropValue:%f", dropValue);
+	DebugText::GetInstance()->Print(50, 30 * 5, 2, " moveXValue:%f", move1XValue);
 	if (input->TriggerKey(DIK_SPACE))
 	{
 		//BGM止める
@@ -90,7 +105,8 @@ void GamePlayScene::Update()
 
 	//アップデート
 	camera->Update();
-	objectX->Update();
+	object1->Update();
+	object2->Update();
 }
 
 void GamePlayScene::Draw()
@@ -118,8 +134,8 @@ void GamePlayScene::Draw()
 	Object3d::PreDraw(cmdList);
 
 	// 3Dオブクジェクトの描画
-	objectX->Draw();
-
+	object1->Draw();
+	object2->Draw();
 	/// <summary>
 	/// ここに3Dオブジェクトの描画処理を追加できる
 	/// </summary>

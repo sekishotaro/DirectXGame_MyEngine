@@ -49,16 +49,29 @@ public:
 	/// ゲームシーン用
 	/// </summary>
 	Sprite *spriteBG = nullptr;
-	std::unique_ptr<Object3d> objectX;
+	std::unique_ptr<Object3d> object1;
+	std::unique_ptr<Object3d> object2;
 	Model *model = nullptr;
 	Camera *camera = nullptr;
 
 	//数学授業用
-	float x = -50.0f;
-	float moveX = 1.0f;
-	float y = 0.0f;
-	float z = 0.0f;
+	float x1 = -50.0f;
+	float move1X = 1.0f;
+	float y1 = 0.0f;
+	float z1 = 0.0f;
 	float gravity = 9.8f;
-	float DropValue =  -600.0f / 600.0f;
+	float dropValue =  -600.0f / 600.0f;
+	float move1XValue = 0.0f;
+	float d1a = 0.0f;
+	float d1b = 0.0f;
+	float k = 0.01; //空気抵抗比例定数
+
+
+	float x2 = -50.0f;
+	float y2 = -20.0f;
+	float z2 = 0.0f;
+	float move2XValue = 1.0f;
+	float move2X = 1.0f;
+	float k2 = 0.01f;
 };
 
