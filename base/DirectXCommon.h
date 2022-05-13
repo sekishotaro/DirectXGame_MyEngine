@@ -48,7 +48,7 @@ public:
 	/// デバイス取得
 	/// </summary>
 	/// <returns>デバイス</returns>
-	ID3D12Device *GetDev() { return dev.Get(); }
+	static ID3D12Device *GetDev() { return dev.Get(); }
 
 	/// <summary>
 	/// コマンドリスト取得
@@ -74,7 +74,7 @@ private:
 	ComPtr<ID3D12DescriptorHeap> rtvHeaps;
 	ComPtr<ID3D12DescriptorHeap> dsvHeap;
 	//デバイス
-	ComPtr<ID3D12Device> dev;
+	static ComPtr<ID3D12Device> dev;
 	// DXGIファクトリー
 	ComPtr<IDXGIFactory6> dxgiFactory;
 	//バックバッファ

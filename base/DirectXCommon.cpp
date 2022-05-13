@@ -9,6 +9,8 @@
 
 using namespace Microsoft::WRL;
 
+ComPtr<ID3D12Device> DirectXCommon::dev;
+
 DirectXCommon *DirectXCommon::GetInstance()
 {
 	static DirectXCommon instance;

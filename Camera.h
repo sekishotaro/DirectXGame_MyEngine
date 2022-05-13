@@ -21,7 +21,7 @@ public: // メンバ関数
 	/// </summary>
 	/// <param name="window_width">画面幅</param>
 	/// <param name="window_height">画面高さ</param>
-	Camera(int window_width, int window_height);
+	Camera(const int& window_width, const int& window_height);
 
 	/// <summary>
 	/// デストラクタ

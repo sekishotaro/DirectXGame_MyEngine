@@ -3,6 +3,8 @@
 #include "SafeDelete.h"
 #include "FbxLoader.h"
 
+
+
 void Framework::Initialize()
 {
 	//WindowsAPIの初期化
@@ -42,8 +44,8 @@ void Framework::Initialize()
 	FbxLoader::GetInstance()->Initialize(DirectXCommon::GetInstance()->GetDev());
 
 	//ポストエフェクトの初期化
-	postEffect = new PostEffect();
-	postEffect->Initialize();
+	//postEffect = new PostEffect();
+	//postEffect->Initialize();
 }
 
 void Framework::Finalize()
@@ -51,7 +53,6 @@ void Framework::Finalize()
 	//オーディオ開放
 	audio->Finalize();
 	//デバックテキスト開放
-	//debugText->Finalize();
 
 	// ゲームウィンドウの破棄
 	winApp->Finalize();
@@ -82,14 +83,15 @@ void Framework::Update()
 
 void Framework::Draw()
 {
-	postEffect->PreDrawScene(dxCommon->GetCmdList());
-	SceneManager::GetInstance()->Draw();
-	postEffect->PostDrawScene(dxCommon->GetCmdList());
+	//postEffect->PreDrawScene(dxCommon->GetCmdList());
+	//SceneManager::GetInstance()->Draw();
+	//postEffect->PostDrawScene(dxCommon->GetCmdList());
 	// 描画開始
 	dxCommon->PreDraw();
 	// コマンドリストの取得
 	ID3D12GraphicsCommandList *cmdList = dxCommon->GetCmdList();
-	postEffect->Draw(dxCommon->GetCmdList());
+	SceneManager::GetInstance()->Draw();
+	//postEffect->Draw(dxCommon->GetCmdList());
 	// 描画終了
 	dxCommon->PostDraw();
 }

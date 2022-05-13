@@ -2,7 +2,7 @@
 
 using namespace DirectX;
 
-Camera::Camera(int window_width, int window_height)
+Camera::Camera(const int &window_width,const int &window_height)
 {
 	aspectRatio = (float)window_width / window_height;
 
