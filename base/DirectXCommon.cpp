@@ -10,6 +10,7 @@
 using namespace Microsoft::WRL;
 
 ComPtr<ID3D12Device> DirectXCommon::dev;
+ComPtr<ID3D12GraphicsCommandList> DirectXCommon::cmdList;
 
 DirectXCommon *DirectXCommon::GetInstance()
 {

@@ -1,4 +1,3 @@
-
 #include "GamePlayScene.h"
 #include "SceneManager.h"
 #include "Audio.h"
@@ -7,6 +6,8 @@
 #include "DirectXCommon.h"
 #include "FbxLoader.h"
 #include "FbxObject3d.h"
+#include "imguiManager.h"
+
 
 void GamePlayScene::Initialize()
 {
@@ -124,7 +125,7 @@ void GamePlayScene::Draw()
 {
 	// ゲームシーンの描画
 
-// コマンドリストの取得
+	// コマンドリストの取得
 	ID3D12GraphicsCommandList *cmdList = DirectXCommon::GetInstance()->GetCmdList();
 
 	// 背景スプライト描画前処理
@@ -165,4 +166,8 @@ void GamePlayScene::Draw()
 
 	// スプライト描画後処理
 	Sprite::PostDraw();
+
+	//imguiの描画
+	imguiManager::PraDraw();
+	imguiManager::PosDraw();
 }

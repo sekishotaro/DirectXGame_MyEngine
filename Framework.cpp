@@ -2,7 +2,7 @@
 
 #include "SafeDelete.h"
 #include "FbxLoader.h"
-
+#include "imguiManager.h"
 
 
 void Framework::Initialize()
@@ -22,6 +22,9 @@ void Framework::Initialize()
 	//オーディオの初期化
 	audio = Audio::GetInstance();
 	audio->Initialize();
+
+	//imgui初期化
+	imguiManager::Initialize();
 
 	//スプライト静的初期化
 	if (!Sprite::StaticInitialize(dxCommon->GetDev(), WinApp::window_width, WinApp::window_height))
@@ -60,7 +63,7 @@ void Framework::Finalize()
 
 	FbxLoader::GetInstance()->Finalize();
 
-	delete postEffect;
+	//delete postEffect;
 }
 
 void Framework::Update()

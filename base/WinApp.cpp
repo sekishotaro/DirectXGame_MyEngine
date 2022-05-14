@@ -1,6 +1,7 @@
 #include "WinApp.h"
 #include <Windows.h>
 
+HWND WinApp::hwnd = nullptr;
 
 LRESULT WinApp::WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 {

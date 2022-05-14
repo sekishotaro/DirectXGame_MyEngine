@@ -54,7 +54,7 @@ public:
 	/// コマンドリスト取得
 	/// </summary>
 	/// <returns></returns>
-	ID3D12GraphicsCommandList *GetCmdList() { return cmdList.Get(); }
+	static ID3D12GraphicsCommandList *GetCmdList() { return cmdList.Get(); }
 
 
 
@@ -64,7 +64,7 @@ private:
 	WinApp *winApp = nullptr;
 
 	ComPtr<ID3D12CommandAllocator> cmdAllocator;
-	ComPtr<ID3D12GraphicsCommandList> cmdList;
+	static ComPtr<ID3D12GraphicsCommandList> cmdList;
 	ComPtr<ID3D12CommandQueue> cmdQueue;
 	ComPtr<IDXGISwapChain4> swapchain;
 	ComPtr<ID3D12Resource> depthBuffer;
