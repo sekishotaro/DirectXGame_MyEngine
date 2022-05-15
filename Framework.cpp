@@ -42,8 +42,8 @@ void Framework::Initialize()
 	FbxLoader::GetInstance()->Initialize(DirectXCommon::GetInstance()->GetDev());
 
 	//ポストエフェクトの初期化
-	postEffect = new PostEffect();
-	postEffect->Initialize();
+	//postEffect = new PostEffect();
+	//postEffect->Initialize();
 }
 
 void Framework::Finalize()
@@ -59,7 +59,7 @@ void Framework::Finalize()
 
 	FbxLoader::GetInstance()->Finalize();
 
-	delete postEffect;
+	//delete postEffect;
 }
 
 void Framework::Update()
@@ -82,14 +82,15 @@ void Framework::Update()
 
 void Framework::Draw()
 {
-	postEffect->PreDrawScene(dxCommon->GetCmdList());
-	SceneManager::GetInstance()->Draw();
-	postEffect->PostDrawScene(dxCommon->GetCmdList());
+	//postEffect->PreDrawScene(dxCommon->GetCmdList());
+	
+	//postEffect->PostDrawScene(dxCommon->GetCmdList());
 	// 描画開始
 	dxCommon->PreDraw();
 	// コマンドリストの取得
 	ID3D12GraphicsCommandList *cmdList = dxCommon->GetCmdList();
-	postEffect->Draw(dxCommon->GetCmdList());
+	SceneManager::GetInstance()->Draw();
+	//postEffect->Draw(dxCommon->GetCmdList());
 	// 描画終了
 	dxCommon->PostDraw();
 }

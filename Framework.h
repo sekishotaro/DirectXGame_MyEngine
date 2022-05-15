@@ -67,6 +67,6 @@ protected:
 	//シーンファクトリー
 	std::unique_ptr<AbstractSceneFactory> sceneFactory_;
 
-	PostEffect* postEffect = nullptr;
+	//PostEffect* postEffect = nullptr;
 };
 
