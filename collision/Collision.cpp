@@ -21,6 +21,18 @@ bool Collision::CheckSphere2Plane(const Sphere &sphere, const Plane &plane, Dire
 	return true;
 }
 
+bool Collision::CheckSphereSphere(const SphereF& sphere1, const SphereF& sphere2)
+{
+	float X = (sphere1.center.x - sphere2.center.x) * (sphere1.center.x - sphere2.center.x);
+	float Y = (sphere1.center.y - sphere2.center.y) * (sphere1.center.y - sphere2.center.y);
+	float Z = (sphere1.center.z - sphere2.center.z) * (sphere1.center.z - sphere2.center.z);
+	float R = (sphere1.radius + sphere2.radius) * (sphere1.radius + sphere2.radius);
+	if (X + Y + Z <= R) {
+		return true;
+	}
+	return false;
+}
+
 void Collision::ClosestPtPoint2Triangle(const DirectX::XMVECTOR &point, const Triangle &triangle, DirectX::XMVECTOR *closest)
 {
 	// pointがp0の外側の頂点領域の中にあるかどうかチェック

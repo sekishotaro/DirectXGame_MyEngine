@@ -4,6 +4,7 @@
 #include "Input.h"
 #include "DebugText.h"
 #include "DirectXCommon.h"
+#include "Collision.h"
 
 void GamePlayScene::Initialize()
 {
@@ -28,13 +29,14 @@ void GamePlayScene::Initialize()
 
 	// オブジェクト生成
 	model = Model::LoadFromOBJ("sphere");
+	model2 = Model::LoadFromOBJ("sphere2");
 
 	object1 = Object3d::Create();
 	object2 = Object3d::Create();
 
 	//オブジェクトにモデルをひも付ける
 	object1->SetModel(model);
-	object2->SetModel(model);
+	object2->SetModel(model2);
 }
 
 void GamePlayScene::Finalize()
@@ -49,27 +51,50 @@ void GamePlayScene::Update()
 	Input *input = Input::GetInstance();
 
 	
-	//落ちる処理
-	d1b = k * move1X;
-	move1XValue = move1X - d1b;
-	x1 += move1XValue;
+	////落ちる処理
+	//d1b = k * move1X;
+	//move1XValue = move1X - d1b;
+	//x1 += move1XValue;
 
-	d1a = k * dropValue;
-	dropValue += (gravity / 600.0f) - d1a;
-	y1 -= dropValue;
+	//d1a = k * dropValue;
+	//dropValue += (gravity / 600.0f) - d1a;
+	//y1 -= dropValue;
 
 
 	//摩擦
 	//地面についていると仮定
-	move2XValue -= k2;
-	if (move2XValue > 0)
+	SphereF sphere1;
+	sphere1.center = { x1, y1, z1 };
+	sphere1.radius = 2.0f;
+	SphereF sphere2;
+	sphere2.center = { x2, y2, z2 };
+	sphere2.radius = 2.0f;
+
+	if (Collision::CheckSphereSphere(sphere1, sphere2))
 	{
-		x2 += move2XValue;
+		if(flag == false)
+		{
+			//x1 -= 5;
+			aro1 *= -1.0;
+			aro2 *= -1.0;
+			flag = true;
+		}
+	}
+	
+	move1XValue -= k2;
+	if (move1XValue > 0 )
+	{
+		x1 += move1XValue * aro1;
 	}
 	
 	
-
-
+	move2XValue -= k2;
+	if (move2XValue > 0)
+	{
+		x2 += move2XValue * aro2;
+	}
+	
+	
 
 	//カメラの移動
 	if (input->PushKey(DIK_W) || input->PushKey(DIK_S) || input->PushKey(DIK_D) || input->PushKey(DIK_A))
@@ -89,11 +114,12 @@ void GamePlayScene::Update()
 	object1->SetPosition(XMFLOAT3(x1, y1, z1));
 	object2->SetPosition(XMFLOAT3(x2, y2, z2));
 
-	DebugText::GetInstance()->Print(50, 30 * 1, 2, "     Camera:%f", camera->GetEye().x);
-	DebugText::GetInstance()->Print(50, 30 * 2, 2, "     Camera:%f", camera->GetEye().y);
-	DebugText::GetInstance()->Print(50, 30 * 3, 2, "       posY:%f", object1->GetPosition().y);
-	DebugText::GetInstance()->Print(50, 30 * 4, 2, "  DropValue:%f", dropValue);
-	DebugText::GetInstance()->Print(50, 30 * 5, 2, " moveXValue:%f", move1XValue);
+	DebugText::GetInstance()->Print(50, 30 * 1, 2, "      Camera:%f", camera->GetEye().x);
+	DebugText::GetInstance()->Print(50, 30 * 2, 2, "      Camera:%f", camera->GetEye().y);
+	DebugText::GetInstance()->Print(50, 30 * 3, 2, "        posY:%f", object1->GetPosition().y);
+	DebugText::GetInstance()->Print(50, 30 * 4, 2, "          k2:%f", k2);
+	DebugText::GetInstance()->Print(50, 30 * 5, 2, " moveX1Value:%f", move1XValue);
+	DebugText::GetInstance()->Print(50, 30 * 6, 2, " moveX2Value:%f", move2XValue);
 	if (input->TriggerKey(DIK_SPACE))
 	{
 		//BGM止める

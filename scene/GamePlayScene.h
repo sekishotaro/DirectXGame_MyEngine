@@ -52,26 +52,32 @@ public:
 	std::unique_ptr<Object3d> object1;
 	std::unique_ptr<Object3d> object2;
 	Model *model = nullptr;
+	Model* model2 = nullptr;
 	Camera *camera = nullptr;
 
 	//”Šwö‹Æ—p
-	float x1 = -50.0f;
+	float x1 = -40.0f;
 	float move1X = 1.0f;
 	float y1 = 0.0f;
 	float z1 = 0.0f;
 	float gravity = 9.8f;
 	float dropValue =  -600.0f / 600.0f;
-	float move1XValue = 0.0f;
+	float move1XValue = 1.0f;
 	float d1a = 0.0f;
 	float d1b = 0.0f;
 	float k = 0.01; //‹ó‹C’ïR”ä—á’è”
 
 
-	float x2 = -50.0f;
-	float y2 = -20.0f;
+	float x2 = 40.0f;
+	float y2 = 0.0f;
 	float z2 = 0.0f;
 	float move2XValue = 1.0f;
 	float move2X = 1.0f;
 	float k2 = 0.01f;
+
+	float aro1 = 1.0;
+	float aro2 = -1.0;
+
+	bool flag = false;
 };
 

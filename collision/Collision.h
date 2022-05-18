@@ -18,6 +18,14 @@ public:
 	static bool CheckSphere2Plane(const Sphere &sphere, const Plane &plane, DirectX::XMVECTOR *inter = nullptr);
 
 	/// <summary>
+	/// 球と球の当たり判定
+	/// </summary>
+	/// <param name="sphere1">球</param>
+	/// <param name="sphere2">球</param>
+	/// <returns></returns>
+	static bool CheckSphereSphere(const SphereF& sphere1, const SphereF& sphere2);
+
+	/// <summary>
 	/// 点と三角形の最近接点を求める
 	/// </summary>
 	/// <param name="point">点</param>
