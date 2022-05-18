@@ -125,6 +125,7 @@ public:
 	//アニメーションの数
 	int AnimationNum = 0;
 public:
+
 	//getter
 	bool GetisPlay() { return isPlay; }
 };

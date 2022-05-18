@@ -18,6 +18,7 @@ public: //メンバ関数
 
 	//初期化
 	void Initialize(WinApp *winApp);
+
 	//更新
 	void Update();
 
@@ -38,6 +39,9 @@ public: //メンバ関数
 private: //メンバ変数
 	//キーボードのデバイス
 	ComPtr<IDirectInputDevice8> devkeyboard;
+	//マウスのデバイス
+	ComPtr<IDirectInputDevice8> devmouse;
+
 	//DirectInputのインスタンス生成
 	ComPtr<IDirectInput8> dinput;
 
@@ -45,7 +49,7 @@ private: //メンバ変数
 	BYTE key[256] = {};
 	//前回の全キーの状態
 	BYTE keyPre[256] = {};
-
+	DIMOUSESTATE mouse;
 	//WindowsAPI
 	WinApp *winApp = nullptr;
 	

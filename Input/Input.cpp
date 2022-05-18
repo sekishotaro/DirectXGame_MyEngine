@@ -28,6 +28,14 @@ void Input::Initialize(WinApp *winApp)
 	//排他制御レベルのセット
 	result = devkeyboard->SetCooperativeLevel(
 		winApp->GetHwnd(), DISCL_FOREGROUND | DISCL_NONEXCLUSIVE | DISCL_NOWINKEY);
+
+	//マウス生成
+	result = dinput->CreateDevice(GUID_SysMouse, &devmouse, NULL);
+	//入力形式のセット
+	result = devmouse->SetDataFormat(&c_dfDIMouse);
+	//排他制御レベルのセット
+	result = devmouse->SetCooperativeLevel(
+		winApp->GetHwnd(), DISCL_FOREGROUND | DISCL_NONEXCLUSIVE | DISCL_NOWINKEY);
 }
 
 void Input::Update()
@@ -37,10 +45,22 @@ void Input::Update()
 	//キーボード情報の取得を開始
 	result = devkeyboard->Acquire();
 
+	//マウス情報の取得を開始
+	result = devmouse->Acquire();
+
+	result = devmouse->Poll();
+	//if (FAILED(result))
+	//{
+	//	assert(0);
+	//}
+
+
 	//前回のキー入力を保存
 	memcpy(keyPre, key, sizeof(key));
 
 	result = devkeyboard->GetDeviceState(sizeof(key), key);
+
+	result = devmouse->GetDeviceState(sizeof(DIMOUSESTATE), &mouse);
 }
 
 bool Input::PushKey(BYTE keyNumber)
