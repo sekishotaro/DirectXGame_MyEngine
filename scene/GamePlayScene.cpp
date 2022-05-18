@@ -50,49 +50,49 @@ void GamePlayScene::Update()
 	
 	Input *input = Input::GetInstance();
 
-	
-	////—Ž‚¿‚éˆ—
-	//d1b = k * move1X;
-	//move1XValue = move1X - d1b;
-	//x1 += move1XValue;
-
-	//d1a = k * dropValue;
-	//dropValue += (gravity / 600.0f) - d1a;
-	//y1 -= dropValue;
-
-
-	//–€ŽC
-	//’n–Ê‚É‚Â‚¢‚Ä‚¢‚é‚Æ‰¼’è
-	SphereF sphere1;
-	sphere1.center = { x1, y1, z1 };
-	sphere1.radius = 2.0f;
-	SphereF sphere2;
-	sphere2.center = { x2, y2, z2 };
-	sphere2.radius = 2.0f;
-
-	if (Collision::CheckSphereSphere(sphere1, sphere2))
+	if (input->PushKey(DIK_RETURN))
 	{
-		if(flag == false)
+		startFlag = true;
+	}
+
+	if (startFlag == true)
+	{
+		//–€ŽC
+//’n–Ê‚É‚Â‚¢‚Ä‚¢‚é‚Æ‰¼’è
+		SphereF sphere1;
+		sphere1.center = { x1, y1, z1 };
+		sphere1.radius = 2.0f;
+		SphereF sphere2;
+		sphere2.center = { x2, y2, z2 };
+		sphere2.radius = 2.0f;
+
+		if (Collision::CheckSphereSphere(sphere1, sphere2))
 		{
-			//x1 -= 5;
-			aro1 *= -1.0;
-			aro2 *= -1.0;
-			flag = true;
+			if (flag == false)
+			{
+				//x1 -= 5;
+				aro1 *= -1.0;
+				aro2 *= -1.0;
+				flag = true;
+			}
+		}
+
+		move1XValue -= k2;
+		move1XValue *= m1;
+		if (move1XValue > 0)
+		{
+			x1 += move1XValue * aro1;
+		}
+
+
+		move2XValue -= k2;
+		move2XValue *= m2;
+		if (move2XValue > 0)
+		{
+			x2 += move2XValue * aro2;
 		}
 	}
-	
-	move1XValue -= k2;
-	if (move1XValue > 0 )
-	{
-		x1 += move1XValue * aro1;
-	}
-	
-	
-	move2XValue -= k2;
-	if (move2XValue > 0)
-	{
-		x2 += move2XValue * aro2;
-	}
+
 	
 	
 

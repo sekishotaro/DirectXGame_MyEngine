@@ -79,5 +79,10 @@ public:
 	float aro2 = -1.0;
 
 	bool flag = false;
+
+	bool startFlag = false;
+
+	float m1 = 1.001f;
+	float m2 = 1.0f;
 };
 
