@@ -63,6 +63,13 @@ void GamePlayScene::Update()
 	// ゲームシーンの毎フレーム処理
 	Input *input = Input::GetInstance();
 
+	if (input->PushMouseButton(Mouse_Left))
+	{
+		XMFLOAT3 position = camera->GetEye();
+		position.y += 1.0f;
+		camera->SetEye(position);
+	}
+
 	//オブジェクト移動
 	if (input->PushKey(DIK_UP) || input->PushKey(DIK_DOWN) || input->PushKey(DIK_RIGHT) || input->PushKey(DIK_LEFT))
 	{

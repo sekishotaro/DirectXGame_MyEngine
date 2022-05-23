@@ -30,11 +30,11 @@ void Input::Initialize(WinApp *winApp)
 		winApp->GetHwnd(), DISCL_FOREGROUND | DISCL_NONEXCLUSIVE | DISCL_NOWINKEY);
 
 	//マウス生成
-	result = dinput->CreateDevice(GUID_SysMouse, &devmouse, NULL);
+	result = dinput->CreateDevice(GUID_SysMouse, &devMouse, NULL);
 	//入力形式のセット
-	result = devmouse->SetDataFormat(&c_dfDIMouse);
+	result = devMouse->SetDataFormat(&c_dfDIMouse2);
 	//排他制御レベルのセット
-	result = devmouse->SetCooperativeLevel(
+	result = devMouse->SetCooperativeLevel(
 		winApp->GetHwnd(), DISCL_FOREGROUND | DISCL_NONEXCLUSIVE | DISCL_NOWINKEY);
 }
 
@@ -46,21 +46,17 @@ void Input::Update()
 	result = devkeyboard->Acquire();
 
 	//マウス情報の取得を開始
-	result = devmouse->Acquire();
-
-	result = devmouse->Poll();
-	//if (FAILED(result))
-	//{
-	//	assert(0);
-	//}
-
+	result = devMouse->Acquire();
 
 	//前回のキー入力を保存
 	memcpy(keyPre, key, sizeof(key));
+	
+	//前回の入力を保存
+	mousePre = mouse;
 
 	result = devkeyboard->GetDeviceState(sizeof(key), key);
 
-	result = devmouse->GetDeviceState(sizeof(DIMOUSESTATE), &mouse);
+	result = devMouse->GetDeviceState(sizeof(mouse), &mouse);
 }
 
 bool Input::PushKey(BYTE keyNumber)
@@ -89,5 +85,35 @@ bool Input::TriggerKey(BYTE keyNumber)
 	}
 
 	// トリガーでない
+	return false;
+}
+
+bool Input::PushLeftMouseButton()
+{
+	if (mouse.rgbButtons[0])
+	{
+		return true;
+	}
+
+	return false;
+}
+
+bool Input::PushRightMouseButton()
+{
+	if (mouse.rgbButtons[1])
+	{
+		return true;
+	}
+
+	return false;
+}
+
+bool Input::PushMouseButton(MouseButton mouse_button)
+{
+	if (mouse.rgbButtons[mouse_button])
+	{
+		return true;
+	}
+
 	return false;
 }

@@ -5,6 +5,14 @@
 #include "WinApp.h"
 #pragma once
 
+enum MouseButton
+{
+	Mouse_Left,			//左
+	Mouse_Right,		//右
+};
+
+
+
 //入力
 class Input
 {
@@ -36,11 +44,33 @@ public: //メンバ関数
 	/// <returns>押されているか</returns>
 	bool TriggerKey(BYTE keyNumber);
 
+	/// <summary>
+	/// マウス左クリックの押下をチェック
+	/// </summary>
+	/// <param name="mouse">マウスステータス</param>
+	/// <returns>押されているかどうか</returns>
+	bool PushLeftMouseButton();
+
+	/// <summary>
+	/// マウス右クリックの押下をチェック
+	/// </summary>
+	/// <param name="mouse">マウスステータス</param>
+	/// <returns>押されているかどうか</returns>
+	bool PushRightMouseButton();
+
+
+	/// <summary>
+	/// マウスのボタンが押されているかチェック
+	/// </summary>
+	/// <param name="mouse_button">マウス</param>
+	/// <returns>押されているかどうか</returns>
+	bool PushMouseButton(MouseButton mouse_button);
+
 private: //メンバ変数
 	//キーボードのデバイス
 	ComPtr<IDirectInputDevice8> devkeyboard;
 	//マウスのデバイス
-	ComPtr<IDirectInputDevice8> devmouse;
+	ComPtr<IDirectInputDevice8> devMouse;
 
 	//DirectInputのインスタンス生成
 	ComPtr<IDirectInput8> dinput;
@@ -49,7 +79,10 @@ private: //メンバ変数
 	BYTE key[256] = {};
 	//前回の全キーの状態
 	BYTE keyPre[256] = {};
-	DIMOUSESTATE mouse;
+	DIMOUSESTATE2 mousePre;
+	DIMOUSESTATE2 mouse;
+
+
 	//WindowsAPI
 	WinApp *winApp = nullptr;
 	
