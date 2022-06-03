@@ -12,9 +12,9 @@ void GamePlayScene::Initialize()
 {
 	Audio::GetInstance()->LoadWave("futta-dream.wav");
 	Audio::GetInstance()->LoadWave("zaza.wav");
+	Audio::GetInstance()->LoadWave("What.wav");
 
-	//Audio::GetInstance()->PlayWave("zaza.wav", true);
-
+	
 	// カメラ生成
 	camera = new Camera(WinApp::window_width, WinApp::window_height);
 
@@ -63,6 +63,8 @@ void GamePlayScene::Update()
 	// ゲームシーンの毎フレーム処理
 	Input *input = Input::GetInstance();
 
+	Audio::GetInstance()->PlayWave("What.wav", false);
+
 	if (input->PushMouseButton(Mouse_Left))
 	{
 		XMFLOAT3 position = camera->GetEye();
@@ -109,10 +111,11 @@ void GamePlayScene::Update()
 	if (input->TriggerKey(DIK_SPACE))
 	{
 		//BGM止める
-		//Audio::GetInstance()->SoundStop("zaza.wav");
+		Audio::GetInstance()->SoundStop("zaza.wav");
+		Audio::GetInstance()->PlayWave("zaza.wav", false);
 		
 		//シーン切り替え
-		SceneManager::GetInstance()->ChangeScene("TITLE");
+		//SceneManager::GetInstance()->ChangeScene("TITLE");
 	}
 
 	camera->SetTarget({ 0, 0, 0 });
