@@ -117,3 +117,9 @@ bool Input::PushMouseButton(MouseButton mouse_button)
 
 	return false;
 }
+
+void Input::MousePosLoad()
+{
+	GetCursorPos(&p);
+}
+

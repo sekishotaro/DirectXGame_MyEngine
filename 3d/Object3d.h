@@ -145,7 +145,7 @@ public: // メンバ関数
 	/// 回転角の設定
 	/// </summary>
 	/// <param name="position">回転角</param>
-	void SetRotation(XMFLOAT3 rotation) { this->rotation = rotation; }
+	void SetRotation(const XMFLOAT3 &rotation) { this->rotation = rotation; }
 
 	//setter
 	void SetModel(Model *model) { this->model = model; }
