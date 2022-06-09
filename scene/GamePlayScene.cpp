@@ -63,6 +63,20 @@ void GamePlayScene::Update()
 	// ゲームシーンの毎フレーム処理
 	Input *input = Input::GetInstance();
 
+	Input::MousePos mpos = input->MousePosLoad();
+
+	// マウスの中ボタンが押されていたらカメラを並行移動させる
+	if (input->PushMouseButton(Mouse_Middle))
+	{
+		float dx = mpos.lX;
+		float dy = mpos.lY;
+
+		XMFLOAT3 position = camera->GetEye();
+		position.x += dx;
+		position.y += dy;
+		camera->SetEye(position);
+	}
+
 	Audio::GetInstance()->PlayWave("What.wav", false);
 
 	if (input->PushMouseButton(Mouse_Left))

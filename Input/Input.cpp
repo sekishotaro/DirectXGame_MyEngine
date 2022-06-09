@@ -42,21 +42,28 @@ void Input::Update()
 {
 	HRESULT result;
 
-	//キーボード情報の取得を開始
-	result = devkeyboard->Acquire();
+	//キーボード
+	{
+		//キーボード情報の取得を開始
+		result = devkeyboard->Acquire();
 
-	//マウス情報の取得を開始
-	result = devMouse->Acquire();
+		//前回のキー入力を保存
+		memcpy(keyPre, key, sizeof(key));
 
-	//前回のキー入力を保存
-	memcpy(keyPre, key, sizeof(key));
+		result = devkeyboard->GetDeviceState(sizeof(key), key);
+	}
+
+	//マウス
+	{
+		//マウス情報の取得を開始
+		result = devMouse->Acquire();
+
+		//前回の入力を保存
+		mousePre = mouse;
+
+		result = devMouse->GetDeviceState(sizeof(mouse), &mouse);
+	}
 	
-	//前回の入力を保存
-	mousePre = mouse;
-
-	result = devkeyboard->GetDeviceState(sizeof(key), key);
-
-	result = devMouse->GetDeviceState(sizeof(mouse), &mouse);
 }
 
 bool Input::PushKey(BYTE keyNumber)
@@ -84,7 +91,6 @@ bool Input::TriggerKey(BYTE keyNumber)
 		return true;
 	}
 
-	// トリガーでない
 	return false;
 }
 
@@ -98,15 +104,6 @@ bool Input::PushLeftMouseButton()
 	return false;
 }
 
-bool Input::PushRightMouseButton()
-{
-	if (mouse.rgbButtons[1])
-	{
-		return true;
-	}
-
-	return false;
-}
 
 bool Input::PushMouseButton(MouseButton mouse_button)
 {
@@ -118,8 +115,12 @@ bool Input::PushMouseButton(MouseButton mouse_button)
 	return false;
 }
 
-void Input::MousePosLoad()
+Input::MousePos Input::MousePosLoad()
 {
-	GetCursorPos(&p);
+	MousePos mpos;
+	mpos.lX = mouse.lX;
+	mpos.lY = mouse.lY;
+	mpos.lZ = mouse.lZ;
+	return mpos;
 }
 

@@ -10,14 +10,20 @@ enum MouseButton
 {
 	Mouse_Left,			//左
 	Mouse_Right,		//右
+	Mouse_Middle		//真ん中
 };
 
 //入力
 class Input
 {
 public:
-	//namespace省略
-	template <class T> using ComPtr = Microsoft::WRL::ComPtr<T>;
+	struct MousePos
+	{
+		LONG lX;
+		LONG lY;
+		LONG lZ;
+	};
+
 private: // エイリアス
 // Microsoft::WRL::を省略
 	template <class T> using ComPtr = Microsoft::WRL::ComPtr<T>;
@@ -57,21 +63,13 @@ public: //メンバ関数
 	bool PushLeftMouseButton();
 
 	/// <summary>
-	/// マウス右クリックの押下をチェック
-	/// </summary>
-	/// <param name="mouse">マウスステータス</param>
-	/// <returns>押されているかどうか</returns>
-	bool PushRightMouseButton();
-
-
-	/// <summary>
 	/// マウスのボタンが押されているかチェック
 	/// </summary>
 	/// <param name="mouse_button">マウス</param>
 	/// <returns>押されているかどうか</returns>
 	bool PushMouseButton(MouseButton mouse_button);
 
-	void MousePosLoad();
+	MousePos MousePosLoad();
 
 	/// <summary>
 	/// マウスの位置
