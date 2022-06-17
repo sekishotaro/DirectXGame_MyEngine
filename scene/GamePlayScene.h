@@ -7,7 +7,7 @@
 #include <DirectXMath.h>
 
 #include <memory>
-
+#include "DebugCamera.h"
 #include "Camera.h"
 
 class GamePlayScene : public BaseScene
@@ -51,7 +51,8 @@ public:
 	Sprite *spriteBG = nullptr;
 	std::unique_ptr<Object3d> objectX;
 	Model *model = nullptr;
-	Camera *camera = nullptr;
+	DebugCamera* camera = nullptr;
+	//Camera *camera = nullptr;
 	FbxModel *fbxModel1 = nullptr;
 	FbxObject3d *fbxObject1 = nullptr;
 };

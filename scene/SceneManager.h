@@ -7,12 +7,8 @@
 /// </summary>
 class SceneManager
 {
-
 public:
-
 	static SceneManager *GetInstance();
-
-	
 	
 	/// <summary>
 	/// 次のシーン予約
@@ -27,15 +23,14 @@ public:
 	void SetSceneFactory(AbstractSceneFactory *sceneFactory) { sceneFactory_ = sceneFactory; }
 
 	/// <summary>
-/// マイフレーム更新
-/// </summary>
+	/// マイフレーム更新
+	/// </summary>
 	void Update();
 
 	/// <summary>
 	/// 描画
 	/// </summary>
 	void Draw();
-
 
 private:
 

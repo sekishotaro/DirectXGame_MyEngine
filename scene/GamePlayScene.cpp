@@ -16,15 +16,16 @@ void GamePlayScene::Initialize()
 
 	
 	// カメラ生成
-	camera = new Camera(WinApp::window_width, WinApp::window_height);
+	camera = new DebugCamera(WinApp::window_width, WinApp::window_height);
+	//camera = new Camera(WinApp::window_width, WinApp::window_height);
 
 	//デバイスのセット
 	FbxObject3d::SetDevice(DirectXCommon::GetInstance()->GetDev());
 
 	// カメラセット
 	Object3d::SetCamera(camera);
-	//camera->SetEye({ 0, 0, 100 });			//prinding時
-	camera->SetEye({ 300, 0, 300 });		//prin時
+	//dCamera->SetEye({ 0, 0, 100 });			//prinding時
+	camera->SetEye({ 0, 0, 300 });		//prin時
 	FbxObject3d::SetCamera(camera);
 
 	//グラフィックスパイプライン生成
@@ -65,26 +66,31 @@ void GamePlayScene::Update()
 
 	Input::MousePos mpos = input->MousePosLoad();
 
-	// マウスの中ボタンが押されていたらカメラを並行移動させる
-	if (input->PushMouseButton(Mouse_Middle))
-	{
-		float dx = mpos.lX;
-		float dy = mpos.lY;
+	//マウスの中ボタンが押されていたらカメラを並行移動させる
+	//if (input->PushMouseButton(Mouse_Middle))
+	//{
+	//	float dx = mpos.lX;
+	//	float dy = mpos.lY;
 
-		XMFLOAT3 position = camera->GetEye();
-		position.x += dx;
-		position.y += dy;
-		camera->SetEye(position);
-	}
+	//	XMFLOAT3 position = camera->GetEye();
+	//	position.x += dx;
+	//	position.y += dy;
+	//	camera->SetEye(position);
 
-	Audio::GetInstance()->PlayWave("What.wav", false);
+	//	position = camera->GetTarget();
+	//	position.x += dx;
+	//	position.y += dy;
+	//	camera->SetTarget(position);
+	//}
 
-	if (input->PushMouseButton(Mouse_Left))
-	{
-		XMFLOAT3 position = camera->GetEye();
-		position.y += 1.0f;
-		camera->SetEye(position);
-	}
+	//Audio::GetInstance()->PlayWave("What.wav", false);
+
+	//if (input->PushMouseButton(Mouse_Left))
+	//{
+	//	XMFLOAT3 position = camera->GetEye();
+	//	position.y += 1.0f;
+	//	camera->SetEye(position);
+	//}
 
 	//オブジェクト移動
 	if (input->PushKey(DIK_UP) || input->PushKey(DIK_DOWN) || input->PushKey(DIK_RIGHT) || input->PushKey(DIK_LEFT))
@@ -121,6 +127,9 @@ void GamePlayScene::Update()
 	DebugText::GetInstance()->Print(50, 30 * 1, 2, "X:%f", camera->GetEye().x);
 	DebugText::GetInstance()->Print(50, 30 * 2, 2, "Y:%f", camera->GetEye().y);
 	DebugText::GetInstance()->Print(50, 30 * 3, 2, "Z:%f", camera->GetEye().z);
+	DebugText::GetInstance()->Print(50, 30 * 4, 2, "X:%f", DebugCamera::dx);
+	DebugText::GetInstance()->Print(50, 30 * 5, 2, "Y:%f", DebugCamera::dy);
+	DebugText::GetInstance()->Print(50, 30 * 6, 2, "Z:%f", DebugCamera::dz);
 
 	if (input->TriggerKey(DIK_SPACE))
 	{
@@ -130,10 +139,7 @@ void GamePlayScene::Update()
 		
 		//シーン切り替え
 		//SceneManager::GetInstance()->ChangeScene("TITLE");
-	}
-
-	camera->SetTarget({ 0, 0, 0 });
-	
+	}	
 
 	fbxObject1->AnimationFlag = true;
 	fbxObject1->AnimationNum = 1;
