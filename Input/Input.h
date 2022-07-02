@@ -31,6 +31,11 @@ private: // エイリアス
 	using XMFLOAT2 = DirectX::XMFLOAT2;
 	using XMFLOAT3 = DirectX::XMFLOAT3;
 
+private:
+	Input();
+
+	~Input();
+
 public: //メンバ関数
 
 	static Input *GetInstance();
@@ -76,6 +81,11 @@ public: //メンバ関数
 	/// </summary>
 	/// <returns></returns>
 	static XMFLOAT2 GetMousePos() { return mousePos; }
+
+	//コピーコンストラクタの禁止
+	Input(const Input& input) = delete;
+	//代入演算子の禁止
+	Input& operator = (const Input& input) = delete;
 
 private: //メンバ変数
 	//キーボードのデバイス
