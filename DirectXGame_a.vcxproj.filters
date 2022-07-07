@@ -20,6 +20,7 @@
     <None Include="Resources\shaders\OBJShaderHeader.hlsli" />
     <None Include="Resources\shaders\FBX.hlsli" />
     <None Include="Resources\shaders\PostEffectTest.hlsli" />
+    <None Include="Resources\shaders\AdsShader.hlsli" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Resources\shaders\BasicPS.hlsl" />
@@ -32,6 +33,8 @@
     <FxCompile Include="Resources\shaders\FBXVS.hlsl" />
     <FxCompile Include="Resources\shaders\PostEffectTestPS.hlsl" />
     <FxCompile Include="Resources\shaders\PostEffectTestVS.hlsl" />
+    <FxCompile Include="Resources\shaders\AdsShaderPS.hlsl" />
+    <FxCompile Include="Resources\shaders\AdsShaderVS.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">

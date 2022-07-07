@@ -167,6 +167,9 @@ void FbxObject3d::CreateGraphicsPipeline()
 	rootparams[1].InitAsDescriptorTable(1, &descRangeSRV, D3D12_SHADER_VISIBILITY_ALL);
 	//CBV (スキニング用)
 	rootparams[2].InitAsConstantBufferView(3, 0, D3D12_SHADER_VISIBILITY_ALL);
+	//CBV (スキニング用)
+	//rootparams[3].InitAsConstantBufferView(4, 0, D3D12_SHADER_VISIBILITY_ALL);
+
 	// スタティックサンプラー
 	CD3DX12_STATIC_SAMPLER_DESC samplerDesc = CD3DX12_STATIC_SAMPLER_DESC(0);
 
@@ -269,6 +272,12 @@ void FbxObject3d::Update()
 		constMapSkin->bones[i] = fbxModel->GetModelTransform() * bones[i].invInitialPose * matCurrentPose * fbxModel->GetInverseGlobalTransform();
 	}
 	constBuffSkin->Unmap(0, nullptr);
+
+	//定数バッファへデータ転送
+	//ConstBufferDataAdsShader* constMapAds = nullptr;
+	//result = constBuffAds->Map(0, nullptr, (void**)&constMapAds);
+	//constMapAds->color = { 0,0,0,0 };
+	//constBuffAds->Unmap(0, nullptr);
 }
 
 void FbxObject3d::Draw(ID3D12GraphicsCommandList *cmdList)
@@ -288,7 +297,8 @@ void FbxObject3d::Draw(ID3D12GraphicsCommandList *cmdList)
 	cmdList->SetGraphicsRootConstantBufferView(0, constBuffTransform->GetGPUVirtualAddress());
 	//定数バッファビューをセット
 	cmdList->SetGraphicsRootConstantBufferView(2, constBuffSkin->GetGPUVirtualAddress());
-
+	//定数バッファビューをセット
+	//cmdList->SetGraphicsRootConstantBufferView(3, constBuffSkin->GetGPUVirtualAddress());
 	// モデル描画
 	fbxModel->Draw(cmdList);
 }
@@ -358,4 +368,14 @@ void FbxObject3d::Initialize()
 		constMapSkin->bones[i] = XMMatrixIdentity();
 	}
 	constBuffSkin->Unmap(0, nullptr);
+
+
+	// 定数バッファの生成
+	//result = device->CreateCommittedResource(
+	//	&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD), 	// アップロード可能
+	//	D3D12_HEAP_FLAG_NONE,
+	//	&CD3DX12_RESOURCE_DESC::Buffer((sizeof(ConstBufferDataAdsShader) + 0xff) & ~0xff),
+	//	D3D12_RESOURCE_STATE_GENERIC_READ,
+	//	nullptr,
+	//	IID_PPV_ARGS(&constBuffAds));
 }

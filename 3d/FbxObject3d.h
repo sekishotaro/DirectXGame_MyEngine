@@ -40,6 +40,12 @@ public: // サブクラス
 		XMMATRIX bones[MAX_BONES];
 	};
 
+	//定数バッファ用データ構造体(スキニング)
+	struct ConstBufferDataAdsShader
+	{
+		XMFLOAT4 color;
+	};
+
 public: // 静的メンバ関数
 	// setter
 	static void SetDevice(ID3D12Device *device) { FbxObject3d::device = device; }
@@ -93,6 +99,8 @@ public: // メンバ関数
 protected:
 	// 定数バッファ
 	ComPtr<ID3D12Resource> constBuffTransform;
+	// 定数バッファ
+	ComPtr<ID3D12Resource> constBuffAds;
 	//ローカルスケール
 	XMFLOAT3 scale = { 1,1,1 };
 	//X,Y,Z軸回りのローカル回転角
