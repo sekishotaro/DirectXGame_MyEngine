@@ -17,7 +17,8 @@ PSOutput main(VSOutput input)
 	PSOutput output;
 
 	//テクスチャ―マッピング
-	float4 texcolor = {0,0,0,0};
+	//float4 texcolor = color;
+	float4 texcolor = tex.Sample(smp, input.uv);
 	//Lambert反射
 	float3 light = normalize(float3(1, -1, 1)); //右下奥　向きライト
 	float diffuse = saturate(dot(-light, input.normal));
