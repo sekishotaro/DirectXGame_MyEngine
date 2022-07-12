@@ -144,8 +144,14 @@ public: // メンバ関数
 	/// <summary>
 	/// 回転角の設定
 	/// </summary>
-	/// <param name="position">回転角</param>
+	/// <param name="rotation">回転角</param>
 	void SetRotation(const XMFLOAT3 &rotation) { this->rotation = rotation; }
+
+	/// <summary>
+	/// スケールの設定
+	/// </summary>
+	/// <param name="scale">スケール</param>
+	void SetScale(const XMFLOAT3& scale) { this->scale = scale; }
 
 	//setter
 	void SetModel(Model *model) { this->model = model; }

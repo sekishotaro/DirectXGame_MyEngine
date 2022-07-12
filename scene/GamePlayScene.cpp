@@ -49,7 +49,6 @@ void GamePlayScene::Initialize()
 	fbxObject1 = new FbxObject3d;
 	fbxObject1->Initialize();
 	fbxObject1->SetModel(fbxModel1);
-
 }
 
 void GamePlayScene::Finalize()

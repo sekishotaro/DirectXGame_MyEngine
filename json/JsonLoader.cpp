@@ -3,7 +3,9 @@
 #include <cassert>
 #include "nlohmann/json.hpp"
 
-
+std::vector<std::unique_ptr<Object3d>> JsonLoader::objects;
+LevelData* JsonLoader::levelData;
+std::map< std::string, Model> JsonLoader::models;
 
 const std::string JsonLoader::DefaultDirectory = "Resources/levels/";
 const std::string JsonLoader::JsonExtension = ".json";
@@ -42,7 +44,7 @@ void JsonLoader::LoadFile(const std::string& fileName)
 	assert(name.compare("scene") == 0);
 
 	//レベルデータ格納用インスタンスを生成
-	LevelData* levelData = new LevelData();
+	levelData = new LevelData();
 
 	// "objects"の全オブジェクトを走査
 	for (nlohmann::json& object : deserialized["objects"])
@@ -94,4 +96,39 @@ void JsonLoader::LoadFile(const std::string& fileName)
 
 	
 
+}
+
+void JsonLoader::SetObject()
+{
+	//レベルデータからオブジェクトを生成,配置
+	for (auto& objectData : levelData->objects)
+	{
+		//ファイル名から登録済みモデルを検索
+		Model* model = nullptr;
+		decltype(models)::iterator it = models.find(objectData.fileName);
+		if (it != models.end()) { model = &it->second; }
+
+		//モデルを指定して3Dオブジェクトを生成
+		std::unique_ptr<Object3d> newObject;
+		newObject = Object3d::Create();
+		newObject->SetModel(model);
+
+		//座標
+		XMFLOAT3 pos;
+		DirectX::XMStoreFloat3(&pos, objectData.translation);
+		newObject->SetPosition(pos);
+
+		//回転角
+		XMFLOAT3 rot;
+		DirectX::XMStoreFloat3(&rot, objectData.rotation);
+		newObject->SetRotation(rot);
+
+		//スケール
+		XMFLOAT3 scale;
+		DirectX::XMStoreFloat3(&scale, objectData.scaling);
+		newObject->SetScale(scale);
+
+		//配列の最後に登録
+		objects.push_back(std::move(newObject));
+	}
 }
