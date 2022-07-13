@@ -105,8 +105,10 @@ void JsonLoader::SetObject()
 	{
 		//ファイル名から登録済みモデルを検索
 		Model* model = nullptr;
-		decltype(models)::iterator it = models.find(objectData.fileName);
-		if (it != models.end()) { model = &it->second; }
+		//decltype(models)::iterator it = models.find(objectData.fileName);
+		//if (it != models.end()) { model = &it->second; }
+		model = Model::LoadFromOBJ(objectData.fileName);
+		models[objectData.fileName] = *model;
 
 		//モデルを指定して3Dオブジェクトを生成
 		std::unique_ptr<Object3d> newObject;
@@ -130,5 +132,21 @@ void JsonLoader::SetObject()
 
 		//配列の最後に登録
 		objects.push_back(std::move(newObject));
+	}
+}
+
+void JsonLoader::Update()
+{
+	for (int i = 0; i < objects.size(); i++)
+	{
+		objects[i]->Update();
+	}
+}
+
+void JsonLoader::Draw()
+{
+	for (int i = 0; i < objects.size(); i++)
+	{
+		objects[i]->Draw();
 	}
 }

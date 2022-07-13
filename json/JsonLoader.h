@@ -58,5 +58,9 @@ public:
 	//”z’u
 	static void SetObject();
 
+	static void Update();
+
+	static void Draw();
+
 };
 

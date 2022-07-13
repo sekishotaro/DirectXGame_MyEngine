@@ -7,6 +7,7 @@
 #include "DirectXCommon.h"
 #include "FbxLoader.h"
 #include "FbxObject3d.h"
+#include "JsonLoader.h"
 
 void GamePlayScene::Initialize()
 {
@@ -49,6 +50,10 @@ void GamePlayScene::Initialize()
 	fbxObject1 = new FbxObject3d;
 	fbxObject1->Initialize();
 	fbxObject1->SetModel(fbxModel1);
+
+	//json
+	JsonLoader::LoadFile("Scene1");
+	JsonLoader::SetObject();
 }
 
 void GamePlayScene::Finalize()
@@ -146,6 +151,8 @@ void GamePlayScene::Update()
 	camera->Update();
 	objectX->Update();
 	fbxObject1->Update();
+
+	JsonLoader::Update();
 	DebugText::GetInstance()->Print(50, 30 * 3, 2, "%d", fbxObject1->GetisPlay());
 }
 
@@ -159,7 +166,7 @@ void GamePlayScene::Draw()
 	// 背景スプライト描画前処理
 	Sprite::PreDraw(cmdList);
 	// 背景スプライト描画
-	spriteBG->Draw();
+	//spriteBG->Draw();
 
 	/// <summary>
 	/// ここに背景スプライトの描画処理を追加できる
@@ -174,10 +181,13 @@ void GamePlayScene::Draw()
 	Object3d::PreDraw(cmdList);
 
 	// 3Dオブクジェクトの描画
-	objectX->Draw();
+	//objectX->Draw();
+
+	//json
+	JsonLoader::Draw();
 
 	//FBX3Dオブジェクトの描画
-	fbxObject1->Draw(cmdList);
+	//fbxObject1->Draw(cmdList);
 
 	/// <summary>
 	/// ここに3Dオブジェクトの描画処理を追加できる

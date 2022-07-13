@@ -1,0 +1,92 @@
+{
+    "name": "scene",
+    "objects": [
+        {
+            "type": "MESH",
+            "name": "球",
+            "transform": {
+                "translation": [
+                    0.0,
+                    -2.0076165199279785,
+                    6.834677219390869
+                ],
+                "rotation": [
+                    90.00000762939453,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "file_name": "sphere"
+        },
+        {
+            "type": "LIGHT",
+            "name": "サン",
+            "transform": {
+                "translation": [
+                    0.0,
+                    9.067978858947754,
+                    4.115976333618164
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            }
+        },
+        {
+            "type": "MESH",
+            "name": "Cube.001",
+            "transform": {
+                "translation": [
+                    0.0,
+                    2.3153514862060547,
+                    3.367753505706787
+                ],
+                "rotation": [
+                    90.00000762939453,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "file_name": "block"
+        },
+        {
+            "type": "MESH",
+            "name": "平面",
+            "transform": {
+                "translation": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    34.76033401489258,
+                    20.28974723815918,
+                    1.0
+                ]
+            },
+            "file_name": "ground"
+        }
+    ]
+}

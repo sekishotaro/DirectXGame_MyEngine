@@ -45,7 +45,51 @@
         },
         {
             "type": "MESH",
-            "name": "Ground",
+            "name": "ICO球",
+            "transform": {
+                "translation": [
+                    0.0,
+                    2.2114012241363525,
+                    1.3254724740982056
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "file_name": "sphere"
+        },
+        {
+            "type": "MESH",
+            "name": "ICO球.001",
+            "transform": {
+                "translation": [
+                    0.0,
+                    -1.4336371421813965,
+                    1.4802128076553345
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "file_name": "sphere"
+        },
+        {
+            "type": "MESH",
+            "name": "平面",
             "transform": {
                 "translation": [
                     0.0,
@@ -58,100 +102,12 @@
                     0.0
                 ],
                 "scaling": [
-                    1.0,
-                    1.0,
-                    1.0
+                    10.905926704406738,
+                    10.041086196899414,
+                    1.7718106508255005
                 ]
             },
             "file_name": "ground"
-        },
-        {
-            "type": "MESH",
-            "name": "Sphere1",
-            "transform": {
-                "translation": [
-                    1.8670979738235474,
-                    3.572786808013916,
-                    2.2164998054504395
-                ],
-                "rotation": [
-                    0.0,
-                    -0.0,
-                    0.0
-                ],
-                "scaling": [
-                    1.0,
-                    1.0,
-                    1.0
-                ]
-            },
-            "file_name": "sphere"
-        },
-        {
-            "type": "MESH",
-            "name": "Sphere2",
-            "transform": {
-                "translation": [
-                    1.8670979738235474,
-                    -5.662085056304932,
-                    0.9246617555618286
-                ],
-                "rotation": [
-                    0.0,
-                    -0.0,
-                    0.0
-                ],
-                "scaling": [
-                    1.0,
-                    1.0,
-                    1.0
-                ]
-            },
-            "file_name": "sphere"
-        },
-        {
-            "type": "MESH",
-            "name": "Sphere3",
-            "transform": {
-                "translation": [
-                    -7.8948516845703125,
-                    -2.407788038253784,
-                    0.9246617555618286
-                ],
-                "rotation": [
-                    0.0,
-                    -0.0,
-                    0.0
-                ],
-                "scaling": [
-                    1.0,
-                    1.0,
-                    1.0
-                ]
-            },
-            "file_name": "sphere"
-        },
-        {
-            "type": "MESH",
-            "name": "Skydome",
-            "transform": {
-                "translation": [
-                    0.0,
-                    0.0,
-                    0.0
-                ],
-                "rotation": [
-                    0.0,
-                    -0.0,
-                    0.0
-                ],
-                "scaling": [
-                    1.0,
-                    1.0,
-                    1.0
-                ]
-            },
-            "file_name": "skydome"
         }
     ]
 }
