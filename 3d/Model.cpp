@@ -38,7 +38,6 @@ void Model::LoadFormOBJInternal(const std::string &modelname)
 	//ファイルストリーム
 	std::ifstream file;
 	//.objファイルを開く
-	//const string modelname = "skydome";
 	const string filename = modelname + ".obj";                  //"triangle_mat.obj"
 	const string directoryPath = "Resources/" + modelname + "/"; //"Resources/triangle_mat/"
 	file.open(directoryPath + filename);                         //"Resources/triangle_mat/triangle_mat.obj"
@@ -79,13 +78,11 @@ void Model::LoadFormOBJInternal(const std::string &modelname)
 			XMFLOAT3 position{};
 			line_stream >> position.x;
 			line_stream >> position.y;
+			position.x = position.x  * -1;
 			line_stream >> position.z;
 			//座標データに追加
 			positions.emplace_back(position);
 			//頂点データに追加
-			//VertexPosNormalUv vertex{};
-			//vertex.pos = position;
-			//vertices.emplace_back(vertex);
 		}
 
 		//先頭文字列がvtならテクスチャ
@@ -118,6 +115,7 @@ void Model::LoadFormOBJInternal(const std::string &modelname)
 		{
 			//半角スペース区切りで行の続きを読み込む
 			string index_string;
+			int countNum = 0;
 			while (getline(line_stream, index_string, ' '))
 			{
 				//頂点インデックス1個分の文字列をストリームに変換して解析しやすくする
@@ -135,7 +133,17 @@ void Model::LoadFormOBJInternal(const std::string &modelname)
 				vertex.uv = texcoords[indexTexcoord - 1];
 				vertices.emplace_back(vertex);
 				//インデックスデータの追加
-				indices.emplace_back((unsigned short)indices.size());
+				if (countNum == 2)
+				{
+					indices.emplace_back((unsigned short)indices.size());
+					swap(indices[indices.size()], indices[indices.size() - 1]);
+				}
+				else
+				{
+					indices.emplace_back((unsigned short)indices.size());
+					countNum++;
+				}
+				//indices.emplace_back((unsigned short)indices.size());
 			}
 		}
 	}

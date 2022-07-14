@@ -38,7 +38,7 @@ void GamePlayScene::Initialize()
 	spriteBG = Sprite::Create(1, { 0.0f,0.0f });
 
 	// オブジェクト生成
-	model = Model::LoadFromOBJ("sphere");
+	model = Model::LoadFromOBJ("rider");
 	objectX = Object3d::Create();
 	//オブジェクトにモデルをひも付ける
 	objectX->SetModel(model);
@@ -181,10 +181,10 @@ void GamePlayScene::Draw()
 	Object3d::PreDraw(cmdList);
 
 	// 3Dオブクジェクトの描画
-	//objectX->Draw();
+	objectX->Draw();
 
 	//json
-	JsonLoader::Draw();
+	//JsonLoader::Draw();
 
 	//FBX3Dオブジェクトの描画
 	//fbxObject1->Draw(cmdList);
