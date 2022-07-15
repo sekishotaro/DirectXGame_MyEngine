@@ -133,17 +133,16 @@ void Model::LoadFormOBJInternal(const std::string &modelname)
 				vertex.uv = texcoords[indexTexcoord - 1];
 				vertices.emplace_back(vertex);
 				//インデックスデータの追加
+				indices.emplace_back((unsigned short)indices.size());
+				//右軸回りの修正
 				if (countNum == 2)
 				{
-					indices.emplace_back((unsigned short)indices.size());
-					swap(indices[indices.size()], indices[indices.size() - 1]);
+					swap(indices[indices.size() - 1], indices[indices.size() - 2]);
 				}
 				else
 				{
-					indices.emplace_back((unsigned short)indices.size());
 					countNum++;
 				}
-				//indices.emplace_back((unsigned short)indices.size());
 			}
 		}
 	}
