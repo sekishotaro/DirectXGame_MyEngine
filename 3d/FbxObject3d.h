@@ -44,6 +44,8 @@ public: // サブクラス
 	struct ConstBufferDataAdsShader
 	{
 		XMFLOAT4 color;
+		XMFLOAT3 lightPos;
+		XMFLOAT3 cameraPos;
 	};
 
 public: // 静的メンバ関数
@@ -132,6 +134,9 @@ public:
 	bool AnimationFlag = false;
 	//アニメーションの数
 	int AnimationNum = 0;
+
+	XMFLOAT4 simpleColor = { 1.0f, 0.0f, 0.0f, 1.0f};
+	XMFLOAT3 lightPos = { 5.0f, 1.0f, -5.0f};
 public:
 
 	//getter

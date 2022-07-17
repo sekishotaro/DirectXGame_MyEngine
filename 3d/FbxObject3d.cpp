@@ -273,10 +273,10 @@ void FbxObject3d::Update()
 	}
 	constBuffSkin->Unmap(0, nullptr);
 
-	//ConstBufferDataAdsShader* constMapAds = nullptr;
-	//result = constBuffAds->Map(0, nullptr, (void**)&constMapAds);
-	//constMapAds->color = { 1,1,1,1 };
-	//constBuffAds->Unmap(0, nullptr);
+	ConstBufferDataAdsShader* constMapAds = nullptr;
+	result = constBuffAds->Map(0, nullptr, (void**)&constMapAds);
+	constMapAds->color = simpleColor;
+	constBuffAds->Unmap(0, nullptr);
 }
 
 void FbxObject3d::Draw(ID3D12GraphicsCommandList *cmdList)
@@ -380,6 +380,8 @@ void FbxObject3d::Initialize()
 
 	ConstBufferDataAdsShader* constMapAds = nullptr;
 	result = constBuffAds->Map(0, nullptr, (void**)&constMapAds);
-	constMapAds->color = XMFLOAT4{ 1,1,1,1 };
+	constMapAds->color = simpleColor;
+	constMapAds->lightPos = lightPos;
+	constMapAds->cameraPos = camera->GetEye();
 	constBuffAds->Unmap(0, nullptr);
 }

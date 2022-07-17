@@ -17,16 +17,21 @@ PSOutput main(VSOutput input)
 	PSOutput output;
 
 	//テクスチャ―マッピング
-	//float4 texcolor = color;
-	float4 texcolor = tex.Sample(smp, input.uv);
+	float4 texcolor = color;
 	//Lambert反射
-	float3 light = normalize(float3(1, -1, 1)); //右下奥　向きライト
-	float diffuse = saturate(dot(-light, input.normal));
-	float brightness = diffuse + 0.3f;
-	float4 shadecolor = float4(brightness, brightness, brightness, 1.0f);
+	float3 light = normalize(-lightPos); //右下奥　向きライト
+	float intensity = saturate(dot(input.normal, -light));
+	float4 diffuseColor = { intensity, intensity, intensity, 1 };
+	float4 diffuse = diffuseColor;
+
+	float3 ipos = { input.svpos.x, input.svpos.y, input.svpos.z };
+	float3 eyeDir = normalize(cameraPos - ipos);
+	float3 harfvec = normalize(lightPos + eyeDir);
+	float specularIntensity = pow(saturate(dot(normalize(input.normal), harfvec)), 50);
+	float4 specularColor = float4(1, 1, 1, 1);
+	float4 specular = specularColor * specularIntensity;
 	//陰影とテクスチャの色を合成
-	output.target0 = shadecolor * texcolor;
-	output.target1 = float4(1 - (shadecolor * texcolor).rgb, 1);
+	output.target0 = specular + diffuse * texcolor;
 
 	return output;
 }

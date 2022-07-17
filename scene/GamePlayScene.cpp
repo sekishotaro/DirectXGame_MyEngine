@@ -25,7 +25,7 @@ void GamePlayScene::Initialize()
 	// カメラセット
 	Object3d::SetCamera(camera);
 	//dCamera->SetEye({ 0, 0, 100 });			//prinding時
-	camera->SetEye({ 0, 0, 300 });		//prin時
+	camera->SetEye({ 0, 0, -300 });		//prin時
 	FbxObject3d::SetCamera(camera);
 
 	//グラフィックスパイプライン生成

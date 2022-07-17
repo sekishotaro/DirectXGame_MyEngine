@@ -34,4 +34,6 @@ cbuffer skinning:register(b3)	//ボーンのスキニング行列が入る
 cbuffer ads:register(b4)	//ボーンのスキニング行列が入る
 {
 	float4 color;
+	float3 lightPos;
+	float3 cameraaPos;
 };
