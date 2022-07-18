@@ -16,22 +16,25 @@ PSOutput main(VSOutput input)
 {
 	PSOutput output;
 
-	//テクスチャ―マッピング
-	float4 texcolor = color;
-	//Lambert反射
-	float3 light = normalize(-lightPos); //右下奥　向きライト
+	//環境光
+	float4 ambient = color;
+
+	//拡散反射光
+	float3 light = normalize(-lightPos);
 	float intensity = saturate(dot(input.normal, -light));
-	float4 diffuseColor = { intensity, intensity, intensity, 1 };
+	float4 diffuseColor = { intensity, intensity, intensity, 1 };  //1~0の範囲
 	float4 diffuse = diffuseColor;
 
+	//鏡面反射
 	float3 ipos = { input.svpos.x, input.svpos.y, input.svpos.z };
 	float3 eyeDir = normalize(cameraPos - ipos);
 	float3 harfvec = normalize(lightPos + eyeDir);
 	float specularIntensity = pow(saturate(dot(normalize(input.normal), harfvec)), 50);
 	float4 specularColor = float4(1, 1, 1, 1);
 	float4 specular = specularColor * specularIntensity;
-	//陰影とテクスチャの色を合成
-	output.target0 = specular + diffuse * texcolor;
+	
+	//色を合成
+	output.target0 = ambient * diffuse + specular;
 
 	return output;
 }

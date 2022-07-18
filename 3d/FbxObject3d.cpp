@@ -5,6 +5,10 @@
 using namespace Microsoft::WRL;
 using namespace DirectX;
 
+const std::string FbxObject3d::vsShader = ".VS.hlsl";
+const std::string FbxObject3d::psShader = ".PS.hlsl";
+const std::string FbxObject3d::ShaderMode[] = { "AdsShader", "ToonShader" };
+
 /// <summary>
 /// Ã“Iƒƒ“ƒo•Ï”‚ÌÀ‘Ì
 /// </summary>
@@ -276,6 +280,7 @@ void FbxObject3d::Update()
 	ConstBufferDataAdsShader* constMapAds = nullptr;
 	result = constBuffAds->Map(0, nullptr, (void**)&constMapAds);
 	constMapAds->color = simpleColor;
+	constMapAds->lightPos = lightPos;
 	constBuffAds->Unmap(0, nullptr);
 }
 
@@ -382,6 +387,5 @@ void FbxObject3d::Initialize()
 	result = constBuffAds->Map(0, nullptr, (void**)&constMapAds);
 	constMapAds->color = simpleColor;
 	constMapAds->lightPos = lightPos;
-	constMapAds->cameraPos = camera->GetEye();
 	constBuffAds->Unmap(0, nullptr);
 }

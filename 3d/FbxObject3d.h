@@ -12,6 +12,9 @@
 
 class FbxObject3d
 {
+private: //エイリアス
+	//std::を省略
+	using string = std::string;
 protected: // エイリアス
 // Microsoft::WRL::を省略
 	template <class T> using ComPtr = Microsoft::WRL::ComPtr<T>;
@@ -45,7 +48,6 @@ public: // サブクラス
 	{
 		XMFLOAT4 color;
 		XMFLOAT3 lightPos;
-		XMFLOAT3 cameraPos;
 	};
 
 public: // 静的メンバ関数
@@ -98,6 +100,10 @@ public: // メンバ関数
 	/// </summary>
 	void PlayAnimation();
 
+private:
+	static const string vsShader;
+	static const string psShader;
+	static const string ShaderMode[];
 protected:
 	// 定数バッファ
 	ComPtr<ID3D12Resource> constBuffTransform;
