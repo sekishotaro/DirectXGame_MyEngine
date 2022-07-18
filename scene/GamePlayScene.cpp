@@ -26,7 +26,7 @@ void GamePlayScene::Initialize()
 	// カメラセット
 	Object3d::SetCamera(camera);
 	//dCamera->SetEye({ 0, 0, 100 });			//prinding時
-	camera->SetEye({ 0, 0, 300 });		//prin時
+	camera->SetEye({ 0, 0, -100 });		//prin時
 	FbxObject3d::SetCamera(camera);
 
 	//グラフィックスパイプライン生成
@@ -38,10 +38,10 @@ void GamePlayScene::Initialize()
 	spriteBG = Sprite::Create(1, { 0.0f,0.0f });
 
 	// オブジェクト生成
-	model = Model::LoadFromOBJ("rider");
-	objectX = Object3d::Create();
+	//model = Model::LoadFromOBJ("sphere");
+	//objectX = Object3d::Create();
 	//オブジェクトにモデルをひも付ける
-	objectX->SetModel(model);
+	//objectX->SetModel(model);
 
 	//モデル名を指定してファイル読み込み
 	fbxModel1 = FbxLoader::GetInstance()->LoadModelFromFile("prin");
@@ -52,13 +52,13 @@ void GamePlayScene::Initialize()
 	fbxObject1->SetModel(fbxModel1);
 
 	//json
-	JsonLoader::LoadFile("Scene1");
+	JsonLoader::LoadFile("Scene4");
 	JsonLoader::SetObject();
 }
 
 void GamePlayScene::Finalize()
 {
-	delete model;
+	//delete model;
 	delete fbxObject1;
 	//delete fbxModel1;
 }
@@ -97,20 +97,20 @@ void GamePlayScene::Update()
 	//}
 
 	//オブジェクト移動
-	if (input->PushKey(DIK_UP) || input->PushKey(DIK_DOWN) || input->PushKey(DIK_RIGHT) || input->PushKey(DIK_LEFT))
-	{
-		// 現在の座標を取得
-		XMFLOAT3 position = objectX->GetPosition();
+	//if (input->PushKey(DIK_UP) || input->PushKey(DIK_DOWN) || input->PushKey(DIK_RIGHT) || input->PushKey(DIK_LEFT))
+	//{
+	//	// 現在の座標を取得
+	//	XMFLOAT3 position = objectX->GetPosition();
 
-		// 移動後の座標を計算
-		if (input->PushKey(DIK_UP)) { position.y += 1.0f; }
-		else if (input->PushKey(DIK_DOWN)) { position.y -= 1.0f; }
-		if (input->PushKey(DIK_RIGHT)) { position.x += 1.0f; }
-		else if (input->PushKey(DIK_LEFT)) { position.x -= 1.0f; }
+	//	// 移動後の座標を計算
+	//	if (input->PushKey(DIK_UP)) { position.y += 1.0f; }
+	//	else if (input->PushKey(DIK_DOWN)) { position.y -= 1.0f; }
+	//	if (input->PushKey(DIK_RIGHT)) { position.x += 1.0f; }
+	//	else if (input->PushKey(DIK_LEFT)) { position.x -= 1.0f; }
 
-		// 座標の変更を反映
-		objectX->SetPosition(position);
-	}
+	//	// 座標の変更を反映
+	//	objectX->SetPosition(position);
+	//}
 
 	if (input->PushKey(DIK_W) || input->PushKey(DIK_S) || input->PushKey(DIK_D) || input->PushKey(DIK_A) || input->PushKey(DIK_E) || input->PushKey(DIK_Z))
 	{
@@ -149,8 +149,8 @@ void GamePlayScene::Update()
 	fbxObject1->AnimationNum = 1;
 	//アップデート
 	camera->Update();
-	objectX->Update();
-	fbxObject1->Update();
+	//objectX->Update();
+	//fbxObject1->Update();
 
 	JsonLoader::Update();
 	DebugText::GetInstance()->Print(50, 30 * 3, 2, "%d", fbxObject1->GetisPlay());
@@ -181,10 +181,10 @@ void GamePlayScene::Draw()
 	Object3d::PreDraw(cmdList);
 
 	// 3Dオブクジェクトの描画
-	objectX->Draw();
+	//objectX->Draw();
 
 	//json
-	//JsonLoader::Draw();
+	JsonLoader::Draw();
 
 	//FBX3Dオブジェクトの描画
 	//fbxObject1->Draw(cmdList);

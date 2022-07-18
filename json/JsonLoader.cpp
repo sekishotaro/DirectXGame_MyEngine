@@ -123,6 +123,7 @@ void JsonLoader::SetObject()
 		//‰ñ“]Šp
 		XMFLOAT3 rot;
 		DirectX::XMStoreFloat3(&rot, objectData.rotation);
+		rot.y -= 90.0f;
 		newObject->SetRotation(rot);
 
 		//ƒXƒP[ƒ‹
