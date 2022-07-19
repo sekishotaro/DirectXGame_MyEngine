@@ -3,6 +3,7 @@
 #include <DirectXMath.h>
 #include <vector>
 #include "Object3d.h"
+#include "ColliderObject.h"
 #include <memory>
 #include <map>
 
@@ -12,6 +13,8 @@ struct LevelData {
 	struct ObjectData {
 		// ファイル名
 		std::string fileName;
+		//コライダー名
+		std::string colliderName;
 		// 平行移動
 		DirectX::XMVECTOR translation;
 		// 回転角
@@ -49,6 +52,13 @@ public:// 定数
 
 	//モデル
 	static std::map<std::string, Model> models;
+
+	//コライダー用
+	//オブジェクト
+	static std::vector<std::unique_ptr<ColliderObject>> colliderObjects;
+
+	//モデル
+	static std::map<std::string, ColliderModel> colliderModels;
 
 public:
 

@@ -25,6 +25,7 @@ void GamePlayScene::Initialize()
 
 	// カメラセット
 	Object3d::SetCamera(camera);
+	ColliderObject::SetCamera(camera);
 	//dCamera->SetEye({ 0, 0, 100 });			//prinding時
 	camera->SetEye({ 0, 0, -100 });		//prin時
 	FbxObject3d::SetCamera(camera);
@@ -52,7 +53,7 @@ void GamePlayScene::Initialize()
 	fbxObject1->SetModel(fbxModel1);
 
 	//json
-	JsonLoader::LoadFile("Scene4");
+	JsonLoader::LoadFile("Scene1");
 	JsonLoader::SetObject();
 }
 
@@ -151,7 +152,6 @@ void GamePlayScene::Update()
 	camera->Update();
 	//objectX->Update();
 	//fbxObject1->Update();
-
 	JsonLoader::Update();
 	DebugText::GetInstance()->Print(50, 30 * 3, 2, "%d", fbxObject1->GetisPlay());
 }
@@ -179,9 +179,11 @@ void GamePlayScene::Draw()
 
 	// 3Dオブジェクト描画前処理
 	Object3d::PreDraw(cmdList);
+	ColliderObject::PreDraw(cmdList);
 
 	// 3Dオブクジェクトの描画
 	//objectX->Draw();
+	
 
 	//json
 	JsonLoader::Draw();
@@ -195,7 +197,7 @@ void GamePlayScene::Draw()
 
 	// 3Dオブジェクト描画後処理
 	Object3d::PostDraw();
-
+	ColliderObject::PostDraw();
 	// 前景スプライト描画前処理
 	Sprite::PreDraw(cmdList);
 

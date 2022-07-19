@@ -91,6 +91,11 @@ void JsonLoader::LoadFile(const std::string& fileName)
 			{
 			}
 
+			//コライダー
+			if (object.contains("collider"))
+			{
+
+			}
 		}
 	}
 

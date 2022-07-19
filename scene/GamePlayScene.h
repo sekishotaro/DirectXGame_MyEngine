@@ -3,6 +3,7 @@
 #include "BaseScene.h"
 #include "Sprite.h"
 #include "Object3d.h"
+#include "ColliderObject.h"
 #include "FbxObject3d.h"
 #include <DirectXMath.h>
 

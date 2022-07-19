@@ -77,8 +77,8 @@ void Model::LoadFormOBJInternal(const std::string &modelname)
 			//X,Y,Z座標読み込み
 			XMFLOAT3 position{};
 			line_stream >> position.x;
+			position.x = position.x * -1;
 			line_stream >> position.y;
-			position.x = position.x  * -1;
 			line_stream >> position.z;
 			//座標データに追加
 			positions.emplace_back(position);
@@ -341,10 +341,6 @@ void Model::LoadTexture(const std::string &directoryPath, const std::string &fil
 	//ユニコード文字列に変換する
 	wchar_t wfilepath[128];
 	int iBufferSize = MultiByteToWideChar(CP_ACP, 0, filepath.c_str(), -1, wfilepath, _countof(wfilepath));
-
-	//result = LoadFromWICFile(
-	//	L"Resources/tex1.png", WIC_FLAGS_NONE,
-	//	&metadata, scratchImg);
 
 	result = LoadFromWICFile(wfilepath, WIC_FLAGS_NONE, &metadata, scratchImg);
 
