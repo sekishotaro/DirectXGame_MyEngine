@@ -21,10 +21,15 @@ struct LevelData {
 		DirectX::XMVECTOR rotation;
 		// スケーリング
 		DirectX::XMVECTOR scaling;
+		// コライダー用ローカル座標
+		DirectX::XMVECTOR cenyter;
 	};
 
-	// オブジェクト配列
+	// 描画用オブジェクト配列
 	std::vector<ObjectData> objects;
+
+	// 当たり判定用オブジェクト配列
+	std::vector<ObjectData> colliderObjects;
 };
 
 class JsonLoader
@@ -68,8 +73,10 @@ public:
 	//配置
 	static void SetObject();
 
+	//アップデート
 	static void Update();
 
+	//描画
 	static void Draw();
 
 };

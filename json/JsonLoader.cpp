@@ -4,8 +4,10 @@
 #include "nlohmann/json.hpp"
 
 std::vector<std::unique_ptr<Object3d>> JsonLoader::objects;
-LevelData* JsonLoader::levelData;
 std::map< std::string, Model> JsonLoader::models;
+std::vector<std::unique_ptr<ColliderObject>> JsonLoader::colliderObjects;
+std::map< std::string, ColliderModel> JsonLoader::colliderModels;
+LevelData* JsonLoader::levelData;
 
 const std::string JsonLoader::DefaultDirectory = "Resources/levels/";
 const std::string JsonLoader::JsonExtension = ".json";
@@ -38,8 +40,7 @@ void JsonLoader::LoadFile(const std::string& fileName)
 	assert(deserialized["name"].is_string());
 
 	// "name"を文字列として取得
-	std::string name = 
-		deserialized["name"].get<std::string>();
+	std::string name = deserialized["name"].get<std::string>();
 	// 正しいレベルデータファイルかチェック
 	assert(name.compare("scene") == 0);
 
@@ -94,13 +95,37 @@ void JsonLoader::LoadFile(const std::string& fileName)
 			//コライダー
 			if (object.contains("collider"))
 			{
-
+				levelData->colliderObjects.emplace_back(LevelData::ObjectData{});
+				LevelData::ObjectData& colliderObjectData = levelData->colliderObjects.back();
+				nlohmann::json& collider = object["collider"];
+				colliderObjectData.fileName = collider["type"];
+				if (object.contains("BOX") == 0)
+				{
+					//オブジェクトに対しての当たり判定の位置
+					colliderObjectData.cenyter.m128_f32[0] = (float)collider["center"][1];
+					colliderObjectData.cenyter.m128_f32[1] = (float)collider["center"][2];
+					colliderObjectData.cenyter.m128_f32[2] = -(float)collider["center"][0];
+					colliderObjectData.cenyter.m128_f32[3] = 1.0;
+					//オブジェクトの位置
+					colliderObjectData.translation.m128_f32[0] = (float)transform["translation"][1];
+					colliderObjectData.translation.m128_f32[1] = (float)transform["translation"][2];
+					colliderObjectData.translation.m128_f32[2] = -(float)transform["translation"][0];
+					colliderObjectData.translation.m128_f32[3] = 1.0;
+					//回転角
+					//colliderObjectData.rotation.m128_f32[0] = -(float)collider["rotation"][1];
+					//colliderObjectData.rotation.m128_f32[1] = -(float)collider["rotation"][2];
+					//colliderObjectData.rotation.m128_f32[2] = (float)collider["rotation"][0];
+					//colliderObjectData.rotation.m128_f32[3] = 0.0;
+					//スケーリング
+					colliderObjectData.scaling.m128_f32[0] = (float)collider["size"][1];
+					colliderObjectData.scaling.m128_f32[1] = (float)collider["size"][2];
+					colliderObjectData.scaling.m128_f32[2] = (float)collider["size"][0];
+					colliderObjectData.scaling.m128_f32[3] = 0.0;
+				}
+				objectData.colliderName = colliderObjectData.fileName;
 			}
 		}
 	}
-
-	
-
 }
 
 void JsonLoader::SetObject()
@@ -110,8 +135,6 @@ void JsonLoader::SetObject()
 	{
 		//ファイル名から登録済みモデルを検索
 		Model* model = nullptr;
-		//decltype(models)::iterator it = models.find(objectData.fileName);
-		//if (it != models.end()) { model = &it->second; }
 		model = Model::LoadFromOBJ(objectData.fileName);
 		models[objectData.fileName] = *model;
 
@@ -139,20 +162,76 @@ void JsonLoader::SetObject()
 		//配列の最後に登録
 		objects.push_back(std::move(newObject));
 	}
+
+	//レベルデータからオブジェクトを生成,配置
+	for (auto& colliderObjectData : levelData->colliderObjects)
+	{
+		//ファイル名から登録済みモデルを検索
+		ColliderModel* colliderModel = nullptr;
+		colliderModel = ColliderModel::ColliderModelCreate(colliderObjectData.fileName);
+		colliderModels[colliderObjectData.fileName] = *colliderModel;
+
+		//モデルを指定して3Dオブジェクトを生成
+		std::unique_ptr<ColliderObject> newObject;
+		newObject = ColliderObject::Create();
+		newObject->SetModel(colliderModel);
+
+		//座標
+		XMFLOAT3 pos;
+		DirectX::XMStoreFloat3(&pos, colliderObjectData.translation);
+		
+		//コライダー用ローカル座標
+		XMFLOAT3 centerPos;
+		DirectX::XMStoreFloat3(&centerPos, colliderObjectData.cenyter);
+		pos.x = pos.x + centerPos.x;
+		pos.y = pos.y + centerPos.y;
+		pos.z = pos.z + centerPos.z;
+
+		newObject->SetPosition(pos);
+
+		//回転角
+		XMFLOAT3 rot {0,0,0};
+		//DirectX::XMStoreFloat3(&rot, colliderObjectData.rotation);
+		//rot.y -= 90.0f;
+		newObject->SetRotation(rot);
+
+		//スケール
+		XMFLOAT3 scale;
+		DirectX::XMStoreFloat3(&scale, colliderObjectData.scaling);
+		newObject->SetScale(scale);
+
+		//配列の最後に登録
+		colliderObjects.push_back(std::move(newObject));
+	}
+
 }
 
 void JsonLoader::Update()
 {
+	//描画オブジェクト
 	for (int i = 0; i < objects.size(); i++)
 	{
 		objects[i]->Update();
+	}
+
+	//当たり判定用オブジェクト
+	for (int i = 0; i < colliderObjects.size(); i++)
+	{
+		colliderObjects[i]->Update();
 	}
 }
 
 void JsonLoader::Draw()
 {
+	//描画オブジェクト
 	for (int i = 0; i < objects.size(); i++)
 	{
 		objects[i]->Draw();
+	}
+
+	//当たり判定用オブジェクト
+	for (int i = 0; i < objects.size(); i++)
+	{
+		colliderObjects[i]->Draw();
 	}
 }
