@@ -8,7 +8,6 @@ SamplerState smp : register(s0);
 struct PSOutput
 {
 	float4 target0 : SV_TARGET0;
-	float4 target1 : SV_TARGET1;
 };
 
 //エントリーポイント
@@ -35,6 +34,5 @@ PSOutput main(VSOutput input)
 	
 	//色を合成
 	output.target0 = ambient * diffuse + specular;
-
 	return output;
 }
