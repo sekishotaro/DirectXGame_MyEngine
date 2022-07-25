@@ -64,6 +64,7 @@ public:
 	float resistance1   = 0.0f;
 	bool flaggra1       = false;
 	SphereF sphere1;
+	float reboundFactor1 = 1.0f;
 
 	XMFLOAT3 pos2       = {  0.0f,  0.0f,  0.0f };
 	XMFLOAT3 move2      = {  0.0f,  0.0f,  0.0f };
@@ -71,6 +72,7 @@ public:
 	float resistance2   = 0.0f;
 	bool flaggra2       = false;
 	SphereF sphere2;
+	float reboundFactor2 = 1.0f;
 
 
 	bool startFlag      = false;

@@ -95,6 +95,17 @@ public:
 	/// <param name="mass2">¿—Ê2</param>
 	static void CollisionRebound(XMFLOAT3& move1, XMFLOAT3& direction1, float& mass1, XMFLOAT3& move2, XMFLOAT3& direction2, float& mass2);
 
+	/// <summary>
+	/// Õ“Ë”½”­
+	/// </summary>
+	/// <param name="move1">ˆÚ“®1</param>
+	/// <param name="direction1">•ûŒü1</param>
+	/// <param name="reboundFactor1">”½”­ŒW”1</param>
+	/// <param name="move2">ˆÚ“®—Ê2</param>
+	/// <param name="direction2">•ûŒü2</param>
+	/// <param name="reboundFactor22">”½”­ŒW”2</param>
+	static void CollisionReboundOn(XMFLOAT3& move1, XMFLOAT3& direction1, float& reboundFactor1, XMFLOAT3& move2, XMFLOAT3& direction2, float& reboundFactor2);
+
 
 private:
 	static const float k;					//’ïR—Í

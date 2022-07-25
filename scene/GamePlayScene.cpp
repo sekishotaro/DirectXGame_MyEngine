@@ -60,6 +60,26 @@ void GamePlayScene::Update()
 		startFlag = true;
 	}
 
+	if (input->PushKey(DIK_R))
+	{
+		pos1 = { -40.0f,  0.0f,  0.0f };
+		move1 = { 2.0f,  0.0f,  0.0f };
+		direction1 = { 1.0f,  0.0f,  0.0f };
+		resistance1 = 0.0f;
+		flaggra1 = false;
+		reboundFactor1 = 1.5f;
+
+		pos2 = { 0.0f,  0.0f,  0.0f };
+		move2 = { 0.0f,  0.0f,  0.0f };
+		direction2 = { -0.0f,  0.0f,  0.0f };
+		resistance2 = 0.0f;
+		bool flaggra2 = false;
+		reboundFactor2 = 1.5f;
+
+		startFlag = false;
+		colFlag = false;
+	}
+
 	if (startFlag == true)
 	{
 		MyMath::Gravity(pos1, flaggra1);
@@ -81,7 +101,7 @@ void GamePlayScene::Update()
 		{
 			return;
 		}
-		MyMath::CollisionRebound(move1, direction1, move2, direction2);
+		MyMath::CollisionReboundOn(move1, direction1, reboundFactor1, move2, direction2, reboundFactor2);
 		colFlag = true;
 	}
 
@@ -108,14 +128,15 @@ void GamePlayScene::Update()
 	object1->SetPosition(pos1);
 	object2->SetPosition(pos2);
 
-	DebugText::GetInstance()->Print(50, 30 * 1, 2, "      Camera:%f", camera->GetEye().x);
-	DebugText::GetInstance()->Print(50, 30 * 2, 2, "      Camera:%f", camera->GetEye().y);
-	DebugText::GetInstance()->Print(50, 30 * 3, 2, "        posX:%f", object1->GetPosition().x);
-	DebugText::GetInstance()->Print(50, 30 * 4, 2, "        posY:%f", object1->GetPosition().y);
-	DebugText::GetInstance()->Print(50, 30 * 5, 2, "        posZ:%f", object1->GetPosition().z);
-	DebugText::GetInstance()->Print(50, 30 * 6, 2, "       moveX:%f", move1.x);
-	DebugText::GetInstance()->Print(50, 30 * 7, 2, "       moveY:%f", move1.y);
-	DebugText::GetInstance()->Print(50, 30 * 8, 2, "       moveZ:%f", move1.z);
+	DebugText::GetInstance()->Print(50, 30 * 1, 2, "        Camera:%f", camera->GetEye().x);
+	DebugText::GetInstance()->Print(50, 30 * 2, 2, "        Camera:%f", camera->GetEye().y);
+	DebugText::GetInstance()->Print(50, 30 * 3, 2, "          posX:%f", object1->GetPosition().x);
+	DebugText::GetInstance()->Print(50, 30 * 4, 2, "          posY:%f", object1->GetPosition().y);
+	DebugText::GetInstance()->Print(50, 30 * 5, 2, "          posZ:%f", object1->GetPosition().z);
+	DebugText::GetInstance()->Print(50, 30 * 6, 2, "         moveX:%f", move1.x);
+	DebugText::GetInstance()->Print(50, 30 * 7, 2, "         moveY:%f", move1.y);
+	DebugText::GetInstance()->Print(50, 30 * 8, 2, "         moveZ:%f", move1.z);
+	DebugText::GetInstance()->Print(50, 30 * 9, 2, "reboundFactor1:%f", reboundFactor1);
 	if (input->TriggerKey(DIK_SPACE))
 	{
 		//BGMŽ~‚ß‚é

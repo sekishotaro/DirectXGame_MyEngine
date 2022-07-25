@@ -114,3 +114,15 @@ void MyMath::CollisionRebound(XMFLOAT3& move1, XMFLOAT3& direction1, float& mass
 	direction2 = direction;
 	mass2 = mass;
 }
+
+void MyMath::CollisionReboundOn(XMFLOAT3& move1, XMFLOAT3& direction1, float& reboundFactor1, XMFLOAT3& move2, XMFLOAT3& direction2, float& reboundFactor2)
+{
+	XMFLOAT3 move = move1;
+	XMFLOAT3 direction = direction1;
+
+	move1 = { move2.x * reboundFactor1, move2.y * reboundFactor1 , move2.z * reboundFactor1 };
+	direction1 = direction2;
+
+	move2 = { move.x * reboundFactor1, move.y * reboundFactor1 , move.z * reboundFactor1 };
+	direction2 = direction;
+}
