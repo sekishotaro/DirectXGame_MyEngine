@@ -37,8 +37,11 @@ public:
 	/// <param name="graFlag">重力の有無</param>
 	static void Friction(XMFLOAT3& move, bool &graFlag);
 
+	/// <summary>
+	/// 空気抵抗
+	/// </summary>
+	/// <param name="move">移動値</param>
 	static void AirResistance(XMFLOAT3& move);
-
 
 	/// <summary>
 	/// 重力追加
