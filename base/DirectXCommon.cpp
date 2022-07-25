@@ -91,7 +91,7 @@ void DirectXCommon::PostDraw()
 	UINT bbIndex = swapchain->GetCurrentBackBufferIndex();
 
 	//リソースバリアを戻す
-	cmdList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(backBuffers[bbIndex].Get(), D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET));
+	cmdList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(backBuffers[bbIndex].Get(), D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT));
 	
 	//命令のクローズ
 	cmdList->Close();
@@ -147,10 +147,11 @@ bool DirectXCommon::InitializeDevice()
 
 #ifdef _DEBUG
 	//デバッグレイヤーをオンに
-	ComPtr<ID3D12Debug> debugController;
+	ComPtr<ID3D12Debug1> debugController;
 	if (SUCCEEDED(D3D12GetDebugInterface(IID_PPV_ARGS(&debugController))))
 	{
 		debugController->EnableDebugLayer();
+		debugController->SetEnableGPUBasedValidation(TRUE);
 	}
 #endif
 
@@ -216,6 +217,17 @@ bool DirectXCommon::InitializeDevice()
 			break;
 		}
 	}
+
+#ifdef _DEBUG
+	ComPtr<ID3D12InfoQueue> infoQueue;
+	if (SUCCEEDED(dev->QueryInterface(IID_PPV_ARGS(&infoQueue))))
+	{
+		infoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_CORRUPTION, true);
+		infoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_WARNING, true);
+		infoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_ERROR, true);
+	}
+#endif
+
 	if (FAILED(result)) {
 		assert(0);
 		return false;
@@ -287,91 +299,6 @@ bool DirectXCommon::InitializeCommand()
 
 	return true;
 }
-
-
-
-//void DirectXCommon::InitializeRenderTargetView()
-//{
-//	HRESULT result = S_FALSE;
-//
-//	// 各種設定をしてデスクリプタヒープを生成
-//	D3D12_DESCRIPTOR_HEAP_DESC heapDesc{};
-//	heapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV; // レンダーターゲットビュー
-//	heapDesc.NumDescriptors = 2;    // 裏表の２つ
-//	dev->CreateDescriptorHeap(&heapDesc,
-//		IID_PPV_ARGS(&rtvHeaps));
-//
-//	// 裏表の２つ分について
-//	backBuffers.resize(2);
-//	for (int i = 0; i < 2; i++)
-//	{
-//		// スワップチェーンからバッファを取得
-//		result = swapchain->GetBuffer(i, IID_PPV_ARGS(&backBuffers[i]));
-//		// デスクリプタヒープのハンドルを取得
-//		CD3DX12_CPU_DESCRIPTOR_HANDLE handle =
-//			CD3DX12_CPU_DESCRIPTOR_HANDLE(rtvHeaps->GetCPUDescriptorHandleForHeapStart(),
-//				i,
-//				dev->GetDescriptorHandleIncrementSize(heapDesc.Type)
-//			);
-//
-//		// レンダーターゲットビューの生成
-//		dev->CreateRenderTargetView(
-//			backBuffers[i].Get(),
-//			nullptr,
-//			CD3DX12_CPU_DESCRIPTOR_HANDLE(rtvHeaps->GetCPUDescriptorHandleForHeapStart(),
-//				i,
-//				dev->GetDescriptorHandleIncrementSize(heapDesc.Type)
-//			)
-//		);
-//	}
-//}
-
-//void DirectXCommon::InitializeDepthBuffer()
-//{
-//	HRESULT result = S_FALSE;
-//	
-//	//リソースの設定
-//	D3D12_RESOURCE_DESC depthResDesc = CD3DX12_RESOURCE_DESC::Tex2D(
-//		DXGI_FORMAT_D32_FLOAT,
-//		WinApp::window_width,
-//		WinApp::window_height,
-//		1,0,
-//		1,0,
-//		D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL);
-//
-//	//深度バッファの生成
-//	result = dev->CreateCommittedResource(
-//		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT),
-//		D3D12_HEAP_FLAG_NONE,
-//		&depthResDesc,
-//		D3D12_RESOURCE_STATE_DEPTH_WRITE, //深度書き込みに使用
-//		&CD3DX12_CLEAR_VALUE(DXGI_FORMAT_D32_FLOAT, 1.0f, 0),
-//		IID_PPV_ARGS(&depthBuffer));
-//
-//	//深度ビュー用でスクリプタヒープ作成
-//	D3D12_DESCRIPTOR_HEAP_DESC dsvHeapDesc{};
-//	dsvHeapDesc.NumDescriptors = 1; //深度ビューは1つ
-//	dsvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_DSV; //デプスステンシルビュー
-//	result = dev->CreateDescriptorHeap(&dsvHeapDesc, IID_PPV_ARGS(&dsvHeap));
-//
-//	//深度ビュー作成
-//	D3D12_DEPTH_STENCIL_VIEW_DESC dsvDesc = {};
-//	dsvDesc.Format = DXGI_FORMAT_D32_FLOAT; //深度値フォーマット
-//	dsvDesc.ViewDimension = D3D12_DSV_DIMENSION_TEXTURE2D;
-//	dev->CreateDepthStencilView(
-//		depthBuffer.Get(),
-//		&dsvDesc,
-//		dsvHeap->GetCPUDescriptorHandleForHeapStart());
-//}
-
-//void DirectXCommon::InitializeFence()
-//{
-//	HRESULT result = S_FALSE;
-//
-//	// フェンスの生成
-//	result = dev->CreateFence(fenceVal, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&fence));
-//}
-
 
 bool DirectXCommon::CreateFinalRenderTargets()
 {
