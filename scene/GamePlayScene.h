@@ -4,6 +4,7 @@
 #include "Sprite.h"
 #include "Object3d.h"
 #include <DirectXMath.h>
+#include "Collision.h"
 
 #include <memory>
 
@@ -57,17 +58,23 @@ public:
 
 	//êîäwéˆã∆óp
 
-	XMFLOAT3 pos1   = {-40.0f, 2.0f, 0.0f};
-	XMFLOAT3 move1 = {  1.0f, 3.0f, 0.0f};
-	float resistance1 = 0.0f;
-	bool flaggra1 = false;
+	XMFLOAT3 pos1       = {-40.0f,  0.0f,  0.0f};
+	XMFLOAT3 move1      = {  2.0f,  0.0f,  0.0f};
+	XMFLOAT3 direction1 = {  1.0f,  0.0f,  0.0f};
+	float resistance1   = 0.0f;
+	bool flaggra1       = false;
+	SphereF sphere1;
 
-	XMFLOAT3 pos2 = { 40.0f, 40.0f, 0.0f };
-	XMFLOAT3 move2 = { 2.0f, 2.0f, 0.0f };
-	float resistance2 = 0.0f;
-	bool flaggra2 = false;
+	XMFLOAT3 pos2       = {  0.0f,  0.0f,  0.0f };
+	XMFLOAT3 move2      = {  0.0f,  0.0f,  0.0f };
+	XMFLOAT3 direction2 = { -0.0f,  0.0f,  0.0f };
+	float resistance2   = 0.0f;
+	bool flaggra2       = false;
+	SphereF sphere2;
 
-	bool startFlag = false;
-	float groundY = 0.0f;
+
+	bool startFlag      = false;
+	float groundY       = 0.0f;
+	bool colFlag        = false;
 };
 

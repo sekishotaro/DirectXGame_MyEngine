@@ -4,7 +4,6 @@
 #include "Input.h"
 #include "DebugText.h"
 #include "DirectXCommon.h"
-#include "Collision.h"
 #include "MyMath.h"
 
 void GamePlayScene::Initialize()
@@ -51,6 +50,11 @@ void GamePlayScene::Update()
 	
 	Input *input = Input::GetInstance();
 
+	sphere1.center = pos1;
+	sphere2.center = pos2;
+	sphere1.radius = 5.0f;
+	sphere2.radius = 5.0f;
+
 	if (input->PushKey(DIK_RETURN))
 	{
 		startFlag = true;
@@ -59,14 +63,27 @@ void GamePlayScene::Update()
 	if (startFlag == true)
 	{
 		MyMath::Gravity(pos1, flaggra1);
-		//MyMath::Gravity(pos2, flaggra2);
 		MyMath::Friction(move1, flaggra1);
 		MyMath::AirResistance(move1);
-		MyMath::Movement(pos1, move1);
-
+		MyMath::Movement(pos1, move1, direction1);
 		MyMath::GravityCheckMove(move1, flaggra1);
-	}
 
+		MyMath::Gravity(pos2, flaggra2);
+		MyMath::Friction(move2, flaggra2);
+		MyMath::AirResistance(move2);
+		MyMath::Movement(pos2, move2, direction2);
+		MyMath::GravityCheckMove(move2, flaggra2);
+	}
+	
+	if (Collision::CheckSphereSphere(sphere1, sphere2) == TRUE)
+	{
+		if (colFlag == true)
+		{
+			return;
+		}
+		MyMath::CollisionRebound(move1, direction1, move2, direction2);
+		colFlag = true;
+	}
 
 
 	//èdóÕämîF
