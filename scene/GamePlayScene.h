@@ -19,7 +19,7 @@ private: // エイリアス
 	using XMFLOAT3 = DirectX::XMFLOAT3;
 	using XMFLOAT4 = DirectX::XMFLOAT4;
 	using XMMATRIX = DirectX::XMMATRIX;
-
+	using XMVECTOR = DirectX::XMVECTOR;
 
 public:
 
@@ -56,33 +56,18 @@ public:
 	Camera *camera = nullptr;
 
 	//数学授業用
-	float x1 = -40.0f;
-	float move1X = 1.0f;
-	float y1 = 0.0f;
-	float z1 = 0.0f;
-	float gravity = 9.8f;
-	float dropValue =  -600.0f / 600.0f;
-	float move1XValue = 1.0f;
-	float d1a = 0.0f;
-	float d1b = 0.0f;
-	float k = 0.01; //空気抵抗比例定数
 
+	XMFLOAT3 pos1   = {-40.0f, 2.0f, 0.0f};
+	XMFLOAT3 move1 = {  1.0f, 3.0f, 0.0f};
+	float resistance1 = 0.0f;
+	bool flaggra1 = false;
 
-	float x2 = 40.0f;
-	float y2 = 0.0f;
-	float z2 = 0.0f;
-	float move2XValue = 1.0f;
-	float move2X = 1.0f;
-	float k2 = 0.01f;
-
-	float aro1 = 1.0;
-	float aro2 = -1.0;
-
-	bool flag = false;
+	XMFLOAT3 pos2 = { 40.0f, 40.0f, 0.0f };
+	XMFLOAT3 move2 = { 2.0f, 2.0f, 0.0f };
+	float resistance2 = 0.0f;
+	bool flaggra2 = false;
 
 	bool startFlag = false;
-
-	float m1 = 1.001f;
-	float m2 = 1.0f;
+	float groundY = 0.0f;
 };
 

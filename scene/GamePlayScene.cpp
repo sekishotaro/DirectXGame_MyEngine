@@ -5,6 +5,7 @@
 #include "DebugText.h"
 #include "DirectXCommon.h"
 #include "Collision.h"
+#include "MyMath.h"
 
 void GamePlayScene::Initialize()
 {
@@ -57,44 +58,20 @@ void GamePlayScene::Update()
 
 	if (startFlag == true)
 	{
-		//摩擦
-//地面についていると仮定
-		SphereF sphere1;
-		sphere1.center = { x1, y1, z1 };
-		sphere1.radius = 2.0f;
-		SphereF sphere2;
-		sphere2.center = { x2, y2, z2 };
-		sphere2.radius = 2.0f;
+		MyMath::Gravity(pos1, flaggra1);
+		//MyMath::Gravity(pos2, flaggra2);
+		MyMath::Friction(move1, flaggra1);
+		MyMath::AirResistance(move1);
+		MyMath::Movement(pos1, move1);
 
-		if (Collision::CheckSphereSphere(sphere1, sphere2))
-		{
-			if (flag == false)
-			{
-				//x1 -= 5;
-				aro1 *= -1.0;
-				aro2 *= -1.0;
-				flag = true;
-			}
-		}
-
-		move1XValue -= k2;
-		move1XValue *= m1;
-		if (move1XValue > 0)
-		{
-			x1 += move1XValue * aro1;
-		}
-
-
-		move2XValue -= k2;
-		move2XValue *= m2;
-		if (move2XValue > 0)
-		{
-			x2 += move2XValue * aro2;
-		}
+		MyMath::GravityCheckMove(move1, flaggra1);
 	}
 
-	
-	
+
+
+	//重力確認
+	MyMath::GravityCheck(pos1, groundY, flaggra1);
+	MyMath::GravityCheck(pos2, groundY, flaggra2);
 
 	//カメラの移動
 	if (input->PushKey(DIK_W) || input->PushKey(DIK_S) || input->PushKey(DIK_D) || input->PushKey(DIK_A))
@@ -111,15 +88,17 @@ void GamePlayScene::Update()
 		// 座標の変更を反映
 		camera->SetEye(position);
 	}
-	object1->SetPosition(XMFLOAT3(x1, y1, z1));
-	object2->SetPosition(XMFLOAT3(x2, y2, z2));
+	object1->SetPosition(pos1);
+	object2->SetPosition(pos2);
 
 	DebugText::GetInstance()->Print(50, 30 * 1, 2, "      Camera:%f", camera->GetEye().x);
 	DebugText::GetInstance()->Print(50, 30 * 2, 2, "      Camera:%f", camera->GetEye().y);
-	DebugText::GetInstance()->Print(50, 30 * 3, 2, "        posY:%f", object1->GetPosition().y);
-	DebugText::GetInstance()->Print(50, 30 * 4, 2, "          k2:%f", k2);
-	DebugText::GetInstance()->Print(50, 30 * 5, 2, " moveX1Value:%f", move1XValue);
-	DebugText::GetInstance()->Print(50, 30 * 6, 2, " moveX2Value:%f", move2XValue);
+	DebugText::GetInstance()->Print(50, 30 * 3, 2, "        posX:%f", object1->GetPosition().x);
+	DebugText::GetInstance()->Print(50, 30 * 4, 2, "        posY:%f", object1->GetPosition().y);
+	DebugText::GetInstance()->Print(50, 30 * 5, 2, "        posZ:%f", object1->GetPosition().z);
+	DebugText::GetInstance()->Print(50, 30 * 6, 2, "       moveX:%f", move1.x);
+	DebugText::GetInstance()->Print(50, 30 * 7, 2, "       moveY:%f", move1.y);
+	DebugText::GetInstance()->Print(50, 30 * 8, 2, "       moveZ:%f", move1.z);
 	if (input->TriggerKey(DIK_SPACE))
 	{
 		//BGM止める
