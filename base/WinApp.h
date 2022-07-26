@@ -22,12 +22,12 @@ public: //メンバ関数
 	void Finalize();
 
 	//getter
-	HWND GetHwnd() { return hwnd; }
+	static HWND GetHwnd() { return hwnd; }
 	HINSTANCE GetHInstance() { return w.hInstance; }
 
 private:
 	//ウィンドウハンドル
-	HWND hwnd = nullptr;
+	static HWND hwnd;
 	WNDCLASSEX w{}; // ウィンドウクラスの設定
 
 };

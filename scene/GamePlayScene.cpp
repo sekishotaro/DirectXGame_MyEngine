@@ -1,4 +1,3 @@
-
 #include "GamePlayScene.h"
 #include "SceneManager.h"
 #include "Audio.h"
@@ -8,6 +7,8 @@
 #include "FbxLoader.h"
 #include "FbxObject3d.h"
 #include "JsonLoader.h"
+#include "imguiManager.h"
+
 
 void GamePlayScene::Initialize()
 {
@@ -166,7 +167,7 @@ void GamePlayScene::Draw()
 	// 背景スプライト描画前処理
 	Sprite::PreDraw(cmdList);
 	// 背景スプライト描画
-	//spriteBG->Draw();
+	spriteBG->Draw();
 
 	/// <summary>
 	/// ここに背景スプライトの描画処理を追加できる
@@ -206,4 +207,8 @@ void GamePlayScene::Draw()
 
 	// スプライト描画後処理
 	Sprite::PostDraw();
+
+	//imguiの描画
+	imguiManager::PraDraw();
+	imguiManager::PosDraw();
 }

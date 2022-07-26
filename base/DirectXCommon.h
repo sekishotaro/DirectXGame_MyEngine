@@ -48,13 +48,13 @@ public:
 	/// デバイス取得
 	/// </summary>
 	/// <returns>デバイス</returns>
-	ID3D12Device *GetDev() { return dev.Get(); }
+	static ID3D12Device *GetDev() { return dev.Get(); }
 
 	/// <summary>
 	/// コマンドリスト取得
 	/// </summary>
 	/// <returns></returns>
-	ID3D12GraphicsCommandList *GetCmdList() { return cmdList.Get(); }
+	static ID3D12GraphicsCommandList *GetCmdList() { return cmdList.Get(); }
 
 
 
@@ -64,7 +64,7 @@ private:
 	WinApp *winApp = nullptr;
 
 	ComPtr<ID3D12CommandAllocator> cmdAllocator;
-	ComPtr<ID3D12GraphicsCommandList> cmdList;
+	static ComPtr<ID3D12GraphicsCommandList> cmdList;
 	ComPtr<ID3D12CommandQueue> cmdQueue;
 	ComPtr<IDXGISwapChain4> swapchain;
 	ComPtr<ID3D12Resource> depthBuffer;
@@ -74,7 +74,7 @@ private:
 	ComPtr<ID3D12DescriptorHeap> rtvHeaps;
 	ComPtr<ID3D12DescriptorHeap> dsvHeap;
 	//デバイス
-	ComPtr<ID3D12Device> dev;
+	static ComPtr<ID3D12Device> dev;
 	// DXGIファクトリー
 	ComPtr<IDXGIFactory6> dxgiFactory;
 	//バックバッファ

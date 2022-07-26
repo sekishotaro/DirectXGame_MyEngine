@@ -15,6 +15,7 @@
 #include "Camera.h"
 
 #include "PostEffect.h"
+#include "imguiManager.h"
 
 /// <summary>
 /// フレームワーク
