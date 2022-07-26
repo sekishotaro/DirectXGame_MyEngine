@@ -8,6 +8,7 @@
 #include "FbxObject3d.h"
 #include "JsonLoader.h"
 #include "imguiManager.h"
+#include "MyMath.h"
 
 void GamePlayScene::Initialize()
 {

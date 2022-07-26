@@ -6,6 +6,7 @@
 #include "ColliderObject.h"
 #include "FbxObject3d.h"
 #include <DirectXMath.h>
+#include "Collision.h"
 
 #include <memory>
 #include "DebugCamera.h"
@@ -23,6 +24,7 @@ private: // エイリアス
 	using XMFLOAT3 = DirectX::XMFLOAT3;
 	using XMFLOAT4 = DirectX::XMFLOAT4;
 	using XMMATRIX = DirectX::XMMATRIX;
+	using XMVECTOR = DirectX::XMVECTOR;
 
 public:
 

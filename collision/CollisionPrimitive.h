@@ -16,6 +16,17 @@ struct Sphere
 };
 
 /// <summary>
+/// ‹…
+/// </summary>
+struct SphereF
+{
+	//’†SÀ•W
+	DirectX::XMFLOAT3 center = { 0,0,0 };
+	//”¼Œa
+	float radius = 1.0f;
+};
+
+/// <summary>
 /// •½–Ê
 /// </summary>
 struct Plane

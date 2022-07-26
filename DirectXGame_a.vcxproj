@@ -290,6 +290,7 @@
     <ClCompile Include="imgui\imgui_impl_win32.cpp" />
     <ClCompile Include="imgui\imgui_tables.cpp" />
     <ClCompile Include="imgui\imgui_widgets.cpp" />
+    <ClCompile Include="MyMath.cpp" />
     <ClCompile Include="Input\Input.cpp" />
     <ClCompile Include="json\JsonLoader.cpp" />
     <ClCompile Include="main.cpp" />
@@ -325,6 +326,8 @@
     <ClInclude Include="3d\ColliderObject.h" />
     <ClInclude Include="json\JsonLoader.h" />
     <ClInclude Include="Player.h" />
+    <ClInclude Include="Camera.h" />
+    <ClInclude Include="MyMath.h" />
     <ClInclude Include="scene\AbstractSceneFactory.h" />
     <ClInclude Include="Audio\Audio.h" />
     <ClInclude Include="scene\BaseScene.h" />
