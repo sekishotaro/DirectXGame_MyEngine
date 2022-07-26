@@ -152,6 +152,8 @@ public: // メンバ関数
 
 	void SetBillboard(bool isBillboard) { this->isBillboard = isBillboard; }
 
+	void SetColor(XMFLOAT4 color) { this->color = color; }
+
 private: // メンバ変数
 	ComPtr<ID3D12Resource> constBuffB0; // 定数バッファ
 	// 色

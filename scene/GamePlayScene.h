@@ -52,13 +52,16 @@ public:
 	Sprite *spriteBG = nullptr;
 	std::unique_ptr<Object3d> object1;
 	std::unique_ptr<Object3d> object2;
+	std::unique_ptr<Object3d> object3;
+	std::unique_ptr<Object3d> object4;
+	std::unique_ptr<Object3d> object5;
 	Model *model = nullptr;
 	Model* model2 = nullptr;
 	Camera *camera = nullptr;
 
 	//êîäwéˆã∆óp
 
-	XMFLOAT3 pos1       = {  0.0f,  0.0f,  0.0f};
+	XMFLOAT3 pos1       = {-70.0f,  0.0f,  0.0f};
 	XMFLOAT3 move1      = {  0.0f,  0.0f,  0.0f};
 	XMFLOAT3 direction1 = {  0.0f,  0.0f,  0.0f};
 	float resistance1   = 0.0f;
@@ -67,15 +70,22 @@ public:
 	float angle = 1.0f;
 	float radius = 5.0f;
 
-	XMFLOAT3 pos2       = { 20.0f,  0.0f,  0.0f };
-	XMFLOAT3 move2      = {  0.0f,  0.0f,  0.0f };
-	XMFLOAT3 direction2 = {  0.0f,  0.0f,  0.0f };
+	XMFLOAT3 pos2       = { -70.0f, -10.0f,  0.0f };
+	XMFLOAT3 move2      = {  0.0f,   0.0f,  0.0f };
+	XMFLOAT3 direction2 = {  0.0f,   0.0f,  0.0f };
 	float resistance2   = 0.0f;
 	bool flaggra2       = false;
 	SphereF sphere2;
 
+	XMFLOAT3 pos3 = { -70.0f,  -20.0f,  0.0f };
+	XMFLOAT3 pos4 = { -70.0f,  -30.0f,  0.0f };
+	XMFLOAT3 pos5 = { -70.0f,  -40.0f,  0.0f };
 
 	bool startFlag      = false;
 	bool colFlag        = false;
+	double time = 1.0f;
+	double endTime = 600.0f;
+	double startPos = -70.0f;
+	double lengPos = 140.0f;
 };
 

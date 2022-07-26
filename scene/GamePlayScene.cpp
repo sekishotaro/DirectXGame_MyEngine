@@ -5,6 +5,7 @@
 #include "DebugText.h"
 #include "DirectXCommon.h"
 #include "MyMath.h"
+#include "Easing.h"
 
 void GamePlayScene::Initialize()
 {
@@ -33,10 +34,16 @@ void GamePlayScene::Initialize()
 
 	object1 = Object3d::Create();
 	object2 = Object3d::Create();
+	object3 = Object3d::Create();
+	object4 = Object3d::Create();
+	object5 = Object3d::Create();
 
 	//オブジェクトにモデルをひも付ける
 	object1->SetModel(model);
-	object2->SetModel(model2);
+	object2->SetModel(model);
+	object3->SetModel(model);
+	object4->SetModel(model);
+	object5->SetModel(model);
 }
 
 void GamePlayScene::Finalize()
@@ -51,9 +58,7 @@ void GamePlayScene::Update()
 	Input *input = Input::GetInstance();
 
 	sphere1.center = pos1;
-	sphere2.center = pos2;
 	sphere1.radius = 5.0f;
-	sphere2.radius = 5.0f;
 
 	if (input->PushKey(DIK_RETURN))
 	{
@@ -62,20 +67,12 @@ void GamePlayScene::Update()
 
 	if (startFlag == true)
 	{
-		if (radius >= 50.0f)
-		{
-			pos2.x += move1.x;
-			pos2.y += move1.y;
-			pos2.z += move1.z;
-		}
-		else
-		{
-			MyMath::CircleMovement(pos1, pos2, move1, radius, angle);
-		}
+		time += 1.0;
+		pos1.x = (float)Easing::easeIn(time, startPos, lengPos, endTime);
+		pos2.x = (float)Easing::easeOut(time, startPos, lengPos, endTime);
 	}
+	
 
-	angle++;
-	radius += 0.1f;
 
 	//カメラの移動
 	if (input->PushKey(DIK_W) || input->PushKey(DIK_S) || input->PushKey(DIK_D) || input->PushKey(DIK_A))
@@ -94,12 +91,15 @@ void GamePlayScene::Update()
 	}
 	object1->SetPosition(pos1);
 	object2->SetPosition(pos2);
+	object3->SetPosition(pos3);
+	object4->SetPosition(pos4);
+	object5->SetPosition(pos5);
 
 	DebugText::GetInstance()->Print(50, 30 * 1, 2, "        Camera:%f", camera->GetEye().x);
 	DebugText::GetInstance()->Print(50, 30 * 2, 2, "        Camera:%f", camera->GetEye().y);
-	DebugText::GetInstance()->Print(50, 30 * 3, 2, "          pos2X:%f", object2->GetPosition().x);
-	DebugText::GetInstance()->Print(50, 30 * 4, 2, "          pos2Y:%f", object2->GetPosition().y);
-	DebugText::GetInstance()->Print(50, 30 * 5, 2, "          pos2Z:%f", object2->GetPosition().z);
+	DebugText::GetInstance()->Print(50, 30 * 3, 2, "          pos2X:%f", object1->GetPosition().x);
+	DebugText::GetInstance()->Print(50, 30 * 4, 2, "          pos2Y:%f", object1->GetPosition().y);
+	DebugText::GetInstance()->Print(50, 30 * 5, 2, "          pos2Z:%f", object1->GetPosition().z);
 	if (input->TriggerKey(DIK_SPACE))
 	{
 		//BGM止める
@@ -113,6 +113,9 @@ void GamePlayScene::Update()
 	camera->Update();
 	object1->Update();
 	object2->Update();
+	object3->Update();
+	object4->Update();
+	object5->Update();
 }
 
 void GamePlayScene::Draw()
@@ -142,6 +145,9 @@ void GamePlayScene::Draw()
 	// 3Dオブクジェクトの描画
 	object1->Draw();
 	object2->Draw();
+	object3->Draw();
+	object4->Draw();
+	object5->Draw();
 	/// <summary>
 	/// ここに3Dオブジェクトの描画処理を追加できる
 	/// </summary>
