@@ -60,55 +60,22 @@ void GamePlayScene::Update()
 		startFlag = true;
 	}
 
-	if (input->PushKey(DIK_R))
-	{
-		pos1 = { -40.0f,  0.0f,  0.0f };
-		move1 = { 2.0f,  0.0f,  0.0f };
-		direction1 = { 1.0f,  0.0f,  0.0f };
-		resistance1 = 0.0f;
-		flaggra1 = false;
-		reboundFactor1 = 1.5f;
-
-		pos2 = { 0.0f,  0.0f,  0.0f };
-		move2 = { 0.0f,  0.0f,  0.0f };
-		direction2 = { -0.0f,  0.0f,  0.0f };
-		resistance2 = 0.0f;
-		bool flaggra2 = false;
-		reboundFactor2 = 1.5f;
-
-		startFlag = false;
-		colFlag = false;
-	}
-
 	if (startFlag == true)
 	{
-		MyMath::Gravity(pos1, flaggra1);
-		MyMath::Friction(move1, flaggra1);
-		MyMath::AirResistance(move1);
-		MyMath::Movement(pos1, move1, direction1);
-		MyMath::GravityCheckMove(move1, flaggra1);
-
-		MyMath::Gravity(pos2, flaggra2);
-		MyMath::Friction(move2, flaggra2);
-		MyMath::AirResistance(move2);
-		MyMath::Movement(pos2, move2, direction2);
-		MyMath::GravityCheckMove(move2, flaggra2);
-	}
-	
-	if (Collision::CheckSphereSphere(sphere1, sphere2) == TRUE)
-	{
-		if (colFlag == true)
+		if (radius >= 50.0f)
 		{
-			return;
+			pos2.x += move1.x;
+			pos2.y += move1.y;
+			pos2.z += move1.z;
 		}
-		MyMath::CollisionReboundOn(move1, direction1, reboundFactor1, move2, direction2, reboundFactor2);
-		colFlag = true;
+		else
+		{
+			MyMath::CircleMovement(pos1, pos2, move1, radius, angle);
+		}
 	}
 
-
-	//重力確認
-	MyMath::GravityCheck(pos1, groundY, flaggra1);
-	MyMath::GravityCheck(pos2, groundY, flaggra2);
+	angle++;
+	radius += 0.1f;
 
 	//カメラの移動
 	if (input->PushKey(DIK_W) || input->PushKey(DIK_S) || input->PushKey(DIK_D) || input->PushKey(DIK_A))
@@ -130,13 +97,9 @@ void GamePlayScene::Update()
 
 	DebugText::GetInstance()->Print(50, 30 * 1, 2, "        Camera:%f", camera->GetEye().x);
 	DebugText::GetInstance()->Print(50, 30 * 2, 2, "        Camera:%f", camera->GetEye().y);
-	DebugText::GetInstance()->Print(50, 30 * 3, 2, "          posX:%f", object1->GetPosition().x);
-	DebugText::GetInstance()->Print(50, 30 * 4, 2, "          posY:%f", object1->GetPosition().y);
-	DebugText::GetInstance()->Print(50, 30 * 5, 2, "          posZ:%f", object1->GetPosition().z);
-	DebugText::GetInstance()->Print(50, 30 * 6, 2, "         moveX:%f", move1.x);
-	DebugText::GetInstance()->Print(50, 30 * 7, 2, "         moveY:%f", move1.y);
-	DebugText::GetInstance()->Print(50, 30 * 8, 2, "         moveZ:%f", move1.z);
-	DebugText::GetInstance()->Print(50, 30 * 9, 2, "reboundFactor1:%f", reboundFactor1);
+	DebugText::GetInstance()->Print(50, 30 * 3, 2, "          pos2X:%f", object2->GetPosition().x);
+	DebugText::GetInstance()->Print(50, 30 * 4, 2, "          pos2Y:%f", object2->GetPosition().y);
+	DebugText::GetInstance()->Print(50, 30 * 5, 2, "          pos2Z:%f", object2->GetPosition().z);
 	if (input->TriggerKey(DIK_SPACE))
 	{
 		//BGM止める

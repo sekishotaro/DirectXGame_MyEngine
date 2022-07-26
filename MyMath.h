@@ -106,12 +106,32 @@ public:
 	/// <param name="reboundFactor22">反発係数2</param>
 	static void CollisionReboundOn(XMFLOAT3& move1, XMFLOAT3& direction1, float& reboundFactor1, XMFLOAT3& move2, XMFLOAT3& direction2, float& reboundFactor2);
 
+	/// <summary>
+	/// 円運動
+	/// </summary>
+	/// <param name="pos1">中心座標</param>
+	/// <param name="pos2">動く対象の座標am>
+	/// <param name="radiusC">半径</param>
+	/// <param name="angle">角度</param>
+	static void CircleMovement(XMFLOAT3 pos1, XMFLOAT3& pos2, float& radiusC, float& angle);
+
+	/// <summary>
+	/// 円運動
+	/// </summary>
+	/// <param name="pos1">中心座標</param>
+	/// <param name="pos2">動く対象の座標am>
+	/// <param name="move">移動方向保存</param>
+	/// <param name="radiusC">半径</param>
+	/// <param name="angle">角度</param>
+	static void CircleMovement(XMFLOAT3 pos1, XMFLOAT3& pos2, XMFLOAT3& move, float& radiusC, float& angle);
+
 
 private:
 	static const float k;					//抵抗力
 	static const float gravity;				//重力定数
 	static const float graAdjustConstant;	//重力調整定数
 	static const float friction;			//摩擦定数
+	static const float radian;				//ラジアン
 	static float graValue;					//重力増加値
 	static float airResistance;				//空気抵抗値
 };

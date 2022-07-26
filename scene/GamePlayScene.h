@@ -58,25 +58,24 @@ public:
 
 	//êîäwéˆã∆óp
 
-	XMFLOAT3 pos1       = {-40.0f,  0.0f,  0.0f};
-	XMFLOAT3 move1      = {  2.0f,  0.0f,  0.0f};
-	XMFLOAT3 direction1 = {  1.0f,  0.0f,  0.0f};
+	XMFLOAT3 pos1       = {  0.0f,  0.0f,  0.0f};
+	XMFLOAT3 move1      = {  0.0f,  0.0f,  0.0f};
+	XMFLOAT3 direction1 = {  0.0f,  0.0f,  0.0f};
 	float resistance1   = 0.0f;
 	bool flaggra1       = false;
 	SphereF sphere1;
-	float reboundFactor1 = 1.0f;
+	float angle = 1.0f;
+	float radius = 5.0f;
 
-	XMFLOAT3 pos2       = {  0.0f,  0.0f,  0.0f };
+	XMFLOAT3 pos2       = { 20.0f,  0.0f,  0.0f };
 	XMFLOAT3 move2      = {  0.0f,  0.0f,  0.0f };
-	XMFLOAT3 direction2 = { -0.0f,  0.0f,  0.0f };
+	XMFLOAT3 direction2 = {  0.0f,  0.0f,  0.0f };
 	float resistance2   = 0.0f;
 	bool flaggra2       = false;
 	SphereF sphere2;
-	float reboundFactor2 = 1.0f;
 
 
 	bool startFlag      = false;
-	float groundY       = 0.0f;
 	bool colFlag        = false;
 };
 

@@ -4,6 +4,7 @@ const float MyMath::k = 0.01f;
 const float MyMath::gravity = 9.8f;
 const float MyMath::graAdjustConstant = 10.0f;
 const float MyMath::friction = 0.8f;
+const float MyMath::radian = 3.14f / 180.0f;
 float MyMath::graValue = 0.0f;
 float MyMath::airResistance = 0.0f;
 
@@ -125,4 +126,18 @@ void MyMath::CollisionReboundOn(XMFLOAT3& move1, XMFLOAT3& direction1, float& re
 
 	move2 = { move.x * reboundFactor1, move.y * reboundFactor1 , move.z * reboundFactor1 };
 	direction2 = direction;
+}
+
+void MyMath::CircleMovement(XMFLOAT3 pos1, XMFLOAT3& pos2, XMFLOAT3& move, float& radiusC, float& angle)
+{
+	float radius = angle * radian;
+
+	XMFLOAT3 oldPos2 = pos2;
+
+	pos2.x = pos1.x + cos(radius) * radiusC;
+	pos2.y = pos1.y + sin(radius) * radiusC;
+
+	move.x = pos2.x - oldPos2.x;
+	move.y = pos2.y - oldPos2.y;
+	move.z = pos2.z - oldPos2.z;
 }
