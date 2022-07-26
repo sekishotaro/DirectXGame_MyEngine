@@ -123,7 +123,7 @@
       <PreprocessorDefinitions>_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>false</ConformanceMode>
       <AdditionalIncludeDirectories>$(projectDir)imgui;$(projectDir)scene;$(projectDir)collision;$(projectDir)Input;$(projectDir)base;$(projectDir)Audio;$(ProjectDir)3d;$(SolutionDir)DirectXTex;$(projectDir)2d;$(projectDir)</AdditionalIncludeDirectories>
-      <AdditionalIncludeDirectories>$(projectDir)json;$(projectDir)scene;$(projectDir)collision;$(projectDir)Input;$(projectDir)base;$(projectDir)Audio;$(ProjectDir)3d;$(SolutionDir)DirectXTex;$(projectDir)2d;$(projectDir);$(projectDir)camera</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(projectDir)imgui;$(projectDir)json;$(projectDir)json;$(projectDir)scene;$(projectDir)collision;$(projectDir)Input;$(projectDir)base;$(projectDir)Audio;$(ProjectDir)3d;$(SolutionDir)DirectXTex;$(projectDir)2d;$(projectDir);$(projectDir)camera</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -141,7 +141,7 @@
       <PreprocessorDefinitions>NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>false</ConformanceMode>
       <AdditionalIncludeDirectories>$(projectDir)json;$(projectDir)scene;$(projectDir)collision;$(projectDir)Input;$(projectDir)base;$(projectDir)Audio;$(ProjectDir)3d;$(SolutionDir)DirectXTex;$(projectDir)2d;$(projectDir);$(projectDir)camera</AdditionalIncludeDirectories>
-      <AdditionalIncludeDirectories>$(projectDir)imgui;$(projectDir)scene;$(projectDir)collision;$(projectDir)Input;$(projectDir)base;$(projectDir)Audio;$(ProjectDir)3d;$(SolutionDir)DirectXTex;$(projectDir)2d;$(projectDir)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(projectDir)imgui;$(projectDir)json;$(projectDir)imgui;$(projectDir)scene;$(projectDir)collision;$(projectDir)Input;$(projectDir)base;$(projectDir)Audio;$(ProjectDir)3d;$(SolutionDir)DirectXTex;$(projectDir)2d;$(projectDir)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
@@ -297,6 +297,7 @@
     <ClCompile Include="MyGame.cpp" />
     <ClCompile Include="3d\Object3d.cpp" />
     <ClCompile Include="2d\PostEffect.cpp" />
+    <ClCompile Include="Player.cpp" />
     <ClCompile Include="scene\GamePlayScene.cpp" />
     <ClCompile Include="scene\SceneFactory.cpp" />
     <ClCompile Include="scene\SceneManager.cpp" />
@@ -323,6 +324,7 @@
     <ClInclude Include="3d\ColliderModel.h" />
     <ClInclude Include="3d\ColliderObject.h" />
     <ClInclude Include="json\JsonLoader.h" />
+    <ClInclude Include="Player.h" />
     <ClInclude Include="scene\AbstractSceneFactory.h" />
     <ClInclude Include="Audio\Audio.h" />
     <ClInclude Include="scene\BaseScene.h" />

@@ -11,6 +11,8 @@
 #include "DebugCamera.h"
 #include "Camera.h"
 
+#include "Player.h"
+
 class GamePlayScene : public BaseScene
 {
 private: // エイリアス
@@ -56,5 +58,7 @@ public:
 	//Camera *camera = nullptr;
 	FbxModel *fbxModel1 = nullptr;
 	FbxObject3d *fbxObject1 = nullptr;
+
+	Player *player = nullptr;
 };
 

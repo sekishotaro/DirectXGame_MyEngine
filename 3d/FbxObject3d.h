@@ -23,7 +23,7 @@ protected: // エイリアス
 
 public:	//定数
 	//ボーンの最大数
-	static const int MAX_BONES = 32;
+	static const int MAX_BONES = 128;
 
 public: // サブクラス
 	// 定数バッファ用データ構造体(座標変換行列用)
@@ -128,5 +128,35 @@ public:
 
 	//getter
 	bool GetisPlay() { return isPlay; }
+
+	/// <summary>
+/// 座標の取得
+/// </summary>
+/// <returns>座標</returns>
+	const XMFLOAT3& GetPosition() { return position; }
+
+	/// <summary>
+	/// 座標の設定
+	/// </summary>
+	/// <param name="position">座標</param>
+	void SetPosition(const XMFLOAT3& position) { this->position = position; }
+
+	/// <summary>
+	/// 回転角の取得
+	/// </summary>
+	/// <returns>回転角</returns>
+	const XMFLOAT3& GetRotation() { return rotation; }
+
+	/// <summary>
+	/// 回転角の設定
+	/// </summary>
+	/// <param name="rotation">回転角</param>
+	void SetRotation(const XMFLOAT3& rotation) { this->rotation = rotation; }
+
+	/// <summary>
+	/// スケールの設定
+	/// </summary>
+	/// <param name="scale">スケール</param>
+	void SetScale(const XMFLOAT3& scale) { this->scale = scale; }
 };
 
