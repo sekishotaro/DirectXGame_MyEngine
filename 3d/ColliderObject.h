@@ -154,6 +154,12 @@ public: // メンバ関数
 
 	void SetBillboard(bool isBillboard) { this->isBillboard = isBillboard; }
 
+	/// <summary>
+	/// center位置の変更
+	/// </summary>
+	/// <param name="center">センター位置</param>
+	void SetCenter(const XMFLOAT3& center) { this->center = center;}
+
 private: // メンバ変数
 	ComPtr<ID3D12Resource> constBuffB0; // 定数バッファ
 	// 色
@@ -164,6 +170,8 @@ private: // メンバ変数
 	XMFLOAT3 rotation = { 0,0,0 };
 	// ローカル座標
 	XMFLOAT3 position = { 0,0,0 };
+	// center座標
+	XMFLOAT3 center = { 0,0,0 };
 	// ローカルワールド変換行列
 	XMMATRIX matWorld;
 	// 親オブジェクト

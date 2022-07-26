@@ -48,8 +48,6 @@ public:
 	/// </summary>
 	void Draw() override;
 
-
-
 	/// <summary>
 	/// ゲームシーン用
 	/// </summary>
@@ -58,9 +56,14 @@ public:
 	Model *model = nullptr;
 	DebugCamera* camera = nullptr;
 	//Camera *camera = nullptr;
+
 	FbxModel *fbxModel1 = nullptr;
 	FbxObject3d *fbxObject1 = nullptr;
 
-	Player *player = nullptr;
+	std::unique_ptr<ColliderObject> colliderObject;
+	ColliderModel *colliderModel;
+
+	bool graFlag = true;
+	float groundY = 0.0f;
 };
 

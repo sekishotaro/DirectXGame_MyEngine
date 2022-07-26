@@ -7,6 +7,7 @@
 #include <d3dx12.h>
 
 #include "Input.h"
+#include "FbxObject3d.h"
 
 class Player
 {
@@ -20,10 +21,10 @@ private: // エイリアス
 	using XMMATRIX = DirectX::XMMATRIX;
 
 public:
-
-	static XMFLOAT3 Move(Input *input);
+	static XMFLOAT3 Move(Input *input, bool &flag);
 
 private:
+
 	static XMFLOAT3 pos;
 	static XMFLOAT3 rot;
 	static XMFLOAT3 size;

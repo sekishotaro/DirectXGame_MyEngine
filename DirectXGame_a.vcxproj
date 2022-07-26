@@ -326,7 +326,6 @@
     <ClInclude Include="3d\ColliderObject.h" />
     <ClInclude Include="json\JsonLoader.h" />
     <ClInclude Include="Player.h" />
-    <ClInclude Include="Camera.h" />
     <ClInclude Include="MyMath.h" />
     <ClInclude Include="scene\AbstractSceneFactory.h" />
     <ClInclude Include="Audio\Audio.h" />

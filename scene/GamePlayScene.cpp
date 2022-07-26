@@ -16,7 +16,6 @@ void GamePlayScene::Initialize()
 	Audio::GetInstance()->LoadWave("zaza.wav");
 	Audio::GetInstance()->LoadWave("What.wav");
 
-	
 	// カメラ生成
 	camera = new DebugCamera(WinApp::window_width, WinApp::window_height);
 	//camera = new Camera(WinApp::window_width, WinApp::window_height);
@@ -28,7 +27,7 @@ void GamePlayScene::Initialize()
 	Object3d::SetCamera(camera);
 	ColliderObject::SetCamera(camera);
 	//dCamera->SetEye({ 0, 0, 100 });			//prinding時
-	camera->SetEye({ 0, 0, -100 });		//prin時
+	camera->SetEye({ 0, 30, -70 });		//prin時
 	FbxObject3d::SetCamera(camera);
 
 	//グラフィックスパイプライン生成
@@ -54,6 +53,11 @@ void GamePlayScene::Initialize()
 	fbxObject1->SetModel(fbxModel1);
 	fbxObject1->SetScale({ 0.01f,0.01f,0.01f });
 
+	colliderModel = ColliderModel::ColliderModelCreate("BOX");
+	colliderObject = ColliderObject::Create();
+	colliderObject->SetModel(colliderModel);
+
+
 	//json
 	JsonLoader::LoadFile("Scene1");
 	JsonLoader::SetObject();
@@ -72,9 +76,10 @@ void GamePlayScene::Update()
 
 	Input::MousePos mpos = input->MousePosLoad();
 
-
-	XMFLOAT3 pos = Player::Move(input);
-	fbxObject1->SetPosition(pos);
+	fbxObject1->SetPosition(Player::Move(input, graFlag));
+	colliderObject->SetPosition(fbxObject1->GetPosition());
+	colliderObject->SetCenter({ 0, 2.5f, 0 });
+	colliderObject->SetScale({ 1, 5.0f, 1});
 
 	if (input->PushKey(DIK_UP) || input->PushKey(DIK_DOWN) || input->PushKey(DIK_RIGHT) || input->PushKey(DIK_LEFT) || input->PushKey(DIK_E) || input->PushKey(DIK_Z))
 	{
@@ -115,6 +120,7 @@ void GamePlayScene::Update()
 	camera->Update();
 	//objectX->Update();
 	fbxObject1->Update();
+	colliderObject->Update();
 	JsonLoader::Update();
 	DebugText::GetInstance()->Print(50, 30 * 3, 2, "%d", fbxObject1->GetisPlay());
 }
@@ -153,7 +159,7 @@ void GamePlayScene::Draw()
 
 	//FBX3Dオブジェクトの描画
 	fbxObject1->Draw(cmdList);
-
+	colliderObject->Draw();
 	/// <summary>
 	/// ここに3Dオブジェクトの描画処理を追加できる
 	/// </summary>
