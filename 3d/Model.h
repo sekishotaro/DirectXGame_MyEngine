@@ -56,7 +56,6 @@ public: // サブクラス
 			specular = { 0.0f, 0.0f, 0.0f };
 			alpha = 1.0f;
 		}
-
 	};
 
 public: // 静的メンバ関数

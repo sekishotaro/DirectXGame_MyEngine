@@ -122,7 +122,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>false</ConformanceMode>
-      <AdditionalIncludeDirectories>$(projectDir)scene;$(projectDir)collision;$(projectDir)Input;$(projectDir)base;$(projectDir)Audio;$(ProjectDir)3d;$(SolutionDir)DirectXTex;$(projectDir)2d;$(projectDir);$(projectDir)camera</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(projectDir)json;$(projectDir)scene;$(projectDir)collision;$(projectDir)Input;$(projectDir)base;$(projectDir)Audio;$(ProjectDir)3d;$(SolutionDir)DirectXTex;$(projectDir)2d;$(projectDir);$(projectDir)camera</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -139,7 +139,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>false</ConformanceMode>
-      <AdditionalIncludeDirectories>$(projectDir)Math;$(projectDir)scene;$(projectDir)collision;$(projectDir)Input;$(projectDir)base;$(projectDir)Audio;$(ProjectDir)3d;$(SolutionDir)DirectXTex;$(projectDir)2d;$(projectDir);$(projectDir)camera</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(projectDir)json;$(projectDir)scene;$(projectDir)collision;$(projectDir)Input;$(projectDir)base;$(projectDir)Audio;$(ProjectDir)3d;$(SolutionDir)DirectXTex;$(projectDir)2d;$(projectDir);$(projectDir)camera</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
@@ -158,6 +158,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\shaders\Basic.hlsli" />
+    <None Include="Resources\shaders\ColliderOBJ.hlsli" />
     <None Include="Resources\shaders\FBX.hlsli" />
     <None Include="Resources\shaders\OBJShaderHeader.hlsli" />
     <None Include="Resources\shaders\PostEffectTest.hlsli" />
@@ -183,6 +184,22 @@
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">5.0</ShaderModel>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
+    </FxCompile>
+    <FxCompile Include="Resources\shaders\ColliderOBJPS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+    </FxCompile>
+    <FxCompile Include="Resources\shaders\ColliderOBJVS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
     </FxCompile>
     <FxCompile Include="Resources\shaders\FBXPS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
@@ -255,6 +272,8 @@
     <ClCompile Include="3d\FbxObject3d.cpp" />
     <ClCompile Include="Audio\Audio.cpp" />
     <ClCompile Include="camera\Camera.cpp" />
+    <ClCompile Include="3d\ColliderModel.cpp" />
+    <ClCompile Include="3d\ColliderObject.cpp" />
     <ClCompile Include="collision\Collision.cpp" />
     <ClCompile Include="collision\CollisionPrimitive.cpp" />
     <ClCompile Include="2d\DebugText.cpp" />
@@ -262,6 +281,7 @@
     <ClCompile Include="camera\DebugCamera.cpp" />
     <ClCompile Include="Framework.cpp" />
     <ClCompile Include="Input\Input.cpp" />
+    <ClCompile Include="json\JsonLoader.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="3d\Model.cpp" />
     <ClCompile Include="MyGame.cpp" />
@@ -281,6 +301,9 @@
     <ClInclude Include="camera\Camera.h" />
     <ClInclude Include="2d\PostEffect.h" />
     <ClInclude Include="camera\DebugCamera.h" />
+    <ClInclude Include="3d\ColliderModel.h" />
+    <ClInclude Include="3d\ColliderObject.h" />
+    <ClInclude Include="json\JsonLoader.h" />
     <ClInclude Include="scene\AbstractSceneFactory.h" />
     <ClInclude Include="Audio\Audio.h" />
     <ClInclude Include="scene\BaseScene.h" />

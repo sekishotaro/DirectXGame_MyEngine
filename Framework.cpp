@@ -39,6 +39,12 @@ void Framework::Initialize()
 		assert(0);
 	}
 
+	//3Dオブジェクト静的初期化
+	if (!ColliderObject::StaticInitialize(dxCommon->GetDev(), camera))
+	{
+		assert(0);
+	}
+
 	FbxLoader::GetInstance()->Initialize(DirectXCommon::GetInstance()->GetDev());
 
 	//ポストエフェクトの初期化
@@ -51,7 +57,6 @@ void Framework::Finalize()
 	//オーディオ開放
 	audio->Finalize();
 	//デバックテキスト開放
-	//debugText->Finalize();
 
 	// ゲームウィンドウの破棄
 	winApp->Finalize();
