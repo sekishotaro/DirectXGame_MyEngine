@@ -66,7 +66,6 @@ void GamePlayScene::Update()
 
 	if (startFlag == true)
 	{
-		pos1 =	MyMath::Pendulum(angle, speed, mass, length, x);
 	}
 
 
@@ -86,17 +85,12 @@ void GamePlayScene::Update()
 		// À•W‚Ì•ÏX‚ð”½‰f
 		camera->SetEye(position);
 	}
-	object1->SetPosition(pos1);
-	object2->SetPosition(pos2);
 
 	DebugText::GetInstance()->Print(0, 30 * 1, 2, "        Camera:%f", camera->GetEye().x);
 	DebugText::GetInstance()->Print(0, 30 * 2, 2, "        Camera:%f", camera->GetEye().y);
 	DebugText::GetInstance()->Print(0, 30 * 3, 2, "          pos1X:%f", object1->GetPosition().x);
 	DebugText::GetInstance()->Print(0, 30 * 4, 2, "          pos21:%f", object1->GetPosition().y);
 	DebugText::GetInstance()->Print(0, 30 * 5, 2, "          pos2Z:%f", object1->GetPosition().z);
-	DebugText::GetInstance()->Print(0, 30 * 6, 2, "          angle:%f", angle);
-	DebugText::GetInstance()->Print(0, 30 * 7, 2, "          speed:%f", speed);
-	DebugText::GetInstance()->Print(0, 30 * 8, 2, "              x:%f", x);
 	if (input->TriggerKey(DIK_SPACE))
 	{
 		//BGMŽ~‚ß‚é

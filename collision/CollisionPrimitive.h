@@ -68,3 +68,8 @@ struct Ray
 	//•ûŒü
 	DirectX::XMVECTOR dir = { 1,0,0,0 };
 };
+
+struct Line
+{
+	//
+};
