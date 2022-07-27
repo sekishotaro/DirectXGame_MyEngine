@@ -65,11 +65,19 @@ void GamePlayScene::Update()
 		startFlag = true;
 	}
 
+	if (input->PushKey(DIK_LEFT))
+	{
+		pos1.x -= 1.0f;
+	}
+
+	if (input->PushKey(DIK_R))
+	{
+		startFlag = false;
+	}
+
 	if (startFlag == true)
 	{
-		time += 1.0;
-		pos1.x = (float)Easing::easeIn(time, startPos, lengPos, endTime);
-		pos2.x = (float)Easing::easeOut(time, startPos, lengPos, endTime);
+		MyMath::Rubber(pos1, pos2);
 	}
 	
 
@@ -145,9 +153,9 @@ void GamePlayScene::Draw()
 	// 3Dオブクジェクトの描画
 	object1->Draw();
 	object2->Draw();
-	object3->Draw();
-	object4->Draw();
-	object5->Draw();
+	//object3->Draw();
+	///object4->Draw();
+	//object5->Draw();
 	/// <summary>
 	/// ここに3Dオブジェクトの描画処理を追加できる
 	/// </summary>

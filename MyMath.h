@@ -126,12 +126,17 @@ public:
 	static void CircleMovement(XMFLOAT3 pos1, XMFLOAT3& pos2, XMFLOAT3& move, float& radiusC, float& angle);
 
 
+
+	static void Rubber(XMFLOAT3& pos1, XMFLOAT3& pos2);
+
+
 private:
 	static const float k;					//抵抗力
 	static const float gravity;				//重力定数
 	static const float graAdjustConstant;	//重力調整定数
 	static const float friction;			//摩擦定数
 	static const float radian;				//ラジアン
+	static const float spring;				//ばね定数
 	static float graValue;					//重力増加値
 	static float airResistance;				//空気抵抗値
 };

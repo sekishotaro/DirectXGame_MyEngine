@@ -5,6 +5,7 @@ const float MyMath::gravity = 9.8f;
 const float MyMath::graAdjustConstant = 10.0f;
 const float MyMath::friction = 0.8f;
 const float MyMath::radian = 3.14f / 180.0f;
+const float MyMath::spring = 1.5f;
 float MyMath::graValue = 0.0f;
 float MyMath::airResistance = 0.0f;
 
@@ -140,4 +141,11 @@ void MyMath::CircleMovement(XMFLOAT3 pos1, XMFLOAT3& pos2, XMFLOAT3& move, float
 	move.x = pos2.x - oldPos2.x;
 	move.y = pos2.y - oldPos2.y;
 	move.z = pos2.z - oldPos2.z;
+}
+
+void MyMath::Rubber(XMFLOAT3& pos1, XMFLOAT3& pos2)
+{
+	XMFLOAT3 expansion;
+	expansion.x = pos2.x - pos1.x;
+	pos1.x = 0.5 * spring * expansion.x;
 }

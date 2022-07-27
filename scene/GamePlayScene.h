@@ -61,7 +61,7 @@ public:
 
 	//êîäwéˆã∆óp
 
-	XMFLOAT3 pos1       = {-70.0f,  0.0f,  0.0f};
+	XMFLOAT3 pos1       = {-20.0f,  0.0f,  0.0f};
 	XMFLOAT3 move1      = {  0.0f,  0.0f,  0.0f};
 	XMFLOAT3 direction1 = {  0.0f,  0.0f,  0.0f};
 	float resistance1   = 0.0f;
@@ -70,7 +70,7 @@ public:
 	float angle = 1.0f;
 	float radius = 5.0f;
 
-	XMFLOAT3 pos2       = { -70.0f, -10.0f,  0.0f };
+	XMFLOAT3 pos2       = { 0.0f, 0.0f,  0.0f };
 	XMFLOAT3 move2      = {  0.0f,   0.0f,  0.0f };
 	XMFLOAT3 direction2 = {  0.0f,   0.0f,  0.0f };
 	float resistance2   = 0.0f;
