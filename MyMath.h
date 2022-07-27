@@ -28,6 +28,13 @@ public:
 	/// </summary>
 	/// <param name="pos">対象の座標</param>
 	/// <param name="move">移動量</param>
+	static void Movement(XMFLOAT3& pos, XMFLOAT3& move);
+
+	/// <summary>
+	/// 直線運動
+	/// </summary>
+	/// <param name="pos">対象の座標</param>
+	/// <param name="move">移動量</param>
 	/// <param name="direction">方向</param>
 	static void Movement(XMFLOAT3& pos, XMFLOAT3& move, XMFLOAT3 direction);
 
@@ -66,7 +73,7 @@ public:
 	/// <param name="pos">対象の座標</param>
 	/// <param name="groundY">地面の高さ</param>
 	/// <param name="graFlag">重力の有無</param>
-	static void GravityCheck(XMFLOAT3& pos, float& groundY, bool& graFlag);
+	static void GravityCheck(XMFLOAT3& pos, const float& groundY, bool& graFlag);
 
 	/// <summary>
 	/// 重力と移動量

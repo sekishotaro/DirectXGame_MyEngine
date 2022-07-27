@@ -57,7 +57,6 @@ public:
 	void ComputeNormal();
 };
 
-
 /// <summary>
 /// ÉåÉC (îºíºê¸)
 /// </summary>
@@ -67,4 +66,13 @@ struct Ray
 	DirectX::XMVECTOR start = { 0,0,0,1 };
 	//ï˚å¸
 	DirectX::XMVECTOR dir = { 1,0,0,0 };
+};
+
+
+struct Box
+{
+	DirectX::XMFLOAT3 centerPos = { 0,0,0};
+	DirectX::XMFLOAT3 size = { 1.0f, 1.0f, 1.0f };
+	DirectX::XMFLOAT3 MaxPos = {centerPos.x + size.x, centerPos.y + size.y ,centerPos.z + size.z };
+	DirectX::XMFLOAT3 LeastPos = { centerPos.x - size.x, centerPos.y - size.y ,centerPos.z - size.z };
 };

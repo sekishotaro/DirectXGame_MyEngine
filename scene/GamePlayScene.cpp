@@ -9,6 +9,7 @@
 #include "JsonLoader.h"
 #include "imguiManager.h"
 #include "MyMath.h"
+#include "CollisionSet.h"
 
 void GamePlayScene::Initialize()
 {
@@ -27,7 +28,7 @@ void GamePlayScene::Initialize()
 	Object3d::SetCamera(camera);
 	ColliderObject::SetCamera(camera);
 	//dCamera->SetEye({ 0, 0, 100 });			//prinding時
-	camera->SetEye({ 0, 30, -70 });		//prin時
+	camera->SetEye({ 0, 0, -30 });		//prin時
 	FbxObject3d::SetCamera(camera);
 
 	//グラフィックスパイプライン生成
@@ -59,7 +60,7 @@ void GamePlayScene::Initialize()
 
 
 	//json
-	JsonLoader::LoadFile("Scene1");
+	JsonLoader::LoadFile("Scene");
 	JsonLoader::SetObject();
 }
 
@@ -76,7 +77,6 @@ void GamePlayScene::Update()
 
 	Input::MousePos mpos = input->MousePosLoad();
 
-	fbxObject1->SetPosition(Player::Move(input, graFlag));
 	colliderObject->SetPosition(fbxObject1->GetPosition());
 	colliderObject->SetCenter({ 0, 2.5f, 0 });
 	colliderObject->SetScale({ 1, 5.0f, 1});
@@ -97,22 +97,49 @@ void GamePlayScene::Update()
 		camera->SetEye(position);
 	}
 
+	//Box colPlayer;
+	//colPlayer.centerPos = colliderObject->GetPosition();
+	//colPlayer.size = { colliderObject->GetScale().x /2, colliderObject->GetScale().y / 2, colliderObject->GetScale().z / 2 };
+	//colPlayer.MaxPos = { colPlayer.centerPos.x + colPlayer.size.x,colPlayer.centerPos.y + colPlayer.size.y,colPlayer.centerPos.z + colPlayer.size.z };
+	//colPlayer.LeastPos = { colPlayer.centerPos.x - colPlayer.size.x,colPlayer.centerPos.y - colPlayer.size.y,colPlayer.centerPos.z - colPlayer.size.z };
+	//
+	//Box colBox1;
+	//colBox1.centerPos = JsonLoader::colliderObjects[0].get()->GetPosition();
+	//colBox1.size = { JsonLoader::colliderObjects[0].get()->GetScale().x / 2, JsonLoader::colliderObjects[0].get()->GetScale().y / 2, JsonLoader::colliderObjects[0].get()->GetScale().z / 2 };
+	//colBox1.MaxPos = { colBox1.centerPos.x + colBox1.size.x,colBox1.centerPos.y + colBox1.size.y,colBox1.centerPos.z + colBox1.size.z };
+	//colBox1.LeastPos = { colBox1.centerPos.x - colBox1.size.x,colBox1.centerPos.y - colBox1.size.y,colBox1.centerPos.z - colBox1.size.z };
+
+	//if (Collision::CheckAABB(colPlayer, colBox1) == true)
+	//{
+	//	colliderObject->SetColor({ 1,1,0 });
+	//	JsonLoader::colliderObjects[0].get()->SetColor({ 1,1,0 });
+	//}
+	//else
+	//{
+	//	colliderObject->SetColor({ 1,0,0 });
+	//	JsonLoader::colliderObjects[0].get()->SetColor({ 1,0,0 });
+	//}
+	CollisionSet::CollisionCheck(colliderObject->GetPosition(), colliderObject->GetScale(), groundY);
+
+	fbxObject1->SetPosition(Player::Move(input, groundY));
+
 	DebugText::GetInstance()->Print(50, 30 * 1, 2, "X:%f", camera->GetEye().x);
 	DebugText::GetInstance()->Print(50, 30 * 2, 2, "Y:%f", camera->GetEye().y);
 	DebugText::GetInstance()->Print(50, 30 * 3, 2, "Z:%f", camera->GetEye().z);
-	DebugText::GetInstance()->Print(50, 30 * 4, 2, "X:%f", DebugCamera::dx);
-	DebugText::GetInstance()->Print(50, 30 * 5, 2, "Y:%f", DebugCamera::dy);
-	DebugText::GetInstance()->Print(50, 30 * 6, 2, "Z:%f", DebugCamera::dz);
+	DebugText::GetInstance()->Print(50, 30 * 4, 2, "Y:%f", groundY);
+	DebugText::GetInstance()->Print(50, 30 * 5, 2, "+X:%f", Player::GetMove().y);
+	//DebugText::GetInstance()->Print(50, 30 * 6, 2, "-X:%f", colPlayer.MaxPos.x);
+	//DebugText::GetInstance()->Print(50, 30 * 7, 2, "-X:%f", colBox1.LeastPos.x);
 
-	if (input->TriggerKey(DIK_SPACE))
-	{
-		//BGM止める
-		Audio::GetInstance()->SoundStop("zaza.wav");
-		Audio::GetInstance()->PlayWave("zaza.wav", false);
-		
-		//シーン切り替え
-		//SceneManager::GetInstance()->ChangeScene("TITLE");
-	}	
+	//if (input->TriggerKey(DIK_SPACE))
+	//{
+	//	//BGM止める
+	//	Audio::GetInstance()->SoundStop("zaza.wav");
+	//	Audio::GetInstance()->PlayWave("zaza.wav", false);
+	//	
+	//	//シーン切り替え
+	//	//SceneManager::GetInstance()->ChangeScene("TITLE");
+	//}	
 
 	fbxObject1->AnimationFlag = false;
 	fbxObject1->AnimationNum = 1;

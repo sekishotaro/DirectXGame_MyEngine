@@ -71,4 +71,7 @@ public:
 	/// <param name="inter">Œğ“_ (o—Í—p)</param>
 	/// <returns>Œğ·‚µ‚Ä‚¢‚é‚©”Û‚©</returns>
 	static bool CheckRay2Sphere(const Ray &ray, const Sphere &sphere, float *distance = nullptr, DirectX::XMVECTOR *inter = nullptr);
+
+
+	static bool CheckAABB(const Box& box1, const Box& box2);
 };

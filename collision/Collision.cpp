@@ -217,3 +217,15 @@ bool Collision::CheckRay2Sphere(const Ray &ray, const Sphere &sphere, float *dis
 
 	return true;
 }
+
+bool Collision::CheckAABB(const Box& box1, const Box& box2)
+{
+	if (box1.LeastPos.x > box2.MaxPos.x) return false;
+	if (box1.MaxPos.x < box2.LeastPos.x) return false;
+	if (box1.LeastPos.y > box2.MaxPos.y) return false;
+	if (box1.MaxPos.y < box2.LeastPos.y) return false;
+	if (box1.LeastPos.z > box2.MaxPos.z) return false;
+	if (box1.MaxPos.z < box2.LeastPos.z) return false;
+
+	return true;
+}

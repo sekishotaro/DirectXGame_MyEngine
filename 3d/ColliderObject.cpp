@@ -298,6 +298,7 @@ void ColliderObject::Update()
 	ConstBufferDataB0* constMap = nullptr;
 	result = constBuffB0->Map(0, nullptr, (void**)&constMap);
 	constMap->mat = matWorld * matViewProjection;	// s—ñ‚Ì‡¬
+	constMap->color = color;
 	constBuffB0->Unmap(0, nullptr);
 }
 

@@ -21,12 +21,22 @@ private: // エイリアス
 	using XMMATRIX = DirectX::XMMATRIX;
 
 public:
-	static XMFLOAT3 Move(Input *input, bool &flag);
+	//移動
+	static XMFLOAT3 Move(Input *input, const float& groundY);
+	
+	//移動量取得
+	static XMFLOAT3 GetMove() { return move; }
+
+	static void AddPos(XMFLOAT3 move) { pos.x += move.x; pos.y += move.y; pos.z += move.z; }
+
+	static void SetPosY(float& posy) { pos.y = posy; }
 
 private:
 
 	static XMFLOAT3 pos;
+	static XMFLOAT3 move;
 	static XMFLOAT3 rot;
 	static XMFLOAT3 size;
+	static bool groundFlag;
 };
 

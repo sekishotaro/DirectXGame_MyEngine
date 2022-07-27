@@ -230,7 +230,7 @@ void JsonLoader::Draw()
 	}
 
 	//当たり判定用オブジェクト
-	for (int i = 0; i < objects.size(); i++)
+	for (int i = 0; i < colliderObjects.size(); i++)
 	{
 		colliderObjects[i]->Draw();
 	}

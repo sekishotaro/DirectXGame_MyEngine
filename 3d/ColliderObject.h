@@ -24,8 +24,8 @@ public: // サブクラス
 	// 定数バッファ用データ構造体B0
 	struct ConstBufferDataB0
 	{
-		//XMFLOAT4 color;	// 色 (RGBA)
 		XMMATRIX mat;	// ３Ｄ変換行列
+		XMFLOAT3 color;	// 色 (RGBA)
 	};
 
 private: // 定数
@@ -143,6 +143,13 @@ public: // メンバ関数
 	/// <param name="rotation">回転角</param>
 	void SetRotation(const XMFLOAT3& rotation) { this->rotation = rotation; }
 
+
+	/// <summary>
+	/// サイズの取得
+	/// </summary>
+	/// <returns>サイズ</returns>
+	const XMFLOAT3& GetScale() { return scale; }
+
 	/// <summary>
 	/// スケールの設定
 	/// </summary>
@@ -160,10 +167,13 @@ public: // メンバ関数
 	/// <param name="center">センター位置</param>
 	void SetCenter(const XMFLOAT3& center) { this->center = center;}
 
+
+	void SetColor(const XMFLOAT3& color) { this->color = color; }
+
 private: // メンバ変数
 	ComPtr<ID3D12Resource> constBuffB0; // 定数バッファ
 	// 色
-	XMFLOAT4 color = { 1,1,1,1 };
+	XMFLOAT3 color = { 1,0,0};
 	// ローカルスケール
 	XMFLOAT3 scale = { 1,1,1 };
 	// X,Y,Z軸回りのローカル回転角
