@@ -125,9 +125,9 @@ public:
 	/// <param name="angle">Šp“x</param>
 	static void CircleMovement(XMFLOAT3 pos1, XMFLOAT3& pos2, XMFLOAT3& move, float& radiusC, float& angle);
 
-
-
 	static void Rubber(XMFLOAT3& pos1, XMFLOAT3& pos2);
+
+	static XMFLOAT3 Pendulum(float& angle, float& speed, float& mass, float& length, float& x);
 
 
 private:

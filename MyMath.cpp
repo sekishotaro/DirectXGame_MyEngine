@@ -1,7 +1,7 @@
 #include "MyMath.h"
 
 const float MyMath::k = 0.01f;
-const float MyMath::gravity = 9.8f;
+const float MyMath::gravity = 9.81f;
 const float MyMath::graAdjustConstant = 10.0f;
 const float MyMath::friction = 0.8f;
 const float MyMath::radian = 3.14f / 180.0f;
@@ -129,6 +129,16 @@ void MyMath::CollisionReboundOn(XMFLOAT3& move1, XMFLOAT3& direction1, float& re
 	direction2 = direction;
 }
 
+void MyMath::CircleMovement(XMFLOAT3 pos1, XMFLOAT3& pos2, float& radiusC, float& angle)
+{
+	float radius = angle * radian;
+
+	XMFLOAT3 oldPos2 = pos2;
+
+	pos2.x = pos1.x + cos(radius) * radiusC;
+	pos2.y = pos1.y + sin(radius) * radiusC;
+}
+
 void MyMath::CircleMovement(XMFLOAT3 pos1, XMFLOAT3& pos2, XMFLOAT3& move, float& radiusC, float& angle)
 {
 	float radius = angle * radian;
@@ -148,4 +158,21 @@ void MyMath::Rubber(XMFLOAT3& pos1, XMFLOAT3& pos2)
 	XMFLOAT3 expansion;
 	expansion.x = pos2.x - pos1.x;
 	pos1.x = 0.5 * spring * expansion.x;
+}
+
+MyMath::XMFLOAT3 MyMath::Pendulum(float& angle, float& speed, float& mass, float& length, float& x)
+{
+	XMFLOAT3 PendulumPos;
+
+	speed += -mass * gravity * sin(x / length);
+
+	x += speed;
+
+	angle = x / length - 3.14f / 2.0f;
+
+	PendulumPos.x = cos(angle) * length;
+	PendulumPos.y = sin(angle) * length;
+	PendulumPos.z = 0.0f;
+
+	return PendulumPos;
 }

@@ -61,31 +61,23 @@ public:
 
 	//êîäwéˆã∆óp
 
-	XMFLOAT3 pos1       = {-20.0f,  0.0f,  0.0f};
+	XMFLOAT3 pos1       = {  0.0f,  0.0f,  0.0f};
 	XMFLOAT3 move1      = {  0.0f,  0.0f,  0.0f};
 	XMFLOAT3 direction1 = {  0.0f,  0.0f,  0.0f};
-	float resistance1   = 0.0f;
-	bool flaggra1       = false;
 	SphereF sphere1;
-	float angle = 1.0f;
-	float radius = 5.0f;
+	float angle = 0.0f;
+	float radius = 50.0f;
+	float speed = 0.0f;
+	float mass = 0.1346f;
+	float length = 50.0f;
+	float x = (length * 3.14f * 2.0f) / 8.0f;
 
-	XMFLOAT3 pos2       = { 0.0f, 0.0f,  0.0f };
-	XMFLOAT3 move2      = {  0.0f,   0.0f,  0.0f };
-	XMFLOAT3 direction2 = {  0.0f,   0.0f,  0.0f };
-	float resistance2   = 0.0f;
-	bool flaggra2       = false;
-	SphereF sphere2;
-
-	XMFLOAT3 pos3 = { -70.0f,  -20.0f,  0.0f };
-	XMFLOAT3 pos4 = { -70.0f,  -30.0f,  0.0f };
-	XMFLOAT3 pos5 = { -70.0f,  -40.0f,  0.0f };
+	XMFLOAT3 pos2       = {  0.0f,   0.0f,  0.0f };
 
 	bool startFlag      = false;
 	bool colFlag        = false;
-	double time = 1.0f;
-	double endTime = 600.0f;
-	double startPos = -70.0f;
-	double lengPos = 140.0f;
+
+	
+
 };
 

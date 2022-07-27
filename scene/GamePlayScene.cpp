@@ -34,16 +34,10 @@ void GamePlayScene::Initialize()
 
 	object1 = Object3d::Create();
 	object2 = Object3d::Create();
-	object3 = Object3d::Create();
-	object4 = Object3d::Create();
-	object5 = Object3d::Create();
 
 	//オブジェクトにモデルをひも付ける
 	object1->SetModel(model);
 	object2->SetModel(model);
-	object3->SetModel(model);
-	object4->SetModel(model);
-	object5->SetModel(model);
 }
 
 void GamePlayScene::Finalize()
@@ -54,8 +48,8 @@ void GamePlayScene::Finalize()
 void GamePlayScene::Update()
 {
 	// ゲームシーンの毎フレーム処理
-	
-	Input *input = Input::GetInstance();
+
+	Input* input = Input::GetInstance();
 
 	sphere1.center = pos1;
 	sphere1.radius = 5.0f;
@@ -65,11 +59,6 @@ void GamePlayScene::Update()
 		startFlag = true;
 	}
 
-	if (input->PushKey(DIK_LEFT))
-	{
-		pos1.x -= 1.0f;
-	}
-
 	if (input->PushKey(DIK_R))
 	{
 		startFlag = false;
@@ -77,9 +66,9 @@ void GamePlayScene::Update()
 
 	if (startFlag == true)
 	{
-		MyMath::Rubber(pos1, pos2);
+		pos1 =	MyMath::Pendulum(angle, speed, mass, length, x);
 	}
-	
+
 
 
 	//カメラの移動
@@ -99,20 +88,20 @@ void GamePlayScene::Update()
 	}
 	object1->SetPosition(pos1);
 	object2->SetPosition(pos2);
-	object3->SetPosition(pos3);
-	object4->SetPosition(pos4);
-	object5->SetPosition(pos5);
 
-	DebugText::GetInstance()->Print(50, 30 * 1, 2, "        Camera:%f", camera->GetEye().x);
-	DebugText::GetInstance()->Print(50, 30 * 2, 2, "        Camera:%f", camera->GetEye().y);
-	DebugText::GetInstance()->Print(50, 30 * 3, 2, "          pos2X:%f", object1->GetPosition().x);
-	DebugText::GetInstance()->Print(50, 30 * 4, 2, "          pos2Y:%f", object1->GetPosition().y);
-	DebugText::GetInstance()->Print(50, 30 * 5, 2, "          pos2Z:%f", object1->GetPosition().z);
+	DebugText::GetInstance()->Print(0, 30 * 1, 2, "        Camera:%f", camera->GetEye().x);
+	DebugText::GetInstance()->Print(0, 30 * 2, 2, "        Camera:%f", camera->GetEye().y);
+	DebugText::GetInstance()->Print(0, 30 * 3, 2, "          pos1X:%f", object1->GetPosition().x);
+	DebugText::GetInstance()->Print(0, 30 * 4, 2, "          pos21:%f", object1->GetPosition().y);
+	DebugText::GetInstance()->Print(0, 30 * 5, 2, "          pos2Z:%f", object1->GetPosition().z);
+	DebugText::GetInstance()->Print(0, 30 * 6, 2, "          angle:%f", angle);
+	DebugText::GetInstance()->Print(0, 30 * 7, 2, "          speed:%f", speed);
+	DebugText::GetInstance()->Print(0, 30 * 8, 2, "              x:%f", x);
 	if (input->TriggerKey(DIK_SPACE))
 	{
 		//BGM止める
 		//Audio::GetInstance()->SoundStop("zaza.wav");
-		
+
 		//シーン切り替え
 		SceneManager::GetInstance()->ChangeScene("TITLE");
 	}
@@ -121,9 +110,6 @@ void GamePlayScene::Update()
 	camera->Update();
 	object1->Update();
 	object2->Update();
-	object3->Update();
-	object4->Update();
-	object5->Update();
 }
 
 void GamePlayScene::Draw()
@@ -153,9 +139,6 @@ void GamePlayScene::Draw()
 	// 3Dオブクジェクトの描画
 	object1->Draw();
 	object2->Draw();
-	//object3->Draw();
-	///object4->Draw();
-	//object5->Draw();
 	/// <summary>
 	/// ここに3Dオブジェクトの描画処理を追加できる
 	/// </summary>
