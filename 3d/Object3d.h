@@ -154,6 +154,10 @@ public: // メンバ関数
 
 	void SetColor(XMFLOAT4 color) { this->color = color; }
 
+	void SetScale(XMFLOAT3 scale) { this->scale = scale; }
+
+	const XMFLOAT3& GetScale() { return scale; }
+
 private: // メンバ変数
 	ComPtr<ID3D12Resource> constBuffB0; // 定数バッファ
 	// 色

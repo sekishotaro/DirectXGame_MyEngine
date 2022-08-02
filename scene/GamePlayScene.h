@@ -53,8 +53,6 @@ public:
 	std::unique_ptr<Object3d> object1;
 	std::unique_ptr<Object3d> object2;
 	std::unique_ptr<Object3d> object3;
-	std::unique_ptr<Object3d> object4;
-	std::unique_ptr<Object3d> object5;
 	Model *model = nullptr;
 	Model* model2 = nullptr;
 	Camera *camera = nullptr;
@@ -72,7 +70,8 @@ public:
 	float length = 50.0f;
 	float x = (length * 3.14f * 2.0f) / 8.0f;
 
-	XMFLOAT3 pos2       = {  0.0f,   0.0f,  0.0f };
+	XMFLOAT3 pos2       = {  1.0f,   0.0f,  0.0f };
+	XMFLOAT3 pos3 = { 1.0f,   2.0f,  0.0f };
 
 	bool startFlag      = false;
 	bool colFlag        = false;

@@ -30,14 +30,23 @@ void GamePlayScene::Initialize()
 
 	// オブジェクト生成
 	model = Model::LoadFromOBJ("sphere");
-	model2 = Model::LoadFromOBJ("sphere2");
+	model2 = Model::LoadFromOBJ("block");
 
 	object1 = Object3d::Create();
 	object2 = Object3d::Create();
+	object3 = Object3d::Create();
 
 	//オブジェクトにモデルをひも付ける
 	object1->SetModel(model);
-	object2->SetModel(model);
+	object2->SetModel(model2);
+	object3->SetModel(model2);
+
+	object1->SetScale({ 1, 1, 0.01 });
+	object2->SetScale({ 0.01, 0.01, 0.01 });
+	object3->SetScale({ 0.01, 0.01, 0.01 });
+	object1->SetPosition(pos1);
+	object2->SetPosition(pos2);
+	object3->SetPosition(pos3);
 }
 
 void GamePlayScene::Finalize()
@@ -50,9 +59,6 @@ void GamePlayScene::Update()
 	// ゲームシーンの毎フレーム処理
 
 	Input* input = Input::GetInstance();
-
-	sphere1.center = pos1;
-	sphere1.radius = 5.0f;
 
 	if (input->PushKey(DIK_RETURN))
 	{
@@ -68,10 +74,8 @@ void GamePlayScene::Update()
 	{
 	}
 
-
-
 	//カメラの移動
-	if (input->PushKey(DIK_W) || input->PushKey(DIK_S) || input->PushKey(DIK_D) || input->PushKey(DIK_A))
+	if (input->PushKey(DIK_W) || input->PushKey(DIK_S) || input->PushKey(DIK_D) || input->PushKey(DIK_A) || input->PushKey(DIK_E) || input->PushKey(DIK_Z))
 	{
 		// 現在の座標を取得
 		XMFLOAT3 position = camera->GetEye();
@@ -81,9 +85,34 @@ void GamePlayScene::Update()
 		else if (input->PushKey(DIK_S)) { position.y -= 1.0f; }
 		if (input->PushKey(DIK_D)) { position.x += 1.0f; }
 		else if (input->PushKey(DIK_A)) { position.x -= 1.0f; }
-
+		if (input->PushKey(DIK_E)) { position.z += 1.0f; }
+		else if (input->PushKey(DIK_Z)) { position.z -= 1.0f; }
 		// 座標の変更を反映
 		camera->SetEye(position);
+	}
+
+	if (input->PushKey(DIK_UP) || input->PushKey(DIK_DOWN) || input->PushKey(DIK_RIGHT) || input->PushKey(DIK_LEFT))
+	{
+		// 現在の座標を取得
+		XMFLOAT3 position = object2->GetPosition();
+
+		// 移動後の座標を計算
+		if (input->PushKey(DIK_UP)) { position.y += 1.0f; }
+		else if (input->PushKey(DIK_DOWN)) { position.y -= 1.0f; }
+		if (input->PushKey(DIK_RIGHT)) { position.x += 1.0f; }
+		else if (input->PushKey(DIK_LEFT)) { position.x -= 1.0f; }
+		// 座標の変更を反映
+		object2->SetPosition(position);
+
+		position = object3->GetPosition();
+
+		// 移動後の座標を計算
+		if (input->PushKey(DIK_UP)) { position.y += 1.0f; }
+		else if (input->PushKey(DIK_DOWN)) { position.y -= 1.0f; }
+		if (input->PushKey(DIK_RIGHT)) { position.x += 1.0f; }
+		else if (input->PushKey(DIK_LEFT)) { position.x -= 1.0f; }
+		// 座標の変更を反映
+		object3->SetPosition(position);
 	}
 
 	DebugText::GetInstance()->Print(0, 30 * 1, 2, "        Camera:%f", camera->GetEye().x);
@@ -104,6 +133,7 @@ void GamePlayScene::Update()
 	camera->Update();
 	object1->Update();
 	object2->Update();
+	object3->Update();
 }
 
 void GamePlayScene::Draw()
@@ -133,6 +163,7 @@ void GamePlayScene::Draw()
 	// 3Dオブクジェクトの描画
 	object1->Draw();
 	object2->Draw();
+	object3->Draw();
 	/// <summary>
 	/// ここに3Dオブジェクトの描画処理を追加できる
 	/// </summary>
