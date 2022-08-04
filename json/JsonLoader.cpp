@@ -217,6 +217,16 @@ void JsonLoader::Update()
 	//当たり判定用オブジェクト
 	for (int i = 0; i < colliderObjects.size(); i++)
 	{
+		if (colliderObjects[i].get()->GetCollFlag() == true)
+		{
+			colliderObjects[i].get()->SetColor({ 1,1,0 });
+		}
+		else
+		{
+			colliderObjects[i].get()->SetColor({ 1,0,0 });
+		}
+		
+
 		colliderObjects[i]->Update();
 	}
 }

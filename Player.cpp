@@ -6,8 +6,9 @@ Player::XMFLOAT3 Player::move = { 0.0f, 0.0f, 0.0f };
 Player::XMFLOAT3 Player::rot = { 0.0f, 0.0f, 0.0f };
 Player::XMFLOAT3 Player::size = { 1.0f, 1.0f, 1.0f };
 bool Player::groundFlag = false;
+bool Player::wallcollisionFlag = false;
 
-Player::XMFLOAT3 Player::Move(Input *input, const float& groundY)
+void Player::Move(Input *input, const float& groundY)
 {
 	move = { 0,0,0 };
 	if (input->PushKey(DIK_W) || input->PushKey(DIK_S) || input->PushKey(DIK_D) || input->PushKey(DIK_A))
@@ -27,7 +28,10 @@ Player::XMFLOAT3 Player::Move(Input *input, const float& groundY)
 	MyMath::GravityCheck(pos, groundY, groundFlag);
 	MyMath::Gravity(move, groundFlag);
 	MyMath::Movement(pos, move);
+}
 
-	return pos;
+void Player::MoveAdd(XMFLOAT3 Addpos)
+{
+	MyMath::Movement(pos, Addpos);
 }
 

@@ -17,5 +17,9 @@ private: // エイリアス
 public:
 	static void CollisionCheck(const XMFLOAT3& pos, const XMFLOAT3& size, float& groundY);
 
+	static void CollisionPushBack(const XMFLOAT3& size);
+
+private:
+	static bool PlayerWallCollisionFlag;
 };
 

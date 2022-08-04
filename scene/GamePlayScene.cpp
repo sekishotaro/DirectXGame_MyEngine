@@ -58,7 +58,8 @@ void GamePlayScene::Initialize()
 	colliderObject = ColliderObject::Create();
 	colliderObject->SetModel(colliderModel);
 
-
+	colliderObject->SetCenter({ 0, 2.5f, 0 });
+	colliderObject->SetScale({ 1, 5.0f, 1 });
 	//json
 	JsonLoader::LoadFile("Scene");
 	JsonLoader::SetObject();
@@ -77,10 +78,6 @@ void GamePlayScene::Update()
 
 	Input::MousePos mpos = input->MousePosLoad();
 
-	colliderObject->SetPosition(fbxObject1->GetPosition());
-	colliderObject->SetCenter({ 0, 2.5f, 0 });
-	colliderObject->SetScale({ 1, 5.0f, 1});
-
 	if (input->PushKey(DIK_UP) || input->PushKey(DIK_DOWN) || input->PushKey(DIK_RIGHT) || input->PushKey(DIK_LEFT) || input->PushKey(DIK_E) || input->PushKey(DIK_Z))
 	{
 		// Œ»Ý‚ÌÀ•W‚ðŽæ“¾
@@ -97,39 +94,32 @@ void GamePlayScene::Update()
 		camera->SetEye(position);
 	}
 
-	//Box colPlayer;
-	//colPlayer.centerPos = colliderObject->GetPosition();
-	//colPlayer.size = { colliderObject->GetScale().x /2, colliderObject->GetScale().y / 2, colliderObject->GetScale().z / 2 };
-	//colPlayer.MaxPos = { colPlayer.centerPos.x + colPlayer.size.x,colPlayer.centerPos.y + colPlayer.size.y,colPlayer.centerPos.z + colPlayer.size.z };
-	//colPlayer.LeastPos = { colPlayer.centerPos.x - colPlayer.size.x,colPlayer.centerPos.y - colPlayer.size.y,colPlayer.centerPos.z - colPlayer.size.z };
-	//
-	//Box colBox1;
-	//colBox1.centerPos = JsonLoader::colliderObjects[0].get()->GetPosition();
-	//colBox1.size = { JsonLoader::colliderObjects[0].get()->GetScale().x / 2, JsonLoader::colliderObjects[0].get()->GetScale().y / 2, JsonLoader::colliderObjects[0].get()->GetScale().z / 2 };
-	//colBox1.MaxPos = { colBox1.centerPos.x + colBox1.size.x,colBox1.centerPos.y + colBox1.size.y,colBox1.centerPos.z + colBox1.size.z };
-	//colBox1.LeastPos = { colBox1.centerPos.x - colBox1.size.x,colBox1.centerPos.y - colBox1.size.y,colBox1.centerPos.z - colBox1.size.z };
+	Player::Move(input, groundY);
+	CollisionSet::CollisionCheck(Player::GetPos(), colliderObject->GetScale(), groundY);
+	CollisionSet::CollisionPushBack(colliderObject->GetScale());
 
-	//if (Collision::CheckAABB(colPlayer, colBox1) == true)
-	//{
-	//	colliderObject->SetColor({ 1,1,0 });
-	//	JsonLoader::colliderObjects[0].get()->SetColor({ 1,1,0 });
-	//}
-	//else
-	//{
-	//	colliderObject->SetColor({ 1,0,0 });
-	//	JsonLoader::colliderObjects[0].get()->SetColor({ 1,0,0 });
-	//}
-	CollisionSet::CollisionCheck(colliderObject->GetPosition(), colliderObject->GetScale(), groundY);
+	fbxObject1->SetPosition(Player::GetPos());
+	colliderObject->SetPosition(Player::GetPos());
 
-	fbxObject1->SetPosition(Player::Move(input, groundY));
+	if (Player::GetWallColl() == true)
+	{
+		colliderObject->SetColor({ 1, 1, 0});
+	}
+	else if (Player::GetWallColl() == false)
+	{
+		colliderObject->SetColor({ 1, 0, 0});
+	}
 
 	DebugText::GetInstance()->Print(50, 30 * 1, 2, "X:%f", camera->GetEye().x);
 	DebugText::GetInstance()->Print(50, 30 * 2, 2, "Y:%f", camera->GetEye().y);
 	DebugText::GetInstance()->Print(50, 30 * 3, 2, "Z:%f", camera->GetEye().z);
-	DebugText::GetInstance()->Print(50, 30 * 4, 2, "Y:%f", groundY);
-	DebugText::GetInstance()->Print(50, 30 * 5, 2, "+X:%f", Player::GetMove().y);
-	//DebugText::GetInstance()->Print(50, 30 * 6, 2, "-X:%f", colPlayer.MaxPos.x);
-	//DebugText::GetInstance()->Print(50, 30 * 7, 2, "-X:%f", colBox1.LeastPos.x);
+	DebugText::GetInstance()->Print(50, 30 * 4, 2, "X:%f", Player::GetPos().x);
+	DebugText::GetInstance()->Print(50, 30 * 5, 2, "Y:%f", Player::GetPos().y);
+	DebugText::GetInstance()->Print(50, 30 * 6, 2, "Z:%f", Player::GetPos().z);
+	DebugText::GetInstance()->Print(50, 30 * 7, 2, "X:%f", Player::GetMove().x);
+	DebugText::GetInstance()->Print(50, 30 * 8, 2, "Y:%f", Player::GetMove().y);
+	DebugText::GetInstance()->Print(50, 30 * 9, 2, "Z:%f", Player::GetMove().z);
+
 
 	//if (input->TriggerKey(DIK_SPACE))
 	//{

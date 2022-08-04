@@ -170,6 +170,10 @@ public: // メンバ関数
 
 	void SetColor(const XMFLOAT3& color) { this->color = color; }
 
+	void SetCollFlag(const bool& collFlag) { this->collFlag = collFlag; }
+
+	const bool& GetCollFlag() { return collFlag; }
+
 private: // メンバ変数
 	ComPtr<ID3D12Resource> constBuffB0; // 定数バッファ
 	// 色
@@ -190,5 +194,8 @@ private: // メンバ変数
 	ColliderModel* model = nullptr;
 	// ビルボード
 	bool isBillboard = false;
+	// 当たり判定のフラグ
+	bool collFlag = false;
+
 };
 
