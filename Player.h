@@ -39,13 +39,16 @@ public:
 
 	static XMFLOAT3 GetPos() { return pos; }
 
+	static XMFLOAT3 GetSize() { return size; }
 
 private:
 	static XMFLOAT3 pos;
 	static XMFLOAT3 move;
 	static XMFLOAT3 rot;
 	static XMFLOAT3 size;
-	static bool groundFlag;
 	static bool wallcollisionFlag;
+
+public:
+	static bool groundFlag;
 };
 

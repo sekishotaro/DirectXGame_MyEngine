@@ -1,10 +1,10 @@
 #include "Player.h"
 #include "MyMath.h"
 
-Player::XMFLOAT3 Player::pos = { 0.0f, 20.0f,-20.0f };
+Player::XMFLOAT3 Player::pos = { 0.0f, 10.0f,-20.0f };
 Player::XMFLOAT3 Player::move = { 0.0f, 0.0f, 0.0f };
 Player::XMFLOAT3 Player::rot = { 0.0f, 0.0f, 0.0f };
-Player::XMFLOAT3 Player::size = { 1.0f, 1.0f, 1.0f };
+Player::XMFLOAT3 Player::size = { 1.0f, 5.0f, 1.0f };
 bool Player::groundFlag = false;
 bool Player::wallcollisionFlag = false;
 
@@ -20,12 +20,20 @@ void Player::Move(Input *input, const float& groundY)
 		else if (input->PushKey(DIK_A)) { move.x -= 1.0f; }
 	}
 
-	if (input->TriggerKey(DIK_SPACE))
+	if (input->PushKey(DIK_O))
+	{
+		move.y += 1.0f;
+	}
+	if (input->PushKey(DIK_L))
+	{
+		move.y -= 1.0f;
+	}
+
+	if (input->PushKey(DIK_SPACE))
 	{
 		move.y += 10.0f;
 	}
 
-	MyMath::GravityCheck(pos, groundY, groundFlag);
 	MyMath::Gravity(move, groundFlag);
 	MyMath::Movement(pos, move);
 }

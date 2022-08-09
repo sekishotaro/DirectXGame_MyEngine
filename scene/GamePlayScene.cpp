@@ -59,7 +59,7 @@ void GamePlayScene::Initialize()
 	colliderObject->SetModel(colliderModel);
 
 	colliderObject->SetCenter({ 0, 2.5f, 0 });
-	colliderObject->SetScale({ 1, 5.0f, 1 });
+	colliderObject->SetScale(Player::GetSize());
 	//json
 	JsonLoader::LoadFile("Scene");
 	JsonLoader::SetObject();
@@ -96,7 +96,10 @@ void GamePlayScene::Update()
 
 	Player::Move(input, groundY);
 	CollisionSet::CollisionCheck(Player::GetPos(), colliderObject->GetScale(), groundY);
-	CollisionSet::CollisionPushBack(colliderObject->GetScale());
+	
+	CollisionSet::CollisionPushBack(colliderObject->GetScale(), groundY);
+	
+	MyMath::GravityCheck(Player::GetPos(), groundY, Player::groundFlag);
 
 	fbxObject1->SetPosition(Player::GetPos());
 	colliderObject->SetPosition(Player::GetPos());
@@ -110,15 +113,15 @@ void GamePlayScene::Update()
 		colliderObject->SetColor({ 1, 0, 0});
 	}
 
-	DebugText::GetInstance()->Print(50, 30 * 1, 2, "X:%f", camera->GetEye().x);
-	DebugText::GetInstance()->Print(50, 30 * 2, 2, "Y:%f", camera->GetEye().y);
-	DebugText::GetInstance()->Print(50, 30 * 3, 2, "Z:%f", camera->GetEye().z);
-	DebugText::GetInstance()->Print(50, 30 * 4, 2, "X:%f", Player::GetPos().x);
-	DebugText::GetInstance()->Print(50, 30 * 5, 2, "Y:%f", Player::GetPos().y);
-	DebugText::GetInstance()->Print(50, 30 * 6, 2, "Z:%f", Player::GetPos().z);
-	DebugText::GetInstance()->Print(50, 30 * 7, 2, "X:%f", Player::GetMove().x);
-	DebugText::GetInstance()->Print(50, 30 * 8, 2, "Y:%f", Player::GetMove().y);
-	DebugText::GetInstance()->Print(50, 30 * 9, 2, "Z:%f", Player::GetMove().z);
+	DebugText::GetInstance()->Print(50, 30 * 1, 2, "C:X:%f", camera->GetEye().x);
+	DebugText::GetInstance()->Print(50, 30 * 2, 2, "C:Y:%f", camera->GetEye().y);
+	DebugText::GetInstance()->Print(50, 30 * 3, 2, "C:Z:%f", camera->GetEye().z);
+	DebugText::GetInstance()->Print(50, 30 * 4, 2, "P:X:%f", Player::GetPos().x);
+	DebugText::GetInstance()->Print(50, 30 * 5, 2, "P:Y:%f", Player::GetPos().y);
+	DebugText::GetInstance()->Print(50, 30 * 6, 2, "P:Z:%f", Player::GetPos().z);
+	DebugText::GetInstance()->Print(50, 30 * 7, 2, "M:X:%f", Player::GetMove().x);
+	DebugText::GetInstance()->Print(50, 30 * 8, 2, "M:Y:%f", Player::GetMove().y);
+	DebugText::GetInstance()->Print(50, 30 * 9, 2, "M:Z:%f", Player::GetMove().z);
 
 
 	//if (input->TriggerKey(DIK_SPACE))

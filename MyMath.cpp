@@ -78,7 +78,7 @@ void MyMath::GravityCheck(XMFLOAT3& pos, const float& groundY, bool& graFlag)
 	if (pos.y <= groundY)
 	{
 		graFlag = true;
-		pos.y = 0.0f;
+		pos.y = groundY;
 	}
 	
 	if (graFlag == true && pos.y > groundY)
