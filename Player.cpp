@@ -14,10 +14,10 @@ void Player::Move(Input *input, const float& groundY)
 	if (input->PushKey(DIK_W) || input->PushKey(DIK_S) || input->PushKey(DIK_D) || input->PushKey(DIK_A))
 	{
 		// ˆÚ“®Œã‚ÌÀ•W‚ðŒvŽZ
-		if (input->PushKey(DIK_W)) { move.z += 1.0f; }
-		else if (input->PushKey(DIK_S)) { move.z -= 1.0f; }
-		if (input->PushKey(DIK_D)) { move.x += 1.0f; }
-		else if (input->PushKey(DIK_A)) { move.x -= 1.0f; }
+		if (input->PushKey(DIK_W)) { move.z += 0.1f; }
+		else if (input->PushKey(DIK_S)) { move.z -= 0.1f; }
+		if (input->PushKey(DIK_D)) { move.x += 0.1f; }
+		else if (input->PushKey(DIK_A)) { move.x -= 0.1f; }
 	}
 
 	if (input->PushKey(DIK_O))

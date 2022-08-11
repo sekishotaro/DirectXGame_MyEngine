@@ -1,4 +1,5 @@
 #include "MyMath.h"
+#include "Player.h"
 
 const float MyMath::k = 0.01f;
 const float MyMath::gravity = 9.8f;
@@ -78,7 +79,8 @@ void MyMath::GravityCheck(XMFLOAT3& pos, const float& groundY, bool& graFlag)
 	if (pos.y <= groundY)
 	{
 		graFlag = true;
-		pos.y = groundY;
+		float Y = groundY;
+		Player::SetPosY(Y);
 	}
 	
 	if (graFlag == true && pos.y > groundY)

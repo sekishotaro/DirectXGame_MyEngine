@@ -122,8 +122,8 @@ void GamePlayScene::Update()
 	DebugText::GetInstance()->Print(50, 30 * 7, 2, "M:X:%f", Player::GetMove().x);
 	DebugText::GetInstance()->Print(50, 30 * 8, 2, "M:Y:%f", Player::GetMove().y);
 	DebugText::GetInstance()->Print(50, 30 * 9, 2, "M:Z:%f", Player::GetMove().z);
-
-
+	DebugText::GetInstance()->Print(50, 30 * 9, 2, "M:Z:%f", Player::GetMove().z);
+	DebugText::GetInstance()->Print(50, 30 * 9, 2, "G:Y:%f", groundY);
 	//if (input->TriggerKey(DIK_SPACE))
 	//{
 	//	//BGMŽ~‚ß‚é

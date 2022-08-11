@@ -49,10 +49,10 @@ void CollisionSet::CollisionPushBack( const XMFLOAT3& size, float& groundY)
 		}
 
 		Box colPlayer;
-		colPlayer.centerPos = Player::GetPos();
-		colPlayer.size = { size.x / 2, size.y, size.z / 2 };
-		colPlayer.MaxPos = { colPlayer.centerPos.x + colPlayer.size.x,colPlayer.centerPos.y + colPlayer.size.y,colPlayer.centerPos.z + colPlayer.size.z };
-		colPlayer.LeastPos = { colPlayer.centerPos.x - colPlayer.size.x,colPlayer.centerPos.y,colPlayer.centerPos.z - colPlayer.size.z };
+		colPlayer.centerPos = { Player::GetPos().x, Player::GetPos().y + (size.y/2), Player::GetPos().z };
+		colPlayer.size = { size.x / 2, size.y / 2, size.z / 2 };
+		colPlayer.MaxPos   = { colPlayer.centerPos.x + colPlayer.size.x, colPlayer.centerPos.y + colPlayer.size.y,colPlayer.centerPos.z + colPlayer.size.z };
+		colPlayer.LeastPos = { colPlayer.centerPos.x - colPlayer.size.x, colPlayer.centerPos.y - colPlayer.size.y, colPlayer.centerPos.z - colPlayer.size.z };
 
 		Box colBox;
 		colBox.centerPos = JsonLoader::colliderObjects[i].get()->GetPosition();
@@ -62,40 +62,62 @@ void CollisionSet::CollisionPushBack( const XMFLOAT3& size, float& groundY)
 
 		XMFLOAT3 m1 = {0,0,0};
 		
-		//X
-		if (colPlayer.MaxPos.x >= colBox.MaxPos.x)
-		{
-			m1.x = colBox.MaxPos.x - colPlayer.LeastPos.x;
-		}
-		else
-		{
-			m1.x = colPlayer.MaxPos.x - colBox.LeastPos.x;
-			m1.x *= -1;
-		}
 
-		//Y
-		if (colPlayer.MaxPos.y >= colBox.MaxPos.y)
+		//X
+		if (colPlayer.centerPos.z <= colBox.MaxPos.z && colBox.LeastPos.z <= colPlayer.centerPos.z)
 		{
-			m1.y = colBox.MaxPos.y - colPlayer.LeastPos.y;
-			groundY = colBox.MaxPos.y;
+			if (colPlayer.centerPos.y <= colBox.MaxPos.y && colBox.LeastPos.y <= colPlayer.centerPos.y)
+			{
+				if (colPlayer.MaxPos.x >= colBox.MaxPos.x)
+				{
+					m1.x = colBox.MaxPos.x - colPlayer.LeastPos.x;
+				}
+				else
+				{
+					m1.x = colPlayer.MaxPos.x - colBox.LeastPos.x;
+					m1.x *= -1;
+				}
+			}
 		}
-		else
-		{
-			m1.y = colPlayer.MaxPos.y - colBox.LeastPos.y;
-			m1.y *= -1;
-		}
+		
 
 		//Z
-		if (colPlayer.MaxPos.z >= colBox.MaxPos.z)
+		if (colPlayer.centerPos.x <= colBox.MaxPos.x && colBox.LeastPos.x <= colPlayer.centerPos.x)
 		{
-			m1.z = colBox.MaxPos.z - colPlayer.LeastPos.z;
+			if (colPlayer.centerPos.y <= colBox.MaxPos.y && colBox.LeastPos.y <= colPlayer.centerPos.y)
+			{
+				if (colPlayer.MaxPos.z >= colBox.MaxPos.z)
+				{
+					m1.z = colBox.MaxPos.z - colPlayer.LeastPos.z;
+				}
+				else
+				{
+					m1.z = colPlayer.MaxPos.z - colBox.LeastPos.z;
+					m1.z *= -1;
+				}
+			}
 		}
-		else
-		{
-			m1.z = colPlayer.MaxPos.z - colBox.LeastPos.z;
-			m1.z *= -1;
-		}
+		
+		
 
+		//Y
+		if (colPlayer.centerPos.z <= colBox.MaxPos.z && colBox.LeastPos.z <= colPlayer.centerPos.z)
+		{
+			if (colPlayer.centerPos.x <= colBox.MaxPos.x && colBox.LeastPos.x <= colPlayer.centerPos.x)
+			{
+				if (colPlayer.MaxPos.y >= colBox.MaxPos.y)
+				{
+					m1.y = colBox.MaxPos.y - colPlayer.LeastPos.y;
+					groundY = colBox.MaxPos.y;
+				}
+				else
+				{
+					m1.y = colPlayer.MaxPos.y - colBox.LeastPos.y;
+					m1.y *= -1;
+				}
+			}
+		}
+		
 
 		XMFLOAT3 pPos = Player::GetPos();
 
