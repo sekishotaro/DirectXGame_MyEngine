@@ -60,6 +60,9 @@ public:
 	FbxModel *fbxModel1 = nullptr;
 	FbxObject3d *fbxObject1 = nullptr;
 
+	FbxModel* fbxModel2 = nullptr;
+	FbxObject3d* fbxObject2 = nullptr;
+
 	std::unique_ptr<ColliderObject> colliderObject;
 	ColliderModel *colliderModel;
 

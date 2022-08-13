@@ -282,6 +282,7 @@
     <ClCompile Include="2d\DebugText.cpp" />
     <ClCompile Include="base\DirectXCommon.cpp" />
     <ClCompile Include="camera\DebugCamera.cpp" />
+    <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="Framework.cpp" />
     <ClCompile Include="imgui\imguiManager.cpp" />
     <ClCompile Include="imgui\imgui.cpp" />
@@ -314,6 +315,7 @@
     <ClInclude Include="camera\Camera.h" />
     <ClInclude Include="2d\PostEffect.h" />
     <ClInclude Include="collision\CollisionSet.h" />
+    <ClInclude Include="Enemy.h" />
     <ClInclude Include="imgui\imguiManager.h" />
     <ClInclude Include="imgui\imconfig.h" />
     <ClInclude Include="imgui\imgui.h" />

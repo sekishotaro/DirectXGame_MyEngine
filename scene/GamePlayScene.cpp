@@ -10,6 +10,7 @@
 #include "imguiManager.h"
 #include "MyMath.h"
 #include "CollisionSet.h"
+#include "Enemy.h"
 
 void GamePlayScene::Initialize()
 {
@@ -47,12 +48,20 @@ void GamePlayScene::Initialize()
 
 	//モデル名を指定してファイル読み込み
 	fbxModel1 = FbxLoader::GetInstance()->LoadModelFromFile("model");
+	fbxModel2 = FbxLoader::GetInstance()->LoadModelFromFile("Enemy1");
 
 	//3Dオブジェクト生成とモデルのセット
 	fbxObject1 = new FbxObject3d;
 	fbxObject1->Initialize();
 	fbxObject1->SetModel(fbxModel1);
 	fbxObject1->SetScale({ 0.01f,0.01f,0.01f });
+
+	fbxObject2 = new FbxObject3d;
+	fbxObject2->Initialize();
+	fbxObject2->SetModel(fbxModel2);
+	fbxObject2->SetPosition(Enemy::GetPos());
+	fbxObject2->SetScale({ 0.01f,0.01f,0.01f });
+
 
 	colliderModel = ColliderModel::ColliderModelCreate("BOX");
 	colliderObject = ColliderObject::Create();
@@ -69,6 +78,7 @@ void GamePlayScene::Finalize()
 {
 	//delete model;
 	delete fbxObject1;
+	delete fbxObject2;
 }
 
 void GamePlayScene::Update()
@@ -101,9 +111,6 @@ void GamePlayScene::Update()
 	
 	MyMath::GravityCheck(Player::GetPos(), groundY, Player::groundFlag);
 
-	fbxObject1->SetPosition(Player::GetPos());
-	colliderObject->SetPosition(Player::GetPos());
-
 	if (Player::GetWallColl() == true)
 	{
 		colliderObject->SetColor({ 1, 1, 0});
@@ -112,6 +119,14 @@ void GamePlayScene::Update()
 	{
 		colliderObject->SetColor({ 1, 0, 0});
 	}
+
+	if (input->PushKey(DIK_G))
+	{
+		Enemy::Tracking(Player::GetPos());
+	}
+
+
+
 
 	DebugText::GetInstance()->Print(50, 30 * 1, 2, "C:X:%f", camera->GetEye().x);
 	DebugText::GetInstance()->Print(50, 30 * 2, 2, "C:Y:%f", camera->GetEye().y);
@@ -134,15 +149,25 @@ void GamePlayScene::Update()
 	//	//SceneManager::GetInstance()->ChangeScene("TITLE");
 	//}	
 
+
+
+	fbxObject1->SetPosition(Player::GetPos());
+	colliderObject->SetPosition(Player::GetPos());
+
+	fbxObject2->SetPosition(Enemy::GetPos());
+
 	fbxObject1->AnimationFlag = false;
-	fbxObject1->AnimationNum = 1;
+	fbxObject2->AnimationFlag = false;
+	//fbxObject1->AnimationNum = 1;
+	
+	
 	//アップデート
 	camera->Update();
 	//objectX->Update();
 	fbxObject1->Update();
+	fbxObject2->Update();
 	colliderObject->Update();
 	JsonLoader::Update();
-	DebugText::GetInstance()->Print(50, 30 * 3, 2, "%d", fbxObject1->GetisPlay());
 }
 
 void GamePlayScene::Draw()
@@ -179,6 +204,7 @@ void GamePlayScene::Draw()
 
 	//FBX3Dオブジェクトの描画
 	fbxObject1->Draw(cmdList);
+	fbxObject2->Draw(cmdList);
 	colliderObject->Draw();
 	/// <summary>
 	/// ここに3Dオブジェクトの描画処理を追加できる
