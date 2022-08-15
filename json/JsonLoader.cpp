@@ -163,7 +163,7 @@ void JsonLoader::SetObject()
 		objects.push_back(std::move(newObject));
 	}
 
-	//レベルデータからオブジェクトを生成,配置
+	//レベルデータからコライダーオブジェクトを生成,配置
 	for (auto& colliderObjectData : levelData->colliderObjects)
 	{
 		//ファイル名から登録済みモデルを検索
