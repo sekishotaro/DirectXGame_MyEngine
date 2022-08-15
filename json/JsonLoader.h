@@ -52,16 +52,14 @@ public:// 定数
 	//レベルデータ格納用インスタンスを生成
 	static LevelData* levelData;
 
+	//壁用
 	//オブジェクト
 	static std::vector<std::unique_ptr<Object3d>> objects;
-
 	//モデル
 	static std::map<std::string, Model> models;
-
 	//コライダー用
 	//オブジェクト
 	static std::vector<std::unique_ptr<ColliderObject>> colliderObjects;
-
 	//モデル
 	static std::map<std::string, ColliderModel> colliderModels;
 
@@ -78,6 +76,9 @@ public:
 
 	//描画
 	static void Draw();
+
+private:
+	//static void WallLoad( nlohmann::json& object);
 
 };
 

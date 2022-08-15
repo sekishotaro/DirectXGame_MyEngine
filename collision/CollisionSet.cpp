@@ -64,7 +64,7 @@ void CollisionSet::CollisionPushBack( const XMFLOAT3& size, float& groundY)
 		
 
 		//X
-		if (colPlayer.centerPos.z <= colBox.MaxPos.z && colBox.LeastPos.z <= colPlayer.centerPos.z)
+		/*if (colPlayer.centerPos.z <= colBox.MaxPos.z && colBox.LeastPos.z <= colPlayer.centerPos.z)
 		{
 			if (colPlayer.centerPos.y <= colBox.MaxPos.y && colBox.LeastPos.y <= colPlayer.centerPos.y)
 			{
@@ -78,11 +78,24 @@ void CollisionSet::CollisionPushBack( const XMFLOAT3& size, float& groundY)
 					m1.x *= -1;
 				}
 			}
+		}*/
+
+		//x
+		if (colPlayer.centerPos.z <= colBox.MaxPos.z && colBox.LeastPos.z <= colPlayer.centerPos.z)
+		{
+			if (colPlayer.MaxPos.x >= colBox.MaxPos.x)
+			{
+				m1.x = colBox.MaxPos.x - colPlayer.LeastPos.x;
+			}
+			else
+			{
+				m1.x = colPlayer.MaxPos.x - colBox.LeastPos.x;
+				m1.x *= -1;
+			}
 		}
 		
-
 		//Z
-		if (colPlayer.centerPos.x <= colBox.MaxPos.x && colBox.LeastPos.x <= colPlayer.centerPos.x)
+		/*if (colPlayer.centerPos.x <= colBox.MaxPos.x && colBox.LeastPos.x <= colPlayer.centerPos.x)
 		{
 			if (colPlayer.centerPos.y <= colBox.MaxPos.y && colBox.LeastPos.y <= colPlayer.centerPos.y)
 			{
@@ -96,12 +109,24 @@ void CollisionSet::CollisionPushBack( const XMFLOAT3& size, float& groundY)
 					m1.z *= -1;
 				}
 			}
+		}*/
+
+		//z
+		if (colPlayer.centerPos.x <= colBox.MaxPos.x && colBox.LeastPos.x <= colPlayer.centerPos.x)
+		{
+			if (colPlayer.MaxPos.z >= colBox.MaxPos.z)
+			{
+				m1.z = colBox.MaxPos.z - colPlayer.LeastPos.z;
+			}
+			else
+			{
+				m1.z = colPlayer.MaxPos.z - colBox.LeastPos.z;
+				m1.z *= -1;
+			}
 		}
 		
-		
-
 		//Y
-		if (colPlayer.centerPos.z <= colBox.MaxPos.z && colBox.LeastPos.z <= colPlayer.centerPos.z)
+		/*if (colPlayer.centerPos.z <= colBox.MaxPos.z && colBox.LeastPos.z <= colPlayer.centerPos.z)
 		{
 			if (colPlayer.centerPos.x <= colBox.MaxPos.x && colBox.LeastPos.x <= colPlayer.centerPos.x)
 			{
@@ -116,7 +141,7 @@ void CollisionSet::CollisionPushBack( const XMFLOAT3& size, float& groundY)
 					m1.y *= -1;
 				}
 			}
-		}
+		}*/
 		
 
 		XMFLOAT3 pPos = Player::GetPos();

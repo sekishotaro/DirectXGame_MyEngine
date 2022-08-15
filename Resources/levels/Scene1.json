@@ -45,7 +45,8 @@
         },
         {
             "type": "MESH",
-            "name": "球",
+            "type_name": "ground",
+            "name": "Plane001.002",
             "transform": {
                 "translation": [
                     0.0,
@@ -63,7 +64,30 @@
                     1.0
                 ]
             },
-            "file_name": "sphere",
+            "file_name": "ground"
+        },
+        {
+            "type": "MESH",
+            "type_name": "wall",
+            "name": "Cube.003",
+            "transform": {
+                "translation": [
+                    0.0,
+                    0.0,
+                    3.4492149353027344
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "file_name": "block",
             "collider": {
                 "type": "BOX",
                 "center": [
@@ -72,9 +96,96 @@
                     0.0
                 ],
                 "size": [
-                    4.0,
+                    5.0,
+                    5.0,
+                    5.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0
+                ]
+            }
+        },
+        {
+            "type": "MESH",
+            "type_name": "wall",
+            "name": "Cube.004",
+            "transform": {
+                "translation": [
+                    0.0,
+                    -11.806675910949707,
+                    3.354182243347168
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
                     1.0,
-                    8.0
+                    1.0,
+                    1.0
+                ]
+            },
+            "file_name": "block",
+            "collider": {
+                "type": "BOX",
+                "center": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "size": [
+                    4.999999523162842,
+                    5.0,
+                    5.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0
+                ]
+            }
+        },
+        {
+            "type": "MESH",
+            "type_name": "crystal",
+            "name": "Cube.005",
+            "transform": {
+                "translation": [
+                    0.0,
+                    12.131834030151367,
+                    2.676680564880371
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "file_name": "block",
+            "collider": {
+                "type": "BOX",
+                "center": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "size": [
+                    5.0,
+                    5.0,
+                    5.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0
                 ]
             }
         }
