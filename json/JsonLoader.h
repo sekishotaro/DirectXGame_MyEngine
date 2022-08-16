@@ -7,6 +7,9 @@
 #include <memory>
 #include <map>
 
+
+using namespace nlohmann;
+
 // レベルデータ
 struct LevelData {
 
@@ -78,7 +81,7 @@ public:
 	static void Draw();
 
 private:
-	//static void WallLoad( nlohmann::json& object);
+	static void WallLoad( nlohmann::json& object);
 
 };
 

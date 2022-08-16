@@ -251,72 +251,72 @@ void JsonLoader::Draw()
 	}
 }
 
-//void JsonLoader::WallLoad( nlohmann::json& object)
-//{
-//	//要素追加
-//	levelData->objects.emplace_back(LevelData::ObjectData{});
-//	//今追加した要素の参照を得る
-//	LevelData::ObjectData& objectData = levelData->objects.back();
-//
-//	if (object.contains("file_name"))
-//	{
-//		//ファイル名
-//		objectData.fileName = object["file_name"];
-//	}
-//
-//	//トランスフォームのパラメーター読み込み
-//	nlohmann::json& transform = object["transform"];
-//	//平行移動
-//	objectData.translation.m128_f32[0] = (float)transform["translation"][1];
-//	objectData.translation.m128_f32[1] = (float)transform["translation"][2];
-//	objectData.translation.m128_f32[2] = -(float)transform["translation"][0];
-//	objectData.translation.m128_f32[3] = 1.0;
-//	//回転角
-//	objectData.rotation.m128_f32[0] = -(float)transform["rotation"][1];
-//	objectData.rotation.m128_f32[1] = -(float)transform["rotation"][2];
-//	objectData.rotation.m128_f32[2] = (float)transform["rotation"][0];
-//	objectData.rotation.m128_f32[3] = 0.0;
-//	//スケーリング
-//	objectData.scaling.m128_f32[0] = (float)transform["scaling"][1];
-//	objectData.scaling.m128_f32[1] = (float)transform["scaling"][2];
-//	objectData.scaling.m128_f32[2] = (float)transform["scaling"][0];
-//	objectData.scaling.m128_f32[3] = 0.0;
-//
-//	// TODO: オブジェクト走査を再帰関数にまとめ、再帰呼出しで枝を走査する
-//	if (object.contains("children"))
-//	{
-//	}
-//
-//	//コライダー
-//	if (object.contains("collider"))
-//	{
-//		levelData->colliderObjects.emplace_back(LevelData::ObjectData{});
-//		LevelData::ObjectData& colliderObjectData = levelData->colliderObjects.back();
-//		nlohmann::json& collider = object["collider"];
-//		colliderObjectData.fileName = collider["type"];
-//		if (object.contains("BOX") == 0)
-//		{
-//			//オブジェクトに対しての当たり判定の位置
-//			colliderObjectData.cenyter.m128_f32[0] = (float)collider["center"][1];
-//			colliderObjectData.cenyter.m128_f32[1] = (float)collider["center"][2];
-//			colliderObjectData.cenyter.m128_f32[2] = -(float)collider["center"][0];
-//			colliderObjectData.cenyter.m128_f32[3] = 1.0;
-//			//オブジェクトの位置
-//			colliderObjectData.translation.m128_f32[0] = (float)transform["translation"][1];
-//			colliderObjectData.translation.m128_f32[1] = (float)transform["translation"][2];
-//			colliderObjectData.translation.m128_f32[2] = -(float)transform["translation"][0];
-//			colliderObjectData.translation.m128_f32[3] = 1.0;
-//			//回転角
-//			//colliderObjectData.rotation.m128_f32[0] = -(float)collider["rotation"][1];
-//			//colliderObjectData.rotation.m128_f32[1] = -(float)collider["rotation"][2];
-//			//colliderObjectData.rotation.m128_f32[2] = (float)collider["rotation"][0];
-//			//colliderObjectData.rotation.m128_f32[3] = 0.0;
-//			//スケーリング
-//			colliderObjectData.scaling.m128_f32[0] = (float)collider["size"][1];
-//			colliderObjectData.scaling.m128_f32[1] = (float)collider["size"][2];
-//			colliderObjectData.scaling.m128_f32[2] = (float)collider["size"][0];
-//			colliderObjectData.scaling.m128_f32[3] = 0.0;
-//		}
-//		objectData.colliderName = colliderObjectData.fileName;
-//	}
-//}
+void JsonLoader::WallLoad( nlohmann::json& object)
+{
+	//要素追加
+	levelData->objects.emplace_back(LevelData::ObjectData{});
+	//今追加した要素の参照を得る
+	LevelData::ObjectData& objectData = levelData->objects.back();
+
+	if (object.contains("file_name"))
+	{
+		//ファイル名
+		objectData.fileName = object["file_name"];
+	}
+
+	//トランスフォームのパラメーター読み込み
+	nlohmann::json& transform = object["transform"];
+	//平行移動
+	objectData.translation.m128_f32[0] = (float)transform["translation"][1];
+	objectData.translation.m128_f32[1] = (float)transform["translation"][2];
+	objectData.translation.m128_f32[2] = -(float)transform["translation"][0];
+	objectData.translation.m128_f32[3] = 1.0;
+	//回転角
+	objectData.rotation.m128_f32[0] = -(float)transform["rotation"][1];
+	objectData.rotation.m128_f32[1] = -(float)transform["rotation"][2];
+	objectData.rotation.m128_f32[2] = (float)transform["rotation"][0];
+	objectData.rotation.m128_f32[3] = 0.0;
+	//スケーリング
+	objectData.scaling.m128_f32[0] = (float)transform["scaling"][1];
+	objectData.scaling.m128_f32[1] = (float)transform["scaling"][2];
+	objectData.scaling.m128_f32[2] = (float)transform["scaling"][0];
+	objectData.scaling.m128_f32[3] = 0.0;
+
+	// TODO: オブジェクト走査を再帰関数にまとめ、再帰呼出しで枝を走査する
+	if (object.contains("children"))
+	{
+	}
+
+	//コライダー
+	if (object.contains("collider"))
+	{
+		levelData->colliderObjects.emplace_back(LevelData::ObjectData{});
+		LevelData::ObjectData& colliderObjectData = levelData->colliderObjects.back();
+		nlohmann::json& collider = object["collider"];
+		colliderObjectData.fileName = collider["type"];
+		if (object.contains("BOX") == 0)
+		{
+			//オブジェクトに対しての当たり判定の位置
+			colliderObjectData.cenyter.m128_f32[0] = (float)collider["center"][1];
+			colliderObjectData.cenyter.m128_f32[1] = (float)collider["center"][2];
+			colliderObjectData.cenyter.m128_f32[2] = -(float)collider["center"][0];
+			colliderObjectData.cenyter.m128_f32[3] = 1.0;
+			//オブジェクトの位置
+			colliderObjectData.translation.m128_f32[0] = (float)transform["translation"][1];
+			colliderObjectData.translation.m128_f32[1] = (float)transform["translation"][2];
+			colliderObjectData.translation.m128_f32[2] = -(float)transform["translation"][0];
+			colliderObjectData.translation.m128_f32[3] = 1.0;
+			//回転角
+			//colliderObjectData.rotation.m128_f32[0] = -(float)collider["rotation"][1];
+			//colliderObjectData.rotation.m128_f32[1] = -(float)collider["rotation"][2];
+			//colliderObjectData.rotation.m128_f32[2] = (float)collider["rotation"][0];
+			//colliderObjectData.rotation.m128_f32[3] = 0.0;
+			//スケーリング
+			colliderObjectData.scaling.m128_f32[0] = (float)collider["size"][1];
+			colliderObjectData.scaling.m128_f32[1] = (float)collider["size"][2];
+			colliderObjectData.scaling.m128_f32[2] = (float)collider["size"][0];
+			colliderObjectData.scaling.m128_f32[3] = 0.0;
+		}
+		objectData.colliderName = colliderObjectData.fileName;
+	}
+}
