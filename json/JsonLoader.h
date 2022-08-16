@@ -24,6 +24,8 @@ struct LevelData {
 		DirectX::XMVECTOR scaling;
 		// コライダー用ローカル座標
 		DirectX::XMVECTOR cenyter;
+		// タイプ名
+		std::string typeName;
 	};
 
 	// 描画用オブジェクト配列
@@ -64,6 +66,30 @@ public:// 定数
 	//モデル
 	static std::map<std::string, ColliderModel> colliderModels;
 
+	//クリスタル用
+	//オブジェクト
+	static std::vector<std::unique_ptr<Object3d>> crystalObjects;
+	//モデル
+	static std::map<std::string, Model> crystalModels;
+	//コライダー用
+	//オブジェクト
+	static std::vector<std::unique_ptr<ColliderObject>> crystalColliderObjects;
+	//モデル
+	static std::map<std::string, ColliderModel> crystalColliderModels;
+
+	//床用
+	//オブジェクト
+	static std::vector<std::unique_ptr<Object3d>> groundObjects;
+	//モデル
+	static std::map<std::string, Model> groundModels;
+	//コライダー用
+	//オブジェクト
+	static std::vector<std::unique_ptr<ColliderObject>> groundColliderObjects;
+	//モデル
+	static std::map<std::string, ColliderModel> groundColliderModels;
+
+
+
 public:
 
 	//読み込み
@@ -79,6 +105,14 @@ public:
 	static void Draw();
 
 private:
-	static void WallLoad( nlohmann::json& object);
+	//壁
+	static void TypeSetModel( LevelData::ObjectData& objectData);
+	static void TypeSetColliderModel( LevelData::ObjectData& colliderObjectData);
+	//クリスタル
+	static void TypeSetCrystalModel(LevelData::ObjectData& objectData);
+	static void TypeSetColliderCrystalModel(LevelData::ObjectData& colliderObjectData);
+	//地面
+	static void TypeSetGroundModel(LevelData::ObjectData& objectData);
+	static void TypeSetColliderGroundModel(LevelData::ObjectData& colliderObjectData);
 };
 

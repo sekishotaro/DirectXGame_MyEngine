@@ -70,7 +70,7 @@ void GamePlayScene::Initialize()
 	colliderObject->SetCenter({ 0, 2.5f, 0 });
 	colliderObject->SetScale(Player::GetSize());
 	//json
-	JsonLoader::LoadFile("Scene");
+	JsonLoader::LoadFile("Scene2");
 	JsonLoader::SetObject();
 }
 

@@ -2,6 +2,27 @@
     "name": "scene",
     "objects": [
         {
+            "type": "LIGHT",
+            "name": "Light",
+            "transform": {
+                "translation": [
+                    4.076245307922363,
+                    1.0054539442062378,
+                    5.903861999511719
+                ],
+                "rotation": [
+                    37.261043548583984,
+                    3.1637072563171387,
+                    106.93630981445312
+                ],
+                "scaling": [
+                    1.0,
+                    0.9999999403953552,
+                    1.0
+                ]
+            }
+        },
+        {
             "type": "CAMERA",
             "name": "Camera",
             "transform": {
@@ -23,29 +44,9 @@
             }
         },
         {
-            "type": "LIGHT",
-            "name": "サン",
-            "transform": {
-                "translation": [
-                    -45.78496551513672,
-                    75.16600036621094,
-                    55.69576644897461
-                ],
-                "rotation": [
-                    7.265163898468018,
-                    -27.531457901000977,
-                    178.47654724121094
-                ],
-                "scaling": [
-                    1.0,
-                    1.0,
-                    0.9999999403953552
-                ]
-            }
-        },
-        {
             "type": "MESH",
-            "name": "平面",
+            "type_name": "ground",
+            "name": "Plane001",
             "transform": {
                 "translation": [
                     0.0,
@@ -63,7 +64,130 @@
                     1.0
                 ]
             },
-            "file_name": "test"
+            "file_name": "ground"
+        },
+        {
+            "type": "MESH",
+            "type_name": "wall",
+            "name": "球",
+            "transform": {
+                "translation": [
+                    0.0,
+                    -3.9729385375976562,
+                    1.1102089881896973
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "file_name": "sphere",
+            "collider": {
+                "type": "BOX",
+                "center": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "size": [
+                    2.000000476837158,
+                    2.0,
+                    2.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0
+                ]
+            }
+        },
+        {
+            "type": "MESH",
+            "type_name": "wall",
+            "name": "Cube.002",
+            "transform": {
+                "translation": [
+                    0.0,
+                    3.5511884689331055,
+                    2.5329463481903076
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "file_name": "block",
+            "collider": {
+                "type": "BOX",
+                "center": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "size": [
+                    5.0,
+                    5.0,
+                    5.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0
+                ]
+            }
+        },
+        {
+            "type": "MESH",
+            "type_name": "crystal",
+            "name": "Cube.001",
+            "transform": {
+                "translation": [
+                    0.0,
+                    12.274585723876953,
+                    2.5329463481903076
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "file_name": "block",
+            "collider": {
+                "type": "BOX",
+                "center": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "size": [
+                    5.0,
+                    5.0,
+                    5.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0
+                ]
+            }
         }
     ]
 }
