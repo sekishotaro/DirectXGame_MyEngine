@@ -6,6 +6,7 @@
 #include "ColliderObject.h"
 #include <memory>
 #include <map>
+#include "nlohmann/json.hpp"
 
 // レベルデータ
 struct LevelData {

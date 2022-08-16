@@ -1,7 +1,6 @@
 #include "JsonLoader.h"
 #include <fstream>
 #include <cassert>
-#include "nlohmann/json.hpp"
 
 std::vector<std::unique_ptr<Object3d>> JsonLoader::objects;
 std::map< std::string, Model> JsonLoader::models;
