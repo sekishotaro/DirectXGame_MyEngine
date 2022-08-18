@@ -41,12 +41,15 @@ public:
 
 	static XMFLOAT3 GetSize() { return size; }
 
+	static void Jump( float& y);
+
 private:
 	static XMFLOAT3 pos;
 	static XMFLOAT3 move;
 	static XMFLOAT3 rot;
 	static XMFLOAT3 size;
 	static bool wallcollisionFlag;
+	static bool jumpFlag;
 
 public:
 	static bool groundFlag;

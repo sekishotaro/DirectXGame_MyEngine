@@ -7,6 +7,7 @@ Player::XMFLOAT3 Player::rot = { 0.0f, 0.0f, 0.0f };
 Player::XMFLOAT3 Player::size = { 1.0f, 5.0f, 1.0f };
 bool Player::groundFlag = false;
 bool Player::wallcollisionFlag = false;
+bool Player::jumpFlag = false;
 
 void Player::Move(Input *input, const float& groundY)
 {
@@ -29,11 +30,16 @@ void Player::Move(Input *input, const float& groundY)
 		move.y -= 1.0f;
 	}
 
+	if (groundFlag == true)
+	{
+		jumpFlag = false;
+	}
 	if (input->PushKey(DIK_SPACE))
 	{
-		move.y += 10.0f;
+		jumpFlag = true;
 	}
 
+	Jump(move.y);
 	MyMath::Gravity(move, groundFlag);
 	MyMath::Movement(pos, move);
 }
@@ -41,5 +47,18 @@ void Player::Move(Input *input, const float& groundY)
 void Player::MoveAdd(XMFLOAT3 Addpos)
 {
 	MyMath::Movement(pos, Addpos);
+}
+
+void Player::Jump(float& y)
+{
+	//if (jumpFlag == false)
+	//{
+	//	jumpFlag = true;
+	//}
+
+	if (jumpFlag == true)
+	{
+		y += 0.8;
+	}
 }
 
