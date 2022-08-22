@@ -70,7 +70,7 @@ void GamePlayScene::Initialize()
 	colliderObject->SetCenter({ 0, 2.5f, 0 });
 	colliderObject->SetScale(Player::GetSize());
 	//json
-	JsonLoader::LoadFile("Scene8_22");
+	JsonLoader::LoadFile("Scene8_22_2");
 	JsonLoader::SetObject();
 }
 
@@ -196,14 +196,12 @@ void GamePlayScene::Draw()
 	// 3Dオブクジェクトの描画
 	//objectX->Draw();
 	
-
-	//json
-	JsonLoader::Draw();
-
 	//FBX3Dオブジェクトの描画
 	fbxObject1->Draw(cmdList);
 	fbxObject2->Draw(cmdList);
 	colliderObject->Draw();
+	//json
+	JsonLoader::Draw();
 	/// <summary>
 	/// ここに3Dオブジェクトの描画処理を追加できる
 	/// </summary>

@@ -17,6 +17,13 @@ std::map< std::string, Model> JsonLoader::groundModels;
 std::vector<std::unique_ptr<ColliderObject>> JsonLoader::groundColliderObjects;
 std::map< std::string, ColliderModel> JsonLoader::groundColliderModels;
 
+std::vector<std::unique_ptr<Object3d>> JsonLoader::enemyObjects;
+std::map< std::string, Model> JsonLoader::enemyModels;
+std::vector<std::unique_ptr<ColliderObject>> JsonLoader::enemyColliderObjects;
+std::map< std::string, ColliderModel> JsonLoader::enemyColliderModels;
+std::vector<std::unique_ptr<ColliderObject>> JsonLoader::enemyNaviareaObjects;
+std::map< std::string, ColliderModel> JsonLoader::enemyNaviareaModels;
+
 LevelData* JsonLoader::levelData;
 
 const std::string JsonLoader::DefaultDirectory = "Resources/levels/";
@@ -138,6 +145,39 @@ void JsonLoader::LoadFile(const std::string& fileName)
 				}
 				objectData.colliderName = colliderObjectData.fileName;
 			}
+
+			if (object.contains("naviarea"))
+			{
+				levelData->naviareaObjects.emplace_back(LevelData::ObjectData{});
+				LevelData::ObjectData& naviareaObjectData = levelData->naviareaObjects.back();
+				nlohmann::json& naviarea = object["naviarea"];
+				naviareaObjectData.fileName = naviarea["type"];
+				naviareaObjectData.typeName = typeName;
+				if (object.contains("BOX") == 0)
+				{
+					//オブジェクトに対しての当たり判定の位置
+					naviareaObjectData.cenyter.m128_f32[0] = (float)naviarea["center"][1];
+					naviareaObjectData.cenyter.m128_f32[1] = (float)naviarea["center"][2];
+					naviareaObjectData.cenyter.m128_f32[2] = -(float)naviarea["center"][0];
+					naviareaObjectData.cenyter.m128_f32[3] = 1.0;
+					//オブジェクトの位置
+					naviareaObjectData.translation.m128_f32[0] = (float)transform["translation"][1];
+					naviareaObjectData.translation.m128_f32[1] = (float)transform["translation"][2];
+					naviareaObjectData.translation.m128_f32[2] = -(float)transform["translation"][0];
+					naviareaObjectData.translation.m128_f32[3] = 1.0;
+					//回転角
+					//colliderObjectData.rotation.m128_f32[0] = -(float)collider["rotation"][1];
+					//colliderObjectData.rotation.m128_f32[1] = -(float)collider["rotation"][2];
+					//colliderObjectData.rotation.m128_f32[2] = (float)collider["rotation"][0];
+					//colliderObjectData.rotation.m128_f32[3] = 0.0;
+					//スケーリング
+					naviareaObjectData.scaling.m128_f32[0] = (float)naviarea["size"][1];
+					naviareaObjectData.scaling.m128_f32[1] = (float)naviarea["size"][2];
+					naviareaObjectData.scaling.m128_f32[2] = (float)naviarea["size"][0];
+					naviareaObjectData.scaling.m128_f32[3] = 0.0;
+				}
+				objectData.colliderName = naviareaObjectData.fileName;
+			}
 		}
 	}
 }
@@ -159,7 +199,10 @@ void JsonLoader::SetObject()
 		{
 			TypeSetGroundModel(objectData);
 		}
-
+		else if (objectData.typeName == "enemy")
+		{
+			TypeSetEnemyModel(objectData);
+		}
 	}
 
 	//レベルデータからコライダーオブジェクトを生成,配置
@@ -177,43 +220,18 @@ void JsonLoader::SetObject()
 		{
 			TypeSetColliderGroundModel(colliderObjectData);
 		}
+		else if (colliderObjectData.typeName == "enemy")
+		{
+			TypeSetColliderEnemyModel(colliderObjectData);
+		}
+	}
 
-		////ファイル名から登録済みモデルを検索
-		//ColliderModel* colliderModel = nullptr;
-		//colliderModel = ColliderModel::ColliderModelCreate(colliderObjectData.fileName);
-		//colliderModels[colliderObjectData.fileName] = *colliderModel;
-
-		////モデルを指定して3Dオブジェクトを生成
-		//std::unique_ptr<ColliderObject> newObject;
-		//newObject = ColliderObject::Create();
-		//newObject->SetModel(colliderModel);
-
-		////座標
-		//XMFLOAT3 pos;
-		//DirectX::XMStoreFloat3(&pos, colliderObjectData.translation);
-		//
-		////コライダー用ローカル座標
-		//XMFLOAT3 centerPos;
-		//DirectX::XMStoreFloat3(&centerPos, colliderObjectData.cenyter);
-		//pos.x = pos.x + centerPos.x;
-		//pos.y = pos.y + centerPos.y;
-		//pos.z = pos.z + centerPos.z;
-
-		//newObject->SetPosition(pos);
-
-		////回転角
-		//XMFLOAT3 rot {0,0,0};
-		////DirectX::XMStoreFloat3(&rot, colliderObjectData.rotation);
-		////rot.y -= 90.0f;
-		//newObject->SetRotation(rot);
-
-		////スケール
-		//XMFLOAT3 scale;
-		//DirectX::XMStoreFloat3(&scale, colliderObjectData.scaling);
-		//newObject->SetScale(scale);
-
-		////配列の最後に登録
-		//colliderObjects.push_back(std::move(newObject));
+	for (auto& naviareaObjectData : levelData->naviareaObjects)
+	{
+		if (naviareaObjectData.typeName == "enemy")
+		{
+			TypeSetNaviareaEnemyModel(naviareaObjectData);
+		}
 	}
 }
 
@@ -280,6 +298,22 @@ void JsonLoader::Update()
 
 		groundColliderObjects[i]->Update();
 	}
+
+	for (int i = 0; i < enemyNaviareaObjects.size(); i++)
+	{
+		if (enemyNaviareaObjects[i].get()->GetCollFlag() == true)
+		{
+			enemyNaviareaObjects[i].get()->SetColor({ 1,1,0 });
+		}
+		else
+		{
+			enemyNaviareaObjects[i].get()->SetColor({ 0,0,1 });
+		}
+
+
+		enemyNaviareaObjects[i]->Update();
+	}
+
 }
 
 void JsonLoader::Draw()
@@ -314,6 +348,11 @@ void JsonLoader::Draw()
 	for (int i = 0; i < groundColliderObjects.size(); i++)
 	{
 		groundColliderObjects[i]->Draw();
+	}
+
+	for (int i = 0; i < enemyNaviareaObjects.size(); i++)
+	{
+		enemyNaviareaObjects[i]->Draw();
 	}
 }
 
@@ -535,5 +574,119 @@ void JsonLoader::TypeSetColliderGroundModel(LevelData::ObjectData& colliderObjec
 
 	//配列の最後に登録
 	groundColliderObjects.push_back(std::move(newColliderObject));
+}
+
+void JsonLoader::TypeSetEnemyModel(LevelData::ObjectData& objectData)
+{
+	//ファイル名から登録済みモデルを検索
+	Model* model = nullptr;
+	model = Model::LoadFromOBJ(objectData.fileName);
+	enemyModels[objectData.fileName] = *model;
+
+	//モデルを指定して3Dオブジェクトを生成
+	std::unique_ptr<Object3d> newObject;
+	newObject = Object3d::Create();
+	newObject->SetModel(model);
+
+	//座標
+	XMFLOAT3 pos;
+	DirectX::XMStoreFloat3(&pos, objectData.translation);
+	newObject->SetPosition(pos);
+
+	//回転角
+	XMFLOAT3 rot;
+	DirectX::XMStoreFloat3(&rot, objectData.rotation);
+	rot.y -= 90.0f;
+	newObject->SetRotation(rot);
+
+	//スケール
+	XMFLOAT3 scale;
+	DirectX::XMStoreFloat3(&scale, objectData.scaling);
+	newObject->SetScale(scale);
+
+	//配列の最後に登録
+	enemyObjects.push_back(std::move(newObject));
+}
+
+void JsonLoader::TypeSetColliderEnemyModel(LevelData::ObjectData& colliderObjectData)
+{
+	//レベルデータからコライダーオブジェクトを生成,配置
+	//ファイル名から登録済みモデルを検索
+	ColliderModel* colliderModel = nullptr;
+	colliderModel = ColliderModel::ColliderModelCreate(colliderObjectData.fileName);
+	enemyColliderModels[colliderObjectData.fileName] = *colliderModel;
+
+	//モデルを指定して3Dオブジェクトを生成
+	std::unique_ptr<ColliderObject> newColliderObject;
+	newColliderObject = ColliderObject::Create();
+	newColliderObject->SetModel(colliderModel);
+
+	//座標
+	XMFLOAT3 pos;
+	DirectX::XMStoreFloat3(&pos, colliderObjectData.translation);
+
+	//コライダー用ローカル座標
+	XMFLOAT3 centerPos;
+	DirectX::XMStoreFloat3(&centerPos, colliderObjectData.cenyter);
+	pos.x = pos.x + centerPos.x;
+	pos.y = pos.y + centerPos.y;
+	pos.z = pos.z + centerPos.z;
+
+	newColliderObject->SetPosition(pos);
+
+	//回転角
+	XMFLOAT3 rot{ 0,0,0 };
+	//DirectX::XMStoreFloat3(&rot, colliderObjectData.rotation);
+	//rot.y -= 90.0f;
+	newColliderObject->SetRotation(rot);
+
+	//スケール
+	XMFLOAT3 scale;
+	DirectX::XMStoreFloat3(&scale, colliderObjectData.scaling);
+	newColliderObject->SetScale(scale);
+
+	//配列の最後に登録
+	enemyColliderObjects.push_back(std::move(newColliderObject));
+}
+
+void JsonLoader::TypeSetNaviareaEnemyModel(LevelData::ObjectData& colliderObjectData)
+{
+	//レベルデータからコライダーオブジェクトを生成,配置
+	//ファイル名から登録済みモデルを検索
+	ColliderModel* colliderModel = nullptr;
+	colliderModel = ColliderModel::ColliderModelCreate(colliderObjectData.fileName);
+	enemyNaviareaModels[colliderObjectData.fileName] = *colliderModel;
+
+	//モデルを指定して3Dオブジェクトを生成
+	std::unique_ptr<ColliderObject> newColliderObject;
+	newColliderObject = ColliderObject::Create();
+	newColliderObject->SetModel(colliderModel);
+
+	//座標
+	XMFLOAT3 pos;
+	DirectX::XMStoreFloat3(&pos, colliderObjectData.translation);
+
+	//コライダー用ローカル座標
+	XMFLOAT3 centerPos;
+	DirectX::XMStoreFloat3(&centerPos, colliderObjectData.cenyter);
+	pos.x = pos.x + centerPos.x;
+	pos.y = pos.y + centerPos.y;
+	pos.z = pos.z + centerPos.z;
+
+	newColliderObject->SetPosition(pos);
+
+	//回転角
+	XMFLOAT3 rot{ 0,0,0 };
+	//DirectX::XMStoreFloat3(&rot, colliderObjectData.rotation);
+	//rot.y -= 90.0f;
+	newColliderObject->SetRotation(rot);
+
+	//スケール
+	XMFLOAT3 scale;
+	DirectX::XMStoreFloat3(&scale, colliderObjectData.scaling);
+	newColliderObject->SetScale(scale);
+
+	//配列の最後に登録
+	enemyNaviareaObjects.push_back(std::move(newColliderObject));
 }
 

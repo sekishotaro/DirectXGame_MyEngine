@@ -33,6 +33,9 @@ struct LevelData {
 
 	// 当たり判定用オブジェクト配列
 	std::vector<ObjectData> colliderObjects;
+
+	// メッシュエリア用オブジェクト配列
+	std::vector<ObjectData> naviareaObjects;
 };
 
 class JsonLoader
@@ -88,7 +91,21 @@ public:// 定数
 	//モデル
 	static std::map<std::string, ColliderModel> groundColliderModels;
 
-
+	//敵用
+	//オブジェクト
+	static std::vector<std::unique_ptr<Object3d>> enemyObjects;
+	//モデル
+	static std::map<std::string, Model> enemyModels;
+	//コライダー用
+	//オブジェクト
+	static std::vector<std::unique_ptr<ColliderObject>> enemyColliderObjects;
+	//モデル
+	static std::map<std::string, ColliderModel> enemyColliderModels;
+	//ナビエリア用
+	//オブジェクト
+	static std::vector<std::unique_ptr<ColliderObject>> enemyNaviareaObjects;
+	//モデル
+	static std::map<std::string, ColliderModel> enemyNaviareaModels;
 
 public:
 
@@ -114,5 +131,9 @@ private:
 	//地面
 	static void TypeSetGroundModel(LevelData::ObjectData& objectData);
 	static void TypeSetColliderGroundModel(LevelData::ObjectData& colliderObjectData);
+	//敵
+	static void TypeSetEnemyModel(LevelData::ObjectData& objectData);
+	static void TypeSetColliderEnemyModel(LevelData::ObjectData& colliderObjectData);
+	static void TypeSetNaviareaEnemyModel(LevelData::ObjectData& colliderObjectData);
 };
 

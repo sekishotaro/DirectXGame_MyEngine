@@ -1,5 +1,6 @@
 #include "DebugCamera.h"
 #include "Input.h"
+#include "Player.h"
 
 using namespace DirectX;
 float DebugCamera::dx = 0;
@@ -57,6 +58,7 @@ void DebugCamera::Update()
 	}
 
 	//Camera::SetTarget(target);
+	Camera::SetTarget(Player::GetPos());
 	Camera::SetEye(eye);
 	Camera::Update();
 }
