@@ -241,8 +241,15 @@ class MYADDON_OT_export_scene(bpy.types.Operator, bpy_extras.io_utils.ExportHelp
             collider["type"] = object["collider"]
             collider["center"] = object["collider_center"].to_list()
             collider["size"] = object["collider_size"].to_list()
-            collider["rotation"] = object["collider_rotation"].to_list()
             json_object["collider"] = collider    
+
+        #カスタムプロパティ 'naviarea'
+        if "naviarea" in object:
+            naviarea = dict()
+            naviarea["type"] = object["naviarea"]
+            naviarea["center"] = object["naviarea_center"].to_list()
+            naviarea["size"] = object["naviarea_size"].to_list()
+            json_object["naviarea"] = naviarea      
 
         #1個分のjsonオブジェクトを親オブジェクトに登録
         data_parent.append(json_object)
@@ -288,6 +295,7 @@ class OBJECT_PT_file_name(bpy.types.Panel):
             #プロパティが無ければ、プロパティ追加ボタンを表示
             self.layout.operator(MYADDON_OT_add_filename.bl_idname)
             self.layout.operator(MYADDON_OT_add_collider.bl_idname)
+            self.layout.operator(MYADDON_OT_add_naviarea.bl_idname)
 
 #オペレータ　カスタムプロパティ['file_name']追加
 class MYADDON_OT_add_filename(bpy.types.Operator):
@@ -374,7 +382,6 @@ class DrawCollider:
             #中心点、サイズの変更を宣言
             center = mathutils.Vector((0, 0, 0))
             size = mathutils.Vector((2, 2, 2))
-            rotation = mathutils.Vector((0, 0, 0))
 
             #プロパティから値を取得
             center[0]=object["collider_center"][0]
@@ -383,9 +390,6 @@ class DrawCollider:
             size[0]=object["collider_size"][0]
             size[1]=object["collider_size"][1]
             size[2]=object["collider_size"][2]
-            rotation[0]=object["collider_rotation"][0]
-            rotation[1]=object["collider_rotation"][1]
-            rotation[2]=object["collider_rotation"][2]
 
             #追加前の頂点
             start = len(vertices["pos"])
@@ -445,7 +449,6 @@ class MYADDON_OT_add_collider(bpy.types.Operator):
         context.object["collider"] = "BOX"
         context.object["collider_center"] = mathutils.Vector((0, 0, 0))
         context.object["collider_size"] = mathutils.Vector((2, 2, 2))
-        context.object["collider_rotation"] = mathutils.Vector((0, 0, 0))
 
         return {"FINISHED"}
 
@@ -466,11 +469,143 @@ class OBJECT_PT_collider(bpy.types.Panel):
             self.layout.prop(context.object, '["collider"]', text="Type")
             self.layout.prop(context.object, '["collider_center"]', text="Center")
             self.layout.prop(context.object, '["collider_size"]', text="Size")
-            self.layout.prop(context.object, '["collider_rotation"]', text="Rotation")
         else:
             #プロパティが無ければ、プロパティ追加ボタンを表示
             self.layout.operator(OBJECT_PT_collider.bl_idname)
             self.layout.operator(MYADDON_OT_add_collider.bl_idname)
+
+
+class DrawNaviarea:
+    #描画ハンドル
+    handle = None
+
+    #3Dビューに登録する描画関数
+    def draw_collider():
+
+        #頂点データ
+        vertices = {"pos":[]}
+        #インデックスデータ
+        indices = []
+
+        #各頂点の、オブジェクト中心からのオフセット
+        offsets = [
+            [-0.5, -0.5, -0.5], #左下前
+            [+0.5, -0.5, -0.5], #右下前
+            [-0.5, +0.5, -0.5], #左上前
+            [+0.5, +0.5, -0.5], #右上前
+            [-0.5, -0.5, +0.5], #左下奥
+            [+0.5, -0.5, +0.5], #右下奥
+            [-0.5, +0.5, +0.5], #左上奥
+            [+0.5, +0.5, +0.5], #右上奥
+        ]
+
+        #立方体のX,Y,Z方向サイズ
+        size = [2, 2, 2]
+
+        #現在シーンのオブジェクトリストを走査
+        for object in bpy.context.scene.objects:
+
+            #コライダープロパティが無ければ、描画スキップ
+            if not "naviarea" in object:
+                continue
+
+            #中心点、サイズの変更を宣言
+            center = mathutils.Vector((0, 0, 0))
+            size = mathutils.Vector((2, 2, 2))
+
+            #プロパティから値を取得
+            center[0]=object["naviarea_center"][0]
+            center[1]=object["naviarea_center"][1]
+            center[2]=object["naviarea_center"][2]
+            size[0]=object["naviarea_size"][0]
+            size[1]=object["naviarea_size"][1]
+            size[2]=object["naviarea_size"][2]
+
+            #追加前の頂点
+            start = len(vertices["pos"])
+
+            #Boxの8頂点分回す
+            for offset in offsets:
+                #オブジェクトの中心座標をコピー
+                pos = copy.copy(center)
+                #中心点を基準に各頂点ごとずらす
+                pos[0]+=offset[0]*size[0]
+                pos[1]+=offset[1]*size[1]
+                pos[2]+=offset[2]*size[2]
+                #ローカル座標からワールド座標に変換
+                pos = object.matrix_world @ pos
+                #頂点データリストに座標を追加
+                vertices['pos'].append(pos)
+
+                #前面を構成する辺の頂点インデックス
+                indices.append([start+0, start+1])
+                indices.append([start+2, start+3])
+                indices.append([start+0, start+2])
+                indices.append([start+1, start+3])
+                #前面を構成する辺の頂点インデックス
+                indices.append([start+4, start+5])
+                indices.append([start+6, start+7])
+                indices.append([start+4, start+6])
+                indices.append([start+5, start+7])
+                #前面を構成する辺の頂点インデックス
+                indices.append([start+0, start+4])
+                indices.append([start+1, start+5])
+                indices.append([start+2, start+6])
+                indices.append([start+3, start+7])
+
+
+        #ビルトインのシェーダを取得
+        shader = gpu.shader.from_builtin("3D_UNIFORM_COLOR")
+
+        #パッチを作成(引数:シェーダー、トポロジー、頂点データ、インデックスデータ)
+        batch = gpu_extras.batch.batch_for_shader(shader, "LINES", vertices, indices = indices)
+
+        #シェーダのパラメータ設定
+        color = [1.0, 0.5, 0.0, 1.0]
+        shader.bind()
+        shader.uniform_float("color", color)
+        #描画
+        batch.draw(shader)
+
+
+#オペレータ カスタムプロパティ['naviarea']追加
+class MYADDON_OT_add_naviarea(bpy.types.Operator):
+    bl_idname = "myaddon.myaddon_ot_add_naviarea"
+    bl_label = "ナビエリア 追加"
+    bl_description = "['naviarea']カスタムプロパティを追加します"
+    bl_options = {"REGISTER", "UNDO"}
+
+    def execute(self, context):
+        #['collider']カスタムプロパティを追加
+        context.object["naviarea"] = "BOX"
+        context.object["naviarea_center"] = mathutils.Vector((0, 0, 0))
+        context.object["naviarea_size"] = mathutils.Vector((2, 2, 2))
+
+        return {"FINISHED"}
+
+#パネル　ナビエリア
+class OBJECT_PT_naviarea(bpy.types.Panel):
+    bl_idname = "OBJECT_PT_naviarea"
+    bl_label = "Naviarea"
+    bl_space_type = "PROPERTIES"
+    bl_region_type = "WINDOW"
+    bl_context = "object"
+        #サブメニューの描画
+    def draw(self, context):
+        
+        #パネルに項目を追加
+        if "naviarea" in context.object:
+            #既にプロパティがあれば、プロパティを表示
+            self.layout.prop(context.object, '["naviarea"]', text="Type")
+            self.layout.prop(context.object, '["naviarea_center"]', text="Center")
+            self.layout.prop(context.object, '["naviarea_size"]', text="Size")
+        else:
+            #プロパティが無ければ、プロパティ追加ボタンを表示
+            self.layout.operator(OBJECT_PT_naviarea.bl_idname)
+            self.layout.operator(MYADDON_OT_add_naviarea.bl_idname)
+
+
+
             
 
 #Blenderに登録するクラスリスト
@@ -485,6 +620,8 @@ classes = (
     OBJECT_PT_collider,
     OBJECT_PT_type_name,
     MYADDON_OT_add_typename,
+    OBJECT_PT_naviarea,
+    MYADDON_OT_add_naviarea,
     )
 
 
@@ -498,6 +635,7 @@ def register():
     bpy.types.TOPBAR_MT_editor_menus.append(TOPBAR_MT_my_menu.submenu)
     #3Dビューに描画関数を追加
     DrawCollider.handle = bpy.types.SpaceView3D.draw_handler_add(DrawCollider.draw_collider, (), "WINDOW", "POST_VIEW")
+    DrawNaviarea.handle = bpy.types.SpaceView3D.draw_handler_add(DrawNaviarea.draw_collider, (), "WINDOW", "POST_VIEW")
     print("レベルエディタが有効化されました。")
     
 #アドオン無効化時コールバック
@@ -506,7 +644,7 @@ def unregister():
     bpy.types.TOPBAR_MT_editor_menus.remove(TOPBAR_MT_my_menu.submenu)
     #3Dビューから描画関数を削除
     bpy.types.SpaceView3D.draw_handler_remove(DrawCollider.handle, "WINDOW")
-
+    bpy.types.SpaceView3D.draw_handler_remove(DrawNaviarea.handle, "WINDOW")
     #Blenderからクラスを削除
     for cls in classes:
         bpy.utils.unregister_class(cls)
