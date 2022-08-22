@@ -70,7 +70,7 @@ void GamePlayScene::Initialize()
 	colliderObject->SetCenter({ 0, 2.5f, 0 });
 	colliderObject->SetScale(Player::GetSize());
 	//json
-	JsonLoader::LoadFile("Scene2");
+	JsonLoader::LoadFile("Scene8_22");
 	JsonLoader::SetObject();
 }
 
@@ -106,9 +106,7 @@ void GamePlayScene::Update()
 
 	Player::Move(input, groundY);
 	CollisionSet::CollisionCheck(Player::GetPos(), colliderObject->GetScale(), groundY);
-	
 	CollisionSet::CollisionPushBack(colliderObject->GetScale(), groundY);
-	
 	MyMath::GravityCheck(Player::GetPos(), groundY, Player::groundFlag);
 
 	if (Player::GetWallColl() == true)

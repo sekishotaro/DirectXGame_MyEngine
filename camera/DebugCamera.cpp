@@ -56,7 +56,7 @@ void DebugCamera::Update()
 
 	}
 
-	Camera::SetTarget(target);
+	//Camera::SetTarget(target);
 	Camera::SetEye(eye);
 	Camera::Update();
 }
