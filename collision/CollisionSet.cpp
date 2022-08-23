@@ -149,3 +149,27 @@ void CollisionSet::CollisionPushBack( const XMFLOAT3& size, float& groundY)
 		Player::MoveAdd(m1);
 	}
 }
+
+bool CollisionSet::CollisionCheck1(const XMFLOAT3& pos1, const XMFLOAT3& size1, const XMFLOAT3& pos2, const XMFLOAT3& size2)
+{
+	Box col1;
+	col1.centerPos = pos1;
+	col1.size = { size1.x / 2, size1.y / 2, size1.z / 2 };
+	col1.MaxPos = { col1.centerPos.x + col1.size.x,col1.centerPos.y + col1.size.y,col1.centerPos.z + col1.size.z };
+	col1.LeastPos = { col1.centerPos.x - col1.size.x,col1.centerPos.y,col1.centerPos.z - col1.size.z };
+
+	Box col2;
+	col2.centerPos = pos2;
+	col2.size = { size2.x / 2, size2.y / 2, size2.z / 2 };
+	col2.MaxPos   = { col2.centerPos.x + col2.size.x, col2.centerPos.y + col2.size.y, col2.centerPos.z + col2.size.z };
+	col2.LeastPos = { col2.centerPos.x - col2.size.x, col2.centerPos.y - col2.size.x, col2.centerPos.z - col2.size.z };
+
+	if (Collision::CheckAABB(col1, col2) == true)
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}

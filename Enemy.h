@@ -23,5 +23,7 @@ public:
 	static XMFLOAT3 GetPos() { return pos; }
 
 	static void Tracking(XMFLOAT3 playerPos);
+
+	static void Initialize();
 };
 

@@ -19,6 +19,8 @@ public:
 
 	static void CollisionPushBack(const XMFLOAT3& size, float& groundY);
 
+	static bool CollisionCheck1(const XMFLOAT3& pos1, const XMFLOAT3& size1, const XMFLOAT3& pos2, const XMFLOAT3& size2);
+
 private:
 	static bool PlayerWallCollisionFlag;
 };

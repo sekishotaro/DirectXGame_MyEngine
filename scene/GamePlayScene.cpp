@@ -72,6 +72,8 @@ void GamePlayScene::Initialize()
 	//json
 	JsonLoader::LoadFile("Scene8_22_2");
 	JsonLoader::SetObject();
+
+	Enemy::Initialize();
 }
 
 void GamePlayScene::Finalize()
