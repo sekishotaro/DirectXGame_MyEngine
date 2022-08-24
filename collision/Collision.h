@@ -73,5 +73,9 @@ public:
 	static bool CheckRay2Sphere(const Ray &ray, const Sphere &sphere, float *distance = nullptr, DirectX::XMVECTOR *inter = nullptr);
 
 
+	static bool CheckBoxSphere(const SphereF& sphere, const Box& box);
+
 	static bool CheckAABB(const Box& box1, const Box& box2);
+
+	static bool CheckCircleDot(const Circle& circle, XMFLOAT2 dot);
 };
