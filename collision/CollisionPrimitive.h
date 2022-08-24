@@ -26,6 +26,14 @@ struct SphereF
 	float radius = 1.0f;
 };
 
+struct Circle
+{
+	//’†SÀ•W
+	DirectX::XMFLOAT2 center = { 0,0 };
+	//”¼Œa
+	float radius = 1.0f;
+};
+
 /// <summary>
 /// •½–Ê
 /// </summary>
@@ -68,7 +76,9 @@ struct Ray
 	DirectX::XMVECTOR dir = { 1,0,0,0 };
 };
 
-
+/// <summary>
+/// ’·•ûŒ`
+/// </summary>
 struct Box
 {
 	DirectX::XMFLOAT3 centerPos = { 0,0,0};
