@@ -6,6 +6,7 @@
 #include "Audio.h"
 #include "Sprite.h"
 #include "Object3d.h"
+#include "MathObject.h"
 #include "ColliderObject.h"
 #include "DebugText.h"
 #include "SceneManager.h"

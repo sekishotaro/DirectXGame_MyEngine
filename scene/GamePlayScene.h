@@ -3,6 +3,7 @@
 #include "BaseScene.h"
 #include "Sprite.h"
 #include "Object3d.h"
+#include "MathObject.h"
 #include "ColliderObject.h"
 #include "FbxObject3d.h"
 #include <DirectXMath.h>
@@ -68,5 +69,8 @@ public:
 
 	bool graFlag = true;
 	float groundY = 0.0f;
+
+	std::unique_ptr<MathObject> mathObject;
+	MathModel* mathModel = nullptr;
 };
 

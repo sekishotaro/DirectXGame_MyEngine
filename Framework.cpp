@@ -44,6 +44,11 @@ void Framework::Initialize()
 		assert(0);
 	}
 
+	if (!MathObject::StaticInitialize(dxCommon->GetDev(), camera))
+	{
+		assert(0);
+	}
+
 	//3Dオブジェクト静的初期化
 	if (!ColliderObject::StaticInitialize(dxCommon->GetDev(), camera))
 	{

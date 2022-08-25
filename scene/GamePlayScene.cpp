@@ -28,6 +28,8 @@ void GamePlayScene::Initialize()
 	// カメラセット
 	Object3d::SetCamera(camera);
 	ColliderObject::SetCamera(camera);
+
+	MathObject::SetCamera(camera);
 	//dCamera->SetEye({ 0, 0, 100 });			//prinding時
 	camera->SetEye({ 0, 0, -30 });		//prin時
 	FbxObject3d::SetCamera(camera);
@@ -74,6 +76,13 @@ void GamePlayScene::Initialize()
 	JsonLoader::SetObject();
 
 	Enemy::Initialize();
+
+	mathModel = MathModel::LoadFromOBJ("sphere");
+	mathObject = MathObject::Create();
+	//オブジェクトにモデルをひも付ける
+	mathObject->SetModel(mathModel);
+	mathObject->SetPosition(XMFLOAT3(0, 5, 0));
+
 }
 
 void GamePlayScene::Finalize()
@@ -163,7 +172,7 @@ void GamePlayScene::Update()
 	
 	//アップデート
 	camera->Update();
-	//objectX->Update();
+	mathObject->Update();
 	fbxObject1->Update();
 	fbxObject2->Update();
 	colliderObject->Update();
@@ -194,16 +203,19 @@ void GamePlayScene::Draw()
 	// 3Dオブジェクト描画前処理
 	Object3d::PreDraw(cmdList);
 	ColliderObject::PreDraw(cmdList);
+	MathObject::PreDraw(cmdList);
 
 	// 3Dオブクジェクトの描画
-	//objectX->Draw();
+	
 	
 	//FBX3Dオブジェクトの描画
 	fbxObject1->Draw(cmdList);
 	fbxObject2->Draw(cmdList);
-	colliderObject->Draw();
+	
 	//json
 	JsonLoader::Draw();
+	colliderObject->Draw();
+	mathObject->Draw();
 	/// <summary>
 	/// ここに3Dオブジェクトの描画処理を追加できる
 	/// </summary>
@@ -211,6 +223,7 @@ void GamePlayScene::Draw()
 	// 3Dオブジェクト描画後処理
 	Object3d::PostDraw();
 	ColliderObject::PostDraw();
+	MathObject::PostDraw();
 	// 前景スプライト描画前処理
 	Sprite::PreDraw(cmdList);
 

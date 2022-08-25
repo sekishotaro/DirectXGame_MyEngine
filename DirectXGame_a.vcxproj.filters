@@ -21,6 +21,7 @@
     <None Include="Resources\shaders\FBX.hlsli" />
     <None Include="Resources\shaders\PostEffectTest.hlsli" />
     <None Include="Resources\shaders\ColliderOBJ.hlsli" />
+    <None Include="Resources\shaders\MathObject.hlsli" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Resources\shaders\BasicPS.hlsl" />
@@ -35,6 +36,8 @@
     <FxCompile Include="Resources\shaders\PostEffectTestVS.hlsl" />
     <FxCompile Include="Resources\shaders\ColliderOBJVS.hlsl" />
     <FxCompile Include="Resources\shaders\ColliderOBJPS.hlsl" />
+    <FxCompile Include="Resources\shaders\MathObjectPS.hlsl" />
+    <FxCompile Include="Resources\shaders\MathObjectVS.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -149,6 +152,12 @@
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Enemy.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="3d\MathModel.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="3d\MathObject.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
@@ -274,6 +283,12 @@
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="Enemy.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="3d\MathModel.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="3d\MathObject.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>
