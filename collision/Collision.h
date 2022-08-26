@@ -1,12 +1,27 @@
 #pragma once
 
 #include "CollisionPrimitive.h"
+#include <Windows.h>
+#include <wrl.h>
+#include <d3d12.h>
+#include <DirectXMath.h>
+#include <d3dx12.h>
 
 /// <summary>
 /// 当たり判定ヘルパークラス
 /// </summary>
 class Collision
 {
+private: // エイリアス
+// Microsoft::WRL::を省略
+	template <class T> using ComPtr = Microsoft::WRL::ComPtr<T>;
+	// DirectX::を省略
+	using XMFLOAT2 = DirectX::XMFLOAT2;
+	using XMFLOAT3 = DirectX::XMFLOAT3;
+	using XMFLOAT4 = DirectX::XMFLOAT4;
+	using XMMATRIX = DirectX::XMMATRIX;
+
+
 public:
 	/// <summary>
 	/// 球と平面の当たり判定
@@ -73,9 +88,9 @@ public:
 	static bool CheckRay2Sphere(const Ray &ray, const Sphere &sphere, float *distance = nullptr, DirectX::XMVECTOR *inter = nullptr);
 
 
-	//static bool CheckBoxSphere(const SphereF& sphere, const Box& box);
+	static bool CheckBoxSphere(const SphereF& sphere, const Box& box);
 
 	static bool CheckAABB(const Box& box1, const Box& box2);
 
-	//static bool CheckCircleDot(const Circle& circle, XMFLOAT2 dot);
+	static bool CheckCircleDot(const Circle& circle, XMFLOAT2 dot);
 };

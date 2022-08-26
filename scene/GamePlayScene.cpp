@@ -134,8 +134,21 @@ void GamePlayScene::Update()
 		Enemy::Tracking(Player::GetPos());
 	}
 
+	Box Pbox;
+	Pbox.centerPos = Player::GetPos();
+	Pbox.LeastPos = XMFLOAT3(Player::GetPos().x - Player::GetSize().x /2, Player::GetPos().y - Player::GetSize().y / 2, Player::GetPos().z - Player::GetSize().z / 2);
+	Pbox.MaxPos = XMFLOAT3(Player::GetPos().x + Player::GetSize().x / 2, Player::GetPos().y + Player::GetSize().y / 2, Player::GetPos().z + Player::GetSize().z / 2);
 
+	mathObject->SetPosition(Enemy::GetPos());
+	SphereF Esphere;
+	Esphere.center = Enemy::GetPos();
+	Esphere.radius = 2;
 
+	if (Collision::CheckBoxSphere(Esphere, Pbox) == true)
+	{
+		colliderObject->SetColor({ 1, 1, 0 });
+	}
+	
 
 	DebugText::GetInstance()->Print(50, 30 * 1, 2, "C:X:%f", camera->GetEye().x);
 	DebugText::GetInstance()->Print(50, 30 * 2, 2, "C:Y:%f", camera->GetEye().y);
@@ -213,8 +226,8 @@ void GamePlayScene::Draw()
 	fbxObject2->Draw(cmdList);
 	
 	//json
-	JsonLoader::Draw();
 	colliderObject->Draw();
+	JsonLoader::Draw();
 	mathObject->Draw();
 	/// <summary>
 	/// ここに3Dオブジェクトの描画処理を追加できる

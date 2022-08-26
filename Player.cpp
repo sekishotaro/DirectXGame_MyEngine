@@ -40,7 +40,7 @@ void Player::Move(Input *input, const float& groundY)
 	}
 
 	Jump(move.y);
-	MyMath::Gravity(move, groundFlag);
+	//MyMath::Gravity(move, groundFlag);
 	MyMath::Movement(pos, move);
 }
 
