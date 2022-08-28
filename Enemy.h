@@ -20,6 +20,8 @@ private:
 	static XMFLOAT3 pos;
 
 public:
+	static void SetPos(XMFLOAT3& pos1) { pos = pos1; }
+
 	static XMFLOAT3 GetPos() { return pos; }
 
 	static void Tracking(XMFLOAT3 playerPos);

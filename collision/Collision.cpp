@@ -220,25 +220,111 @@ bool Collision::CheckRay2Sphere(const Ray &ray, const Sphere &sphere, float *dis
 
 bool Collision::CheckBoxSphere(const SphereF& sphere, const Box& box)
 {
-	//XY–Ê‚©‚ç
+	int Check1 = 0;
+	int Check2 = 0;
+	int Check3 = 0;
+	Circle LXLY, MXLY, MXMY, LXMY;
 
-	if (box.LeastPos.x <= sphere.center.x && sphere.center.x <= box.MaxPos.x) return true;
-	if (box.LeastPos.y - sphere.radius <= sphere.center.y && sphere.center.y <= box.MaxPos.y + sphere.radius) return true;
-	
-	if (box.LeastPos.x - sphere.radius <= sphere.center.x && sphere.center.x <= box.MaxPos.x + sphere.radius) return true;
-	if (box.LeastPos.y <= sphere.center.y && sphere.center.y <= box.MaxPos.y) return true;
-	Circle LXLY , MXLY, MXMY, LXMY;
-	LXLY.radius = LXLY.radius = LXLY.radius = LXLY.radius = sphere.radius;
+	//
+	if (box.LeastPos.x <= sphere.center.x && sphere.center.x <= box.MaxPos.x)
+	{
+		Check1 += 1;
+	}
+	if (box.LeastPos.y - sphere.radius <= sphere.center.y && sphere.center.y <= box.MaxPos.y + sphere.radius)
+	{
+		Check1 += 1;
+	}
+	if (box.LeastPos.z <= sphere.center.z && sphere.center.z <= box.MaxPos.z)
+	{
+		Check1 += 1;
+	}
+
+
+	//
+	if (box.LeastPos.x - sphere.radius <= sphere.center.x && sphere.center.x <= box.MaxPos.x + sphere.radius)
+	{
+		Check2 += 1;
+	}
+	if (box.LeastPos.y <= sphere.center.y && sphere.center.y <= box.MaxPos.y)
+	{
+		Check2 += 1;
+	}
+	if (box.LeastPos.z <= sphere.center.z && sphere.center.z <= box.MaxPos.z)
+	{
+		Check2 += 1;
+	}
+
+	//
+	if (box.LeastPos.x <= sphere.center.x && sphere.center.x <= box.MaxPos.x)
+	{
+		Check3 += 1;
+	}
+	if (box.LeastPos.y <= sphere.center.y && sphere.center.y <= box.MaxPos.y)
+	{
+		Check3 += 1;
+	}
+	if (box.LeastPos.z - sphere.radius <= sphere.center.z && sphere.center.z <= box.MaxPos.z + sphere.radius)
+	{
+		Check3 += 1;
+	}
+
+
+	//XY–Ê
+	LXLY.radius = sphere.radius;
+	LXMY.radius = sphere.radius;
+	MXLY.radius = sphere.radius;
+	MXMY.radius = sphere.radius;
 	
 	LXLY.center = XMFLOAT2(box.LeastPos.x, box.LeastPos.y);
 	LXMY.center = XMFLOAT2(box.LeastPos.x, box.MaxPos.y);
-	MXLY.center = XMFLOAT2(box.LeastPos.x, box.LeastPos.y);
-	MXMY.center = XMFLOAT2(box.LeastPos.x, box.MaxPos.y);
+	MXLY.center = XMFLOAT2(box.MaxPos.x, box.LeastPos.y);
+	MXMY.center = XMFLOAT2(box.MaxPos.x, box.MaxPos.y);
 
-	//if(CheckCircleDot(LXLY, XMFLOAT2(sphere.center.x, sphere.center.y)) == true) return true;
-	//if (CheckCircleDot(LXMY, XMFLOAT2(sphere.center.x, sphere.center.y)) == true) return true;
-	//if (CheckCircleDot(MXLY, XMFLOAT2(sphere.center.x, sphere.center.y)) == true) return true;
-	//if (CheckCircleDot(MXMY, XMFLOAT2(sphere.center.x, sphere.center.y)) == true) return true;
+	if(CheckCircleDot(LXLY, XMFLOAT2(sphere.center.x, sphere.center.y)) == true) return true;
+	if (CheckCircleDot(LXMY, XMFLOAT2(sphere.center.x, sphere.center.y)) == true) return true;
+	if (CheckCircleDot(MXLY, XMFLOAT2(sphere.center.x, sphere.center.y)) == true) return true;
+	if (CheckCircleDot(MXMY, XMFLOAT2(sphere.center.x, sphere.center.y)) == true) return true;
+
+	//XZ–Ê
+	
+	//LXLY.radius = sphere.radius;
+	//LXMY.radius = sphere.radius;
+	//MXLY.radius = sphere.radius;
+	//MXMY.radius = sphere.radius;
+
+	//LXLY.center = XMFLOAT2(box.LeastPos.x, box.LeastPos.z);
+	//LXMY.center = XMFLOAT2(box.LeastPos.x, box.MaxPos.z);
+	//MXLY.center = XMFLOAT2(box.MaxPos.x, box.LeastPos.z);
+	//MXMY.center = XMFLOAT2(box.MaxPos.x, box.MaxPos.z);
+
+	//if (CheckCircleDot(LXLY, XMFLOAT2(sphere.center.x, sphere.center.z)) == true) return true;
+	//if (CheckCircleDot(LXMY, XMFLOAT2(sphere.center.x, sphere.center.z)) == true) return true;
+	//if (CheckCircleDot(MXLY, XMFLOAT2(sphere.center.x, sphere.center.z)) == true) return true;
+	//if (CheckCircleDot(MXMY, XMFLOAT2(sphere.center.x, sphere.center.z)) == true) return true;
+
+	//YZ–Ê
+
+
+	//LXLY.radius = sphere.radius;
+	//LXMY.radius = sphere.radius;
+	//MXLY.radius = sphere.radius;
+	//MXMY.radius = sphere.radius;
+
+	//LXLY.center = XMFLOAT2(box.LeastPos.y, box.LeastPos.z);
+	//LXMY.center = XMFLOAT2(box.LeastPos.y, box.MaxPos.z);
+	//MXLY.center = XMFLOAT2(box.MaxPos.y, box.LeastPos.z);
+	//MXMY.center = XMFLOAT2(box.MaxPos.y, box.MaxPos.z);
+
+	//if (CheckCircleDot(LXLY, XMFLOAT2(sphere.center.y, sphere.center.z)) == true) return true;
+	//if (CheckCircleDot(LXMY, XMFLOAT2(sphere.center.y, sphere.center.z)) == true) return true;
+	//if (CheckCircleDot(MXLY, XMFLOAT2(sphere.center.y, sphere.center.z)) == true) return true;
+	//if (CheckCircleDot(MXMY, XMFLOAT2(sphere.center.y, sphere.center.z)) == true) return true;
+
+	if (Check1 >= 3 || Check2 >= 3 || Check3 >= 3)
+	{
+		return true;
+	}
+
 	return false;
 }
 
@@ -254,14 +340,28 @@ bool Collision::CheckAABB(const Box& box1, const Box& box2)
 	return true;
 }
 
-bool Collision::CheckCircleDot(const Circle& circle, XMFLOAT2 dot)
+bool Collision::CheckCircleDot(const Circle& circle, const XMFLOAT2& dot)
 {
-	if (((dot.x - circle.center.x) * (dot.x - circle.center.x)) + ((dot.y - circle.center.x) * (dot.y - circle.center.x)) <= (circle.radius * circle.radius))
+	float a = dot.x - circle.center.x;
+	float b = dot.y - circle.center.y;
+	float c = sqrt(a * a + b * b);
+
+	if (c <= circle.radius)
 	{
 		return true;
 	}
-	else
+
+	return false;
+}
+
+bool Collision::CheckCylinderDot(const Cylinder& cylinder, const XMFLOAT3& dot)
+{
+	if (cylinder.top < dot.y || cylinder.bottom > dot.y)
 	{
 		return false;
 	}
+
+	Circle circle;
+	circle.center = XMFLOAT2(cylinder.center.x, cylinder.center.z);
+
 }

@@ -76,6 +76,7 @@ void GamePlayScene::Initialize()
 	JsonLoader::SetObject();
 
 	Enemy::Initialize();
+	Enemy::SetPos(Player::GetPos());
 
 	mathModel = MathModel::LoadFromOBJ("sphere");
 	mathObject = MathObject::Create();
@@ -134,19 +135,32 @@ void GamePlayScene::Update()
 		Enemy::Tracking(Player::GetPos());
 	}
 
+	if (input->PushKey(DIK_I))
+	{
+		XMFLOAT3 pos = Enemy::GetPos();
+		pos.y += 1.0f;
+		Enemy::SetPos(pos);
+	}
+
+
 	Box Pbox;
 	Pbox.centerPos = Player::GetPos();
-	Pbox.LeastPos = XMFLOAT3(Player::GetPos().x - Player::GetSize().x /2, Player::GetPos().y - Player::GetSize().y / 2, Player::GetPos().z - Player::GetSize().z / 2);
-	Pbox.MaxPos = XMFLOAT3(Player::GetPos().x + Player::GetSize().x / 2, Player::GetPos().y + Player::GetSize().y / 2, Player::GetPos().z + Player::GetSize().z / 2);
+	Pbox.LeastPos = XMFLOAT3(Player::GetPos().x - Player::GetSize().x /2, Player::GetPos().y, Player::GetPos().z - Player::GetSize().z / 2);
+	Pbox.MaxPos = XMFLOAT3(Player::GetPos().x + Player::GetSize().x / 2, Player::GetPos().y + Player::GetSize().y, Player::GetPos().z + Player::GetSize().z / 2);
 
 	mathObject->SetPosition(Enemy::GetPos());
 	SphereF Esphere;
 	Esphere.center = Enemy::GetPos();
 	Esphere.radius = 2;
 
+
 	if (Collision::CheckBoxSphere(Esphere, Pbox) == true)
 	{
 		colliderObject->SetColor({ 1, 1, 0 });
+	}
+	else
+	{
+		colliderObject->SetColor({ 1, 1, 1 });
 	}
 	
 

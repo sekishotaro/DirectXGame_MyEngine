@@ -34,6 +34,19 @@ struct Circle
 	float radius = 1.0f;
 };
 
+struct Cylinder
+{
+	//’†SÀ•W
+	DirectX::XMFLOAT3 center = { 0,0,0 };
+	//”¼Œa
+	float radius = 1.0f;
+	//‚‚³
+	float top = 1.0f;
+	float bottom = -1.0f;
+};
+
+
+
 /// <summary>
 /// •½–Ê
 /// </summary>

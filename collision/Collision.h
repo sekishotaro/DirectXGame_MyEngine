@@ -92,5 +92,7 @@ public:
 
 	static bool CheckAABB(const Box& box1, const Box& box2);
 
-	static bool CheckCircleDot(const Circle& circle, XMFLOAT2 dot);
+	static bool CheckCircleDot(const Circle& circle, const XMFLOAT2& dot);
+
+	static bool CheckCylinderDot(const Cylinder& cylinder, const XMFLOAT3& dot);
 };
