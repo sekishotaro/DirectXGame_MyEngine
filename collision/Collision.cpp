@@ -223,7 +223,8 @@ bool Collision::CheckBoxSphere(const SphereF& sphere, const Box& box)
 	int Check1 = 0;
 	int Check2 = 0;
 	int Check3 = 0;
-	Circle LXLY, MXLY, MXMY, LXMY;
+	
+	Cylinder LXLY, LXMY, MXLY, MXMY;
 
 	//
 	if (box.LeastPos.x <= sphere.center.x && sphere.center.x <= box.MaxPos.x)
@@ -275,55 +276,119 @@ bool Collision::CheckBoxSphere(const SphereF& sphere, const Box& box)
 	MXLY.radius = sphere.radius;
 	MXMY.radius = sphere.radius;
 	
-	LXLY.center = XMFLOAT2(box.LeastPos.x, box.LeastPos.y);
-	LXMY.center = XMFLOAT2(box.LeastPos.x, box.MaxPos.y);
-	MXLY.center = XMFLOAT2(box.MaxPos.x, box.LeastPos.y);
-	MXMY.center = XMFLOAT2(box.MaxPos.x, box.MaxPos.y);
+	LXLY.center = XMFLOAT3(box.LeastPos.x, box.LeastPos.y, box.centerPos.z);
+	LXMY.center = XMFLOAT3(box.LeastPos.x, box.MaxPos.y, box.centerPos.z);
+	MXLY.center = XMFLOAT3(box.MaxPos.x, box.LeastPos.y, box.centerPos.z);
+	MXMY.center = XMFLOAT3(box.MaxPos.x, box.MaxPos.y, box.centerPos.z);
 
-	if(CheckCircleDot(LXLY, XMFLOAT2(sphere.center.x, sphere.center.y)) == true) return true;
-	if (CheckCircleDot(LXMY, XMFLOAT2(sphere.center.x, sphere.center.y)) == true) return true;
-	if (CheckCircleDot(MXLY, XMFLOAT2(sphere.center.x, sphere.center.y)) == true) return true;
-	if (CheckCircleDot(MXMY, XMFLOAT2(sphere.center.x, sphere.center.y)) == true) return true;
+	LXLY.top = box.MaxPos.z;
+	LXMY.top = box.MaxPos.z;
+	MXLY.top = box.MaxPos.z;
+	MXMY.top = box.MaxPos.z;
+
+	LXLY.bottom = box.LeastPos.z;
+	LXMY.bottom = box.LeastPos.z;
+	MXLY.bottom = box.LeastPos.z;
+	MXMY.bottom = box.LeastPos.z;
+
+	if (CheckCylinderDotXY(LXLY, sphere.center) == true) return true;
+	if (CheckCylinderDotXY(LXMY, sphere.center) == true) return true;
+	if (CheckCylinderDotXY(MXLY, sphere.center) == true) return true;
+	if (CheckCylinderDotXY(MXMY, sphere.center) == true) return true;
 
 	//XZ面
 	
-	//LXLY.radius = sphere.radius;
-	//LXMY.radius = sphere.radius;
-	//MXLY.radius = sphere.radius;
-	//MXMY.radius = sphere.radius;
+	LXLY.radius = sphere.radius;
+	LXMY.radius = sphere.radius;
+	MXLY.radius = sphere.radius;
+	MXMY.radius = sphere.radius;
 
-	//LXLY.center = XMFLOAT2(box.LeastPos.x, box.LeastPos.z);
-	//LXMY.center = XMFLOAT2(box.LeastPos.x, box.MaxPos.z);
-	//MXLY.center = XMFLOAT2(box.MaxPos.x, box.LeastPos.z);
-	//MXMY.center = XMFLOAT2(box.MaxPos.x, box.MaxPos.z);
+	LXLY.center = XMFLOAT3(box.LeastPos.x, box.LeastPos.y, box.centerPos.z);
+	LXMY.center = XMFLOAT3(box.LeastPos.x, box.MaxPos.y, box.centerPos.z);
+	MXLY.center = XMFLOAT3(box.MaxPos.x, box.LeastPos.y, box.centerPos.z);
+	MXMY.center = XMFLOAT3(box.MaxPos.x, box.MaxPos.y, box.centerPos.z);
 
-	//if (CheckCircleDot(LXLY, XMFLOAT2(sphere.center.x, sphere.center.z)) == true) return true;
-	//if (CheckCircleDot(LXMY, XMFLOAT2(sphere.center.x, sphere.center.z)) == true) return true;
-	//if (CheckCircleDot(MXLY, XMFLOAT2(sphere.center.x, sphere.center.z)) == true) return true;
-	//if (CheckCircleDot(MXMY, XMFLOAT2(sphere.center.x, sphere.center.z)) == true) return true;
+	LXLY.top = box.MaxPos.y;
+	LXMY.top = box.MaxPos.y;
+	MXLY.top = box.MaxPos.y;
+	MXMY.top = box.MaxPos.y;
 
+	LXLY.bottom = box.LeastPos.y;
+	LXMY.bottom = box.LeastPos.y;
+	MXLY.bottom = box.LeastPos.y;
+	MXMY.bottom = box.LeastPos.y;
+
+	if (CheckCylinderDotXZ(LXLY, sphere.center) == true) return true;
+	if (CheckCylinderDotXZ(LXMY, sphere.center) == true) return true;
+	if (CheckCylinderDotXZ(MXLY, sphere.center) == true) return true;
+	if (CheckCylinderDotXZ(MXMY, sphere.center) == true) return true;
+	
 	//YZ面
+	LXLY.radius = sphere.radius;
+	LXMY.radius = sphere.radius;
+	MXLY.radius = sphere.radius;
+	MXMY.radius = sphere.radius;
 
+	LXLY.center = XMFLOAT3(box.LeastPos.x, box.LeastPos.y, box.centerPos.z);
+	LXMY.center = XMFLOAT3(box.LeastPos.x, box.MaxPos.y, box.centerPos.z);
+	MXLY.center = XMFLOAT3(box.MaxPos.x, box.LeastPos.y, box.centerPos.z);
+	MXMY.center = XMFLOAT3(box.MaxPos.x, box.MaxPos.y, box.centerPos.z);
 
-	//LXLY.radius = sphere.radius;
-	//LXMY.radius = sphere.radius;
-	//MXLY.radius = sphere.radius;
-	//MXMY.radius = sphere.radius;
+	LXLY.top = box.MaxPos.x;
+	LXMY.top = box.MaxPos.x;
+	MXLY.top = box.MaxPos.x;
+	MXMY.top = box.MaxPos.x;
 
-	//LXLY.center = XMFLOAT2(box.LeastPos.y, box.LeastPos.z);
-	//LXMY.center = XMFLOAT2(box.LeastPos.y, box.MaxPos.z);
-	//MXLY.center = XMFLOAT2(box.MaxPos.y, box.LeastPos.z);
-	//MXMY.center = XMFLOAT2(box.MaxPos.y, box.MaxPos.z);
+	LXLY.bottom = box.LeastPos.x;
+	LXMY.bottom = box.LeastPos.x;
+	MXLY.bottom = box.LeastPos.x;
+	MXMY.bottom = box.LeastPos.x;
 
-	//if (CheckCircleDot(LXLY, XMFLOAT2(sphere.center.y, sphere.center.z)) == true) return true;
-	//if (CheckCircleDot(LXMY, XMFLOAT2(sphere.center.y, sphere.center.z)) == true) return true;
-	//if (CheckCircleDot(MXLY, XMFLOAT2(sphere.center.y, sphere.center.z)) == true) return true;
-	//if (CheckCircleDot(MXMY, XMFLOAT2(sphere.center.y, sphere.center.z)) == true) return true;
+	if (CheckCylinderDotZY(LXLY, sphere.center) == true) return true;
+	if (CheckCylinderDotZY(LXMY, sphere.center) == true) return true;
+	if (CheckCylinderDotZY(MXLY, sphere.center) == true) return true;
+	if (CheckCylinderDotZY(MXMY, sphere.center) == true) return true;
 
 	if (Check1 >= 3 || Check2 >= 3 || Check3 >= 3)
 	{
 		return true;
 	}
+
+	SphereF LXLYLZ; //左下前
+	SphereF LXLYMZ; //左下奥
+	SphereF MXLYLZ; //右下前
+	SphereF MXLYMZ; //右下奥
+	SphereF LXMYLZ; //左上前
+	SphereF LXMYMZ; //左上奥
+	SphereF MXMYLZ; //右上前
+	SphereF MXMYMZ; //右上奥
+
+	LXLYLZ.center = XMFLOAT3(box.LeastPos.x, box.LeastPos.y, box.LeastPos.z);
+	LXLYMZ.center = XMFLOAT3(box.LeastPos.x, box.LeastPos.y, box.MaxPos.z);
+	MXLYLZ.center = XMFLOAT3(box.MaxPos.x  , box.LeastPos.y, box.LeastPos.z);
+	MXLYMZ.center = XMFLOAT3(box.MaxPos.x  , box.LeastPos.y, box.MaxPos.z);
+	LXMYLZ.center = XMFLOAT3(box.LeastPos.x, box.MaxPos.y  , box.LeastPos.z);
+	LXMYMZ.center = XMFLOAT3(box.LeastPos.x, box.MaxPos.y  , box.MaxPos.z);
+	MXMYLZ.center = XMFLOAT3(box.MaxPos.x  , box.MaxPos.y  , box.LeastPos.z);
+	MXMYMZ.center = XMFLOAT3(box.MaxPos.x  , box.MaxPos.y  , box.MaxPos.z);
+
+	LXLYLZ.radius = sphere.radius;
+	LXLYMZ.radius = sphere.radius;
+	MXLYLZ.radius = sphere.radius;
+	MXLYMZ.radius = sphere.radius;
+	LXMYLZ.radius = sphere.radius;
+	LXMYMZ.radius = sphere.radius;
+	MXMYLZ.radius = sphere.radius;
+	MXMYMZ.radius = sphere.radius;
+
+	if(CheckSphereDot(LXLYLZ ,sphere.center) == true) return true;
+	if(CheckSphereDot(LXLYMZ ,sphere.center) == true) return true;
+	if(CheckSphereDot(MXLYLZ ,sphere.center) == true) return true;
+	if(CheckSphereDot(MXLYMZ ,sphere.center) == true) return true;
+	if(CheckSphereDot(LXMYLZ ,sphere.center) == true) return true;
+	if(CheckSphereDot(LXMYMZ ,sphere.center) == true) return true;
+	if(CheckSphereDot(MXMYLZ ,sphere.center) == true) return true;
+	if(CheckSphereDot(MXMYMZ ,sphere.center) == true) return true;
 
 	return false;
 }
@@ -354,7 +419,23 @@ bool Collision::CheckCircleDot(const Circle& circle, const XMFLOAT2& dot)
 	return false;
 }
 
-bool Collision::CheckCylinderDot(const Cylinder& cylinder, const XMFLOAT3& dot)
+bool Collision::CheckCylinderDotXY(const Cylinder& cylinder, const XMFLOAT3& dot)
+{
+	if (cylinder.top < dot.z || cylinder.bottom > dot.z)
+	{
+		return false;
+	}
+	
+
+	Circle circle;
+	circle.center = XMFLOAT2(cylinder.center.x, cylinder.center.y);
+	circle.radius = cylinder.radius;
+
+	XMFLOAT2 Dot = XMFLOAT2(dot.x, dot.y);
+	if(CheckCircleDot(circle, Dot) == true ) return true;
+}
+
+bool Collision::CheckCylinderDotXZ(const Cylinder& cylinder, const XMFLOAT3& dot)
 {
 	if (cylinder.top < dot.y || cylinder.bottom > dot.y)
 	{
@@ -363,5 +444,39 @@ bool Collision::CheckCylinderDot(const Cylinder& cylinder, const XMFLOAT3& dot)
 
 	Circle circle;
 	circle.center = XMFLOAT2(cylinder.center.x, cylinder.center.z);
+	circle.radius = cylinder.radius;
 
+	XMFLOAT2 Dot = XMFLOAT2(dot.x, dot.z);
+	CheckCircleDot(circle, Dot);
+}
+
+bool Collision::CheckCylinderDotZY(const Cylinder& cylinder, const XMFLOAT3& dot)
+{
+	if (cylinder.top < dot.x || cylinder.bottom > dot.x)
+	{
+		return false;
+	}
+	
+
+	Circle circle;
+	circle.center = XMFLOAT2(cylinder.center.z, cylinder.center.y);
+	circle.radius = cylinder.radius;
+
+	XMFLOAT2 Dot = XMFLOAT2(dot.z, dot.y);
+	CheckCircleDot(circle, Dot);
+}
+
+bool Collision::CheckSphereDot(const SphereF& sphere, XMFLOAT3 dot)
+{
+	float a = dot.x - sphere.center.x;
+	float b = dot.y - sphere.center.y;
+	float c = dot.z - sphere.center.z;
+	float d = sqrt(a * a + b * b + c * c);
+
+	if (d <= sphere.radius)
+	{
+		return true;
+	}
+
+	return false;
 }

@@ -94,5 +94,9 @@ public:
 
 	static bool CheckCircleDot(const Circle& circle, const XMFLOAT2& dot);
 
-	static bool CheckCylinderDot(const Cylinder& cylinder, const XMFLOAT3& dot);
+	static bool CheckCylinderDotXY(const Cylinder& cylinder, const XMFLOAT3& dot);
+	static bool CheckCylinderDotXZ(const Cylinder& cylinder, const XMFLOAT3& dot);
+	static bool CheckCylinderDotZY(const Cylinder& cylinder, const XMFLOAT3& dot);
+
+	static bool CheckSphereDot(const SphereF& sphere, XMFLOAT3 dot);
 };
