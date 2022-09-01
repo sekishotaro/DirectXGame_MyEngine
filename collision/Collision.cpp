@@ -218,6 +218,88 @@ bool Collision::CheckRay2Sphere(const Ray &ray, const Sphere &sphere, float *dis
 	return true;
 }
 
+bool Collision::CheckLineSegmentBox(const LineSegment& line, const Box& box)
+{
+	if (line.start.x <= line.end.x)
+	{
+		if (line.start.x > box.MaxPos.x)
+		{
+			return false;
+		}
+
+		if (line.end.x < box.LeastPos.x)
+		{
+			return false;
+		}
+	}
+	else
+	{
+		if (line.end.x > box.MaxPos.x)
+		{
+			return false;
+		}
+
+		if (line.start.x < box.LeastPos.x)
+		{
+			return false;
+		}
+	}
+
+	if (line.start.y <= line.end.y)
+	{
+		if (line.start.y > box.MaxPos.y)
+		{
+			return false;
+		}
+
+		if (line.end.y < box.LeastPos.y)
+		{
+			return false;
+		}
+	}
+	else
+	{
+		if (line.end.y > box.MaxPos.y)
+		{
+			return false;
+		}
+
+		if (line.start.y < box.LeastPos.y)
+		{
+			return false;
+		}
+	}
+
+	if (line.start.z <= line.end.z)
+	{
+		if (line.start.z > box.MaxPos.z)
+		{
+			return false;
+		}
+
+		if (line.end.z < box.LeastPos.z)
+		{
+			return false;
+		}
+	}
+	else
+	{
+		if (line.end.z > box.MaxPos.z)
+		{
+			return false;
+		}
+
+		if (line.start.z < box.LeastPos.z)
+		{
+			return false;
+		}
+	}
+
+
+
+	return true;
+}
+
 bool Collision::CheckBoxSphere(const SphereF& sphere, const Box& box)
 {
 	int Check1 = 0;
@@ -381,14 +463,16 @@ bool Collision::CheckBoxSphere(const SphereF& sphere, const Box& box)
 	MXMYLZ.radius = sphere.radius;
 	MXMYMZ.radius = sphere.radius;
 
-	if(CheckSphereDot(LXLYLZ ,sphere.center) == true) return true;
-	if(CheckSphereDot(LXLYMZ ,sphere.center) == true) return true;
-	if(CheckSphereDot(MXLYLZ ,sphere.center) == true) return true;
-	if(CheckSphereDot(MXLYMZ ,sphere.center) == true) return true;
-	if(CheckSphereDot(LXMYLZ ,sphere.center) == true) return true;
-	if(CheckSphereDot(LXMYMZ ,sphere.center) == true) return true;
-	if(CheckSphereDot(MXMYLZ ,sphere.center) == true) return true;
-	if(CheckSphereDot(MXMYMZ ,sphere.center) == true) return true;
+	XMFLOAT3 dot = sphere.center;
+
+	if(CheckSphereDot(LXLYLZ ,dot) == true) return true;
+	if(CheckSphereDot(LXLYMZ ,dot) == true) return true;
+	if(CheckSphereDot(MXLYLZ ,dot) == true) return true;
+	if(CheckSphereDot(MXLYMZ ,dot) == true) return true;
+	if(CheckSphereDot(LXMYLZ ,dot) == true) return true;
+	if(CheckSphereDot(LXMYMZ ,dot) == true) return true;
+	if(CheckSphereDot(MXMYLZ ,dot) == true) return true;
+	if(CheckSphereDot(MXMYMZ ,dot) == true) return true;
 
 	return false;
 }
@@ -466,7 +550,7 @@ bool Collision::CheckCylinderDotZY(const Cylinder& cylinder, const XMFLOAT3& dot
 	CheckCircleDot(circle, Dot);
 }
 
-bool Collision::CheckSphereDot(const SphereF& sphere, XMFLOAT3 dot)
+bool Collision::CheckSphereDot(const SphereF& sphere, XMFLOAT3& dot)
 {
 	float a = dot.x - sphere.center.x;
 	float b = dot.y - sphere.center.y;

@@ -72,12 +72,10 @@ void GamePlayScene::Initialize()
 	colliderObject->SetCenter({ 0, 2.5f, 0 });
 	colliderObject->SetScale(Player::GetSize());
 	//json
-	JsonLoader::LoadFile("Scene8_22_2");
+	JsonLoader::LoadFile("Scene8_31");
 	JsonLoader::SetObject();
 
 	Enemy::Initialize();
-	Enemy::SetPos(Player::GetPos());
-
 	mathModel = MathModel::LoadFromOBJ("sphere");
 	mathObject = MathObject::Create();
 	//オブジェクトにモデルをひも付ける
@@ -142,8 +140,6 @@ void GamePlayScene::Update()
 		Enemy::SetPos(pos);
 	}
 
-
-	Box Pbox;
 	Pbox.centerPos = Player::GetPos();
 	Pbox.LeastPos = XMFLOAT3(Player::GetPos().x - Player::GetSize().x /2, Player::GetPos().y, Player::GetPos().z - Player::GetSize().z / 2);
 	Pbox.MaxPos = XMFLOAT3(Player::GetPos().x + Player::GetSize().x / 2, Player::GetPos().y + Player::GetSize().y, Player::GetPos().z + Player::GetSize().z / 2);
@@ -153,6 +149,24 @@ void GamePlayScene::Update()
 	Esphere.center = Enemy::GetPos();
 	Esphere.radius = 2;
 
+	LineSegment line;
+	line.start = Enemy::GetPos();
+	line.end = Player::GetPos();
+
+	Box wall;
+	wall.centerPos = JsonLoader::colliderObjects[0].get()->GetPosition();
+	wall.size = JsonLoader::colliderObjects[0].get()->GetScale();
+	wall.LeastPos = { wall.centerPos.x - wall.size.x / 2,wall.centerPos.y - wall.size.y / 2, wall.centerPos.z - wall.size.z / 2};
+	wall.MaxPos = { wall.centerPos.x + wall.size.x / 2,wall.centerPos.y + wall.size.y / 2, wall.centerPos.z + wall.size.z /2 };
+	
+	if (Collision::CheckLineSegmentBox(line, wall) == true)
+	{
+		mathObject->SetColor({ 1, 1, 0, 0.5f });
+	}
+	else
+	{
+		mathObject->SetColor({ 1, 1, 1, 0.5f });
+	}
 
 	if (Collision::CheckBoxSphere(Esphere, Pbox) == true)
 	{
@@ -239,10 +253,12 @@ void GamePlayScene::Draw()
 	fbxObject1->Draw(cmdList);
 	fbxObject2->Draw(cmdList);
 	
-	//json
+	
 	colliderObject->Draw();
-	JsonLoader::Draw();
 	mathObject->Draw();
+	//json
+	JsonLoader::Draw();
+	
 	/// <summary>
 	/// ここに3Dオブジェクトの描画処理を追加できる
 	/// </summary>

@@ -124,6 +124,7 @@
       <ConformanceMode>false</ConformanceMode>
       <AdditionalIncludeDirectories>$(projectDir)imgui;$(projectDir)scene;$(projectDir)collision;$(projectDir)Input;$(projectDir)base;$(projectDir)Audio;$(ProjectDir)3d;$(SolutionDir)DirectXTex;$(projectDir)2d;$(projectDir)</AdditionalIncludeDirectories>
       <AdditionalIncludeDirectories>$(projectDir)camera;$(projectDir)imgui;$(projectDir)json;$(projectDir)json;$(projectDir)scene;$(projectDir)collision;$(projectDir)Input;$(projectDir)base;$(projectDir)Audio;$(ProjectDir)3d;$(SolutionDir)DirectXTex;$(projectDir)2d;$(projectDir);$(projectDir)camera</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -143,6 +144,7 @@
       <AdditionalIncludeDirectories>$(projectDir)json;$(projectDir)scene;$(projectDir)collision;$(projectDir)Input;$(projectDir)base;$(projectDir)Audio;$(ProjectDir)3d;$(SolutionDir)DirectXTex;$(projectDir)2d;$(projectDir);$(projectDir)camera</AdditionalIncludeDirectories>
       <AdditionalIncludeDirectories>$(projectDir)camera;$(projectDir)imgui;$(projectDir)json;$(projectDir)imgui;$(projectDir)scene;$(projectDir)collision;$(projectDir)Input;$(projectDir)base;$(projectDir)Audio;$(ProjectDir)3d;$(SolutionDir)DirectXTex;$(projectDir)2d;$(projectDir)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

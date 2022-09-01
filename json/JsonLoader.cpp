@@ -352,7 +352,7 @@ void JsonLoader::Draw()
 
 	for (int i = 0; i < enemyNaviareaObjects.size(); i++)
 	{
-		enemyNaviareaObjects[i]->Draw();
+		//enemyNaviareaObjects[i]->Draw();
 	}
 }
 

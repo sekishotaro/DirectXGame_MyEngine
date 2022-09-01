@@ -72,5 +72,6 @@ public:
 
 	std::unique_ptr<MathObject> mathObject;
 	MathModel* mathModel = nullptr;
+	Box Pbox;
 };
 

@@ -87,6 +87,14 @@ public:
 	/// <returns>Œğ·‚µ‚Ä‚¢‚é‚©”Û‚©</returns>
 	static bool CheckRay2Sphere(const Ray &ray, const Sphere &sphere, float *distance = nullptr, DirectX::XMVECTOR *inter = nullptr);
 
+	/// <summary>
+	/// ü•ª‚Æ’·•ûŒ`‚Ì“–‚½‚è”»’è
+	/// </summary>
+	/// <param name="line">ü•ª</param>
+	/// <param name="box"></param>
+	/// <returns></returns>
+	static bool CheckLineSegmentBox(const LineSegment& line, const Box& box);
+
 
 	static bool CheckBoxSphere(const SphereF& sphere, const Box& box);
 
@@ -98,5 +106,5 @@ public:
 	static bool CheckCylinderDotXZ(const Cylinder& cylinder, const XMFLOAT3& dot);
 	static bool CheckCylinderDotZY(const Cylinder& cylinder, const XMFLOAT3& dot);
 
-	static bool CheckSphereDot(const SphereF& sphere, XMFLOAT3 dot);
+	static bool CheckSphereDot(const SphereF& sphere, XMFLOAT3& dot);
 };

@@ -90,6 +90,20 @@ struct Ray
 };
 
 /// <summary>
+/// 線分
+/// </summary>
+struct LineSegment
+{
+	//始点
+	DirectX::XMFLOAT3 start = { 0.0f, 0.0f, 0.0f };
+	//終点
+	DirectX::XMFLOAT3 end = { 0.0f, 0.0f, 0.0f };
+};
+
+
+
+
+/// <summary>
 /// 長方形
 /// </summary>
 struct Box
