@@ -135,3 +135,15 @@ void MyMath::CollisionReboundOn(XMFLOAT3& move1, XMFLOAT3& direction1, float& re
 	move2 = { move.x * reboundFactor1, move.y * reboundFactor1 , move.z * reboundFactor1 };
 	direction2 = direction;
 }
+
+float MyMath::Sign(const float& num)
+{
+	if (num >= 0)
+	{
+		return 1;
+	}
+	else if (0 > num)
+	{
+		return -1;
+	}
+}

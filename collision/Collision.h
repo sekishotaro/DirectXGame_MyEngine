@@ -95,6 +95,14 @@ public:
 	/// <returns></returns>
 	static bool CheckLineSegmentBox(const LineSegment& line, const Box& box);
 
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <param name="ray"></param>
+	/// <param name="box"></param>
+	/// <returns></returns>
+	static bool CheckRayBox(const Ray& ray, const Box& box);
+
 
 	static bool CheckBoxSphere(const SphereF& sphere, const Box& box);
 

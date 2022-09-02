@@ -1,4 +1,5 @@
 #include "Collision.h"
+#include "MyMath.h"
 
 using namespace DirectX;
 
@@ -220,84 +221,57 @@ bool Collision::CheckRay2Sphere(const Ray &ray, const Sphere &sphere, float *dis
 
 bool Collision::CheckLineSegmentBox(const LineSegment& line, const Box& box)
 {
-	if (line.start.x <= line.end.x)
-	{
-		if (line.start.x > box.MaxPos.x)
-		{
-			return false;
-		}
+	Ray ray;
 
-		if (line.end.x < box.LeastPos.x)
-		{
-			return false;
-		}
+	ray.start = { line.start.x, line.start.y, line.start.z };
+	ray.dir = { line.start.x - line.end.x, line.start.y - line.end.y, line.start.z - line.end.z };
+
+	if (CheckRayBox(ray, box) == true)
+	{
+		return true;
 	}
 	else
 	{
-		if (line.end.x > box.MaxPos.x)
-		{
-			return false;
-		}
-
-		if (line.start.x < box.LeastPos.x)
-		{
-			return false;
-		}
+		return false;
 	}
+	
+}
 
-	if (line.start.y <= line.end.y)
+bool Collision::CheckRayBox(const Ray& ray, const Box& box)
+{
+	int sign = 0;
+	XMFLOAT3 pos[4];
+	pos[0] = { box.LeastPos.x, box.LeastPos.y, box.LeastPos.z };
+	pos[1] = { box.LeastPos.x, box.LeastPos.y,   box.MaxPos.z };
+	pos[2] = {   box.MaxPos.x, box.LeastPos.y,   box.MaxPos.z };
+	pos[3] = {   box.MaxPos.x, box.LeastPos.y, box.LeastPos.z };
+
+	for (int i = 0; i < 4; i++)
 	{
-		if (line.start.y > box.MaxPos.y)
+		XMFLOAT3 v1 = { ray.start.m128_f32[0], ray.start.m128_f32[1], ray.start.m128_f32[2] };
+
+		XMFLOAT3 dis = { v1.x - pos[i].x, v1.y - pos[i].y, v1.z - pos[i].z };
+
+		float sb = sqrt(dis.x * dis.x + dis.z * dis.z);
+
+		if (sb == 0)
 		{
-			return false;
+			return true;
 		}
 
-		if (line.end.y < box.LeastPos.y)
+		if (i == 0)
 		{
-			return false;
+			sign = MyMath::Sign(sb);
 		}
-	}
-	else
-	{
-		if (line.end.y > box.MaxPos.y)
+		else
 		{
-			return false;
-		}
-
-		if (line.start.y < box.LeastPos.y)
-		{
-			return false;
-		}
-	}
-
-	if (line.start.z <= line.end.z)
-	{
-		if (line.start.z > box.MaxPos.z)
-		{
-			return false;
-		}
-
-		if (line.end.z < box.LeastPos.z)
-		{
-			return false;
+			if (sign != MyMath::Sign(sb))
+			{
+				return true;
+			}
 		}
 	}
-	else
-	{
-		if (line.end.z > box.MaxPos.z)
-		{
-			return false;
-		}
-
-		if (line.start.z < box.LeastPos.z)
-		{
-			return false;
-		}
-	}
-
-
-
-	return true;
+	return false;
 }
 
 bool Collision::CheckBoxSphere(const SphereF& sphere, const Box& box)

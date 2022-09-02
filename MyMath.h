@@ -113,6 +113,14 @@ public:
 	/// <param name="reboundFactor22">”½”­ŒW”2</param>
 	static void CollisionReboundOn(XMFLOAT3& move1, XMFLOAT3& direction1, float& reboundFactor1, XMFLOAT3& move2, XMFLOAT3& direction2, float& reboundFactor2);
 
+	
+	/// <summary>
+	/// ³•‰‚Ì”»•Ê
+	/// </summary>
+	/// <param name="num">”’l</param>
+	/// <returns>1 or -1</returns>
+	static float Sign(const float& num);
+
 
 private:
 	static const float k;					//’ïR—Í
