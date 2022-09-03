@@ -121,6 +121,22 @@ public:
 	/// <returns>1 or -1</returns>
 	static float Sign(const float& num);
 
+	/// <summary>
+	/// 最大値検索
+	/// </summary>
+	/// <param name="array">値</param>
+	/// <param name="size">サイズ</param>
+	/// <returns>最大値</returns>
+	static float maxElement(const float* array, int size);
+
+	/// <summary>
+	/// 最小値検索
+	/// </summary>
+	/// <param name="array">値</param>
+	/// <param name="size">サイズ</param>
+	/// <returns>最小値</returns>
+	static float minElement(const float* array, int size);
+	
 
 private:
 	static const float k;					//抵抗力

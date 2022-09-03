@@ -226,6 +226,38 @@ bool Collision::CheckLineSegmentBox(const LineSegment& line, const Box& box)
 	ray.start = { line.start.x, line.start.y, line.start.z };
 	ray.dir = { line.start.x - line.end.x, line.start.y - line.end.y, line.start.z - line.end.z };
 
+	float disX = (line.end.x - line.start.x) *(line.end.x - line.start.x);;
+	float disY = (line.end.y - line.start.y) *(line.end.y - line.start.y);;
+	float disZ = (line.end.z - line.start.z) *(line.end.z - line.start.z);;
+	//敵と自機の距離
+	float Mdis = sqrt(disX + disY + disZ);
+
+	//敵と各立方体の頂点の距離
+	float Bdis[8];
+	float BdisX = (box.LeastPos.x - line.start.x) * (box.LeastPos.x - line.start.x);
+	float BdisY = (box.LeastPos.y - line.start.y) * (box.LeastPos.y - line.start.y);
+	float BdisZ = (box.LeastPos.z - line.start.z) * (box.LeastPos.z - line.start.z);
+	float BMdisX = (box.MaxPos.x - line.start.x) * (box.MaxPos.x - line.start.x);
+	float BMdisY = (box.MaxPos.y - line.start.y) * (box.MaxPos.y - line.start.y);
+	float BMdisZ = (box.MaxPos.z - line.start.z) * (box.MaxPos.z - line.start.z);
+
+	Bdis[0] = sqrt(BdisX + BMdisY + BMdisZ); //左上奥
+	Bdis[1] = sqrt(BdisX + BdisY + BMdisZ); //左下奥
+	Bdis[2] = sqrt(BdisX + BMdisY + BdisZ); //左上前
+	Bdis[3] = sqrt(BdisX + BdisY + BdisZ); //左下前
+	Bdis[4] = sqrt(BMdisX + BMdisY + BdisZ); //右上前
+	Bdis[5] = sqrt(BMdisX + BdisY + BdisZ); //右下前
+	Bdis[6] = sqrt(BMdisX + BMdisY + BMdisZ); //右上奥
+	Bdis[7] = sqrt(BMdisX + BdisY + BMdisZ); //右下奥
+
+	float min = MyMath::minElement(Bdis, 8);
+
+	//範囲外でなければ返す
+	if ( min > Mdis)
+	{
+		return false;
+	}
+
 	if (CheckRayBox(ray, box) == true)
 	{
 		return true;
@@ -243,29 +275,29 @@ bool Collision::CheckRayBox(const Ray& ray, const Box& box)
 	XMFLOAT3 pos[4];
 	pos[0] = { box.LeastPos.x, box.LeastPos.y, box.LeastPos.z };
 	pos[1] = { box.LeastPos.x, box.LeastPos.y,   box.MaxPos.z };
-	pos[2] = {   box.MaxPos.x, box.LeastPos.y,   box.MaxPos.z };
-	pos[3] = {   box.MaxPos.x, box.LeastPos.y, box.LeastPos.z };
+	pos[2] = { box.MaxPos.x, box.LeastPos.y,   box.MaxPos.z };
+	pos[3] = { box.MaxPos.x, box.LeastPos.y, box.LeastPos.z };
 
 	for (int i = 0; i < 4; i++)
 	{
 		XMFLOAT3 v1 = { ray.start.m128_f32[0], ray.start.m128_f32[1], ray.start.m128_f32[2] };
 
-		XMFLOAT3 dis = { v1.x - pos[i].x, v1.y - pos[i].y, v1.z - pos[i].z };
+		XMFLOAT3 v2 = { v1.x - pos[i].x, v1.y - pos[i].y, v1.z - pos[i].z };
 
-		float sb = sqrt(dis.x * dis.x + dis.z * dis.z);
+		float dd = ray.dir.m128_f32[0] * v2.z - ray.dir.m128_f32[2] * v2.x;
 
-		if (sb == 0)
+		if (dd == 0)
 		{
 			return true;
 		}
 
 		if (i == 0)
 		{
-			sign = MyMath::Sign(sb);
+			sign = MyMath::Sign(dd);
 		}
 		else
 		{
-			if (sign != MyMath::Sign(sb))
+			if (sign != MyMath::Sign(dd))
 			{
 				return true;
 			}

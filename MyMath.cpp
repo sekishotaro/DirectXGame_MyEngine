@@ -147,3 +147,33 @@ float MyMath::Sign(const float& num)
 		return -1;
 	}
 }
+
+float MyMath::maxElement(const float* array, int size)
+{
+	assert(array != NULL);
+	assert(size >= 1);
+
+	float max = array[0];
+	for (int i = 1; i < size; ++i) {
+		if (max < array[i]) {
+			max = array[i];
+		}
+	}
+
+	return max;
+}
+
+float MyMath::minElement(const float* array, int size)
+{
+	assert(array != NULL);
+	assert(size >= 1);
+
+	float min = array[0];
+	for (int i = 1; i < size; ++i) {
+		if (min > array[i]) {
+			min = array[i];
+		}
+	}
+
+	return min;
+}
