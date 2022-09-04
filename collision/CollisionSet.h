@@ -21,6 +21,17 @@ public:
 
 	static bool CollisionCheck1(const XMFLOAT3& pos1, const XMFLOAT3& size1, const XMFLOAT3& pos2, const XMFLOAT3& size2);
 
+	static XMFLOAT3 GetNearPos2D(const XMFLOAT3& pos, const Box& box);
+
+
+	static XMFLOAT3 GetNearVertex(const Box& box, const XMFLOAT3& pos);
+
+	static XMFLOAT3 GetScecondNearVertex(const Box& box, const XMFLOAT3& pos);
+
+	static XMFLOAT3 GetThirdNearVertex(const Box& box, const XMFLOAT3& pos);
+
+	static int SelectNearRoot(const XMFLOAT3& startPos, const XMFLOAT3& endPos, const XMFLOAT3& pos1, const XMFLOAT3& pos2);
+
 private:
 	static bool PlayerWallCollisionFlag;
 };

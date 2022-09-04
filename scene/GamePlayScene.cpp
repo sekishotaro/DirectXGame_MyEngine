@@ -130,7 +130,7 @@ void GamePlayScene::Update()
 
 	if (input->PushKey(DIK_G))
 	{
-		Enemy::Tracking(Player::GetPos());
+		Enemy::Move(Player::GetPos());
 	}
 
 	if (input->PushKey(DIK_I))
@@ -168,7 +168,7 @@ void GamePlayScene::Update()
 		mathObject->SetColor({ 1, 1, 1, 0.5f });
 	}
 
-	if (Collision::CheckBoxSphere(Esphere, Pbox) == true)
+	if (Collision::CheckSphereBox(Esphere, Pbox) == true)
 	{
 		colliderObject->SetColor({ 1, 1, 0 });
 	}

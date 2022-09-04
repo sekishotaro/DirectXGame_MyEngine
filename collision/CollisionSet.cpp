@@ -173,3 +173,212 @@ bool CollisionSet::CollisionCheck1(const XMFLOAT3& pos1, const XMFLOAT3& size1, 
 		return false;
 	}
 }
+
+CollisionSet::XMFLOAT3 CollisionSet::GetNearPos2D(const XMFLOAT3& pos, const Box& box)
+{
+	//返す場所の値
+	XMFLOAT3 Pos = { 0,0,0 };
+
+	float dis1x;
+	float dis2x;
+	float disX;
+	dis1x  = pos.x - box.LeastPos.x;
+	dis2x = pos.x - box.MaxPos.x;
+
+	if (dis1x < dis2x)
+	{
+		disX = dis1x;
+	}
+	else
+	{
+		disX = dis2x;
+	}
+
+	float dis1z;
+	float dis2z;
+	float disZ;
+	dis1z = pos.z - box.LeastPos.z;
+	dis2z = pos.z - box.MaxPos.z;
+
+	if (dis1z < dis2z)
+	{
+		disZ = dis1z;
+	}
+	else
+	{
+		disZ = dis2z;
+	}
+
+	if (disX < disZ)
+	{
+		Pos.x = disX;
+		Pos.z = pos.z;
+	}
+	else
+	{
+		Pos.x = pos.x;
+		Pos.z = disZ;
+	}
+
+
+	return Pos;
+}
+
+CollisionSet::XMFLOAT3 CollisionSet::GetNearVertex(const Box& box, const XMFLOAT3& pos)
+{
+	XMFLOAT3 Pos[4];
+	Pos[0] = { box.LeastPos.x, 0, box.LeastPos.z };		//左前
+	Pos[1] = { box.LeastPos.x, 0, box.MaxPos.z	};		//左奥
+	Pos[2] = {	 box.MaxPos.x, 0, box.MaxPos.z	};		//右奥
+	Pos[3] = {	 box.MaxPos.x, 0, box.LeastPos.z };		//右前
+
+	float dis[4];
+	for (int i = 0; i < 4; i++)
+	{
+		float x = pos.x - Pos[i].x;
+		float z = pos.z - Pos[i].z;
+
+		dis[i] = sqrt(x * x + z * z);
+	}
+
+	float min = MyMath::minElement(dis, 4);
+
+	for (int i = 0; i < 4; i++)
+	{
+		if (dis[i] == min)
+		{
+			return Pos[i];
+		}
+	}
+}
+
+CollisionSet::XMFLOAT3 CollisionSet::GetScecondNearVertex(const Box& box, const XMFLOAT3& pos)
+{
+	XMFLOAT3 Pos[4];
+	Pos[0] = { box.LeastPos.x, 0, box.LeastPos.z };		//左前
+	Pos[1] = { box.LeastPos.x, 0, box.MaxPos.z };		//左奥
+	Pos[2] = { box.MaxPos.x, 0, box.MaxPos.z };		//右奥
+	Pos[3] = { box.MaxPos.x, 0, box.LeastPos.z };		//右前
+
+	float dis[4];
+	for (int i = 0; i < 4; i++)
+	{
+		float x = pos.x - Pos[i].x;
+		float z = pos.z - Pos[i].z;
+
+		dis[i] = sqrt(x * x + z * z);
+	}
+	float tmp;
+
+
+	float disA[4];
+
+	for (int i = 0; i < 4; i++)
+	{
+		disA[i] = dis[i];
+	}
+
+	for (int i = 0; i < 4; ++i) {
+		for (int j = i + 1; j < 4; ++j) {
+			if (disA[i] > disA[j]) {
+				tmp = disA[i];
+				disA[i] = disA[j];
+				disA[j] = tmp;
+			}
+		}
+	}
+
+	for (int i = 0; i < 4; i++)
+	{
+		if (disA[2] == dis[i])
+		{
+			return Pos[i];
+		}
+	}
+
+}
+
+CollisionSet::XMFLOAT3 CollisionSet::GetThirdNearVertex(const Box& box, const XMFLOAT3& pos)
+{
+	XMFLOAT3 Pos[4];
+	Pos[0] = { box.LeastPos.x, 0, box.LeastPos.z };		//左前
+	Pos[1] = { box.LeastPos.x, 0, box.MaxPos.z };		//左奥
+	Pos[2] = { box.MaxPos.x, 0, box.MaxPos.z };		//右奥
+	Pos[3] = { box.MaxPos.x, 0, box.LeastPos.z };		//右前
+
+	float dis[4];
+	for (int i = 0; i < 4; i++)
+	{
+		float x = pos.x - Pos[i].x;
+		float z = pos.z - Pos[i].z;
+
+		dis[i] = sqrt(x * x + z * z);
+	}
+	float tmp;
+
+
+	float disA[4];
+
+	for (int i = 0; i < 4; i++)
+	{
+		disA[i] = dis[i];
+	}
+
+	for (int i = 0; i < 4; ++i) {
+		for (int j = i + 1; j < 4; ++j) {
+			if (disA[i] > disA[j]) {
+				tmp = disA[i];
+				disA[i] = disA[j];
+				disA[j] = tmp;
+			}
+		}
+	}
+
+	for (int i = 0; i < 4; i++)
+	{
+		if (disA[3] == dis[i])
+		{
+			return Pos[i];
+		}
+	}
+}
+
+int CollisionSet::SelectNearRoot(const XMFLOAT3& startPos, const XMFLOAT3& endPos, const XMFLOAT3& pos1, const XMFLOAT3& pos2)
+{
+	float dis1, dis2, dis1_1, dis2_1;
+	float x, z;
+
+	x = (pos1.x - startPos.x);
+	z = (pos1.z - startPos.z);
+	dis1 = sqrt((x * x) + (z * z));
+
+	x = (pos2.x - startPos.x);
+	z = (pos2.z - startPos.z);
+	dis2 = sqrt((x * x) + (z * z));
+
+	x = (endPos.x - pos1.x);
+	z = (endPos.z - pos1.z);
+	dis1_1 = sqrt((x * x) + (z * z));
+
+	x = (endPos.x - pos2.x);
+	z = (endPos.z - pos2.z);
+	dis2_1 = sqrt((x * x) + (z * z));
+
+	dis1 += dis1_1;
+	dis2 += dis2_1;
+
+	if (dis1 < dis2)
+	{
+		return 1;
+	}
+	else if (dis1 == dis2)
+	{
+		return 3;
+	}
+	else
+	{
+		return 2;
+	}
+
+}
+

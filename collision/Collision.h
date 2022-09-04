@@ -104,7 +104,7 @@ public:
 	static bool CheckRayBox(const Ray& ray, const Box& box);
 
 
-	static bool CheckBoxSphere(const SphereF& sphere, const Box& box);
+	static bool CheckSphereBox(const SphereF& sphere, const Box& box);
 
 	static bool CheckAABB(const Box& box1, const Box& box2);
 

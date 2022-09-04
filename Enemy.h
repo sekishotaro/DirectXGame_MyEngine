@@ -4,6 +4,7 @@
 #include <d3d12.h>
 #include <DirectXMath.h>
 #include <d3dx12.h>
+#include "CollisionPrimitive.h"
 
 class Enemy
 {
@@ -24,8 +25,14 @@ public:
 
 	static XMFLOAT3 GetPos() { return pos; }
 
-	static void Tracking(XMFLOAT3 playerPos);
+	static void Tracking(const XMFLOAT3& playerPos);
+
+	static void ShieldDodge(const XMFLOAT3& playerPos, const Box& wall);
 
 	static void Initialize();
+
+	static void Move(const XMFLOAT3& playerPos);
+
+	static void PushBack(const Box& wall);
 };
 

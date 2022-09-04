@@ -230,7 +230,7 @@ bool Collision::CheckLineSegmentBox(const LineSegment& line, const Box& box)
 	float disY = (line.end.y - line.start.y) *(line.end.y - line.start.y);;
 	float disZ = (line.end.z - line.start.z) *(line.end.z - line.start.z);;
 	//敵と自機の距離
-	float Mdis = sqrt(disX + disY + disZ);
+	float Mdis = sqrt(disX + disZ);
 
 	//敵と各立方体の頂点の距離
 	float Bdis[8];
@@ -241,14 +241,14 @@ bool Collision::CheckLineSegmentBox(const LineSegment& line, const Box& box)
 	float BMdisY = (box.MaxPos.y - line.start.y) * (box.MaxPos.y - line.start.y);
 	float BMdisZ = (box.MaxPos.z - line.start.z) * (box.MaxPos.z - line.start.z);
 
-	Bdis[0] = sqrt(BdisX + BMdisY + BMdisZ); //左上奥
-	Bdis[1] = sqrt(BdisX + BdisY + BMdisZ); //左下奥
-	Bdis[2] = sqrt(BdisX + BMdisY + BdisZ); //左上前
-	Bdis[3] = sqrt(BdisX + BdisY + BdisZ); //左下前
-	Bdis[4] = sqrt(BMdisX + BMdisY + BdisZ); //右上前
-	Bdis[5] = sqrt(BMdisX + BdisY + BdisZ); //右下前
-	Bdis[6] = sqrt(BMdisX + BMdisY + BMdisZ); //右上奥
-	Bdis[7] = sqrt(BMdisX + BdisY + BMdisZ); //右下奥
+	Bdis[0] = sqrt(BdisX  + BMdisZ); //左上奥
+	Bdis[1] = sqrt(BdisX  + BMdisZ); //左下奥
+	Bdis[2] = sqrt(BdisX  + BdisZ); //左上前
+	Bdis[3] = sqrt(BdisX  + BdisZ); //左下前
+	Bdis[4] = sqrt(BMdisX + BdisZ); //右上前
+	Bdis[5] = sqrt(BMdisX + BdisZ); //右下前
+	Bdis[6] = sqrt(BMdisX + BMdisZ); //右上奥
+	Bdis[7] = sqrt(BMdisX + BMdisZ); //右下奥
 
 	float min = MyMath::minElement(Bdis, 8);
 
@@ -306,7 +306,7 @@ bool Collision::CheckRayBox(const Ray& ray, const Box& box)
 	return false;
 }
 
-bool Collision::CheckBoxSphere(const SphereF& sphere, const Box& box)
+bool Collision::CheckSphereBox(const SphereF& sphere, const Box& box)
 {
 	int Check1 = 0;
 	int Check2 = 0;
