@@ -221,52 +221,84 @@ bool Collision::CheckRay2Sphere(const Ray &ray, const Sphere &sphere, float *dis
 
 bool Collision::CheckLineSegmentBox(const LineSegment& line, const Box& box)
 {
-	Ray ray;
+	//Ray ray;
 
-	ray.start = { line.start.x, line.start.y, line.start.z };
-	ray.dir = { line.start.x - line.end.x, line.start.y - line.end.y, line.start.z - line.end.z };
+	//ray.start = { line.start.x, line.start.y, line.start.z };
+	//ray.dir = { line.start.x - line.end.x, line.start.y - line.end.y, line.start.z - line.end.z };
 
-	float disX = (line.end.x - line.start.x) *(line.end.x - line.start.x);;
-	float disY = (line.end.y - line.start.y) *(line.end.y - line.start.y);;
-	float disZ = (line.end.z - line.start.z) *(line.end.z - line.start.z);;
-	//敵と自機の距離
-	float Mdis = sqrt(disX + disZ);
+	//float disX = (line.end.x - line.start.x) *(line.end.x - line.start.x);;
+	//float disY = (line.end.y - line.start.y) *(line.end.y - line.start.y);;
+	//float disZ = (line.end.z - line.start.z) *(line.end.z - line.start.z);;
+	////敵と自機の距離
+	//float Mdis = sqrt(disX + disZ);
 
-	//敵と各立方体の頂点の距離
-	float Bdis[8];
-	float BdisX = (box.LeastPos.x - line.start.x) * (box.LeastPos.x - line.start.x);
-	float BdisY = (box.LeastPos.y - line.start.y) * (box.LeastPos.y - line.start.y);
-	float BdisZ = (box.LeastPos.z - line.start.z) * (box.LeastPos.z - line.start.z);
-	float BMdisX = (box.MaxPos.x - line.start.x) * (box.MaxPos.x - line.start.x);
-	float BMdisY = (box.MaxPos.y - line.start.y) * (box.MaxPos.y - line.start.y);
-	float BMdisZ = (box.MaxPos.z - line.start.z) * (box.MaxPos.z - line.start.z);
+	////敵と各立方体の頂点の距離
+	//float Bdis[8];
+	//float BdisX = (box.LeastPos.x - line.start.x) * (box.LeastPos.x - line.start.x);
+	//float BdisY = (box.LeastPos.y - line.start.y) * (box.LeastPos.y - line.start.y);
+	//float BdisZ = (box.LeastPos.z - line.start.z) * (box.LeastPos.z - line.start.z);
+	//float BMdisX = (box.MaxPos.x - line.start.x) * (box.MaxPos.x - line.start.x);
+	//float BMdisY = (box.MaxPos.y - line.start.y) * (box.MaxPos.y - line.start.y);
+	//float BMdisZ = (box.MaxPos.z - line.start.z) * (box.MaxPos.z - line.start.z);
 
-	Bdis[0] = sqrt(BdisX  + BMdisZ); //左上奥
-	Bdis[1] = sqrt(BdisX  + BMdisZ); //左下奥
-	Bdis[2] = sqrt(BdisX  + BdisZ); //左上前
-	Bdis[3] = sqrt(BdisX  + BdisZ); //左下前
-	Bdis[4] = sqrt(BMdisX + BdisZ); //右上前
-	Bdis[5] = sqrt(BMdisX + BdisZ); //右下前
-	Bdis[6] = sqrt(BMdisX + BMdisZ); //右上奥
-	Bdis[7] = sqrt(BMdisX + BMdisZ); //右下奥
+	//Bdis[0] = sqrt(BdisX  + BMdisZ); //左上奥
+	//Bdis[1] = sqrt(BdisX  + BMdisZ); //左下奥
+	//Bdis[2] = sqrt(BdisX  + BdisZ); //左上前
+	//Bdis[3] = sqrt(BdisX  + BdisZ); //左下前
+	//Bdis[4] = sqrt(BMdisX + BdisZ); //右上前
+	//Bdis[5] = sqrt(BMdisX + BdisZ); //右下前
+	//Bdis[6] = sqrt(BMdisX + BMdisZ); //右上奥
+	//Bdis[7] = sqrt(BMdisX + BMdisZ); //右下奥
 
-	float min = MyMath::minElement(Bdis, 8);
+	//float min = MyMath::minElement(Bdis, 8);
 
-	//範囲外でなければ返す
-	if ( min > Mdis)
-	{
-		return false;
-	}
+	////範囲外でなければ返す
+	//if ( min > Mdis)
+	//{
+	//	return false;
+	//}
 
-	if (CheckRayBox(ray, box) == true)
+	//if (CheckRayBox(ray, box) == true)
+	//{
+	//	return true;
+	//}
+	//else
+	//{
+	//	return false;
+	//}
+
+	LineSegment a_to_b, b_to_c, c_to_d, d_to_a;
+
+	a_to_b.start = XMFLOAT3(box.LeastPos.x, 0, box.LeastPos.z);
+	a_to_b.end   = XMFLOAT3(box.LeastPos.x, 0, box.MaxPos.z);
+
+	b_to_c.start = XMFLOAT3(box.LeastPos.x, 0, box.MaxPos.z);
+	b_to_c.end   = XMFLOAT3(box.MaxPos.x  , 0, box.MaxPos.z);
+
+	c_to_d.start = XMFLOAT3(box.MaxPos.x  , 0, box.MaxPos.z);
+	c_to_d.end   = XMFLOAT3(box.MaxPos.x  , 0, box.LeastPos.z);
+
+	d_to_a.start = XMFLOAT3(box.MaxPos.x  , 0, box.LeastPos.z);
+	d_to_a.end   = XMFLOAT3(box.LeastPos.x, 0, box.LeastPos.z);
+
+	if (Check2LineSegment(line, a_to_b) == true)
 	{
 		return true;
 	}
-	else
+	if (Check2LineSegment(line, b_to_c) == true)
 	{
-		return false;
+		return true;
+	}
+	if (Check2LineSegment(line, c_to_d) == true)
+	{
+		return true;
+	}
+	if (Check2LineSegment(line, d_to_a) == true)
+	{
+		return true;
 	}
 	
+	return false;
 }
 
 bool Collision::CheckRayBox(const Ray& ray, const Box& box)
@@ -304,6 +336,68 @@ bool Collision::CheckRayBox(const Ray& ray, const Box& box)
 		}
 	}
 	return false;
+}
+
+bool Collision::Check2LineSegment(const LineSegment& line1, const LineSegment& line2)
+{
+	//XMVECTOR a_to_b = { line1.end.x   - line1.start.x, line1.end.y   - line1.start.y, line1.end.z   - line1.start.z };
+	//XMVECTOR a_to_c = { line2.start.x - line1.start.x, line2.start.y - line1.start.y, line2.start.z - line1.start.z };
+	//XMVECTOR a_to_d = { line2.end.x   - line1.start.x, line2.end.y   - line1.start.y, line2.end.z   - line1.start.z };
+
+
+	//XMVECTOR c_to_d = { line2.end.x   - line2.start.x, line2.end.y   - line2.start.y, line2.end.z   - line2.start.z };
+	//XMVECTOR c_to_a = { line1.start.x - line2.start.x, line2.start.y - line2.start.y, line1.start.z - line2.start.z };
+	//XMVECTOR c_to_b = { line1.end.x   - line2.start.x, line2.end.y   - line2.start.y, line1.end.z   - line2.start.z };
+
+	//float d_01 = (a_to_b.m128_f32[0] * a_to_c.m128_f32[2]) - (a_to_c.m128_f32[0] * a_to_b.m128_f32[2]);
+	//float d_02 = (a_to_b.m128_f32[0] * a_to_d.m128_f32[2]) - (a_to_d.m128_f32[0] * a_to_b.m128_f32[2]);
+
+	//if (d_01 * d_02 > 0.0f)
+	//{
+	//	return false;
+	//}
+
+	//d_01 = (c_to_d.m128_f32[0] * c_to_a.m128_f32[2]) - (c_to_a.m128_f32[0] * c_to_d.m128_f32[2]);
+	//d_02 = (c_to_d.m128_f32[0] * c_to_b.m128_f32[2]) - (c_to_d.m128_f32[0] * c_to_d.m128_f32[2]);
+
+	//if (d_01 * d_02 > 0.0f)
+	//{
+	//	return false;
+	//}
+
+	//return true;
+
+	float baseX = line2.end.x   - line2.start.x;
+	float baseZ = line2.end.z   - line2.start.z;
+	float sub1X = line1.start.x - line2.start.x;
+	float sub1Z = line1.start.z - line2.start.z;
+	float sub2X = line1.end.x   - line2.start.x;
+	float sub2Z = line1.end.z   - line2.start.z;
+
+	float bs1 = baseX * sub1Z - baseZ * sub1X;
+	float bs2 = baseX * sub2Z - baseZ * sub2X;
+	float re = bs1 * bs2;
+	if (re > 0)
+	{
+		return false;
+	}
+
+	baseX = line1.end.x - line1.start.x;
+	baseZ = line1.end.z - line1.start.z;
+	sub1X = line2.start.x - line1.start.x;
+	sub1Z = line2.start.z - line1.start.z;
+	sub2X = line2.end.x - line1.start.x;
+	sub2Z = line2.end.z - line1.start.z;
+
+	bs1 = baseX * sub1Z - baseZ * sub1X;
+	bs2 = baseX * sub2Z - baseZ * sub2X;
+	re = bs1 * bs2;
+	if (re > 0)
+	{
+		return false;
+	}
+
+	return true;
 }
 
 bool Collision::CheckSphereBox(const SphereF& sphere, const Box& box)

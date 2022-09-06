@@ -23,7 +23,6 @@ void Enemy::Tracking(const XMFLOAT3& playerPos)
 
 void Enemy::ShieldDodge(const XMFLOAT3& playerPos, const Box& wall)
 {
-	int didge = 0;
 	Box box;
 	box.centerPos = wall.centerPos;
 	box.LeastPos.x = wall.LeastPos.x - 2;
@@ -40,13 +39,12 @@ void Enemy::ShieldDodge(const XMFLOAT3& playerPos, const Box& wall)
 	third = CollisionSet::GetThirdNearVertex(box, pos);
 	//進行方向の判別
 	LineSegment line;
-	LineSegment lineB;
 	line.end = playerPos;
-	lineB.end = playerPos;
+
 
 	//敵機(自機)から1番近い頂点から自機に行けるか？
 	line.start = wallNearPos;
-	if (Collision::CheckLineSegmentBox(line, box) == false) //もし遮蔽が無ければ
+	if (Collision::CheckLineSegmentBox(line, wall) == false) //もし遮蔽が無ければ
 	{
 		//追尾処理
 		XMFLOAT3 dis = { wallNearPos.x - pos.x, wallNearPos.y - pos.y ,wallNearPos.z - pos.z };
@@ -57,63 +55,27 @@ void Enemy::ShieldDodge(const XMFLOAT3& playerPos, const Box& wall)
 		pos.z += (dis.z / sb) / 10.0f;
 	}
 
-	////1番近い頂点で、いけない場合2か3番目に近い頂点で行ける。
-	////敵機から2,3番目に近い頂点から行ける方または両方いける場合近い方
-	//line.start = second;
-	//lineB.start = third;
+	//1番近い頂点で、いけない場合2か3番目に近い頂点で行ける。
+	//敵機から2,3番目に近い頂点から行ける方または両方いける場合近い方
+	line.start = second;
 
-	////両方いける
-	//if (Collision::CheckLineSegmentBox(line, box) == true && Collision::CheckLineSegmentBox(lineB, box) == true)
-	//{
-	//	int root;
-	//	root = CollisionSet::SelectNearRoot(pos, playerPos, second, third);
+	//2番目だけ行ける
+	if (Collision::CheckLineSegmentBox(line, wall) == false)
+	{
+		//追尾処理
+		XMFLOAT3 dis = { second.x - pos.x, second.y - pos.y ,second.z - pos.z };
 
-	//	if (root == 1)
-	//	{
-	//		XMFLOAT3 dis = { second.x - pos.x, second.y - pos.y ,second.z - pos.z };
+		float sb = sqrt(dis.x * dis.x + dis.z * dis.z);
 
-	//		float sb = sqrt(dis.x * dis.x + dis.z * dis.z);
+		pos.x += (dis.x / sb) / 10.0f;
+		pos.z += (dis.z / sb) / 10.0f;
+	}
 
-	//		pos.x += (dis.x / sb) / 10.0f;
-	//		pos.z += (dis.z / sb) / 10.0f;
-	//	}
-	//	else if (root == 2)
-	//	{
-	//		XMFLOAT3 dis = { second.x - pos.x, second.y - pos.y ,second.z - pos.z };
-
-	//		float sb = sqrt(dis.x * dis.x + dis.z * dis.z);
-
-	//		pos.x += (dis.x / sb) / 10.0f;
-	//		pos.z += (dis.z / sb) / 10.0f;
-	//	}
-	//	else if (root == 3)
-	//	{
-	//		XMFLOAT3 dis = { third.x - pos.x, third.y - pos.y ,third.z - pos.z };
-
-	//		float sb = sqrt(dis.x * dis.x + dis.z * dis.z);
-
-	//		pos.x += (dis.x / sb) / 10.0f;
-	//		pos.z += (dis.z / sb) / 10.0f;
-	//	}
-	//}
-
-	////2番目だけ行ける
-	//if (Collision::CheckLineSegmentBox(line, box) == true)
+	//3番目だけ行ける
+	//if (Collision::CheckLineSegmentBox(lineB, wall) == false)
 	//{
 	//	//追尾処理
 	//	XMFLOAT3 dis = { second.x - pos.x, second.y - pos.y ,second.z - pos.z };
-
-	//	float sb = sqrt(dis.x * dis.x + dis.z * dis.z);
-
-	//	pos.x += (dis.x / sb) / 10.0f;
-	//	pos.z += (dis.z / sb) / 10.0f;
-	//}
-	//
-	////3番目だけ行ける
-	//if (Collision::CheckLineSegmentBox(lineB, box) == true)
-	//{
-	//	//追尾処理
-	//	XMFLOAT3 dis = { third.x - pos.x, third.y - pos.y ,third.z - pos.z };
 
 	//	float sb = sqrt(dis.x * dis.x + dis.z * dis.z);
 

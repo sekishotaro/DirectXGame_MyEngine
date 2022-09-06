@@ -103,16 +103,14 @@ public:
 	/// <returns></returns>
 	static bool CheckRayBox(const Ray& ray, const Box& box);
 
+	static bool Check2LineSegment(const LineSegment& line1, const LineSegment& line2);
+
 
 	static bool CheckSphereBox(const SphereF& sphere, const Box& box);
-
 	static bool CheckAABB(const Box& box1, const Box& box2);
-
 	static bool CheckCircleDot(const Circle& circle, const XMFLOAT2& dot);
-
 	static bool CheckCylinderDotXY(const Cylinder& cylinder, const XMFLOAT3& dot);
 	static bool CheckCylinderDotXZ(const Cylinder& cylinder, const XMFLOAT3& dot);
 	static bool CheckCylinderDotZY(const Cylinder& cylinder, const XMFLOAT3& dot);
-
 	static bool CheckSphereDot(const SphereF& sphere, XMFLOAT3& dot);
 };
