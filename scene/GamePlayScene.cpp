@@ -184,9 +184,9 @@ void GamePlayScene::Update()
 	DebugText::GetInstance()->Print(50, 30 * 4, 2, "P:X:%f", Player::GetPos().x);
 	DebugText::GetInstance()->Print(50, 30 * 5, 2, "P:Y:%f", Player::GetPos().y);
 	DebugText::GetInstance()->Print(50, 30 * 6, 2, "P:Z:%f", Player::GetPos().z);
-	DebugText::GetInstance()->Print(50, 30 * 7, 2, "M:X:%f", Player::GetMove().x);
-	DebugText::GetInstance()->Print(50, 30 * 8, 2, "M:Y:%f", Player::GetMove().y);
-	DebugText::GetInstance()->Print(50, 30 * 9, 2, "M:Z:%f", Player::GetMove().z);
+	DebugText::GetInstance()->Print(50, 30 * 7, 2, "NearNum:%d", Enemy::GetNearNum());
+	//DebugText::GetInstance()->Print(50, 30 * 8, 2, "M:Y:%f", Player::GetMove().y);
+	//DebugText::GetInstance()->Print(50, 30 * 9, 2, "M:Z:%f", Player::GetMove().z);
 	//if (input->TriggerKey(DIK_SPACE))
 	//{
 	//	//BGMŽ~‚ß‚é

@@ -20,10 +20,17 @@ private:
 private:
 	static XMFLOAT3 pos;
 
+	static int nearNumber;
+
 public:
+
+
 	static void SetPos(XMFLOAT3& pos1) { pos = pos1; }
 
 	static XMFLOAT3 GetPos() { return pos; }
+
+
+	static int GetNearNum() { return nearNumber; }
 
 	static void Tracking(const XMFLOAT3& playerPos);
 

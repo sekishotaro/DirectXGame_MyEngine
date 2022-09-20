@@ -6,6 +6,8 @@
 
 Enemy::XMFLOAT3 Enemy::pos = { 0.0f, 0.0f, 3.0f };
 
+int Enemy::nearNumber = 0;
+
 void Enemy::Tracking(const XMFLOAT3& playerPos)
 {
 	//if (CollisionSet::CollisionCheck1(pos, XMFLOAT3(2,2,2), JsonLoader::enemyNaviareaObjects[0].get()->GetPosition(), JsonLoader::enemyNaviareaObjects[0].get()->GetScale()) == false )
@@ -53,6 +55,8 @@ void Enemy::ShieldDodge(const XMFLOAT3& playerPos, const Box& wall)
 
 		pos.x += (dis.x / sb) / 10.0f;
 		pos.z += (dis.z / sb) / 10.0f;
+
+		nearNumber = 1;
 	}
 
 	//1番近い頂点で、いけない場合2か3番目に近い頂点で行ける。
@@ -69,19 +73,24 @@ void Enemy::ShieldDodge(const XMFLOAT3& playerPos, const Box& wall)
 
 		pos.x += (dis.x / sb) / 10.0f;
 		pos.z += (dis.z / sb) / 10.0f;
+
+		nearNumber = 2;
 	}
 
 	//3番目だけ行ける
-	//if (Collision::CheckLineSegmentBox(lineB, wall) == false)
-	//{
-	//	//追尾処理
-	//	XMFLOAT3 dis = { second.x - pos.x, second.y - pos.y ,second.z - pos.z };
+	line.start = third;
+	if (Collision::CheckLineSegmentBox(line, wall) == false)
+	{
+		//追尾処理
+		XMFLOAT3 dis = { second.x - pos.x, second.y - pos.y ,second.z - pos.z };
 
-	//	float sb = sqrt(dis.x * dis.x + dis.z * dis.z);
+		float sb = sqrt(dis.x * dis.x + dis.z * dis.z);
 
-	//	pos.x += (dis.x / sb) / 10.0f;
-	//	pos.z += (dis.z / sb) / 10.0f;
-	//}
+		pos.x += (dis.x / sb) / 10.0f;
+		pos.z += (dis.z / sb) / 10.0f;
+
+		nearNumber = 3;
+	}
 }
 
 void Enemy::Initialize()
