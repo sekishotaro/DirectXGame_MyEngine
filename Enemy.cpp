@@ -35,8 +35,8 @@ void Enemy::ShieldDodge(const XMFLOAT3& playerPos, const Box& wall)
 	box.MaxPos.z = wall.MaxPos.z + 2;
 
 	//敵機(自機)から123番目に近い頂点を求める
-	XMFLOAT3 wallNearPos, second, third;
-	wallNearPos = CollisionSet::GetNearVertex(box,pos);
+	XMFLOAT3 first, second, third;
+	first = CollisionSet::GetNearVertex(box,pos);
 	second = CollisionSet::GetScecondNearVertex(box, pos);
 	third = CollisionSet::GetThirdNearVertex(box, pos);
 	//進行方向の判別
@@ -45,11 +45,11 @@ void Enemy::ShieldDodge(const XMFLOAT3& playerPos, const Box& wall)
 
 
 	//敵機(自機)から1番近い頂点から自機に行けるか？
-	line.start = wallNearPos;
+	line.start = first;
 	if (Collision::CheckLineSegmentBox(line, wall) == false) //もし遮蔽が無ければ
 	{
 		//追尾処理
-		XMFLOAT3 dis = { wallNearPos.x - pos.x, wallNearPos.y - pos.y ,wallNearPos.z - pos.z };
+		XMFLOAT3 dis = { first.x - pos.x, first.y - pos.y ,first.z - pos.z };
 
 		float sb = sqrt(dis.x * dis.x + dis.z * dis.z);
 
@@ -57,6 +57,8 @@ void Enemy::ShieldDodge(const XMFLOAT3& playerPos, const Box& wall)
 		pos.z += (dis.z / sb) / 10.0f;
 
 		nearNumber = 1;
+
+		return;
 	}
 
 	//1番近い頂点で、いけない場合2か3番目に近い頂点で行ける。
@@ -75,6 +77,8 @@ void Enemy::ShieldDodge(const XMFLOAT3& playerPos, const Box& wall)
 		pos.z += (dis.z / sb) / 10.0f;
 
 		nearNumber = 2;
+
+		return;
 	}
 
 	//3番目だけ行ける
@@ -90,6 +94,8 @@ void Enemy::ShieldDodge(const XMFLOAT3& playerPos, const Box& wall)
 		pos.z += (dis.z / sb) / 10.0f;
 
 		nearNumber = 3;
+
+		return;
 	}
 }
 

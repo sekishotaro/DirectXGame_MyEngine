@@ -290,7 +290,7 @@ CollisionSet::XMFLOAT3 CollisionSet::GetScecondNearVertex(const Box& box, const 
 
 	for (int i = 0; i < 4; i++)
 	{
-		if (disA[2] == dis[i])
+		if (disA[1] == dis[i])
 		{
 			return Pos[i];
 		}
@@ -336,7 +336,7 @@ CollisionSet::XMFLOAT3 CollisionSet::GetThirdNearVertex(const Box& box, const XM
 
 	for (int i = 0; i < 4; i++)
 	{
-		if (disA[3] == dis[i])
+		if (disA[2] == dis[i])
 		{
 			return Pos[i];
 		}
