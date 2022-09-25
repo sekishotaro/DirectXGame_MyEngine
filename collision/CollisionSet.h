@@ -30,6 +30,10 @@ public:
 
 	static XMFLOAT3 GetThirdNearVertex(const Box& box, const XMFLOAT3& pos);
 
+	static XMFLOAT3 GetFourthNearVertex(const Box& box, const XMFLOAT3& pos);
+
+	static XMFLOAT3 GetwhichNearPos(const XMFLOAT3& criteriaPos, const XMFLOAT3& posA, const XMFLOAT3& posB);
+
 	static int SelectNearRoot(const XMFLOAT3& startPos, const XMFLOAT3& endPos, const XMFLOAT3& pos1, const XMFLOAT3& pos2);
 
 private:

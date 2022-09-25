@@ -343,6 +343,67 @@ CollisionSet::XMFLOAT3 CollisionSet::GetThirdNearVertex(const Box& box, const XM
 	}
 }
 
+CollisionSet::XMFLOAT3 CollisionSet::GetFourthNearVertex(const Box& box, const XMFLOAT3& pos)
+{
+	XMFLOAT3 Pos[4];
+	Pos[0] = { box.LeastPos.x, 0, box.LeastPos.z };		//左前
+	Pos[1] = { box.LeastPos.x, 0, box.MaxPos.z };		//左奥
+	Pos[2] = { box.MaxPos.x, 0, box.MaxPos.z };		//右奥
+	Pos[3] = { box.MaxPos.x, 0, box.LeastPos.z };		//右前
+
+	float dis[4];
+	for (int i = 0; i < 4; i++)
+	{
+		float x = pos.x - Pos[i].x;
+		float z = pos.z - Pos[i].z;
+
+		dis[i] = sqrt(x * x + z * z);
+	}
+	float tmp;
+
+
+	float disA[4];
+
+	for (int i = 0; i < 4; i++)
+	{
+		disA[i] = dis[i];
+	}
+
+	for (int i = 0; i < 4; ++i) {
+		for (int j = i + 1; j < 4; ++j) {
+			if (disA[i] > disA[j]) {
+				tmp = disA[i];
+				disA[i] = disA[j];
+				disA[j] = tmp;
+			}
+		}
+	}
+
+	for (int i = 0; i < 4; i++)
+	{
+		if (disA[3] == dis[i])
+		{
+			return Pos[i];
+		}
+	}
+}
+
+CollisionSet::XMFLOAT3 CollisionSet::GetwhichNearPos(const XMFLOAT3& criteriaPos, const XMFLOAT3& posA, const XMFLOAT3& posB)
+{
+	float disA, disB;
+	disA = sqrt((criteriaPos.x * posA.x) + (criteriaPos.z * posA.z));
+	disB = sqrt((criteriaPos.x * posB.x) + (criteriaPos.z * posB.z));
+
+	if (disA <= disB)
+	{
+		return posA;
+	}
+	else
+	{
+		return posB;
+	}
+}
+
 int CollisionSet::SelectNearRoot(const XMFLOAT3& startPos, const XMFLOAT3& endPos, const XMFLOAT3& pos1, const XMFLOAT3& pos2)
 {
 	float dis1, dis2, dis1_1, dis2_1;
