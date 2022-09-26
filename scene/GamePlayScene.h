@@ -70,8 +70,11 @@ public:
 	bool graFlag = true;
 	float groundY = 0.0f;
 
-	std::unique_ptr<MathObject> mathObject;
+	std::unique_ptr<MathObject> enemyCollider1Object;
+	std::unique_ptr<MathObject> enemyCollider2Object;
+
 	MathModel* mathModel = nullptr;
+	
 	Box Pbox;
 };
 

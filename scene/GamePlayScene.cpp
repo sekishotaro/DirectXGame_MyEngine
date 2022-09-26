@@ -77,11 +77,17 @@ void GamePlayScene::Initialize()
 
 	Enemy::Initialize();
 	mathModel = MathModel::LoadFromOBJ("sphere");
-	mathObject = MathObject::Create();
-	//オブジェクトにモデルをひも付ける
-	mathObject->SetModel(mathModel);
-	mathObject->SetPosition(XMFLOAT3(0, 5, 0));
+	enemyCollider1Object = MathObject::Create();
+	enemyCollider2Object = MathObject::Create();
 
+	//オブジェクトにモデルをひも付ける
+	enemyCollider1Object->SetModel(mathModel);
+	enemyCollider1Object->SetPosition(XMFLOAT3(0, 5, 0));
+
+	enemyCollider2Object->SetModel(mathModel);
+	enemyCollider2Object->SetPosition(XMFLOAT3(0, 5, 0));
+	enemyCollider2Object->SetScale(XMFLOAT3(7, 7, 7));
+	enemyCollider2Object->SetColor(XMFLOAT4(0, 0, 1, 0.2));
 }
 
 void GamePlayScene::Finalize()
@@ -93,11 +99,11 @@ void GamePlayScene::Finalize()
 
 void GamePlayScene::Update()
 {
-	// ゲームシーンの毎フレーム処理
+	//キーボード、マウスのインプット
 	Input *input = Input::GetInstance();
-
 	Input::MousePos mpos = input->MousePosLoad();
 
+	//カメラの移動
 	if (input->PushKey(DIK_UP) || input->PushKey(DIK_DOWN) || input->PushKey(DIK_RIGHT) || input->PushKey(DIK_LEFT) || input->PushKey(DIK_E) || input->PushKey(DIK_Z))
 	{
 		// 現在の座標を取得
@@ -114,7 +120,10 @@ void GamePlayScene::Update()
 		camera->SetEye(position);
 	}
 
+	//プレイヤーの移動
 	Player::Move(input, groundY);
+
+	//プレイヤーと地面の当たり判定処理
 	CollisionSet::CollisionCheck(Player::GetPos(), colliderObject->GetScale(), groundY);
 	CollisionSet::CollisionPushBack(colliderObject->GetScale(), groundY);
 	MyMath::GravityCheck(Player::GetPos(), groundY, Player::groundFlag);
@@ -140,35 +149,42 @@ void GamePlayScene::Update()
 		Enemy::SetPos(pos);
 	}
 
+	//自機の当たり判定用BOXの設定
 	Pbox.centerPos = Player::GetPos();
 	Pbox.LeastPos = XMFLOAT3(Player::GetPos().x - Player::GetSize().x /2, Player::GetPos().y, Player::GetPos().z - Player::GetSize().z / 2);
 	Pbox.MaxPos = XMFLOAT3(Player::GetPos().x + Player::GetSize().x / 2, Player::GetPos().y + Player::GetSize().y, Player::GetPos().z + Player::GetSize().z / 2);
 
-	mathObject->SetPosition(Enemy::GetPos());
+	//敵の当たり判定計算用の球の初期化
 	SphereF Esphere;
 	Esphere.center = Enemy::GetPos();
 	Esphere.radius = 2;
 
+	SphereF E2sphere;
+	E2sphere.center = Enemy::GetPos();
+	E2sphere.radius = 7;
+
+	//自機と敵の線分
 	LineSegment line;
 	line.start = Enemy::GetPos();
 	line.end = Player::GetPos();
 
+	//壁との当たり判定計算用のBoxの初期化
 	Box wall;
 	wall.centerPos = JsonLoader::colliderObjects[0].get()->GetPosition();
 	wall.size = JsonLoader::colliderObjects[0].get()->GetScale();
 	wall.LeastPos = { wall.centerPos.x - wall.size.x / 2,wall.centerPos.y - wall.size.y / 2, wall.centerPos.z - wall.size.z / 2};
 	wall.MaxPos = { wall.centerPos.x + wall.size.x / 2,wall.centerPos.y + wall.size.y / 2, wall.centerPos.z + wall.size.z /2 };
-	
+
 	if (Collision::CheckLineSegmentBox(line, wall) == true)
 	{
-		mathObject->SetColor({ 1, 1, 0, 0.5f });
+		enemyCollider1Object->SetColor({ 1, 1, 0, 0.5f });
 	}
 	else
 	{
-		mathObject->SetColor({ 1, 1, 1, 0.5f });
+		enemyCollider1Object->SetColor({ 1, 1, 1, 0.5f });
 	}
 
-	if (Collision::CheckSphereBox(Esphere, Pbox) == true)
+	if (Collision::CheckSphereBox(E2sphere, Pbox) == true)
 	{
 		colliderObject->SetColor({ 1, 1, 0 });
 	}
@@ -187,6 +203,7 @@ void GamePlayScene::Update()
 	DebugText::GetInstance()->Print(50, 30 * 7, 2, "NearNum:%d", Enemy::GetNearNum());
 	//DebugText::GetInstance()->Print(50, 30 * 8, 2, "M:Y:%f", Player::GetMove().y);
 	//DebugText::GetInstance()->Print(50, 30 * 9, 2, "M:Z:%f", Player::GetMove().z);
+	
 	//if (input->TriggerKey(DIK_SPACE))
 	//{
 	//	//BGM止める
@@ -198,12 +215,12 @@ void GamePlayScene::Update()
 	//}	
 
 
-
+	//描画オブジェクト関連の更新
+	enemyCollider1Object->SetPosition(Enemy::GetPos());
+	enemyCollider2Object->SetPosition(Enemy::GetPos());
 	fbxObject1->SetPosition(Player::GetPos());
 	colliderObject->SetPosition(Player::GetPos());
-
 	fbxObject2->SetPosition(Enemy::GetPos());
-
 	fbxObject1->AnimationFlag = false;
 	fbxObject2->AnimationFlag = false;
 	//fbxObject1->AnimationNum = 1;
@@ -211,7 +228,8 @@ void GamePlayScene::Update()
 	
 	//アップデート
 	camera->Update();
-	mathObject->Update();
+	enemyCollider1Object->Update();
+	enemyCollider2Object->Update();
 	fbxObject1->Update();
 	fbxObject2->Update();
 	colliderObject->Update();
@@ -246,16 +264,18 @@ void GamePlayScene::Draw()
 
 	// 3Dオブクジェクトの描画
 	
-	
+	//json
+	JsonLoader::Draw();
+
 	//FBX3Dオブジェクトの描画
 	fbxObject1->Draw(cmdList);
 	fbxObject2->Draw(cmdList);
 	
 	
 	colliderObject->Draw();
-	mathObject->Draw();
-	//json
-	JsonLoader::Draw();
+	
+	enemyCollider1Object->Draw();
+	enemyCollider2Object->Draw();
 	
 	/// <summary>
 	/// ここに3Dオブジェクトの描画処理を追加できる

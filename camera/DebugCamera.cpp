@@ -53,8 +53,6 @@ void DebugCamera::Update()
 		XMFLOAT3 eyepos = Camera::GetEye();
 		//ƒJƒƒ‰‚Æ’‹“_‚Ì‹——£
 		XMVECTOR distance = { targetpos.x - eyepos.x, targetpos.y - eyepos.y, targetpos.z - eyepos.z };
-
-
 	}
 
 	//Camera::SetTarget(target);
