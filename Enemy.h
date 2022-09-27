@@ -22,13 +22,12 @@ private:
 
 	static int nearNumber;
 
+	static float speedConstant;
 public:
-
 
 	static void SetPos(XMFLOAT3& pos1) { pos = pos1; }
 
 	static XMFLOAT3 GetPos() { return pos; }
-
 
 	static int GetNearNum() { return nearNumber; }
 

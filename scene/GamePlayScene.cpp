@@ -86,7 +86,7 @@ void GamePlayScene::Initialize()
 
 	enemyCollider2Object->SetModel(mathModel);
 	enemyCollider2Object->SetPosition(XMFLOAT3(0, 5, 0));
-	enemyCollider2Object->SetScale(XMFLOAT3(7, 7, 7));
+	enemyCollider2Object->SetScale(XMFLOAT3(20, 20, 20));
 	enemyCollider2Object->SetColor(XMFLOAT4(0, 0, 1, 0.2));
 }
 
@@ -161,7 +161,7 @@ void GamePlayScene::Update()
 
 	SphereF E2sphere;
 	E2sphere.center = Enemy::GetPos();
-	E2sphere.radius = 7;
+	E2sphere.radius = 20;
 
 	//Ž©‹@‚Æ“G‚Ìü•ª
 	LineSegment line;
@@ -186,7 +186,13 @@ void GamePlayScene::Update()
 
 	if (Collision::CheckSphereBox(E2sphere, Pbox) == true)
 	{
-		colliderObject->SetColor({ 1, 1, 0 });
+		Enemy::Move(Player::GetPos());
+	}
+
+
+	if (Collision::CheckSphereBox(Esphere, Pbox) == true)
+	{
+		colliderObject->SetColor({ 1, 0, 0 });
 	}
 	else
 	{
