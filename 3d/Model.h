@@ -5,7 +5,7 @@
 #include <d3d12.h>
 #include <DirectXMath.h>
 #include <d3dx12.h>
-
+#include "Mesh.h"
 
 // 3Dモデル
 
@@ -100,7 +100,8 @@ private: //静的メンバ変数
 	D3D12_INDEX_BUFFER_VIEW ibView;
 	//マテリアル
 	Material material;
-
+	// メッシュコンテナ
+	std::vector<Mesh*> meshes;
 
 
 private: //メンバ変数
@@ -128,4 +129,7 @@ private: // メンバ関数
 
 public: //メンバ関数
 	void Draw(ID3D12GraphicsCommandList *cmdList, UINT rootParamIndexMaterial);
+
+	inline const std::vector<Mesh*>& GetMeshes() { return meshes; }
+
 };
