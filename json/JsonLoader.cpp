@@ -2,6 +2,8 @@
 #include <fstream>
 #include <cassert>
 
+#include "TouchableObject.h"
+
 std::vector<std::unique_ptr<Object3d>> JsonLoader::objects;
 std::map< std::string, Model> JsonLoader::models;
 std::vector<std::unique_ptr<ColliderObject>> JsonLoader::colliderObjects;
@@ -13,6 +15,7 @@ std::vector<std::unique_ptr<ColliderObject>> JsonLoader::crystalColliderObjects;
 std::map< std::string, ColliderModel> JsonLoader::crystalColliderModels;
 
 std::vector<std::unique_ptr<Object3d>> JsonLoader::groundObjects;
+TouchableObject* JsonLoader::objGround;
 std::map< std::string, Model> JsonLoader::groundModels;
 std::vector<std::unique_ptr<ColliderObject>> JsonLoader::groundColliderObjects;
 std::map< std::string, ColliderModel> JsonLoader::groundColliderModels;
@@ -230,10 +233,12 @@ void JsonLoader::Update()
 		crystalObjects[i]->Update();
 	}
 
-	for (int i = 0; i < groundObjects.size(); i++)
+	/*for (int i = 0; i < groundObjects.size(); i++)
 	{
 		groundObjects[i]->Update();
-	}
+	}*/
+
+	objGround->Update();
 
 	//当たり判定用オブジェクト
 	for (int i = 0; i < colliderObjects.size(); i++)
@@ -266,20 +271,20 @@ void JsonLoader::Update()
 		crystalColliderObjects[i]->Update();
 	}
 
-	for (int i = 0; i < groundColliderObjects.size(); i++)
-	{
-		if (groundColliderObjects[i].get()->GetCollFlag() == true)
-		{
-			groundColliderObjects[i].get()->SetColor({ 1,1,0 });
-		}
-		else
-		{
-			groundColliderObjects[i].get()->SetColor({ 1,0,0 });
-		}
+	//for (int i = 0; i < groundColliderObjects.size(); i++)
+	//{
+	//	if (groundColliderObjects[i].get()->GetCollFlag() == true)
+	//	{
+	//		groundColliderObjects[i].get()->SetColor({ 1,1,0 });
+	//	}
+	//	else
+	//	{
+	//		groundColliderObjects[i].get()->SetColor({ 1,0,0 });
+	//	}
 
 
-		groundColliderObjects[i]->Update();
-	}
+	//	groundColliderObjects[i]->Update();
+	//}
 }
 
 void JsonLoader::Draw()
@@ -295,10 +300,12 @@ void JsonLoader::Draw()
 		crystalObjects[i]->Draw();
 	}
 
-	for (int i = 0; i < groundObjects.size(); i++)
+	/*for (int i = 0; i < groundObjects.size(); i++)
 	{
 		groundObjects[i]->Draw();
-	}
+	}*/
+
+	objGround->Draw();
 
 	//当たり判定用オブジェクト
 	for (int i = 0; i < colliderObjects.size(); i++)
@@ -473,13 +480,18 @@ void JsonLoader::TypeSetGroundModel(LevelData::ObjectData& objectData)
 
 	//モデルを指定して3Dオブジェクトを生成
 	std::unique_ptr<Object3d> newObject;
+
 	newObject = Object3d::Create();
 	newObject->SetModel(model);
+
+	objGround = TouchableObject::Create(model);
 
 	//座標
 	XMFLOAT3 pos;
 	DirectX::XMStoreFloat3(&pos, objectData.translation);
 	newObject->SetPosition(pos);
+
+	objGround->SetPosition(pos);
 
 	//回転角
 	XMFLOAT3 rot;
@@ -487,10 +499,14 @@ void JsonLoader::TypeSetGroundModel(LevelData::ObjectData& objectData)
 	rot.y -= 90.0f;
 	newObject->SetRotation(rot);
 
+	objGround->SetRotation(rot);
+
 	//スケール
 	XMFLOAT3 scale;
 	DirectX::XMStoreFloat3(&scale, objectData.scaling);
 	newObject->SetScale(scale);
+
+	objGround->SetScale(scale);
 
 	//配列の最後に登録
 	groundObjects.push_back(std::move(newObject));

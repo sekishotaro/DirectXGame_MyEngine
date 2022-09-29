@@ -155,6 +155,10 @@ public: // メンバ関数
 	/// <param name="collider">コライダー</param>
 	void SetCollider(BaseCollider* collider);
 
+	/// <summary>
+	/// 衝突時コールバック関数
+	/// </summary>
+	/// <param name="info">衝突情報</param>
 	virtual void OnCollision(const CollisionInfo& info) {}
 
 	/// <summary>

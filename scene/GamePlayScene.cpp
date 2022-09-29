@@ -12,6 +12,11 @@
 #include "CollisionSet.h"
 #include "Enemy.h"
 
+#include "SphereCollider.h"
+#include "CollisionManager.h"
+#include "Player.h"
+
+
 void GamePlayScene::Initialize()
 {
 	Audio::GetInstance()->LoadWave("futta-dream.wav");
@@ -40,45 +45,23 @@ void GamePlayScene::Initialize()
 	// 背景スプライト生成
 	spriteBG = Sprite::Create(1, { 0.0f,0.0f });
 
-	// オブジェクト生成
-	//model = Model::LoadFromOBJ("sphere");
-	//objectX = Object3d::Create();
-	//オブジェクトにモデルをひも付ける
-	//objectX->SetModel(model);
+	modelFighter = Model::LoadFromOBJ("chr_sword");
 
-	//モデル名を指定してファイル読み込み
-	fbxModel1 = FbxLoader::GetInstance()->LoadModelFromFile("model");
-	fbxModel2 = FbxLoader::GetInstance()->LoadModelFromFile("Enemy1");
-
-	//3Dオブジェクト生成とモデルのセット
-	fbxObject1 = new FbxObject3d;
-	fbxObject1->Initialize();
-	fbxObject1->SetModel(fbxModel1);
-	fbxObject1->SetScale({ 0.01f,0.01f,0.01f });
-
-	fbxObject2 = new FbxObject3d;
-	fbxObject2->Initialize();
-	fbxObject2->SetModel(fbxModel2);
-	fbxObject2->SetPosition(Enemy::GetPos());
-	fbxObject2->SetScale({ 0.01f,0.01f,0.01f });
-
-
-	colliderModel = ColliderModel::ColliderModelCreate("BOX");
-	colliderObject = ColliderObject::Create();
-	colliderObject->SetModel(colliderModel);
-
-	colliderObject->SetCenter({ 0, 2.5f, 0 });
-	colliderObject->SetScale(Player::GetSize());
 	//json
 	JsonLoader::LoadFile("Scene9_27");
 	JsonLoader::SetObject();
+
+	collisionManager = CollisionManager::GetInstance();
+	objFighter = Player::Create(modelFighter);
+
+
+	
+	//コライダーの追加
 }
 
 void GamePlayScene::Finalize()
 {
-	//delete model;
-	delete fbxObject1;
-	delete fbxObject2;
+
 }
 
 void GamePlayScene::Update()
@@ -104,70 +87,27 @@ void GamePlayScene::Update()
 		camera->SetEye(position);
 	}
 
-	Player::Move(input, groundY);
-	CollisionSet::CollisionCheck(Player::GetPos(), colliderObject->GetScale(), groundY);
-	
-	CollisionSet::CollisionPushBack(colliderObject->GetScale(), groundY);
-	
-	MyMath::GravityCheck(Player::GetPos(), groundY, Player::groundFlag);
-
-	if (Player::GetWallColl() == true)
-	{
-		colliderObject->SetColor({ 1, 1, 0});
-	}
-	else if (Player::GetWallColl() == false)
-	{
-		colliderObject->SetColor({ 1, 0, 0});
-	}
-
-	if (input->PushKey(DIK_G))
-	{
-		Enemy::Tracking(Player::GetPos());
-	}
-
-
-
-
 	DebugText::GetInstance()->Print(50, 30 * 1, 2, "C:X:%f", camera->GetEye().x);
 	DebugText::GetInstance()->Print(50, 30 * 2, 2, "C:Y:%f", camera->GetEye().y);
 	DebugText::GetInstance()->Print(50, 30 * 3, 2, "C:Z:%f", camera->GetEye().z);
-	DebugText::GetInstance()->Print(50, 30 * 4, 2, "P:X:%f", Player::GetPos().x);
-	DebugText::GetInstance()->Print(50, 30 * 5, 2, "P:Y:%f", Player::GetPos().y);
-	DebugText::GetInstance()->Print(50, 30 * 6, 2, "P:Z:%f", Player::GetPos().z);
-	DebugText::GetInstance()->Print(50, 30 * 7, 2, "M:X:%f", Player::GetMove().x);
-	DebugText::GetInstance()->Print(50, 30 * 8, 2, "M:Y:%f", Player::GetMove().y);
-	DebugText::GetInstance()->Print(50, 30 * 9, 2, "M:Z:%f", Player::GetMove().z);
-	DebugText::GetInstance()->Print(50, 30 * 9, 2, "M:Z:%f", Player::GetMove().z);
-	DebugText::GetInstance()->Print(50, 30 * 9, 2, "G:Y:%f", groundY);
-	//if (input->TriggerKey(DIK_SPACE))
-	//{
-	//	//BGM止める
-	//	Audio::GetInstance()->SoundStop("zaza.wav");
-	//	Audio::GetInstance()->PlayWave("zaza.wav", false);
-	//	
-	//	//シーン切り替え
-	//	//SceneManager::GetInstance()->ChangeScene("TITLE");
-	//}	
-
-
-
-	fbxObject1->SetPosition(Player::GetPos());
-	colliderObject->SetPosition(Player::GetPos());
-
-	fbxObject2->SetPosition(Enemy::GetPos());
-
-	fbxObject1->AnimationFlag = false;
-	fbxObject2->AnimationFlag = false;
-	//fbxObject1->AnimationNum = 1;
 	
-	
+	//Ray ray;
+	//ray.start = { 10.0f, 0.5f, 0.0f, 1 };
+	//ray.dir = { 0,-1,0,0 };
+	//RaycastHit raycastHit;
+
+	//if (collisionManager->Raycast(ray, &raycastHit)) {
+	//	DebugText::GetInstance()->Print(50, 30 * 4, 2, "Raycast Hit.");
+	//}
+
+
 	//アップデート
 	camera->Update();
-	//objectX->Update();
-	fbxObject1->Update();
-	fbxObject2->Update();
-	colliderObject->Update();
+	objFighter->Update();
 	JsonLoader::Update();
+
+	//全ての衝突をチェック
+	collisionManager->CheckAllCollisions();
 }
 
 void GamePlayScene::Draw()
@@ -196,19 +136,11 @@ void GamePlayScene::Draw()
 	ColliderObject::PreDraw(cmdList);
 
 	// 3Dオブクジェクトの描画
-	//objectX->Draw();
 	
-
+	objFighter->Draw();
 	//json
 	JsonLoader::Draw();
 
-	//FBX3Dオブジェクトの描画
-	fbxObject1->Draw(cmdList);
-	fbxObject2->Draw(cmdList);
-	colliderObject->Draw();
-	/// <summary>
-	/// ここに3Dオブジェクトの描画処理を追加できる
-	/// </summary>
 
 	// 3Dオブジェクト描画後処理
 	Object3d::PostDraw();

@@ -6,6 +6,7 @@
 #include <string>
 #include <vector>
 #include "BaseCollider.h"
+#include "CollisionManager.h"
 using namespace std;
 
 #pragma comment(lib, "d3dcompiler.lib")
@@ -27,6 +28,8 @@ Camera *Object3d::camera = nullptr;
 Object3d::~Object3d()
 {
 	if (collider){
+		//コリジョンマネージャーから登録を解除
+		CollisionManager::GetInstance()->RemoveCollider(collider);
 		delete collider;
 	}
 }
@@ -343,5 +346,9 @@ void Object3d::SetCollider(BaseCollider* collider)
 {
 	collider->SetObject(this);
 	this->collider = collider;
+	//コリジョンマネージャーに登録
+	CollisionManager::GetInstance()->AddCollider(collider);
+	//コライダーを更新しておく
+	collider->Update();
 }
 
