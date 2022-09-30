@@ -47,7 +47,7 @@ bool Player::Initialize()
 
 	collider->SetAttribute(COLLISION_ATTR_ALLIES);
 
-	//position.y = 10.0f;
+	position.y = 10.0f;
 
 	return true;
 }

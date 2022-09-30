@@ -272,6 +272,7 @@
     <ClCompile Include="3d\FbxLoader.cpp" />
     <ClCompile Include="3d\FbxModel.cpp" />
     <ClCompile Include="3d\FbxObject3d.cpp" />
+    <ClCompile Include="3d\Mesh.cpp" />
     <ClCompile Include="Audio\Audio.cpp" />
     <ClCompile Include="collision\BaseCollider.cpp" />
     <ClCompile Include="camera\Camera.cpp" />
@@ -295,6 +296,7 @@
     <ClCompile Include="imgui\imgui_tables.cpp" />
     <ClCompile Include="imgui\imgui_widgets.cpp" />
     <ClCompile Include="collision\MeshCollider.cpp" />
+    <ClCompile Include="3d\Material.cpp" />
     <ClCompile Include="MyMath.cpp" />
     <ClCompile Include="Input\Input.cpp" />
     <ClCompile Include="json\JsonLoader.cpp" />
@@ -342,6 +344,7 @@
     <ClInclude Include="json\JsonLoader.h" />
     <ClInclude Include="3d\Mesh.h" />
     <ClInclude Include="collision\MeshCollider.h" />
+    <ClInclude Include="3d\Material.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="MyMath.h" />
     <ClInclude Include="scene\AbstractSceneFactory.h" />

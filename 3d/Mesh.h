@@ -5,6 +5,7 @@
 #include <d3d12.h>
 #include <DirectXMath.h>
 #include <d3dx12.h>
+#include "Material.h"
 #include <vector>
 #include <unordered_map>
 
@@ -31,6 +32,14 @@ public: // サブクラス
 		XMFLOAT2 uv;  // uv座標
 	};
 
+public: // 静的メンバ関数
+
+	/// <summary>
+	/// 静的初期化
+	/// </summary>
+	/// <param name="device">デバイス</param>
+	static void StaticInitialize(ID3D12Device* device);
+
 private: // 静的メンバ変数
 	// デバイス
 	static ID3D12Device* device;
@@ -44,10 +53,59 @@ public: // メンバ関数
 	const std::string& GetName() { return name; }
 
 	/// <summary>
+	/// 名前をセット
+	/// </summary>
+	/// <param name="name">名前</param>
+	void SetName(const std::string& name);
+
+	/// <summary>
+	/// 頂点データの追加
+	/// </summary>
+	/// <param name="vertex">頂点データ</param>
+	void AddVertex(const VertexPosNormalUv& vertex);
+
+	/// <summary>
+	/// 頂点インデックスの追加
+	/// </summary>
+	/// <param name="index">インデックス</param>
+	void AddIndex(unsigned short index);
+
+	void SwapIndex();
+
+	/// <summary>
 	/// 頂点データの数を取得
 	/// </summary>
 	/// <returns>頂点データの数</returns>
 	inline size_t GetVertexCount() { return vertices.size(); }
+
+	/// <summary>
+	/// エッジ平滑化データの追加
+	/// </summary>
+	/// <param name="indexPosition">座標インデックス</param>
+	/// <param name="indexVertex">頂点インデックス</param>
+	void AddSmoothData(unsigned short indexPosition, unsigned short indexVertex);
+
+	/// <summary>
+	/// 平滑化された頂点法線の計算
+	/// </summary>
+	void CalculateSmoothedVertexNormals();
+
+	/// <summary>
+	/// マテリアルの取得
+	/// </summary>
+	/// <returns>マテリアル</returns>
+	Material* GetMaterial() { return material; }
+
+	/// <summary>
+	/// マテリアルの割り当て
+	/// </summary>
+	/// <param name="material">マテリアル</param>
+	void SetMaterial(Material* material);
+
+	/// <summary>
+	/// バッファの生成
+	/// </summary>
+	void CreateBuffers();
 
 	/// <summary>
 	/// 頂点バッファ取得
@@ -73,6 +131,12 @@ public: // メンバ関数
 	/// <returns>インデックス配列</returns>
 	inline const std::vector<unsigned short>& GetIndices() { return indices; }
 
+	/// <summary>
+	/// 描画
+	/// </summary>
+	/// <param name="cmdList">命令発行先コマンドリスト</param>
+	void Draw(ID3D12GraphicsCommandList* cmdList);
+
 private: // メンバ変数
 	// 名前
 	std::string name;
@@ -90,5 +154,7 @@ private: // メンバ変数
 	std::vector<unsigned short> indices;
 	// 頂点法線スムージング用データ
 	std::unordered_map<unsigned short, std::vector<unsigned short>> smoothData;
+	// マテリアル
+	Material* material = nullptr;
 };
 
