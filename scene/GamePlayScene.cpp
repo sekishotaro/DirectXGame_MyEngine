@@ -53,8 +53,6 @@ void GamePlayScene::Initialize()
 
 	collisionManager = CollisionManager::GetInstance();
 	objFighter = Player::Create(modelFighter);
-
-
 	
 	//コライダーの追加
 }
@@ -87,9 +85,12 @@ void GamePlayScene::Update()
 		camera->SetEye(position);
 	}
 
-	DebugText::GetInstance()->Print(50, 30 * 1, 2, "C:X:%f", camera->GetEye().x);
-	DebugText::GetInstance()->Print(50, 30 * 2, 2, "C:Y:%f", camera->GetEye().y);
-	DebugText::GetInstance()->Print(50, 30 * 3, 2, "C:Z:%f", camera->GetEye().z);
+	DebugText::GetInstance()->Print(50, 30 * 1, 2, "Camera:X:%f", camera->GetEye().x);
+	DebugText::GetInstance()->Print(50, 30 * 2, 2, "Camera:Y:%f", camera->GetEye().y);
+	DebugText::GetInstance()->Print(50, 30 * 3, 2, "Camera:Z:%f", camera->GetEye().z);
+	DebugText::GetInstance()->Print(50, 30 * 4, 2, "Player:X:%f", objFighter->GetPosition().x);
+	DebugText::GetInstance()->Print(50, 30 * 5, 2, "Player:Y:%f", objFighter->GetPosition().y);
+	DebugText::GetInstance()->Print(50, 30 * 6, 2, "Player:Z:%f", objFighter->GetPosition().z);
 	
 	//Ray ray;
 	//ray.start = { 10.0f, 0.5f, 0.0f, 1 };

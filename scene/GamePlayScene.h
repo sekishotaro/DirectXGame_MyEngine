@@ -62,7 +62,6 @@ public:
 	//オブジェクトデータ
 	Player* objFighter = nullptr;
 
-
 	//衝突マネージャー
 	CollisionManager* collisionManager = nullptr;
 	TouchableObject* objGround = nullptr;

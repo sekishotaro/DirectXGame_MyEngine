@@ -50,7 +50,7 @@ public:
 
 private:
 	//接地フラグ
-	bool onGround = true;
+	bool onGround = false;
 	//落下ベクトル
 	DirectX::XMVECTOR fallV;
 

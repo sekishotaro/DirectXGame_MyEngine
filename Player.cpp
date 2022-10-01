@@ -12,6 +12,7 @@ Player* Player::Create(Model* model)
 {
 	//3Dオブジェクトのインスタンスを生成
 	Player* instance = new Player();
+	
 	if (instance == nullptr)
 	{
 		return nullptr;
@@ -40,14 +41,14 @@ bool Player::Initialize()
 		return false;
 	}
 
+	position.y = 10.0f;
+
 	//コライダーの追加
 	float radius = 0.6f;
 	//半径分だけ足元から浮いた座標を球中心にする
 	SetCollider(new SphereCollider(XMVECTOR({ 0, radius, 0,0 }), radius));
 
 	collider->SetAttribute(COLLISION_ATTR_ALLIES);
-
-	position.y = 10.0f;
 
 	return true;
 }
@@ -86,29 +87,25 @@ void Player::Update()
 	}
 
 	//落下処理
-	//if (!onGround)
-	//{
-	//	//下向き加速度
-	//	const float fallAcc = -0.01f;
-	//	const float fallVYMin = -0.5f;
-	//	//加速
-	//	fallV.m128_f32[1] = max(fallV.m128_f32[1] + fallAcc, fallVYMin);
+	if (!onGround)
+	{
+		//下向き加速度
+		const float fallAcc = -0.01f;
+		const float fallVYMin = -0.5f;
+		//加速
+		fallV.m128_f32[1] = max(fallV.m128_f32[1] + fallAcc, fallVYMin);
 
-	//	//移動
-	//	position.x += fallV.m128_f32[0];
-	//	position.y += fallV.m128_f32[1];
-	//	position.z += fallV.m128_f32[2];
-	//}
-	//else if (Input::GetInstance()->TriggerKey(DIK_SPACE))//ジャンプ
-	//{
-	//	onGround = false;
-	//	const float jumpVYFist = 0.2f; //ジャンプ時上向き初速
-	//	 fallV = { 0, jumpVYFist, 0,0 };
-	//}
-
-	//行列の更新など
-	Object3d::Update();
-
+		//移動
+		position.x += fallV.m128_f32[0];
+		position.y += fallV.m128_f32[1];
+		position.z += fallV.m128_f32[2];
+	}
+	else if (Input::GetInstance()->TriggerKey(DIK_SPACE))//ジャンプ
+	{
+		onGround = false;
+		const float jumpVYFist = 0.2f; //ジャンプ時上向き初速
+		 fallV = { 0, jumpVYFist, 0,0 };
+	}
 	//球コライダーを取得
 	SphereCollider* sphereCollider = dynamic_cast<SphereCollider*>(collider);
 	assert(sphereCollider);
@@ -120,14 +117,18 @@ void Player::Update()
 	ray.dir = { 0, -1, 0, 0 };
 	RaycastHit raycastHit;
 
+	//行列の更新など
+	Object3d::Update();
+
 	//接地状態
 	if (onGround)
 	{
 		//スムーズに坂を下る為の吸着距離
 		const float adsDistance = 0.2f;
+
 		//接地を維持
 		if (CollisionManager::GetInstance()->Raycast(ray, COLLISION_ATTR_LANDSHAPE,
-			&raycastHit, sphereCollider->GetRadius() * 2.0f + adsDistance))
+			&raycastHit, sphereCollider->GetRadius() * 2.0f + adsDistance) == true)
 		{
 			onGround = true;
 			position.y -= (raycastHit.distance - sphereCollider->GetRadius() * 2.0f);
@@ -143,7 +144,7 @@ void Player::Update()
 	else if (fallV.m128_f32[1] <= 0.0f)//落下状態
 	{
 		if (CollisionManager::GetInstance()->Raycast(ray, COLLISION_ATTR_LANDSHAPE,
-			&raycastHit, sphereCollider->GetRadius() * 2.0f))
+			&raycastHit, sphereCollider->GetRadius() * 2.0f) == true)
 		{
 			//着地
 			onGround = true;

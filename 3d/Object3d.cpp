@@ -83,7 +83,6 @@ std::unique_ptr<Object3d> Object3d::Create()
 	{
 		delete object3d;
 		assert(0);
-		return nullptr;
 	}
 
 	//スケールをセット
