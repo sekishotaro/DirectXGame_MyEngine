@@ -389,7 +389,6 @@ void JsonLoader::TypeSetModel( LevelData::ObjectData& objectData)
 
 	//îzóÒÇÃç≈å„Ç…ìoò^
 	objects.push_back(std::move(newObject));
-	
 }
 
 void JsonLoader::TypeSetColliderModel(LevelData::ObjectData& colliderObjectData)

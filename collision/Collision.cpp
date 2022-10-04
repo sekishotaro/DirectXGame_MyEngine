@@ -312,6 +312,18 @@ bool Collision::CheckRayBox(const Ray& ray, const Box& box)
 	return false;
 }
 
+bool Collision::Check2Box(const Box& box1, const Box& box2, float* distance, DirectX::XMVECTOR* inter)
+{
+	if (box1.LeastPos.x > box2.MaxPos.x) return false;
+	if (box1.MaxPos.x < box2.LeastPos.x) return false;
+	if (box1.LeastPos.y > box2.MaxPos.y) return false;
+	if (box1.MaxPos.y < box2.LeastPos.y) return false;
+	if (box1.LeastPos.z > box2.MaxPos.z) return false;
+	if (box1.MaxPos.z < box2.LeastPos.z) return false;
+
+	return true;
+}
+
 bool Collision::Check2LineSegment(const LineSegment& line1, const LineSegment& line2)
 {
 

@@ -54,6 +54,10 @@ public:
 private:
 	//接地フラグ
 	bool onGround = false;
+	//障害物接着フラグ
+	bool adhesion = false;
+	//移動中確認フラグ
+	bool nowMove = false;
 	//落下ベクトル
 	DirectX::XMVECTOR fallV;
 	//プレイヤーの位置

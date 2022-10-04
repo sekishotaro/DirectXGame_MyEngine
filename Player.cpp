@@ -5,6 +5,9 @@
 #include "MyMath.h"
 #include "DebugText.h"
 #include "CollisionAttribute.h"
+#include "Collision.h"
+#include "JsonLoader.h"
+
 
 using namespace DirectX;
 
@@ -82,12 +85,18 @@ void Player::Update()
 		position.x -= move.m128_f32[0];
 		position.y -= move.m128_f32[1];
 		position.z -= move.m128_f32[2];
+		nowMove = true;
 	}
 	else if (input->PushKey(DIK_W))
 	{
 		position.x += move.m128_f32[0];
 		position.y += move.m128_f32[1];
 		position.z += move.m128_f32[2];
+		nowMove = true;
+	}
+	else
+	{
+		nowMove = false;
 	}
 
 	//落下処理
@@ -126,7 +135,7 @@ void Player::Update()
 	//行列の更新など
 	Object3d::Update();
 
-	//接地状態
+	//地面接地状態
 	if (onGround)
 	{
 		//スムーズに坂を下る為の吸着距離
@@ -159,6 +168,60 @@ void Player::Update()
 			Object3d::Update();
 		}
 	}
+
+	//自機の一定の距離内の障害物を抽出し、その障害物とだけ当たり判定を取る。
+	Box playerBox;
+	playerBox.centerPos = position;
+	playerBox.size = { 3.0f, 3.0f, 3.0f };
+	playerBox.LeastPos = XMFLOAT3(playerBox.centerPos.x - playerBox.size.x, playerBox.centerPos.y - playerBox.size.y, playerBox.centerPos.z - playerBox.size.z);
+	playerBox.MaxPos = XMFLOAT3(playerBox.centerPos.x + playerBox.size.x, playerBox.centerPos.y + playerBox.size.y, playerBox.centerPos.z + playerBox.size.z);
+
+	Circle circle;
+	circle.center = { position.x, position.z };
+	circle.radius = 50.0f;
+
+	std::vector<Box> boxs;
+	Box box;
+
+	for (int i = 0; i < JsonLoader::colliderObjects.size(); i++)
+	{
+		if (Collision::CheckCircleDot(circle, XMFLOAT2(JsonLoader::colliderObjects[i].get()->GetPosition().x, JsonLoader::colliderObjects[i].get()->GetPosition().z)) == true)
+		{
+			box.centerPos = JsonLoader::colliderObjects[i].get()->GetPosition();
+			box.size = JsonLoader::colliderObjects[i].get()->GetScale();
+			box.LeastPos = XMFLOAT3(box.centerPos.x - box.size.x, box.centerPos.y - box.size.y, box.centerPos.z - box.size.z);
+			box.MaxPos = XMFLOAT3(box.centerPos.x + box.size.x, box.centerPos.y + box.size.y, box.centerPos.z + box.size.z);
+			boxs.push_back(box);
+		}
+	}
+
+	//障害物
+	if (adhesion)
+	{
+		//めり込まないようにする接着状態の維持
+		if (true)
+		{
+			adhesion = true;
+			//行列の更新など
+			Object3d::Update();
+		}
+		else
+		{
+			adhesion = false;
+		}
+	}
+	else if (nowMove == true) //移動状態
+	{
+		//当たっているかの確認
+		if (true)
+		{
+			adhesion = true;
+			//めり込まないように押し戻し処理
+			//行列の更新など
+			Object3d::Update();
+		}
+	}
+
 }
 
 void Player::OnCollision(const CollisionInfo& info)

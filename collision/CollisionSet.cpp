@@ -37,7 +37,7 @@ bool CollisionSet::PlayerWallCollisionFlag = false;
 //	}
 //	Player::SetWallColl(PlayerWallCollisionFlag);
 //}
-//
+
 //void CollisionSet::CollisionPushBack( const XMFLOAT3& size, float& groundY)
 //{
 //	groundY = 0.0f;

@@ -252,7 +252,6 @@ void GamePlayScene::Update()
 
 	//全ての衝突をチェック
 	collisionManager->CheckAllCollisions();
-	JsonLoader::Update();
 
 	//enemyCollider1Object->Update();
 	//enemyCollider2Object->Update();

@@ -105,12 +105,25 @@ public:
 	/// <returns></returns>
 	static bool CheckRayBox(const Ray& ray, const Box& box);
 
+
+	/// <summary>
+	/// ボックス同士の当たり判定AABB
+	/// </summary>
+	/// <param name="box1">立方体</param>
+	/// <param name="box2">立方体</param>
+	/// <param name="distance">距離(出力用)</param>
+	/// <param name="inter">交点(出力用)</param>
+	/// <returns>交差しているか否か</returns>
+	static bool Check2Box(const Box& box1, const Box& box2, float* distance = nullptr, DirectX::XMVECTOR* inter = nullptr);
+
 	static bool Check2LineSegment(const LineSegment& line1, const LineSegment& line2);
 
 
 	static bool CheckSphereBox(const SphereF& sphere, const Box& box);
 	static bool CheckAABB(const Box& box1, const Box& box2);
+
 	static bool CheckCircleDot(const Circle& circle, const XMFLOAT2& dot);
+	
 	static bool CheckCylinderDotXY(const Cylinder& cylinder, const XMFLOAT3& dot);
 	static bool CheckCylinderDotXZ(const Cylinder& cylinder, const XMFLOAT3& dot);
 	static bool CheckCylinderDotZY(const Cylinder& cylinder, const XMFLOAT3& dot);
