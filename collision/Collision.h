@@ -25,6 +25,8 @@ public:
 	/// <returns></returns>
 	static bool CheckSphereSphere(const SphereF& sphere1, const SphereF& sphere2);
 
+	static bool CheckSphere2Sphere(const Sphere& sphere1, const Sphere& sphere2, DirectX::XMVECTOR* inter);
+
 	/// <summary>
 	/// 点と三角形の最近接点を求める
 	/// </summary>
