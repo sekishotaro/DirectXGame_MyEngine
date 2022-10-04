@@ -23,24 +23,17 @@ private: // エイリアス
 public:
 	//移動
 	static void Move(Input *input, const float& groundY);
-	
 	static void MoveAdd(XMFLOAT3 Addpos);
+	
 	//移動量取得
 	static XMFLOAT3 GetMove() { return move; }
-
 	static void AddPos(XMFLOAT3 move) { pos.x += move.x; pos.y += move.y; pos.z += move.z; }
-
 	static void SetPosY(float& posy) { pos.y = posy; }
 	static void SetPos(XMFLOAT3& pos1) { pos = pos1; }
-
 	static void SetWallColl(bool& wallcoll) { wallcollisionFlag = wallcoll; }
-
 	static bool GetWallColl() { return wallcollisionFlag; }
-
 	static XMFLOAT3 GetPos() { return pos; }
-
 	static XMFLOAT3 GetSize() { return size; }
-
 	static void Jump( float& y);
 
 private:

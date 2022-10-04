@@ -49,52 +49,52 @@ void GamePlayScene::Initialize()
 	//objectX->SetModel(model);
 
 	//モデル名を指定してファイル読み込み
-	fbxModel1 = FbxLoader::GetInstance()->LoadModelFromFile("model");
-	fbxModel2 = FbxLoader::GetInstance()->LoadModelFromFile("Enemy1");
+	//fbxModel1 = FbxLoader::GetInstance()->LoadModelFromFile("model");
+	//fbxModel2 = FbxLoader::GetInstance()->LoadModelFromFile("Enemy1");
 
 	//3Dオブジェクト生成とモデルのセット
-	fbxObject1 = new FbxObject3d;
-	fbxObject1->Initialize();
-	fbxObject1->SetModel(fbxModel1);
-	fbxObject1->SetScale({ 0.01f,0.01f,0.01f });
+	//fbxObject1 = new FbxObject3d;
+	//fbxObject1->Initialize();
+	//fbxObject1->SetModel(fbxModel1);
+	//fbxObject1->SetScale({ 0.01f,0.01f,0.01f });
 
-	fbxObject2 = new FbxObject3d;
-	fbxObject2->Initialize();
-	fbxObject2->SetModel(fbxModel2);
-	fbxObject2->SetPosition(Enemy::GetPos());
-	fbxObject2->SetScale({ 0.01f,0.01f,0.01f });
+	//fbxObject2 = new FbxObject3d;
+	//fbxObject2->Initialize();
+	//fbxObject2->SetModel(fbxModel2);
+	//fbxObject2->SetPosition(Enemy::GetPos());
+	//fbxObject2->SetScale({ 0.01f,0.01f,0.01f });
 
 
-	colliderModel = ColliderModel::ColliderModelCreate("BOX");
-	colliderObject = ColliderObject::Create();
-	colliderObject->SetModel(colliderModel);
+	//colliderModel = ColliderModel::ColliderModelCreate("BOX");
+	//colliderObject = ColliderObject::Create();
+	//colliderObject->SetModel(colliderModel);
 
-	colliderObject->SetCenter({ 0, 2.5f, 0 });
-	colliderObject->SetScale(Player::GetSize());
+	//colliderObject->SetCenter({ 0, 2.5f, 0 });
+	//colliderObject->SetScale(Player::GetSize());
 	//json
 	JsonLoader::LoadFile("Scene8_31");
 	JsonLoader::SetObject();
 
-	Enemy::Initialize();
-	mathModel = MathModel::LoadFromOBJ("sphere");
-	enemyCollider1Object = MathObject::Create();
-	enemyCollider2Object = MathObject::Create();
+	//Enemy::Initialize();
+	//mathModel = MathModel::LoadFromOBJ("sphere");
+	//enemyCollider1Object = MathObject::Create();
+	//enemyCollider2Object = MathObject::Create();
 
-	//オブジェクトにモデルをひも付ける
-	enemyCollider1Object->SetModel(mathModel);
-	enemyCollider1Object->SetPosition(XMFLOAT3(0, 5, 0));
+	////オブジェクトにモデルをひも付ける
+	//enemyCollider1Object->SetModel(mathModel);
+	//enemyCollider1Object->SetPosition(XMFLOAT3(0, 5, 0));
 
-	enemyCollider2Object->SetModel(mathModel);
-	enemyCollider2Object->SetPosition(XMFLOAT3(0, 5, 0));
-	enemyCollider2Object->SetScale(XMFLOAT3(20, 20, 20));
-	enemyCollider2Object->SetColor(XMFLOAT4(0, 0, 1, 0.2));
+	//enemyCollider2Object->SetModel(mathModel);
+	//enemyCollider2Object->SetPosition(XMFLOAT3(0, 5, 0));
+	//enemyCollider2Object->SetScale(XMFLOAT3(20, 20, 20));
+	//enemyCollider2Object->SetColor(XMFLOAT4(0, 0, 1, 0.2));
 }
 
 void GamePlayScene::Finalize()
 {
 	//delete model;
-	delete fbxObject1;
-	delete fbxObject2;
+	//delete fbxObject1;
+	//delete fbxObject2;
 }
 
 void GamePlayScene::Update()
@@ -121,92 +121,88 @@ void GamePlayScene::Update()
 	}
 
 	//プレイヤーの移動
-	Player::Move(input, groundY);
+	//Player::Move(input, groundY);
 
 	//プレイヤーと地面の当たり判定処理
-	CollisionSet::CollisionCheck(Player::GetPos(), colliderObject->GetScale(), groundY);
-	CollisionSet::CollisionPushBack(colliderObject->GetScale(), groundY);
-	MyMath::GravityCheck(Player::GetPos(), groundY, Player::groundFlag);
+	//CollisionSet::CollisionCheck(Player::GetPos(), colliderObject->GetScale(), groundY);
+	//CollisionSet::CollisionPushBack(colliderObject->GetScale(), groundY);
+	//MyMath::GravityCheck(Player::GetPos(), groundY, Player::groundFlag);
 
-	if (Player::GetWallColl() == true)
-	{
-		colliderObject->SetColor({ 1, 1, 0});
-	}
-	else if (Player::GetWallColl() == false)
-	{
-		colliderObject->SetColor({ 1, 0, 0});
-	}
+	//if (Player::GetWallColl() == true)
+	//{
+	//	colliderObject->SetColor({ 1, 1, 0});
+	//}
+	//else if (Player::GetWallColl() == false)
+	//{
+	//	colliderObject->SetColor({ 1, 0, 0});
+	//}
 
-	if (input->PushKey(DIK_G))
-	{
-		Enemy::Move(Player::GetPos());
-	}
+	//if (input->PushKey(DIK_G))
+	//{
+	//	Enemy::Move(Player::GetPos());
+	//}
 
-	if (input->PushKey(DIK_I))
-	{
-		XMFLOAT3 pos = Enemy::GetPos();
-		pos.y += 1.0f;
-		Enemy::SetPos(pos);
-	}
+	//if (input->PushKey(DIK_I))
+	//{
+	//	XMFLOAT3 pos = Enemy::GetPos();
+	//	pos.y += 1.0f;
+	//	Enemy::SetPos(pos);
+	//}
 
-	//自機の当たり判定用BOXの設定
-	Pbox.centerPos = Player::GetPos();
-	Pbox.LeastPos = XMFLOAT3(Player::GetPos().x - Player::GetSize().x /2, Player::GetPos().y, Player::GetPos().z - Player::GetSize().z / 2);
-	Pbox.MaxPos = XMFLOAT3(Player::GetPos().x + Player::GetSize().x / 2, Player::GetPos().y + Player::GetSize().y, Player::GetPos().z + Player::GetSize().z / 2);
+	////自機の当たり判定用BOXの設定
+	//Pbox.centerPos = Player::GetPos();
+	//Pbox.LeastPos = XMFLOAT3(Player::GetPos().x - Player::GetSize().x /2, Player::GetPos().y, Player::GetPos().z - Player::GetSize().z / 2);
+	//Pbox.MaxPos = XMFLOAT3(Player::GetPos().x + Player::GetSize().x / 2, Player::GetPos().y + Player::GetSize().y, Player::GetPos().z + Player::GetSize().z / 2);
 
-	//敵の当たり判定計算用の球の初期化
-	SphereF Esphere;
-	Esphere.center = Enemy::GetPos();
-	Esphere.radius = 2;
+	////敵の当たり判定計算用の球の初期化
+	//SphereF Esphere;
+	//Esphere.center = Enemy::GetPos();
+	//Esphere.radius = 2;
 
-	SphereF E2sphere;
-	E2sphere.center = Enemy::GetPos();
-	E2sphere.radius = 20;
+	//SphereF E2sphere;
+	//E2sphere.center = Enemy::GetPos();
+	//E2sphere.radius = 20;
 
-	//自機と敵の線分
-	LineSegment line;
-	line.start = Enemy::GetPos();
-	line.end = Player::GetPos();
+	////自機と敵の線分
+	//LineSegment line;
+	//line.start = Enemy::GetPos();
+	//line.end = Player::GetPos();
 
-	//壁との当たり判定計算用のBoxの初期化
-	Box wall;
-	wall.centerPos = JsonLoader::colliderObjects[0].get()->GetPosition();
-	wall.size = JsonLoader::colliderObjects[0].get()->GetScale();
-	wall.LeastPos = { wall.centerPos.x - wall.size.x / 2,wall.centerPos.y - wall.size.y / 2, wall.centerPos.z - wall.size.z / 2};
-	wall.MaxPos = { wall.centerPos.x + wall.size.x / 2,wall.centerPos.y + wall.size.y / 2, wall.centerPos.z + wall.size.z /2 };
+	////壁との当たり判定計算用のBoxの初期化
+	//Box wall;
+	//wall.centerPos = JsonLoader::colliderObjects[0].get()->GetPosition();
+	//wall.size = JsonLoader::colliderObjects[0].get()->GetScale();
+	//wall.LeastPos = { wall.centerPos.x - wall.size.x / 2,wall.centerPos.y - wall.size.y / 2, wall.centerPos.z - wall.size.z / 2};
+	//wall.MaxPos = { wall.centerPos.x + wall.size.x / 2,wall.centerPos.y + wall.size.y / 2, wall.centerPos.z + wall.size.z /2 };
 
-	if (Collision::CheckLineSegmentBox(line, wall) == true)
-	{
-		enemyCollider1Object->SetColor({ 1, 1, 0, 0.5f });
-	}
-	else
-	{
-		enemyCollider1Object->SetColor({ 1, 1, 1, 0.5f });
-	}
+	//if (Collision::CheckLineSegmentBox(line, wall) == true)
+	//{
+	//	enemyCollider1Object->SetColor({ 1, 1, 0, 0.5f });
+	//}
+	//else
+	//{
+	//	enemyCollider1Object->SetColor({ 1, 1, 1, 0.5f });
+	//}
 
-	if (Collision::CheckSphereBox(E2sphere, Pbox) == true)
-	{
-		Enemy::Move(Player::GetPos());
-	}
+	//if (Collision::CheckSphereBox(E2sphere, Pbox) == true)
+	//{
+	//	Enemy::Move(Player::GetPos());
+	//}
 
 
-	if (Collision::CheckSphereBox(Esphere, Pbox) == true)
-	{
-		colliderObject->SetColor({ 1, 0, 0 });
-	}
-	else
-	{
-		colliderObject->SetColor({ 1, 1, 1 });
-	}
+	//if (Collision::CheckSphereBox(Esphere, Pbox) == true)
+	//{
+	//	colliderObject->SetColor({ 1, 0, 0 });
+	//}
+	//else
+	//{
+	//	colliderObject->SetColor({ 1, 1, 1 });
+	//}
 	
 
 	DebugText::GetInstance()->Print(50, 30 * 1, 2, "C:X:%f", camera->GetEye().x);
 	DebugText::GetInstance()->Print(50, 30 * 2, 2, "C:Y:%f", camera->GetEye().y);
 	DebugText::GetInstance()->Print(50, 30 * 3, 2, "C:Z:%f", camera->GetEye().z);
-	DebugText::GetInstance()->Print(50, 30 * 4, 2, "P:X:%f", Player::GetPos().x);
-	DebugText::GetInstance()->Print(50, 30 * 5, 2, "P:Y:%f", Player::GetPos().y);
-	DebugText::GetInstance()->Print(50, 30 * 6, 2, "P:Z:%f", Player::GetPos().z);
-	DebugText::GetInstance()->Print(50, 30 * 7, 2, "NearNum:%d", Enemy::GetNearNum());
 	//DebugText::GetInstance()->Print(50, 30 * 8, 2, "M:Y:%f", Player::GetMove().y);
 	//DebugText::GetInstance()->Print(50, 30 * 9, 2, "M:Z:%f", Player::GetMove().z);
 	
@@ -222,24 +218,26 @@ void GamePlayScene::Update()
 
 
 	//描画オブジェクト関連の更新
-	enemyCollider1Object->SetPosition(Enemy::GetPos());
-	enemyCollider2Object->SetPosition(Enemy::GetPos());
-	fbxObject1->SetPosition(Player::GetPos());
-	colliderObject->SetPosition(Player::GetPos());
-	fbxObject2->SetPosition(Enemy::GetPos());
-	fbxObject1->AnimationFlag = false;
-	fbxObject2->AnimationFlag = false;
+	//enemyCollider1Object->SetPosition(Enemy::GetPos());
+	//enemyCollider2Object->SetPosition(Enemy::GetPos());
+	//fbxObject1->SetPosition(Player::GetPos());
+	//colliderObject->SetPosition(Player::GetPos());
+	//fbxObject2->SetPosition(Enemy::GetPos());
+	//fbxObject1->AnimationFlag = false;
+	//fbxObject2->AnimationFlag = false;
 	//fbxObject1->AnimationNum = 1;
 	
 	
 	//アップデート
 	camera->Update();
-	enemyCollider1Object->Update();
-	enemyCollider2Object->Update();
-	fbxObject1->Update();
-	fbxObject2->Update();
-	colliderObject->Update();
 	JsonLoader::Update();
+
+	//enemyCollider1Object->Update();
+	//enemyCollider2Object->Update();
+	//fbxObject1->Update();
+	//fbxObject2->Update();
+	//colliderObject->Update();
+	
 }
 
 void GamePlayScene::Draw()
@@ -269,19 +267,15 @@ void GamePlayScene::Draw()
 	MathObject::PreDraw(cmdList);
 
 	// 3Dオブクジェクトの描画
-	
 	//json
 	JsonLoader::Draw();
 
 	//FBX3Dオブジェクトの描画
-	fbxObject1->Draw(cmdList);
-	fbxObject2->Draw(cmdList);
-	
-	
-	colliderObject->Draw();
-	
-	enemyCollider1Object->Draw();
-	enemyCollider2Object->Draw();
+	//fbxObject1->Draw(cmdList);
+	//fbxObject2->Draw(cmdList);
+	//colliderObject->Draw();
+	//enemyCollider1Object->Draw();
+	//enemyCollider2Object->Draw();
 	
 	/// <summary>
 	/// ここに3Dオブジェクトの描画処理を追加できる
