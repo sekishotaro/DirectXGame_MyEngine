@@ -5,6 +5,8 @@
 #include <sstream>
 #include <string>
 #include <vector>
+#include "BaseCollider.h"
+#include "CollisionManager.h"
 using namespace std;
 
 #pragma comment(lib, "d3dcompiler.lib")
@@ -22,6 +24,15 @@ ID3D12GraphicsCommandList* Object3d::cmdList = nullptr;
 ComPtr<ID3D12RootSignature> Object3d::rootsignature;
 ComPtr<ID3D12PipelineState> Object3d::pipelinestate;
 Camera *Object3d::camera = nullptr;
+
+Object3d::~Object3d()
+{
+	if (collider){
+		//コリジョンマネージャーから登録を解除
+		CollisionManager::GetInstance()->RemoveCollider(collider);
+		delete collider;
+	}
+}
 
 bool Object3d::StaticInitialize(ID3D12Device * device, Camera *camera)
 {
@@ -72,7 +83,6 @@ std::unique_ptr<Object3d> Object3d::Create()
 	{
 		delete object3d;
 		assert(0);
-		return nullptr;
 	}
 
 	//スケールをセット
@@ -254,6 +264,8 @@ bool Object3d::Initialize()
 		nullptr,
 		IID_PPV_ARGS(&constBuffB0));
 
+	name = typeid(*this).name();
+
 	return true;
 }
 
@@ -299,6 +311,12 @@ void Object3d::Update()
 	result = constBuffB0->Map(0, nullptr, (void **)&constMap);
 	constMap->mat = matWorld * matViewProjection;	// 行列の合成
 	constBuffB0->Unmap(0, nullptr);
+
+	//当たり判定更新
+	if (collider)
+	{
+		collider->Update();
+	}
 }
 
 void Object3d::Draw()
@@ -321,5 +339,15 @@ void Object3d::Draw()
 	//モデルを描画
 	model->Draw(cmdList, 1);
 
+}
+
+void Object3d::SetCollider(BaseCollider* collider)
+{
+	collider->SetObject(this);
+	this->collider = collider;
+	//コリジョンマネージャーに登録
+	CollisionManager::GetInstance()->AddCollider(collider);
+	//コライダーを更新しておく
+	collider->Update();
 }
 

@@ -68,14 +68,6 @@ public:
 	static void Gravity(XMFLOAT3& pos, bool &graFlag);
 
 	/// <summary>
-	/// 地面についたかのチェック
-	/// </summary>
-	/// <param name="pos">対象の座標</param>
-	/// <param name="groundY">地面の高さ</param>
-	/// <param name="graFlag">重力の有無</param>
-	static void GravityCheck(XMFLOAT3& pos, const float& groundY, bool& graFlag);
-
-	/// <summary>
 	/// 重力と移動量
 	/// </summary>
 	/// <param name="move">移動量</param>

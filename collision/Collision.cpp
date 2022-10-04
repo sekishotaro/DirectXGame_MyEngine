@@ -34,6 +34,26 @@ bool Collision::CheckSphereSphere(const SphereF& sphere1, const SphereF& sphere2
 	return false;
 }
 
+bool Collision::CheckSphere2Sphere(const Sphere& sphere1, const Sphere& sphere2, DirectX::XMVECTOR* inter)
+{
+	// 中心点の距離の２乗 <= 半径の和の２乗　なら交差
+	float dist = XMVector3LengthSq(sphere1.center - sphere2.center).m128_f32[0];
+
+	float radius2 = sphere1.radius + sphere2.radius;
+	radius2 *= radius2;
+
+	if (dist <= radius2) {
+		if (inter) {
+			// Aの半径が0の時座標はBの中心　Bの半径が0の時座標はAの中心　となるよう補完
+			float t = sphere2.radius / (sphere1.radius + sphere2.radius);
+			*inter = XMVectorLerp(sphere1.center, sphere2.center, t);
+		}
+		return true;
+	}
+
+	return false;
+}
+
 void Collision::ClosestPtPoint2Triangle(const DirectX::XMVECTOR &point, const Triangle &triangle, DirectX::XMVECTOR *closest)
 {
 	// pointがp0の外側の頂点領域の中にあるかどうかチェック

@@ -1,19 +1,21 @@
 #pragma once
 
+#include <memory>
+#include <DirectXMath.h>
+
 #include "BaseScene.h"
 #include "Sprite.h"
 #include "Object3d.h"
 #include "MathObject.h"
 #include "ColliderObject.h"
 #include "FbxObject3d.h"
-#include <DirectXMath.h>
 #include "Collision.h"
-
-#include <memory>
 #include "DebugCamera.h"
 #include "Camera.h"
 
-#include "Player.h"
+class CollisionManager;
+class Player;
+class TouchableObject;
 
 class GamePlayScene : public BaseScene
 {
@@ -71,5 +73,14 @@ public:
 	//std::unique_ptr<MathObject> enemyCollider2Object;
 	//MathModel* mathModel = nullptr;
 	//Box Pbox;
+
+	//モデルデータ
+	Model* modelFighter = nullptr;
+	//オブジェクトデータ
+	Player* objFighter = nullptr;
+
+	//衝突マネージャー
+	CollisionManager* collisionManager = nullptr;
+	TouchableObject* objGround = nullptr;
 };
 

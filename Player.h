@@ -8,8 +8,9 @@
 
 #include "Input.h"
 #include "FbxObject3d.h"
+#include "Object3d.h"
 
-class Player
+class Player : public Object3d
 {
 private: // エイリアス
 // Microsoft::WRL::を省略
@@ -21,30 +22,37 @@ private: // エイリアス
 	using XMMATRIX = DirectX::XMMATRIX;
 
 public:
-	//移動
-	static void Move(Input *input, const float& groundY);
-	static void MoveAdd(XMFLOAT3 Addpos);
-	
-	//移動量取得
-	static XMFLOAT3 GetMove() { return move; }
-	static void AddPos(XMFLOAT3 move) { pos.x += move.x; pos.y += move.y; pos.z += move.z; }
-	static void SetPosY(float& posy) { pos.y = posy; }
-	static void SetPos(XMFLOAT3& pos1) { pos = pos1; }
-	static void SetWallColl(bool& wallcoll) { wallcollisionFlag = wallcoll; }
-	static bool GetWallColl() { return wallcollisionFlag; }
-	static XMFLOAT3 GetPos() { return pos; }
-	static XMFLOAT3 GetSize() { return size; }
-	static void Jump( float& y);
 
-private:
-	static XMFLOAT3 pos;
-	static XMFLOAT3 move;
-	static XMFLOAT3 rot;
-	static XMFLOAT3 size;
-	static bool wallcollisionFlag;
-	static bool jumpFlag;
+	/// <summary>
+	/// 3Dオブジェクト生成
+	/// </summary>
+	/// <returns>インスタンス生成</returns>
+	static Player* Create(Model* model = nullptr);
 
 public:
-	static bool groundFlag;
+
+	/// <summary>
+	/// 初期化
+	/// </summary>
+	/// <returns>成否</returns>
+	bool Initialize() override;
+
+	/// <summary>
+	/// マイフレーム処理
+	/// </summary>
+	void Update() override;
+
+	/// <summary>
+	/// 衝突時コールバック関数
+	/// </summary>
+	/// <param name="info">衝突情報</param>
+	void OnCollision(const CollisionInfo& info) override;
+
+private:
+	//接地フラグ
+	bool onGround = false;
+	//落下ベクトル
+	DirectX::XMVECTOR fallV;
+
 };
 

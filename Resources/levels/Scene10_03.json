@@ -46,7 +46,7 @@
         {
             "type": "MESH",
             "type_name": "ground",
-            "name": "平面",
+            "name": "Plane001",
             "transform": {
                 "translation": [
                     0.0,
@@ -59,12 +59,12 @@
                     0.0
                 ],
                 "scaling": [
-                    1.0,
-                    1.0,
-                    1.0
+                    7.179762840270996,
+                    7.179762840270996,
+                    7.179762840270996
                 ]
             },
-            "file_name": "ground2"
+            "file_name": "ground"
         }
     ]
 }

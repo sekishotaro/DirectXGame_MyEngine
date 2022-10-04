@@ -38,6 +38,8 @@ struct LevelData {
 	std::vector<ObjectData> naviareaObjects;
 };
 
+class TouchableObject;
+
 class JsonLoader
 {
 private: // エイリアス
@@ -83,8 +85,11 @@ public:// 定数
 	//床用
 	//オブジェクト
 	static std::vector<std::unique_ptr<Object3d>> groundObjects;
+	
+	static TouchableObject* objGround;
 	//モデル
 	static std::map<std::string, Model> groundModels;
+	
 	//コライダー用
 	//オブジェクト
 	static std::vector<std::unique_ptr<ColliderObject>> groundColliderObjects;

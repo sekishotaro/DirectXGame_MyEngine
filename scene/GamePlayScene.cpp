@@ -12,6 +12,11 @@
 #include "CollisionSet.h"
 #include "Enemy.h"
 
+#include "SphereCollider.h"
+#include "CollisionManager.h"
+#include "Player.h"
+
+
 void GamePlayScene::Initialize()
 {
 	Audio::GetInstance()->LoadWave("futta-dream.wav");
@@ -42,11 +47,7 @@ void GamePlayScene::Initialize()
 	// 背景スプライト生成
 	spriteBG = Sprite::Create(1, { 0.0f,0.0f });
 
-	// オブジェクト生成
-	//model = Model::LoadFromOBJ("sphere");
-	//objectX = Object3d::Create();
-	//オブジェクトにモデルをひも付ける
-	//objectX->SetModel(model);
+	modelFighter = Model::LoadFromOBJ("chr_sword");
 
 	//モデル名を指定してファイル読み込み
 	//fbxModel1 = FbxLoader::GetInstance()->LoadModelFromFile("model");
@@ -72,7 +73,7 @@ void GamePlayScene::Initialize()
 	//colliderObject->SetCenter({ 0, 2.5f, 0 });
 	//colliderObject->SetScale(Player::GetSize());
 	//json
-	JsonLoader::LoadFile("Scene8_31");
+	JsonLoader::LoadFile("Scene9_27");
 	JsonLoader::SetObject();
 
 	//Enemy::Initialize();
@@ -88,6 +89,11 @@ void GamePlayScene::Initialize()
 	//enemyCollider2Object->SetPosition(XMFLOAT3(0, 5, 0));
 	//enemyCollider2Object->SetScale(XMFLOAT3(20, 20, 20));
 	//enemyCollider2Object->SetColor(XMFLOAT4(0, 0, 1, 0.2));
+
+	collisionManager = CollisionManager::GetInstance();
+	objFighter = Player::Create(modelFighter);
+	
+	//コライダーの追加
 }
 
 void GamePlayScene::Finalize()
@@ -215,6 +221,21 @@ void GamePlayScene::Update()
 	//	//シーン切り替え
 	//	//SceneManager::GetInstance()->ChangeScene("TITLE");
 	//}	
+	DebugText::GetInstance()->Print(50, 30 * 1, 2, "Camera:X:%f", camera->GetEye().x);
+	DebugText::GetInstance()->Print(50, 30 * 2, 2, "Camera:Y:%f", camera->GetEye().y);
+	DebugText::GetInstance()->Print(50, 30 * 3, 2, "Camera:Z:%f", camera->GetEye().z);
+	DebugText::GetInstance()->Print(50, 30 * 4, 2, "Player:X:%f", objFighter->GetPosition().x);
+	DebugText::GetInstance()->Print(50, 30 * 5, 2, "Player:Y:%f", objFighter->GetPosition().y);
+	DebugText::GetInstance()->Print(50, 30 * 6, 2, "Player:Z:%f", objFighter->GetPosition().z);
+	
+	//Ray ray;
+	//ray.start = { 10.0f, 0.5f, 0.0f, 1 };
+	//ray.dir = { 0,-1,0,0 };
+	//RaycastHit raycastHit;
+
+	//if (collisionManager->Raycast(ray, &raycastHit)) {
+	//	DebugText::GetInstance()->Print(50, 30 * 4, 2, "Raycast Hit.");
+	//}
 
 
 	//描画オブジェクト関連の更新
@@ -229,7 +250,13 @@ void GamePlayScene::Update()
 	
 	
 	//アップデート
+	JsonLoader::Update();
+
 	camera->Update();
+	objFighter->Update();
+
+	//全ての衝突をチェック
+	collisionManager->CheckAllCollisions();
 	JsonLoader::Update();
 
 	//enemyCollider1Object->Update();
@@ -267,6 +294,8 @@ void GamePlayScene::Draw()
 	MathObject::PreDraw(cmdList);
 
 	// 3Dオブクジェクトの描画
+	
+	objFighter->Draw();
 	//json
 	JsonLoader::Draw();
 

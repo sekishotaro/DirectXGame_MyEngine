@@ -6,8 +6,10 @@
 #include <DirectXMath.h>
 #include <d3dx12.h>
 #include "Model.h"
-
 #include "Camera.h"
+#include "CollisionInfo.h"
+
+class BaseCollider;
 
 /// <summary>
 /// 3Dオブジェクト
@@ -40,6 +42,18 @@ private: // 定数
 	static const int vertexCount = planeCount * 3;		// 頂点数
 
 public: // 静的メンバ関数
+	
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
+	Object3d() = default;
+
+	/// <summary>
+	/// デストラクタ
+	/// </summary>
+	virtual ~Object3d();
+
+
 	/// <summary>
 	/// 静的初期化
 	/// </summary>
@@ -112,16 +126,40 @@ private:// 静的メンバ関数
 	static void UpdateViewMatrix();
 
 public: // メンバ関数
-	bool Initialize();
+	
+	/// <summary>
+	/// 初期化
+	/// </summary>
+	/// <returns>成否</returns>
+	virtual bool Initialize();
+	
 	/// <summary>
 	/// 毎フレーム処理
 	/// </summary>
-	void Update();
+	virtual void Update();
 
 	/// <summary>
 	/// 描画
 	/// </summary>
-	void Draw();
+	virtual void Draw();
+
+	/// <summary>
+	/// ワールド行列の取得
+	/// </summary>
+	/// <returns>ワールド行列</returns>
+	const XMMATRIX& GetMatWorld() { return matWorld; }
+
+	/// <summary>
+	/// コライダーのセット
+	/// </summary>
+	/// <param name="collider">コライダー</param>
+	void SetCollider(BaseCollider* collider);
+
+	/// <summary>
+	/// 衝突時コールバック関数
+	/// </summary>
+	/// <param name="info">衝突情報</param>
+	virtual void OnCollision(const CollisionInfo& info) {}
 
 	/// <summary>
 	/// 座標の取得
@@ -158,7 +196,9 @@ public: // メンバ関数
 
 	void SetBillboard(bool isBillboard) { this->isBillboard = isBillboard; }
 
-private: // メンバ変数
+	inline Model* GetModel() { return model; }
+
+protected: // メンバ変数
 	ComPtr<ID3D12Resource> constBuffB0; // 定数バッファ
 	// 色
 	XMFLOAT4 color = { 1,1,1,1 };
@@ -176,5 +216,9 @@ private: // メンバ変数
 	Model *model = nullptr;
 	// ビルボード
 	bool isBillboard = false;
+	//クラス名 (デバック用)
+	const char* name = nullptr;
+	//コライダー
+	BaseCollider* collider = nullptr;
 };
 
