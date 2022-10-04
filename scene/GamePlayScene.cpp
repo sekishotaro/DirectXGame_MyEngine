@@ -103,9 +103,10 @@ void GamePlayScene::Update()
 
 
 	//アップデート
+	JsonLoader::Update();
+
 	camera->Update();
 	objFighter->Update();
-	JsonLoader::Update();
 
 	//全ての衝突をチェック
 	collisionManager->CheckAllCollisions();

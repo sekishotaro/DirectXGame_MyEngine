@@ -157,6 +157,7 @@ void Player::Update()
 
 void Player::OnCollision(const CollisionInfo& info)
 {
-	DebugText::GetInstance()->Print(50, 30 * 4, 2, "Hit");
+	DebugText::GetInstance()->Print(50, 30 * 8, 2, "Hit");
+	//fallV.m128_f32[1] = 0.0f;
 }
 
