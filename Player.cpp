@@ -8,6 +8,8 @@
 
 using namespace DirectX;
 
+XMFLOAT3 Player::pos = { 0,0,0 };
+
 Player* Player::Create(Model* model)
 {
 	//3Dオブジェクトのインスタンスを生成
@@ -49,6 +51,8 @@ bool Player::Initialize()
 	SetCollider(new SphereCollider(XMVECTOR({ 0, radius, 0,0 }), radius));
 
 	collider->SetAttribute(COLLISION_ATTR_ALLIES);
+
+	pos = position;
 
 	return true;
 }
@@ -116,6 +120,8 @@ void Player::Update()
 	ray.start.m128_f32[1] += sphereCollider->GetRadius();
 	ray.dir = { 0, -1, 0, 0 };
 	RaycastHit raycastHit;
+
+	pos = position;
 
 	//行列の更新など
 	Object3d::Update();

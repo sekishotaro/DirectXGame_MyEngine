@@ -300,10 +300,6 @@ void JsonLoader::Update()
 	//		groundColliderObjects[i].get()->SetColor({ 1,0,0 });
 	//	}
 
-
-		groundColliderObjects[i]->Update();
-	}
-
 	for (int i = 0; i < enemyNaviareaObjects.size(); i++)
 	{
 		if (enemyNaviareaObjects[i].get()->GetCollFlag() == true)

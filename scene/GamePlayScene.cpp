@@ -73,7 +73,7 @@ void GamePlayScene::Initialize()
 	//colliderObject->SetCenter({ 0, 2.5f, 0 });
 	//colliderObject->SetScale(Player::GetSize());
 	//json
-	JsonLoader::LoadFile("Scene9_27");
+	JsonLoader::LoadFile("Scene8_31");
 	JsonLoader::SetObject();
 
 	//Enemy::Initialize();
@@ -127,13 +127,8 @@ void GamePlayScene::Update()
 	}
 
 	//プレイヤーの移動
-	//Player::Move(input, groundY);
 
 	//プレイヤーと地面の当たり判定処理
-	//CollisionSet::CollisionCheck(Player::GetPos(), colliderObject->GetScale(), groundY);
-	//CollisionSet::CollisionPushBack(colliderObject->GetScale(), groundY);
-	//MyMath::GravityCheck(Player::GetPos(), groundY, Player::groundFlag);
-
 	//if (Player::GetWallColl() == true)
 	//{
 	//	colliderObject->SetColor({ 1, 1, 0});

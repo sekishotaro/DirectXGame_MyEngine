@@ -13,7 +13,7 @@
 class Player : public Object3d
 {
 private: // エイリアス
-// Microsoft::WRL::を省略
+	// Microsoft::WRL::を省略
 	template <class T> using ComPtr = Microsoft::WRL::ComPtr<T>;
 	// DirectX::を省略
 	using XMFLOAT2 = DirectX::XMFLOAT2;
@@ -48,11 +48,16 @@ public:
 	/// <param name="info">衝突情報</param>
 	void OnCollision(const CollisionInfo& info) override;
 
+
+	static XMFLOAT3 GetPos() { return pos; }
+
 private:
 	//接地フラグ
 	bool onGround = false;
 	//落下ベクトル
 	DirectX::XMVECTOR fallV;
+	//プレイヤーの位置
 
+	static XMFLOAT3 pos;
 };
 
