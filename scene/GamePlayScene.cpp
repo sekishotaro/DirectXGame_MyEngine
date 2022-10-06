@@ -199,11 +199,6 @@ void GamePlayScene::Update()
 	//{
 	//	colliderObject->SetColor({ 1, 1, 1 });
 	//}
-	
-
-	DebugText::GetInstance()->Print(50, 30 * 1, 2, "C:X:%f", camera->GetEye().x);
-	DebugText::GetInstance()->Print(50, 30 * 2, 2, "C:Y:%f", camera->GetEye().y);
-	DebugText::GetInstance()->Print(50, 30 * 3, 2, "C:Z:%f", camera->GetEye().z);
 	//DebugText::GetInstance()->Print(50, 30 * 8, 2, "M:Y:%f", Player::GetMove().y);
 	//DebugText::GetInstance()->Print(50, 30 * 9, 2, "M:Z:%f", Player::GetMove().z);
 	

@@ -116,7 +116,7 @@ void Player::Update()
 	else if (Input::GetInstance()->TriggerKey(DIK_SPACE))//ジャンプ
 	{
 		onGround = false;
-		const float jumpVYFist = 0.2f; //ジャンプ時上向き初速
+		const float jumpVYFist = 0.35f; //ジャンプ時上向き初速
 		 fallV = { 0, jumpVYFist, 0,0 };
 	}
 	//球コライダーを取得
@@ -172,9 +172,15 @@ void Player::Update()
 	//自機の一定の距離内の障害物を抽出し、その障害物とだけ当たり判定を取る。
 	Box playerBox;
 	playerBox.centerPos = position;
-	playerBox.size = { 3.0f, 3.0f, 3.0f };
+	playerBox.size = { 1.0f, 1.0f, 1.0f };
 	playerBox.LeastPos = XMFLOAT3(playerBox.centerPos.x - playerBox.size.x, playerBox.centerPos.y - playerBox.size.y, playerBox.centerPos.z - playerBox.size.z);
 	playerBox.MaxPos = XMFLOAT3(playerBox.centerPos.x + playerBox.size.x, playerBox.centerPos.y + playerBox.size.y, playerBox.centerPos.z + playerBox.size.z);
+
+	ray;
+	ray.start = sphereCollider->center;
+	ray.dir = { move.m128_f32[0], move.m128_f32[1], move.m128_f32[2] };
+
+	XMFLOAT3 distance = { 0, 0, 0 };
 
 	Circle circle;
 	circle.center = { position.x, position.z };
@@ -183,50 +189,77 @@ void Player::Update()
 	std::vector<Box> boxs;
 	Box box;
 
+	XMVECTOR normal = { 0,0,0,0 };
+
 	for (int i = 0; i < JsonLoader::colliderObjects.size(); i++)
 	{
 		if (Collision::CheckCircleDot(circle, XMFLOAT2(JsonLoader::colliderObjects[i].get()->GetPosition().x, JsonLoader::colliderObjects[i].get()->GetPosition().z)) == true)
 		{
 			box.centerPos = JsonLoader::colliderObjects[i].get()->GetPosition();
 			box.size = JsonLoader::colliderObjects[i].get()->GetScale();
-			box.LeastPos = XMFLOAT3(box.centerPos.x - box.size.x, box.centerPos.y - box.size.y, box.centerPos.z - box.size.z);
-			box.MaxPos = XMFLOAT3(box.centerPos.x + box.size.x, box.centerPos.y + box.size.y, box.centerPos.z + box.size.z);
+			box.LeastPos = XMFLOAT3(box.centerPos.x - (box.size.x / 2), box.centerPos.y - (box.size.y / 2), box.centerPos.z - (box.size.z / 2));
+			box.MaxPos = XMFLOAT3(box.centerPos.x + (box.size.x / 2), box.centerPos.y + (box.size.y / 2), box.centerPos.z + (box.size.z / 2));
 			boxs.push_back(box);
 		}
 	}
 
-	//障害物
-	if (adhesion)
+	for (int i = 0; i < boxs.size(); i++)
 	{
-		//めり込まないようにする接着状態の維持
-		if (true)
+		//障害物
+		if (adhesion)
 		{
-			adhesion = true;
-			//行列の更新など
-			Object3d::Update();
+			//めり込まないようにする接着状態の維持
+			if ( Collision::Check2Box(playerBox, boxs[i], distance) == true)
+			{
+				normal = Collision::CheckRayBoxforPlane(ray, box);
+				adhesion = true;
+				PushBack(normal, distance);
+				//行列の更新など
+				Object3d::Update();
+			}
+			else
+			{
+				adhesion = false;
+			}
 		}
-		else
+		else if (nowMove == true) //移動状態
 		{
-			adhesion = false;
+			//当たっているかの確認
+			if (Collision::Check2Box(playerBox, boxs[i], distance) == true)
+			{
+				normal = Collision::CheckRayBoxforPlane(ray, box);
+				adhesion = true;
+				//めり込まないように押し戻し処理
+				PushBack(normal, distance);
+				//行列の更新など
+				Object3d::Update();
+			}
 		}
 	}
-	else if (nowMove == true) //移動状態
-	{
-		//当たっているかの確認
-		if (true)
-		{
-			adhesion = true;
-			//めり込まないように押し戻し処理
-			//行列の更新など
-			Object3d::Update();
-		}
-	}
-
+	DebugText::GetInstance()->Print(50, 30 * 9, 2, "normal_X:%f", normal.m128_f32[0]);
+	DebugText::GetInstance()->Print(50, 30 * 10, 2, "normal_Y:%f", normal.m128_f32[1]);
+	DebugText::GetInstance()->Print(50, 30 * 11, 2, "normal_Z:%f", normal.m128_f32[2]);
 }
 
 void Player::OnCollision(const CollisionInfo& info)
 {
 	DebugText::GetInstance()->Print(50, 30 * 8, 2, "Hit");
 	//fallV.m128_f32[1] = 0.0f;
+}
+
+void Player::PushBack(const DirectX::XMVECTOR& normal, const XMFLOAT3& distance)
+{
+	if (normal.m128_f32[0] != 0)
+	{
+		position.x += distance.x;
+	}
+	else if (normal.m128_f32[1] != 0)
+	{
+		position.y += distance.y;
+	}
+	else if (normal.m128_f32[2] != 0)
+	{
+		position.z += distance.z;
+	}
 }
 

@@ -312,7 +312,54 @@ bool Collision::CheckRayBox(const Ray& ray, const Box& box)
 	return false;
 }
 
-bool Collision::Check2Box(const Box& box1, const Box& box2, float* distance, DirectX::XMVECTOR* inter)
+Collision::XMVECTOR Collision::CheckRayBoxforPlane(const Ray& ray, const Box& box)
+{
+	Ray r1;
+	r1.start = ray.start;	//初期位置
+	r1.dir = ray.dir;		//方向
+
+	int count = 10;			//カウント
+	float distance = 0.0f;	//初期位置からレイと平面が当たったところの長さ
+	float dis = 0.0f;		//比較するときの記録用
+
+	Plane plane[6];
+	plane[0].normal = {  1,  0,  0,  0};	//右面
+	plane[1].normal = { -1,  0,  0,  0};	//左面
+	plane[2].normal = {  0,  1,  0,  0};	//上面
+	plane[3].normal = {  0, -1,  0,  0};	//下面
+	plane[4].normal = {  0,  0,  1,  0};	//奥面
+	plane[5].normal = {  0,  0, -1,  0};	//前面
+	
+	plane[0].distance = box.MaxPos.x;
+	plane[1].distance = box.LeastPos.x;
+	plane[2].distance = box.MaxPos.y;
+	plane[3].distance = box.LeastPos.y;
+	plane[4].distance = box.MaxPos.z;
+	plane[5].distance = box.LeastPos.z;
+
+
+	for (int i = 0; i < 6; i++)
+	{
+		if (CheckRay2Plane(r1, plane[i], &distance))
+		{
+			if (count != 10 && dis <= distance)
+			{
+				distance = dis;
+				return plane[count].normal;
+			}
+			dis = distance;
+			count = i;
+		}
+	}
+
+	if (count == 10)
+	{
+		assert(0);
+	}
+	return plane[count].normal;
+}
+
+bool Collision::Check2Box(const Box& box1, const Box& box2, XMFLOAT3& distance)
 {
 	if (box1.LeastPos.x > box2.MaxPos.x) return false;
 	if (box1.MaxPos.x < box2.LeastPos.x) return false;
@@ -321,6 +368,9 @@ bool Collision::Check2Box(const Box& box1, const Box& box2, float* distance, Dir
 	if (box1.LeastPos.z > box2.MaxPos.z) return false;
 	if (box1.MaxPos.z < box2.LeastPos.z) return false;
 
+	distance.x = box2.LeastPos.x - box1.MaxPos.x;
+	distance.y = box2.LeastPos.y - box1.MaxPos.y;
+	distance.z = box2.LeastPos.z - box1.MaxPos.z;
 	return true;
 }
 

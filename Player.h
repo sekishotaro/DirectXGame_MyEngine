@@ -48,6 +48,8 @@ public:
 	/// <param name="info">Õ“Ëî•ñ</param>
 	void OnCollision(const CollisionInfo& info) override;
 
+	void PushBack(const DirectX::XMVECTOR& normal, const XMFLOAT3& distance);
+
 
 	static XMFLOAT3 GetPos() { return pos; }
 

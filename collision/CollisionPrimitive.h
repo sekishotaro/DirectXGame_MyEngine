@@ -58,6 +58,20 @@ struct Plane
 	float distance = 0.0f;
 };
 
+/// <summary>
+/// 板ポリ
+/// </summary>
+struct Plate
+{
+	//4頂点
+	DirectX::XMVECTOR vertex1 = { 0,0,0,0 };
+	DirectX::XMVECTOR vertex2 = { 0,0,0,0 };
+	DirectX::XMVECTOR vertex3 = { 0,0,0,0 };
+	DirectX::XMVECTOR vertex4 = { 0,0,0,0 };
+	//法線ベクトル
+	DirectX::XMVECTOR normal = { 0,1,0,0 };
+};
+
 
 /// <summary>
 /// 法線付き三角形 (時計回りが表面)
