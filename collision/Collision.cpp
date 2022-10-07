@@ -318,9 +318,6 @@ Collision::XMVECTOR Collision::CheckRayBoxforPlane(const Ray& ray, const Box& bo
 	Ray r1;
 	r1.start = ray.start;	//初期位置
 	r1.dir = ray.dir;		//方向
-	
-	//r1.start = { 0,0,0,0 };	//初期位置
-	//r1.dir = { -1,0,0,0};		//方向
 
 
 	int count = 10;			//カウント
@@ -354,24 +351,6 @@ Collision::XMVECTOR Collision::CheckRayBoxforPlane(const Ray& ray, const Box& bo
 			}
 			dis = distance;
 			count = i;
-		}
-	}
-
-	if (count == 0)
-	{
-		count = 10;
-		for (int i = 0; i < 6; i++)
-		{
-			if (CheckRay2Plane(r1, plane[i], &distance))
-			{
-				if (count != 10 && dis <= distance)
-				{
-					distance = dis;
-					return plane[count].normal;
-				}
-				dis = distance;
-				count = i;
-			}
 		}
 	}
 	return plane[count].normal;

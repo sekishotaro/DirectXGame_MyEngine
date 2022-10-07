@@ -180,9 +180,9 @@ void Player::Update()
 
 	ray;
 	ray.start = sphereCollider->center;
-	ray.start.m128_f32[0] -= move.m128_f32[0];
-	ray.start.m128_f32[1] -= move.m128_f32[1];
-	ray.start.m128_f32[2] -= move.m128_f32[2];
+	ray.start.m128_f32[0];
+	ray.start.m128_f32[1];
+	ray.start.m128_f32[2];
 	ray.dir = { move.m128_f32[0], move.m128_f32[1], move.m128_f32[2] };
 
 	XMFLOAT3 distance = { 0, 0, 0 };
@@ -197,6 +197,7 @@ void Player::Update()
 	XMVECTOR normal = { 0,0,0,0 };
 
 
+	//自機からXZ軸で一定の距離の中に障害物オブジェクトの中心座標があるものだけ当たり判定用のコンテナに格納する
 	for (int i = 0; i < JsonLoader::colliderObjects.size(); i++)
 	{
 		if (Collision::CheckCircleDot(circle, XMFLOAT2(JsonLoader::colliderObjects[i].get()->GetPosition().x, JsonLoader::colliderObjects[i].get()->GetPosition().z)) == true)
@@ -254,18 +255,17 @@ void Player::Update()
 void Player::OnCollision(const CollisionInfo& info)
 {
 	DebugText::GetInstance()->Print(50, 30 * 8, 2, "Hit");
-	//fallV.m128_f32[1] = 0.0f;
 }
 
 void Player::PushBack(const DirectX::XMVECTOR& normal, const XMFLOAT3& distance)
 {
 	if (normal.m128_f32[0] != 0)
 	{
-		position.x += distance.x + 0.5f;
+		position.x += distance.x;
 	}
 	else if (normal.m128_f32[1] != 0)
 	{
-		position.y += distance.y + 0.5f;
+		position.y += distance.y;
 	}
 	else if (normal.m128_f32[2] != 0)
 	{
