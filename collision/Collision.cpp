@@ -158,6 +158,7 @@ bool Collision::CheckRay2Plane(const Ray &ray, const Plane &plane, float *distan
 	if (d1 > -epsilon) { return false; }
 	//視点と原点の距離 (平面の法線方向)
 	//面法線とレイの始点座標 (位置ベクトル)の内積
+	XMVECTOR vec1 = XMVector3Dot(plane.normal, ray.start);
 	float d2 = XMVector3Dot(plane.normal, ray.start).m128_f32[0];
 	//始点と平面の距離 (平面の法線方向)
 	float dist = d2 - plane.distance;
@@ -317,6 +318,10 @@ Collision::XMVECTOR Collision::CheckRayBoxforPlane(const Ray& ray, const Box& bo
 	Ray r1;
 	r1.start = ray.start;	//初期位置
 	r1.dir = ray.dir;		//方向
+	
+	//r1.start = { 0,0,0,0 };	//初期位置
+	//r1.dir = { -1,0,0,0};		//方向
+
 
 	int count = 10;			//カウント
 	float distance = 0.0f;	//初期位置からレイと平面が当たったところの長さ
@@ -330,12 +335,12 @@ Collision::XMVECTOR Collision::CheckRayBoxforPlane(const Ray& ray, const Box& bo
 	plane[4].normal = {  0,  0,  1,  0};	//奥面
 	plane[5].normal = {  0,  0, -1,  0};	//前面
 	
-	plane[0].distance = box.MaxPos.x;
-	plane[1].distance = box.LeastPos.x;
-	plane[2].distance = box.MaxPos.y;
-	plane[3].distance = box.LeastPos.y;
-	plane[4].distance = box.MaxPos.z;
-	plane[5].distance = box.LeastPos.z;
+	plane[0].distance = -box.MaxPos.x;
+	plane[1].distance = -box.LeastPos.x;
+	plane[2].distance = -box.MaxPos.y;
+	plane[3].distance = -box.LeastPos.y;
+	plane[4].distance = -box.MaxPos.z;
+	plane[5].distance = -box.LeastPos.z;
 
 
 	for (int i = 0; i < 6; i++)
@@ -352,9 +357,22 @@ Collision::XMVECTOR Collision::CheckRayBoxforPlane(const Ray& ray, const Box& bo
 		}
 	}
 
-	if (count == 10)
+	if (count == 0)
 	{
-		assert(0);
+		count = 10;
+		for (int i = 0; i < 6; i++)
+		{
+			if (CheckRay2Plane(r1, plane[i], &distance))
+			{
+				if (count != 10 && dis <= distance)
+				{
+					distance = dis;
+					return plane[count].normal;
+				}
+				dis = distance;
+				count = i;
+			}
+		}
 	}
 	return plane[count].normal;
 }

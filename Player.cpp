@@ -46,7 +46,9 @@ bool Player::Initialize()
 		return false;
 	}
 
+	position.x = 22.0f;
 	position.y = 10.0f;
+	position.z = -28.0f;
 
 	//コライダーの追加
 	float radius = 0.6f;
@@ -178,6 +180,9 @@ void Player::Update()
 
 	ray;
 	ray.start = sphereCollider->center;
+	ray.start.m128_f32[0] -= move.m128_f32[0];
+	ray.start.m128_f32[1] -= move.m128_f32[1];
+	ray.start.m128_f32[2] -= move.m128_f32[2];
 	ray.dir = { move.m128_f32[0], move.m128_f32[1], move.m128_f32[2] };
 
 	XMFLOAT3 distance = { 0, 0, 0 };
@@ -191,6 +196,7 @@ void Player::Update()
 
 	XMVECTOR normal = { 0,0,0,0 };
 
+
 	for (int i = 0; i < JsonLoader::colliderObjects.size(); i++)
 	{
 		if (Collision::CheckCircleDot(circle, XMFLOAT2(JsonLoader::colliderObjects[i].get()->GetPosition().x, JsonLoader::colliderObjects[i].get()->GetPosition().z)) == true)
@@ -203,6 +209,7 @@ void Player::Update()
 		}
 	}
 
+
 	for (int i = 0; i < boxs.size(); i++)
 	{
 		//障害物
@@ -211,7 +218,7 @@ void Player::Update()
 			//めり込まないようにする接着状態の維持
 			if ( Collision::Check2Box(playerBox, boxs[i], distance) == true)
 			{
-				normal = Collision::CheckRayBoxforPlane(ray, box);
+				normal = Collision::CheckRayBoxforPlane(ray, boxs[i]);
 				adhesion = true;
 				PushBack(normal, distance);
 				//行列の更新など
@@ -239,6 +246,9 @@ void Player::Update()
 	DebugText::GetInstance()->Print(50, 30 * 9, 2, "normal_X:%f", normal.m128_f32[0]);
 	DebugText::GetInstance()->Print(50, 30 * 10, 2, "normal_Y:%f", normal.m128_f32[1]);
 	DebugText::GetInstance()->Print(50, 30 * 11, 2, "normal_Z:%f", normal.m128_f32[2]);
+	DebugText::GetInstance()->Print(50, 30 * 12, 2, "move_X:%f", move.m128_f32[0]);
+	DebugText::GetInstance()->Print(50, 30 * 13, 2, "move_Y:%f", move.m128_f32[1]);
+	DebugText::GetInstance()->Print(50, 30 * 14, 2, "move_Z:%f", move.m128_f32[2]);
 }
 
 void Player::OnCollision(const CollisionInfo& info)
@@ -251,11 +261,11 @@ void Player::PushBack(const DirectX::XMVECTOR& normal, const XMFLOAT3& distance)
 {
 	if (normal.m128_f32[0] != 0)
 	{
-		position.x += distance.x;
+		position.x += distance.x + 0.5f;
 	}
 	else if (normal.m128_f32[1] != 0)
 	{
-		position.y += distance.y;
+		position.y += distance.y + 0.5f;
 	}
 	else if (normal.m128_f32[2] != 0)
 	{
