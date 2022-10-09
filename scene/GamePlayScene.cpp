@@ -8,6 +8,7 @@
 #include "FbxObject3d.h"
 #include "JsonLoader.h"
 #include "imguiManager.h"
+#include "imgui.h"
 #include "MyMath.h"
 #include "CollisionSet.h"
 #include "Enemy.h"
@@ -253,11 +254,11 @@ void GamePlayScene::Update()
 	//fbxObject1->Update();
 	//fbxObject2->Update();
 	//colliderObject->Update();
-	
 }
 
 void GamePlayScene::Draw()
 {
+
 	// ゲームシーンの描画
 
 	// コマンドリストの取得
@@ -313,6 +314,25 @@ void GamePlayScene::Draw()
 	Sprite::PostDraw();
 
 	//imguiの描画
-	//imguiManager::PraDraw();
-	//imguiManager::PosDraw();
+	imguiManager::PraDraw();
+	ImGui::NewFrame();
+	ImGui::Begin("config1");//ウィンドウの名前
+	ImGui::SetWindowSize(ImVec2(400, 500), ImGuiCond_::ImGuiCond_FirstUseEver);
+	
+	static bool blnChk = false;
+	ImGui::Checkbox("CheckboxTest", &blnChk);
+	float testNum = 14.12;
+	ImGui::Text("PosX :%.4f", objFighter->GetPosition().x);
+	static int radio = 0;
+	ImGui::RadioButton("Radio 1", &radio, 0);
+	ImGui::SameLine();
+	ImGui::RadioButton("Radio 2", &radio, 1);
+	ImGui::SameLine();
+	ImGui::RadioButton("Radio 3", &radio, 2);
+
+	static int nSlider = 0;
+	ImGui::SliderInt("Int Slider", &nSlider, 0, 100);
+	static float fSlider = 0.0f;
+	ImGui::SliderFloat("float Slider", &fSlider, 0.0f, 100.0f);
+	imguiManager::PosDraw();
 }

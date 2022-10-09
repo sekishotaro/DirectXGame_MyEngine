@@ -64,9 +64,6 @@ void imguiManager::PraDraw()
 {
     ImGui_ImplDX12_NewFrame();
     ImGui_ImplWin32_NewFrame();
-    ImGui::NewFrame();
-    ImGui::Begin("Test");//ウィンドウの名前
-    ImGui::SetWindowSize(ImVec2(400, 500), ImGuiCond_::ImGuiCond_FirstUseEver);
 }
 
 void imguiManager::PosDraw()

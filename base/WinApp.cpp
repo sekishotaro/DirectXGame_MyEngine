@@ -3,6 +3,8 @@
 
 HWND WinApp::hwnd = nullptr;
 
+extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND, UINT, WPARAM, LPARAM);
+
 LRESULT WinApp::WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 {
 	// メッセージで分岐
@@ -12,6 +14,9 @@ LRESULT WinApp::WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 		PostQuitMessage(0); // OSに対して、アプリの終了を伝える
 		return 0;
 	}
+
+	ImGui_ImplWin32_WndProcHandler(hwnd, msg, wparam, lparam);
+
 	return DefWindowProc(hwnd, msg, wparam, lparam); // 標準の処理を行う
 }
 
