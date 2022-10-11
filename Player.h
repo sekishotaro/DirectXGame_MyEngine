@@ -50,8 +50,12 @@ public:
 
 	void PushBack(const DirectX::XMVECTOR& normal, const XMFLOAT3& distance);
 
-
+	//デバック用ゲッター
 	static XMFLOAT3 GetPos() { return pos; }
+
+	static XMFLOAT3 GetMove() { return moveV; };
+
+
 
 private:
 	//接地フラグ
@@ -65,5 +69,6 @@ private:
 	//プレイヤーの位置
 
 	static XMFLOAT3 pos;
+	static XMFLOAT3 moveV;
 };
 

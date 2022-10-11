@@ -332,11 +332,11 @@ Collision::XMVECTOR Collision::CheckRayBoxforPlane(const Ray& ray, const Box& bo
 	plane[4].normal = {  0,  0,  1,  0};	//奥面
 	plane[5].normal = {  0,  0, -1,  0};	//前面
 	
-	plane[0].distance = -box.MaxPos.x;
+	plane[0].distance = box.MaxPos.x;
 	plane[1].distance = -box.LeastPos.x;
-	plane[2].distance = -box.MaxPos.y;
+	plane[2].distance = box.MaxPos.y;
 	plane[3].distance = -box.LeastPos.y;
-	plane[4].distance = -box.MaxPos.z;
+	plane[4].distance = box.MaxPos.z;
 	plane[5].distance = -box.LeastPos.z;
 
 
@@ -353,6 +353,13 @@ Collision::XMVECTOR Collision::CheckRayBoxforPlane(const Ray& ray, const Box& bo
 			count = i;
 		}
 	}
+
+	//レイがボックスのどの面とも当たっていない
+	if (count == 10)
+	{
+		return XMVECTOR{ 0, 0, 0, 0 };
+	}
+	
 	return plane[count].normal;
 }
 
@@ -365,9 +372,43 @@ bool Collision::Check2Box(const Box& box1, const Box& box2, XMFLOAT3& distance)
 	if (box1.LeastPos.z > box2.MaxPos.z) return false;
 	if (box1.MaxPos.z < box2.LeastPos.z) return false;
 
-	distance.x = box2.LeastPos.x - box1.MaxPos.x;
-	distance.y = box2.LeastPos.y - box1.MaxPos.y;
-	distance.z = box2.LeastPos.z - box1.MaxPos.z;
+	float x1, x2, y1, y2, z1, z2;
+
+	x1 = box2.LeastPos.x - box1.MaxPos.x;
+	y1 = box2.LeastPos.y - box1.MaxPos.y;
+	z1 = box2.LeastPos.z - box1.MaxPos.z;
+
+	x2 = box2.MaxPos.x - box1.LeastPos.x;
+	y2 = box2.MaxPos.y - box1.LeastPos.y;
+	z2 = box2.MaxPos.z - box1.LeastPos.z;
+
+	if ( fabsf(x1) < fabsf(x2))
+	{
+		distance.x = x1;
+	}
+	else
+	{
+		distance.x = x2;
+	}
+	
+	if (fabsf(y1) < fabsf(y2))
+	{
+		distance.y = y1;
+	}
+	else
+	{
+		distance.y = y2;
+	}
+	
+	if (fabsf(z1) < fabsf(z2))
+	{
+		distance.z = z1;
+	}
+	else
+	{
+		distance.z = z2;
+	}
+
 	return true;
 }
 

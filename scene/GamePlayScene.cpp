@@ -74,7 +74,7 @@ void GamePlayScene::Initialize()
 	//colliderObject->SetCenter({ 0, 2.5f, 0 });
 	//colliderObject->SetScale(Player::GetSize());
 	//json
-	JsonLoader::LoadFile("Scene8_31");
+	JsonLoader::LoadFile("Scene10_11");
 	JsonLoader::SetObject();
 
 	//Enemy::Initialize();
@@ -212,12 +212,12 @@ void GamePlayScene::Update()
 	//	//ƒV[ƒ“Ø‚è‘Ö‚¦
 	//	//SceneManager::GetInstance()->ChangeScene("TITLE");
 	//}	
-	DebugText::GetInstance()->Print(50, 30 * 1, 2, "Camera:X:%f", camera->GetEye().x);
-	DebugText::GetInstance()->Print(50, 30 * 2, 2, "Camera:Y:%f", camera->GetEye().y);
-	DebugText::GetInstance()->Print(50, 30 * 3, 2, "Camera:Z:%f", camera->GetEye().z);
-	DebugText::GetInstance()->Print(50, 30 * 4, 2, "Player:X:%f", objFighter->GetPosition().x);
-	DebugText::GetInstance()->Print(50, 30 * 5, 2, "Player:Y:%f", objFighter->GetPosition().y);
-	DebugText::GetInstance()->Print(50, 30 * 6, 2, "Player:Z:%f", objFighter->GetPosition().z);
+	//DebugText::GetInstance()->Print(50, 30 * 1, 2, "Camera:X:%f", camera->GetEye().x);
+	//DebugText::GetInstance()->Print(50, 30 * 2, 2, "Camera:Y:%f", camera->GetEye().y);
+	//DebugText::GetInstance()->Print(50, 30 * 3, 2, "Camera:Z:%f", camera->GetEye().z);
+	//DebugText::GetInstance()->Print(50, 30 * 4, 2, "Player:X:%f", objFighter->GetPosition().x);
+	//DebugText::GetInstance()->Print(50, 30 * 5, 2, "Player:Y:%f", objFighter->GetPosition().y);
+	//DebugText::GetInstance()->Print(50, 30 * 6, 2, "Player:Z:%f", objFighter->GetPosition().z);
 	
 	//Ray ray;
 	//ray.start = { 10.0f, 0.5f, 0.0f, 1 };
@@ -320,19 +320,26 @@ void GamePlayScene::Draw()
 	ImGui::SetWindowSize(ImVec2(400, 500), ImGuiCond_::ImGuiCond_FirstUseEver);
 	
 	static bool blnChk = false;
-	ImGui::Checkbox("CheckboxTest", &blnChk);
-	float testNum = 14.12;
-	ImGui::Text("PosX :%.4f", objFighter->GetPosition().x);
-	static int radio = 0;
-	ImGui::RadioButton("Radio 1", &radio, 0);
-	ImGui::SameLine();
-	ImGui::RadioButton("Radio 2", &radio, 1);
-	ImGui::SameLine();
-	ImGui::RadioButton("Radio 3", &radio, 2);
-
-	static int nSlider = 0;
-	ImGui::SliderInt("Int Slider", &nSlider, 0, 100);
-	static float fSlider = 0.0f;
-	ImGui::SliderFloat("float Slider", &fSlider, 0.0f, 100.0f);
+	//ImGui::Checkbox("CheckboxTest", &blnChk);
+	ImGui::Text("PosX    :%.4f", objFighter->GetPosition().x);
+	ImGui::Text("PosY    :%.4f", objFighter->GetPosition().y);
+	ImGui::Text("PosZ    :%.4f", objFighter->GetPosition().z);
+	ImGui::Text("MoveX   :%.4f", objFighter->GetMove().x);
+	ImGui::Text("MoveY   :%.4f", objFighter->GetMove().y);
+	ImGui::Text("MoveZ   :%.4f", objFighter->GetMove().z);
+	ImGui::Text("cameraX :%.4f", camera->GetEye().x);
+	ImGui::Text("cameraY :%.4f", camera->GetEye().y);
+	ImGui::Text("cameraZ :%.4f", camera->GetEye().z);
+	
+	//static int radio = 0;
+	//ImGui::RadioButton("Radio 1", &radio, 0);
+	//ImGui::SameLine();
+	//ImGui::RadioButton("Radio 2", &radio, 1);
+	//ImGui::SameLine();
+	//ImGui::RadioButton("Radio 3", &radio, 2);
+	//static int nSlider = 0;
+	//ImGui::SliderInt("Int Slider", &nSlider, 0, 100);
+	//static float fSlider = 0.0f;
+	//ImGui::SliderFloat("float Slider", &fSlider, 0.0f, 100.0f);
 	imguiManager::PosDraw();
 }

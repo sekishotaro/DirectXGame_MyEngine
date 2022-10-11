@@ -8,10 +8,10 @@
 #include "Collision.h"
 #include "JsonLoader.h"
 
-
 using namespace DirectX;
 
 XMFLOAT3 Player::pos = { 0,0,0 };
+XMFLOAT3 Player::moveV = { 0,0,0 };
 
 Player* Player::Create(Model* model)
 {
@@ -46,9 +46,9 @@ bool Player::Initialize()
 		return false;
 	}
 
-	position.x = 22.0f;
-	position.y = 10.0f;
-	position.z = -28.0f;
+	position.x = 0.0f;
+	position.y = 5.0f;
+	position.z = -10.0f;
 
 	//コライダーの追加
 	float radius = 0.6f;
@@ -133,6 +133,9 @@ void Player::Update()
 	RaycastHit raycastHit;
 
 	pos = position;
+	moveV.x = move.m128_f32[0];
+	moveV.y = move.m128_f32[1];
+	moveV.z = move.m128_f32[2];
 
 	//行列の更新など
 	Object3d::Update();
@@ -244,12 +247,6 @@ void Player::Update()
 			}
 		}
 	}
-	DebugText::GetInstance()->Print(50, 30 * 9, 2, "normal_X:%f", normal.m128_f32[0]);
-	DebugText::GetInstance()->Print(50, 30 * 10, 2, "normal_Y:%f", normal.m128_f32[1]);
-	DebugText::GetInstance()->Print(50, 30 * 11, 2, "normal_Z:%f", normal.m128_f32[2]);
-	DebugText::GetInstance()->Print(50, 30 * 12, 2, "move_X:%f", move.m128_f32[0]);
-	DebugText::GetInstance()->Print(50, 30 * 13, 2, "move_Y:%f", move.m128_f32[1]);
-	DebugText::GetInstance()->Print(50, 30 * 14, 2, "move_Z:%f", move.m128_f32[2]);
 }
 
 void Player::OnCollision(const CollisionInfo& info)
