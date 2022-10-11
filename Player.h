@@ -56,8 +56,8 @@ public:
 	static XMFLOAT3 GetMove() { return moveV; };
 
 	static int GetNowMove() {
-		if (onGround == true) return 1;
-		if (onGround == false) return 0;
+		if (nowMove == true) return 1;
+		if (nowMove == false) return 0;
 	}
 
 private:

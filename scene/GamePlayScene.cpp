@@ -73,8 +73,12 @@ void GamePlayScene::Initialize()
 
 	//colliderObject->SetCenter({ 0, 2.5f, 0 });
 	//colliderObject->SetScale(Player::GetSize());
+	
 	//json
-	JsonLoader::LoadFile("Scene8_31");
+	JsonLoader::LoadFile("Scene8_31"); //オブジェクトの当たり判定
+
+	//JsonLoader::LoadFile("Scene9_27"); //メッシュコライダー
+	
 	JsonLoader::SetObject();
 
 	//Enemy::Initialize();
@@ -110,21 +114,28 @@ void GamePlayScene::Update()
 	Input *input = Input::GetInstance();
 	Input::MousePos mpos = input->MousePosLoad();
 
+
+	XMFLOAT3 cameraPos = objFighter->GetPosition();
+	static XMFLOAT3 pos = {0, 5.0f, -10.0f};
+
+	cameraPos.x += pos.x;
+	cameraPos.y += pos.y;
+	cameraPos.z += pos.z;
+
+	camera->SetEye(cameraPos);
 	//カメラの移動
 	if (input->PushKey(DIK_UP) || input->PushKey(DIK_DOWN) || input->PushKey(DIK_RIGHT) || input->PushKey(DIK_LEFT) || input->PushKey(DIK_E) || input->PushKey(DIK_Z))
 	{
 		// 現在の座標を取得
-		XMFLOAT3 position = camera->GetEye();
+		//XMFLOAT3 position = camera->GetEye();
 
 		// 移動後の座標を計算
-		if (input->PushKey(DIK_UP)) { position.y += 1.0f; }
-		else if (input->PushKey(DIK_DOWN)) { position.y -= 1.0f; }
-		if (input->PushKey(DIK_RIGHT)) { position.x += 1.0f; }
-		else if (input->PushKey(DIK_LEFT)) { position.x -= 1.0f; }
-		if (input->PushKey(DIK_E)) { position.z += 1.0f; }
-		else if (input->PushKey(DIK_Z)) { position.z -= 1.0f; }
-		// 座標の変更を反映
-		camera->SetEye(position);
+		if (input->PushKey(DIK_UP)) { pos.y += 1.0f; }
+		else if (input->PushKey(DIK_DOWN)) { pos.y -= 1.0f; }
+		if (input->PushKey(DIK_RIGHT)) { pos.x += 1.0f; }
+		else if (input->PushKey(DIK_LEFT)) { pos.x -= 1.0f; }
+		if (input->PushKey(DIK_E)) { pos.z += 1.0f; }
+		else if (input->PushKey(DIK_Z)) { pos.z -= 1.0f; }
 	}
 
 	//プレイヤーの移動
@@ -328,7 +339,6 @@ void GamePlayScene::Draw()
 	ImGui::Text("cameraX :%.4f", camera->GetEye().x);
 	ImGui::Text("cameraY :%.4f", camera->GetEye().y);
 	ImGui::Text("cameraZ :%.4f", camera->GetEye().z);
-	ImGui::Text("nowMove : %d", objFighter->GetNowMove());
 	//static int radio = 0;
 	//ImGui::RadioButton("Radio 1", &radio, 0);
 	//ImGui::SameLine();
