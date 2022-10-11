@@ -12,6 +12,8 @@ using namespace DirectX;
 
 XMFLOAT3 Player::pos = { 0,0,0 };
 XMFLOAT3 Player::moveV = { 0,0,0 };
+bool Player::nowMove = false;
+bool Player::onGround = false;
 
 Player* Player::Create(Model* model)
 {
@@ -101,6 +103,12 @@ void Player::Update()
 		nowMove = false;
 	}
 
+	if (onObject)
+	{
+		onGround = true;
+	}
+	
+
 	//落下処理
 	if (!onGround)
 	{
@@ -118,9 +126,11 @@ void Player::Update()
 	else if (Input::GetInstance()->TriggerKey(DIK_SPACE))//ジャンプ
 	{
 		onGround = false;
-		const float jumpVYFist = 0.35f; //ジャンプ時上向き初速
+		nowMove = true;
+		const float jumpVYFist = 0.5f; //ジャンプ時上向き初速
 		 fallV = { 0, jumpVYFist, 0,0 };
 	}
+
 	//球コライダーを取得
 	SphereCollider* sphereCollider = dynamic_cast<SphereCollider*>(collider);
 	assert(sphereCollider);
@@ -137,11 +147,12 @@ void Player::Update()
 	moveV.y = move.m128_f32[1];
 	moveV.z = move.m128_f32[2];
 
+
 	//行列の更新など
 	Object3d::Update();
 
 	//地面接地状態
-	if (onGround)
+	if (onGround && onObject == false)
 	{
 		//スムーズに坂を下る為の吸着距離
 		const float adsDistance = 0.2f;
@@ -163,6 +174,7 @@ void Player::Update()
 	}
 	else if (fallV.m128_f32[1] <= 0.0f)//落下状態
 	{
+		nowMove = true;
 		if (CollisionManager::GetInstance()->Raycast(ray, COLLISION_ATTR_LANDSHAPE,
 			&raycastHit, sphereCollider->GetRadius() * 2.0f) == true)
 		{
@@ -177,7 +189,7 @@ void Player::Update()
 	//自機の一定の距離内の障害物を抽出し、その障害物とだけ当たり判定を取る。
 	Box playerBox;
 	playerBox.centerPos = position;
-	playerBox.size = { 1.0f, 1.0f, 1.0f };
+	playerBox.size = { 0.5f, 0.5f, 0.5f };
 	playerBox.LeastPos = XMFLOAT3(playerBox.centerPos.x - playerBox.size.x, playerBox.centerPos.y - playerBox.size.y, playerBox.centerPos.z - playerBox.size.z);
 	playerBox.MaxPos = XMFLOAT3(playerBox.centerPos.x + playerBox.size.x, playerBox.centerPos.y + playerBox.size.y, playerBox.centerPos.z + playerBox.size.z);
 
@@ -187,6 +199,7 @@ void Player::Update()
 	ray.start.m128_f32[1];
 	ray.start.m128_f32[2];
 	ray.dir = { move.m128_f32[0], move.m128_f32[1], move.m128_f32[2] };
+	ray.dir.m128_f32[1] += fallV.m128_f32[1];
 
 	XMFLOAT3 distance = { 0, 0, 0 };
 
@@ -196,9 +209,8 @@ void Player::Update()
 
 	std::vector<Box> boxs;
 	Box box;
-
 	XMVECTOR normal = { 0,0,0,0 };
-
+	onObject = false;
 
 	//自機からXZ軸で一定の距離の中に障害物オブジェクトの中心座標があるものだけ当たり判定用のコンテナに格納する
 	for (int i = 0; i < JsonLoader::colliderObjects.size(); i++)
@@ -251,7 +263,7 @@ void Player::Update()
 
 void Player::OnCollision(const CollisionInfo& info)
 {
-	DebugText::GetInstance()->Print(50, 30 * 8, 2, "Hit");
+	//DebugText::GetInstance()->Print(50, 30 * 8, 2, "Hit");
 }
 
 void Player::PushBack(const DirectX::XMVECTOR& normal, const XMFLOAT3& distance)
@@ -262,7 +274,9 @@ void Player::PushBack(const DirectX::XMVECTOR& normal, const XMFLOAT3& distance)
 	}
 	else if (normal.m128_f32[1] != 0)
 	{
-		position.y += distance.y;
+		//着地
+		onObject = true;
+		position.y += distance.y - 0.5f;
 	}
 	else if (normal.m128_f32[2] != 0)
 	{

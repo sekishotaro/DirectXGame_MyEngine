@@ -48,7 +48,7 @@ void GamePlayScene::Initialize()
 	// 背景スプライト生成
 	spriteBG = Sprite::Create(1, { 0.0f,0.0f });
 
-	modelFighter = Model::LoadFromOBJ("chr_sword");
+	modelFighter = Model::LoadFromOBJ("modelObj");
 
 	//モデル名を指定してファイル読み込み
 	//fbxModel1 = FbxLoader::GetInstance()->LoadModelFromFile("model");
@@ -74,7 +74,7 @@ void GamePlayScene::Initialize()
 	//colliderObject->SetCenter({ 0, 2.5f, 0 });
 	//colliderObject->SetScale(Player::GetSize());
 	//json
-	JsonLoader::LoadFile("Scene10_11");
+	JsonLoader::LoadFile("Scene8_31");
 	JsonLoader::SetObject();
 
 	//Enemy::Initialize();
@@ -319,8 +319,6 @@ void GamePlayScene::Draw()
 	ImGui::Begin("config1");//ウィンドウの名前
 	ImGui::SetWindowSize(ImVec2(400, 500), ImGuiCond_::ImGuiCond_FirstUseEver);
 	
-	static bool blnChk = false;
-	//ImGui::Checkbox("CheckboxTest", &blnChk);
 	ImGui::Text("PosX    :%.4f", objFighter->GetPosition().x);
 	ImGui::Text("PosY    :%.4f", objFighter->GetPosition().y);
 	ImGui::Text("PosZ    :%.4f", objFighter->GetPosition().z);
@@ -330,7 +328,7 @@ void GamePlayScene::Draw()
 	ImGui::Text("cameraX :%.4f", camera->GetEye().x);
 	ImGui::Text("cameraY :%.4f", camera->GetEye().y);
 	ImGui::Text("cameraZ :%.4f", camera->GetEye().z);
-	
+	ImGui::Text("nowMove : %d", objFighter->GetNowMove());
 	//static int radio = 0;
 	//ImGui::RadioButton("Radio 1", &radio, 0);
 	//ImGui::SameLine();

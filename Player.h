@@ -55,15 +55,20 @@ public:
 
 	static XMFLOAT3 GetMove() { return moveV; };
 
-
+	static int GetNowMove() {
+		if (onGround == true) return 1;
+		if (onGround == false) return 0;
+	}
 
 private:
 	//接地フラグ
-	bool onGround = false;
+	static bool onGround;
 	//障害物接着フラグ
 	bool adhesion = false;
+	//オブジェク接地フラグ
+	bool onObject = false;
 	//移動中確認フラグ
-	bool nowMove = false;
+	static bool nowMove;
 	//落下ベクトル
 	DirectX::XMVECTOR fallV;
 	//プレイヤーの位置
