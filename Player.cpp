@@ -82,20 +82,25 @@ void Player::Update()
 	XMVECTOR move = { 0,0,0.1f,0 };
 	XMMATRIX matRot = XMMatrixRotationY(XMConvertToRadians(rotation.y));
 	move = XMVector3TransformNormal(move, matRot);
-
+	float power = 1.0f;
 	//向いている方向に移動
+	if (input->PushKey(DIK_V))
+	{
+		power = 10.0f;
+	}
+
 	if (input->PushKey(DIK_S))
 	{
-		position.x -= move.m128_f32[0];
-		position.y -= move.m128_f32[1];
-		position.z -= move.m128_f32[2];
+		position.x -= move.m128_f32[0] * power;
+		position.y -= move.m128_f32[1] * power;
+		position.z -= move.m128_f32[2] * power;
 		nowMove = true;
 	}
 	else if (input->PushKey(DIK_W))
 	{
-		position.x += move.m128_f32[0];
-		position.y += move.m128_f32[1];
-		position.z += move.m128_f32[2];
+		position.x += move.m128_f32[0] * power;
+		position.y += move.m128_f32[1] * power;
+		position.z += move.m128_f32[2] * power;
 		nowMove = true;
 	}
 	else
@@ -152,6 +157,8 @@ void Player::Update()
 	Object3d::Update();
 
 	//地面接地状態
+	//メッシュコライダー
+	//Y軸
 	if (onGround && onObject == false)
 	{
 		//スムーズに坂を下る為の吸着距離
@@ -185,6 +192,46 @@ void Player::Update()
 			Object3d::Update();
 		}
 	}
+
+	////XZ軸
+	//ray.start = sphereCollider->center;
+	//ray.start.m128_f32[1] += sphereCollider->GetRadius();
+	//ray.dir = { move.m128_f32[0], move.m128_f32[1], 0, 0};
+
+	//if (adhesionMesh)
+	//{
+	//	//スムーズに坂を下る為の吸着距離
+	//	const float adsDistance = 0.2f;
+
+	//	//接地を維持
+	//	if (CollisionManager::GetInstance()->Raycast(ray, COLLISION_ATTR_LANDSHAPE,
+	//		&raycastHit, sphereCollider->GetRadius() * 2.0f + adsDistance) == true)
+	//	{
+	//		adhesionMesh = true;
+	//		float xDistance = ray.start.m128_f32[0] - raycastHit.inter.m128_f32[0];
+	//		float zDistance = ray.start.m128_f32[2] - raycastHit.inter.m128_f32[2];
+
+
+	//		position.x -= (xDistance - sphereCollider->GetRadius() * 2.0f);
+	//		position.z -= (zDistance - sphereCollider->GetRadius() * 2.0f);
+	//		
+	//		//行列の更新など
+	//		Object3d::Update();
+	//	}
+	//	else
+	//	{
+	//		adhesionMesh = false;
+	//		fallV = {};
+	//	}
+	//}
+	//else
+	//{
+
+	//}
+
+
+
+
 
 	//自機の一定の距離内の障害物を抽出し、その障害物とだけ当たり判定を取る。
 	Box playerBox;

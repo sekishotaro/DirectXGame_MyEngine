@@ -63,6 +63,9 @@ public:
 private:
 	//接地フラグ
 	static bool onGround;
+	//接着フラグ
+	bool adhesionMesh = false;
+
 	//障害物接着フラグ
 	bool adhesion = false;
 	//オブジェク接地フラグ
