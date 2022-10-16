@@ -198,6 +198,8 @@ public: // メンバ関数
 
 	inline Model* GetModel() { return model; }
 
+	void UpdateWorldMatrix();
+
 protected: // メンバ変数
 	ComPtr<ID3D12Resource> constBuffB0; // 定数バッファ
 	// 色

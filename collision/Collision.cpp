@@ -34,7 +34,7 @@ bool Collision::CheckSphereSphere(const SphereF& sphere1, const SphereF& sphere2
 	return false;
 }
 
-bool Collision::CheckSphere2Sphere(const Sphere& sphere1, const Sphere& sphere2, DirectX::XMVECTOR* inter)
+bool Collision::CheckSphere2Sphere(const Sphere& sphere1, const Sphere& sphere2, DirectX::XMVECTOR* inter, DirectX::XMVECTOR* reject)
 {
 	// 中心点の距離の２乗 <= 半径の和の２乗　なら交差
 	float dist = XMVector3LengthSq(sphere1.center - sphere2.center).m128_f32[0];
@@ -47,6 +47,12 @@ bool Collision::CheckSphere2Sphere(const Sphere& sphere1, const Sphere& sphere2,
 			// Aの半径が0の時座標はBの中心　Bの半径が0の時座標はAの中心　となるよう補完
 			float t = sphere2.radius / (sphere1.radius + sphere2.radius);
 			*inter = XMVectorLerp(sphere1.center, sphere2.center, t);
+		}
+		if (reject)
+		{
+			float rejectLen = sphere1.radius + sphere2.radius - sqrtf(dist);
+			*reject = XMVector3Normalize(sphere1.center - sphere2.center);
+			*reject *= rejectLen;
 		}
 		return true;
 	}
@@ -128,7 +134,7 @@ void Collision::ClosestPtPoint2Triangle(const DirectX::XMVECTOR &point, const Tr
 	*closest = triangle.p0 + p0_p1 * v + p0_p2 * w;
 }
 
-bool Collision::CheckSphere2Triangle(const Sphere &sphere, const Triangle &triangle, DirectX::XMVECTOR *inter)
+bool Collision::CheckSphere2Triangle(const Sphere& sphere, const Triangle& triangle, DirectX::XMVECTOR* inter, DirectX::XMVECTOR* reject)
 {
 	XMVECTOR p;
 	//球の中心に対する最近接点である三角形上にある点pを見るける
@@ -145,6 +151,14 @@ bool Collision::CheckSphere2Triangle(const Sphere &sphere, const Triangle &trian
 	{
 		//三角形上の最近接点pを疑似交点とする
 		*inter = p;
+	}
+	//押し出すベクトルを計算
+	if (reject)
+	{
+		float ds = XMVector3Dot(sphere.center, triangle.normal).m128_f32[0];
+		float dt = XMVector3Dot(triangle.p0, triangle.normal).m128_f32[0];
+		float rejectLen = dt - ds + sphere.radius;
+		*reject = triangle.normal * rejectLen;
 	}
 	return true;
 }
@@ -300,11 +314,11 @@ bool Collision::CheckRayBox(const Ray& ray, const Box& box)
 
 		if (i == 0)
 		{
-			sign = MyMath::Sign(dd);
+			sign = (int)MyMath::Sign(dd);
 		}
 		else
 		{
-			if (sign != MyMath::Sign(dd))
+			if (sign != (int)MyMath::Sign(dd))
 			{
 				return true;
 			}
@@ -641,7 +655,7 @@ bool Collision::CheckCircleDot(const Circle& circle, const XMFLOAT2& dot)
 {
 	float a = dot.x - circle.center.x;
 	float b = dot.y - circle.center.y;
-	float c = sqrt(a * a + b * b);
+	float c = (float)sqrt(a * a + b * b);
 
 	if (c <= circle.radius)
 	{
@@ -703,7 +717,7 @@ bool Collision::CheckSphereDot(const SphereF& sphere, XMFLOAT3& dot)
 	float a = dot.x - sphere.center.x;
 	float b = dot.y - sphere.center.y;
 	float c = dot.z - sphere.center.z;
-	float d = sqrt(a * a + b * b + c * c);
+	float d = (float)sqrt(a * a + b * b + c * c);
 
 	if (d <= sphere.radius)
 	{

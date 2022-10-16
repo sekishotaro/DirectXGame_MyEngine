@@ -339,6 +339,7 @@ void GamePlayScene::Draw()
 	ImGui::Text("cameraX :%.4f", camera->GetEye().x);
 	ImGui::Text("cameraY :%.4f", camera->GetEye().y);
 	ImGui::Text("cameraZ :%.4f", camera->GetEye().z);
+	ImGui::Text("adhitMesh :%d", objFighter->GetadhesionMesh());
 	//static int radio = 0;
 	//ImGui::RadioButton("Radio 1", &radio, 0);
 	//ImGui::SameLine();

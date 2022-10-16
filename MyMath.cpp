@@ -71,7 +71,7 @@ void MyMath::Gravity(XMFLOAT3& pos, bool& graflag)
 	}
 
 	pos.y -= gravity * graValue / graAdjustConstant;
-	graValue += 0.1;
+	graValue += 0.1f;
 }
 
 void MyMath::GravityCheckMove(XMFLOAT3& move, bool& graFlag)

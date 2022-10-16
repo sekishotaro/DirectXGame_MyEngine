@@ -323,6 +323,7 @@
     <ClCompile Include="3d\Object3d.cpp" />
     <ClCompile Include="2d\PostEffect.cpp" />
     <ClCompile Include="Player.cpp" />
+    <ClCompile Include="QueryCallback.cpp" />
     <ClCompile Include="scene\GamePlayScene.cpp" />
     <ClCompile Include="scene\SceneFactory.cpp" />
     <ClCompile Include="scene\SceneManager.cpp" />
@@ -366,6 +367,7 @@
     <ClInclude Include="3d\Material.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="MyMath.h" />
+    <ClInclude Include="QueryCallback.h" />
     <ClInclude Include="scene\AbstractSceneFactory.h" />
     <ClInclude Include="Audio\Audio.h" />
     <ClInclude Include="scene\BaseScene.h" />

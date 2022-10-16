@@ -59,12 +59,18 @@ public:
 		if (nowMove == true) return 1;
 		if (nowMove == false) return 0;
 	}
+	
+	static int GetadhesionMesh() {
+		if (adhesionMesh == true) return 1;
+		if (adhesionMesh == false) return 0;
+	}
+
 
 private:
 	//接地フラグ
 	static bool onGround;
 	//接着フラグ
-	bool adhesionMesh = false;
+	static bool adhesionMesh;
 
 	//障害物接着フラグ
 	bool adhesion = false;
