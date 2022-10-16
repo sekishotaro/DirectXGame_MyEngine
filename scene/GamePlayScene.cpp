@@ -75,7 +75,7 @@ void GamePlayScene::Initialize()
 	//colliderObject->SetScale(Player::GetSize());
 	
 	//json
-	JsonLoader::LoadFile("Scene10_12"); //オブジェクトの当たり判定
+	JsonLoader::LoadFile("Scene10_16"); //オブジェクトの当たり判定
 
 	//JsonLoader::LoadFile("Scene9_27"); //メッシュコライダー
 	
@@ -340,6 +340,7 @@ void GamePlayScene::Draw()
 	ImGui::Text("cameraY :%.4f", camera->GetEye().y);
 	ImGui::Text("cameraZ :%.4f", camera->GetEye().z);
 	ImGui::Text("adhitMesh :%d", objFighter->GetadhesionMesh());
+	ImGui::Text("crystal :%d", objFighter->GetCrystal());
 	//static int radio = 0;
 	//ImGui::RadioButton("Radio 1", &radio, 0);
 	//ImGui::SameLine();

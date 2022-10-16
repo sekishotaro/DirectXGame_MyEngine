@@ -15,6 +15,7 @@ XMFLOAT3 Player::moveV = { 0,0,0 };
 bool Player::nowMove = false;
 bool Player::onGround = false;
 bool Player::adhesionMesh = false;
+int Player::crystalNum = 0;
 
 Player* Player::Create(Model* model)
 {
@@ -61,6 +62,8 @@ bool Player::Initialize()
 	collider->SetAttribute(COLLISION_ATTR_ALLIES);
 
 	pos = position;
+
+	crystalNum = (int)JsonLoader::crystalObjects.size();
 
 	return true;
 }
@@ -321,6 +324,28 @@ void Player::Update()
 	}
 
 	Object3d::Update();
+
+	//クリスタルとの接触
+	std::vector<Box> crystal;
+	onObject = false;
+
+	//自機からXZ軸で一定の距離の中に障害物オブジェクトの中心座標があるものだけ当たり判定用のコンテナに格納する
+	for (int i = 0; i < JsonLoader::crystalColliderObjects.size(); i++)
+	{
+		box.centerPos = JsonLoader::crystalColliderObjects[i].get()->GetPosition();
+		box.size = JsonLoader::crystalColliderObjects[i].get()->GetScale();
+		box.LeastPos = XMFLOAT3(box.centerPos.x - (box.size.x / 2), box.centerPos.y - (box.size.y / 2), box.centerPos.z - (box.size.z / 2));
+		box.MaxPos = XMFLOAT3(box.centerPos.x + (box.size.x / 2), box.centerPos.y + (box.size.y / 2), box.centerPos.z + (box.size.z / 2));
+		crystal.push_back(box);
+
+		if (Collision::Check2Box(playerBox, crystal[i], distance) == true)
+		{
+			JsonLoader::crystalColliderObjects.erase(JsonLoader::crystalColliderObjects.begin() + i);
+			JsonLoader::crystalObjects.erase(JsonLoader::crystalObjects.begin() + i);
+
+			crystalNum--;
+		}
+	}
 }
 
 void Player::OnCollision(const CollisionInfo& info)

@@ -158,7 +158,6 @@ void Model::LoadFormOBJInternal(const std::string &modelname)
 			//X,Y,Z座標読み込み
 			XMFLOAT3 position{};
 			line_stream >> position.x;
-			position.x = position.x;
 			line_stream >> position.y;
 			line_stream >> position.z;
 			//座標データに追加

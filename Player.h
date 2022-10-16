@@ -65,6 +65,7 @@ public:
 		if (adhesionMesh == false) return 0;
 	}
 
+	static int GetCrystal() { return crystalNum; }
 
 private:
 	//接地フラグ
@@ -84,5 +85,8 @@ private:
 
 	static XMFLOAT3 pos;
 	static XMFLOAT3 moveV;
+
+	//クリスタルの数
+	static int crystalNum;
 };
 
