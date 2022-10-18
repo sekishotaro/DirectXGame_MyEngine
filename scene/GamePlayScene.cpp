@@ -48,7 +48,7 @@ void GamePlayScene::Initialize()
 	// 背景スプライト生成
 	spriteBG = Sprite::Create(1, { 0.0f,0.0f });
 
-	modelFighter = Model::LoadFromOBJ("modelObj");
+	modelFighter = Model::LoadFromOBJ("modelOb1");
 
 	//モデル名を指定してファイル読み込み
 	//fbxModel1 = FbxLoader::GetInstance()->LoadModelFromFile("model");
@@ -75,7 +75,7 @@ void GamePlayScene::Initialize()
 	//colliderObject->SetScale(Player::GetSize());
 	
 	//json
-	JsonLoader::LoadFile("Scene10_16"); //オブジェクトの当たり判定
+	JsonLoader::LoadFile("Scene10_18"); //オブジェクトの当たり判定
 
 	//JsonLoader::LoadFile("Scene9_27"); //メッシュコライダー
 	
@@ -249,6 +249,14 @@ void GamePlayScene::Update()
 	//fbxObject1->AnimationFlag = false;
 	//fbxObject2->AnimationFlag = false;
 	//fbxObject1->AnimationNum = 1;
+
+	//ゲーム終了処理
+	if (objFighter->GetCrystal() == 0 && objFighter->GetGoalFlag() == true)
+	{
+		SceneManager::GetInstance()->ChangeScene("TITLE");
+	}
+
+
 	
 	
 	//アップデート
@@ -339,8 +347,8 @@ void GamePlayScene::Draw()
 	ImGui::Text("cameraX :%.4f", camera->GetEye().x);
 	ImGui::Text("cameraY :%.4f", camera->GetEye().y);
 	ImGui::Text("cameraZ :%.4f", camera->GetEye().z);
-	ImGui::Text("adhitMesh :%d", objFighter->GetadhesionMesh());
 	ImGui::Text("crystal :%d", objFighter->GetCrystal());
+	ImGui::Checkbox("GoalFlag", &objFighter->GetGoalFlag());
 	//static int radio = 0;
 	//ImGui::RadioButton("Radio 1", &radio, 0);
 	//ImGui::SameLine();

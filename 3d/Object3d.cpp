@@ -25,6 +25,9 @@ ComPtr<ID3D12RootSignature> Object3d::rootsignature;
 ComPtr<ID3D12PipelineState> Object3d::pipelinestate;
 Camera *Object3d::camera = nullptr;
 
+std::wstring Object3d::PSshaderName = L"Resources/shaders/OBJPixelShader.hlsl";
+std::wstring Object3d::VSshaderName = L"Resources/shaders/OBJVertexShader.hlsl";
+
 Object3d::~Object3d()
 {
 	if (collider){
@@ -103,7 +106,7 @@ bool Object3d::InitializeGraphicsPipeline()
 
 	// 頂点シェーダの読み込みとコンパイル
 	result = D3DCompileFromFile(
-		L"Resources/shaders/OBJVertexShader.hlsl",	// シェーダファイル名
+		VSshaderName.c_str(),	// シェーダファイル名
 		nullptr,
 		D3D_COMPILE_STANDARD_FILE_INCLUDE, // インクルード可能にする
 		"main", "vs_5_0",	// エントリーポイント名、シェーダーモデル指定
@@ -127,7 +130,7 @@ bool Object3d::InitializeGraphicsPipeline()
 
 	// ピクセルシェーダの読み込みとコンパイル
 	result = D3DCompileFromFile(
-		L"Resources/shaders/OBJPixelShader.hlsl",	// シェーダファイル名
+		PSshaderName.c_str(),	// シェーダファイル名
 		nullptr,
 		D3D_COMPILE_STANDARD_FILE_INCLUDE, // インクルード可能にする
 		"main", "ps_5_0",	// エントリーポイント名、シェーダーモデル指定

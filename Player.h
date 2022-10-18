@@ -55,17 +55,13 @@ public:
 
 	static XMFLOAT3 GetMove() { return moveV; };
 
-	static int GetNowMove() {
-		if (nowMove == true) return 1;
-		if (nowMove == false) return 0;
-	}
+	static bool &GetNowMove() { return nowMove;}
 	
-	static int GetadhesionMesh() {
-		if (adhesionMesh == true) return 1;
-		if (adhesionMesh == false) return 0;
-	}
+	static bool &GetadhesionMesh() { return adhesionMesh;}
 
 	static int GetCrystal() { return crystalNum; }
+
+	static bool &GetGoalFlag() { return goalFlag; }
 
 private:
 	//接地フラグ
@@ -79,6 +75,10 @@ private:
 	bool onObject = false;
 	//移動中確認フラグ
 	static bool nowMove;
+
+	//自機とゴールの当たり判定
+	static bool goalFlag;
+
 	//落下ベクトル
 	DirectX::XMVECTOR fallV;
 	//プレイヤーの位置

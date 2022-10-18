@@ -27,6 +27,11 @@ std::map< std::string, ColliderModel> JsonLoader::enemyColliderModels;
 std::vector<std::unique_ptr<ColliderObject>> JsonLoader::enemyNaviareaObjects;
 std::map< std::string, ColliderModel> JsonLoader::enemyNaviareaModels;
 
+std::vector<std::unique_ptr<Object3d>> JsonLoader::climbWallObjects;
+std::map<std::string, Model> JsonLoader::climbWallModels;
+std::vector<std::unique_ptr<Object3d>> JsonLoader::goalObjects;
+std::map<std::string, Model> JsonLoader::goalModels;
+
 LevelData* JsonLoader::levelData;
 
 const std::string JsonLoader::DefaultDirectory = "Resources/levels/";
@@ -206,6 +211,14 @@ void JsonLoader::SetObject()
 		{
 			TypeSetEnemyModel(objectData);
 		}
+		else if (objectData.typeName == "climbWall")
+		{
+			TypeclimbWallModel(objectData);
+		}
+		else if (objectData.typeName == "goal")
+		{
+			TypeGoalModel(objectData);
+		}
 	}
 
 	//レベルデータからコライダーオブジェクトを生成,配置
@@ -315,6 +328,16 @@ void JsonLoader::Update()
 		enemyNaviareaObjects[i]->Update();
 	}
 
+	for (int i = 0; i < climbWallObjects.size(); i++)
+	{
+		climbWallObjects[i]->Update();
+	}
+
+	for (int i = 0; i < goalObjects.size(); i++)
+	{
+		goalObjects[i]->Update();
+	}
+
 }
 
 void JsonLoader::Draw()
@@ -356,6 +379,16 @@ void JsonLoader::Draw()
 	for (int i = 0; i < enemyNaviareaObjects.size(); i++)
 	{
 		//enemyNaviareaObjects[i]->Draw();
+	}
+
+	for (int i = 0; i < climbWallObjects.size(); i++)
+	{
+		climbWallObjects[i]->Draw();
+	}
+
+	for (int i = 0; i < goalObjects.size(); i++)
+	{
+		goalObjects[i]->Draw();
 	}
 }
 
@@ -699,5 +732,69 @@ void JsonLoader::TypeSetNaviareaEnemyModel(LevelData::ObjectData& colliderObject
 
 	//配列の最後に登録
 	enemyNaviareaObjects.push_back(std::move(newColliderObject));
+}
+
+void JsonLoader::TypeclimbWallModel(LevelData::ObjectData& objectData)
+{
+	//ファイル名から登録済みモデルを検索
+	Model* model = nullptr;
+	model = Model::LoadFromOBJ(objectData.fileName);
+	climbWallModels[objectData.fileName] = *model;
+
+	//モデルを指定して3Dオブジェクトを生成
+	std::unique_ptr<Object3d> newObject;
+	newObject = Object3d::Create();
+	newObject->SetModel(model);
+
+	//座標
+	XMFLOAT3 pos;
+	DirectX::XMStoreFloat3(&pos, objectData.translation);
+	newObject->SetPosition(pos);
+
+	//回転角
+	XMFLOAT3 rot;
+	DirectX::XMStoreFloat3(&rot, objectData.rotation);
+	rot.y -= 90.0f;
+	newObject->SetRotation(rot);
+
+	//スケール
+	XMFLOAT3 scale;
+	DirectX::XMStoreFloat3(&scale, objectData.scaling);
+	newObject->SetScale(scale);
+
+	//配列の最後に登録
+	climbWallObjects.push_back(std::move(newObject));
+}
+
+void JsonLoader::TypeGoalModel(LevelData::ObjectData& objectData)
+{
+	//ファイル名から登録済みモデルを検索
+	Model* model = nullptr;
+	model = Model::LoadFromOBJ(objectData.fileName);
+	goalModels[objectData.fileName] = *model;
+
+	//モデルを指定して3Dオブジェクトを生成
+	std::unique_ptr<Object3d> newObject;
+	newObject = Object3d::Create();
+	newObject->SetModel(model);
+
+	//座標
+	XMFLOAT3 pos;
+	DirectX::XMStoreFloat3(&pos, objectData.translation);
+	newObject->SetPosition(pos);
+
+	//回転角
+	XMFLOAT3 rot;
+	DirectX::XMStoreFloat3(&rot, objectData.rotation);
+	rot.y -= 90.0f;
+	newObject->SetRotation(rot);
+
+	//スケール
+	XMFLOAT3 scale;
+	DirectX::XMStoreFloat3(&scale, objectData.scaling);
+	newObject->SetScale(scale);
+
+	//配列の最後に登録
+	goalObjects.push_back(std::move(newObject));
 }
 

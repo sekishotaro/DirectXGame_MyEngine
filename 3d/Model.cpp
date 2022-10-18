@@ -158,6 +158,7 @@ void Model::LoadFormOBJInternal(const std::string &modelname)
 			//X,Y,Z座標読み込み
 			XMFLOAT3 position{};
 			line_stream >> position.x;
+			position.x = position.x * -1;
 			line_stream >> position.y;
 			line_stream >> position.z;
 			//座標データに追加
@@ -233,11 +234,6 @@ void Model::LoadFormOBJInternal(const std::string &modelname)
 					vertex.normal = normals[indexNormal - 1];
 					vertex.uv = texcoords[indexTexcoord - 1];
 					mesh->AddVertex(vertex);
-					// エッジ平滑化用のデータを追加
-					//if (smoothing)
-					//{
-					//	mesh->AddSmoothData(indexPosition, (unsigned short)mesh->GetVertexCount() - 1);
-					//}
 				}
 				else
 				{
@@ -265,11 +261,6 @@ void Model::LoadFormOBJInternal(const std::string &modelname)
 						vertex.normal = normals[indexNormal - 1];
 						vertex.uv = { 0, 0 };
 						mesh->AddVertex(vertex);
-						// エッジ平滑化用のデータを追加
-						//if (smoothing)
-						//{
-						//	mesh->AddSmoothData(indexPosition, (unsigned short)mesh->GetVertexCount() - 1);
-						//}
 					}
 				}
 				// インデックスデータの追加
@@ -283,20 +274,13 @@ void Model::LoadFormOBJInternal(const std::string &modelname)
 				else
 				{
 					mesh->AddIndex(indexCountTex);
+					if (faceIndexCount == 2)
+					{
+						mesh->SwapIndex();
+					}
 				}
 				indexCountTex++;
 				faceIndexCount++;
-				////インデックスデータの追加
-				//indices.emplace_back((unsigned short)indices.size());
-				////右軸回りの修正
-				//if (countNum == 2)
-				//{
-				//	swap(indices[indices.size() - 1], indices[indices.size() - 2]);
-				//}
-				//else
-				//{
-				//	countNum++;
-				//}
 			}
 		}
 	}

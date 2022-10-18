@@ -16,6 +16,7 @@ bool Player::nowMove = false;
 bool Player::onGround = false;
 bool Player::adhesionMesh = false;
 int Player::crystalNum = 0;
+bool Player::goalFlag = false;
 
 Player* Player::Create(Model* model)
 {
@@ -50,9 +51,9 @@ bool Player::Initialize()
 		return false;
 	}
 
-	position.x = 0.0f;
-	position.y = 5.0f;
-	position.z = -10.0f;
+	position.x = JsonLoader::goalObjects[0].get()->GetPosition().x;
+	position.y = JsonLoader::goalObjects[0].get()->GetPosition().y +5.0f;
+	position.z = JsonLoader::goalObjects[0].get()->GetPosition().z;
 
 	//コライダーの追加
 	float radius = 0.6f;
@@ -252,7 +253,7 @@ void Player::Update()
 	//自機の一定の距離内の障害物を抽出し、その障害物とだけ当たり判定を取る。
 	Box playerBox;
 	playerBox.centerPos = position;
-	playerBox.size = { 0.5f, 0.5f, 0.5f };
+	playerBox.size = { 0.5f, 1.0f, 0.5f };
 	playerBox.LeastPos = XMFLOAT3(playerBox.centerPos.x - playerBox.size.x, playerBox.centerPos.y - playerBox.size.y, playerBox.centerPos.z - playerBox.size.z);
 	playerBox.MaxPos = XMFLOAT3(playerBox.centerPos.x + playerBox.size.x, playerBox.centerPos.y + playerBox.size.y, playerBox.centerPos.z + playerBox.size.z);
 
@@ -345,6 +346,25 @@ void Player::Update()
 
 			crystalNum--;
 		}
+	}
+
+	//ゴールとプレイヤーの当たり判定
+	Sphere goal;
+	goal.center = XMLoadFloat3(&JsonLoader::goalObjects[0].get()->GetPosition());
+	goal.radius = 2.0f;
+
+	Sphere player;
+	player.center = XMLoadFloat3(&position);
+	player.radius = 2.0f;
+
+
+	if (Collision::CheckSphere2Sphere(player, goal))
+	{
+		goalFlag = true;
+	}
+	else
+	{
+		goalFlag = false;
 	}
 }
 

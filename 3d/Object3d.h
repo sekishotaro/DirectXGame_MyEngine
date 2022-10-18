@@ -222,5 +222,9 @@ protected: // メンバ変数
 	const char* name = nullptr;
 	//コライダー
 	BaseCollider* collider = nullptr;
+
+	//シェーダー
+	static std::wstring VSshaderName;
+	static std::wstring PSshaderName;
 };
 
