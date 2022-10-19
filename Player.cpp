@@ -73,45 +73,76 @@ void Player::Update()
 {
 	Input* input = Input::GetInstance();
 
-	//A,Dで旋回
-	if (input->PushKey(DIK_A))
-	{
-		rotation.y -= 2.0f;
-	}
-	else if (input->PushKey(DIK_D))
-	{
-		rotation.y += 2.0f;
-	}
-
-	//移動ベクトルをY軸回りの角度で回転
 	XMVECTOR move = { 0,0,0.1f,0 };
-	XMMATRIX matRot = XMMatrixRotationY(XMConvertToRadians(rotation.y));
-	move = XMVector3TransformNormal(move, matRot);
-	float power = 1.0f;
-	//向いている方向に移動
-	if (input->PushKey(DIK_V))
-	{
-		power = 3.0f;
-	}
 
-	if (input->PushKey(DIK_S))
+	if (climbOperation == false)
 	{
-		position.x -= move.m128_f32[0] * power;
-		position.y -= move.m128_f32[1] * power;
-		position.z -= move.m128_f32[2] * power;
-		nowMove = true;
-	}
-	else if (input->PushKey(DIK_W))
-	{
-		position.x += move.m128_f32[0] * power;
-		position.y += move.m128_f32[1] * power;
-		position.z += move.m128_f32[2] * power;
-		nowMove = true;
+		//A,Dで旋回
+		if (input->PushKey(DIK_A))
+		{
+			rotation.y -= 2.0f;
+		}
+		else if (input->PushKey(DIK_D))
+		{
+			rotation.y += 2.0f;
+		}
+
+		//移動ベクトルをY軸回りの角度で回転
+		
+		XMMATRIX matRot = XMMatrixRotationY(XMConvertToRadians(rotation.y));
+		move = XMVector3TransformNormal(move, matRot);
+		float power = 1.0f;
+		//向いている方向に移動
+		if (input->PushKey(DIK_V))
+		{
+			power = 3.0f;
+		}
+
+		if (input->PushKey(DIK_S))
+		{
+			position.x -= move.m128_f32[0] * power;
+			position.y -= move.m128_f32[1] * power;
+			position.z -= move.m128_f32[2] * power;
+			nowMove = true;
+		}
+		else if (input->PushKey(DIK_W))
+		{
+			position.x += move.m128_f32[0] * power;
+			position.y += move.m128_f32[1] * power;
+			position.z += move.m128_f32[2] * power;
+			nowMove = true;
+		}
+		else
+		{
+			nowMove = false;
+		}
 	}
 	else
 	{
-		nowMove = false;
+		if (input->PushKey(DIK_A))
+		{
+
+		}
+		else if (input->PushKey(DIK_D))
+		{
+
+		}
+		else if (input->PushKey(DIK_S))
+		{
+			position.y -= 1.0f;
+		}
+		else if (input->PushKey(DIK_W))
+		{
+			position.y += 1.0f;
+		}
+		else if (input->PushKey(DIK_P))
+		{
+			climbOperation = false;
+			position.x += climbNormal.m128_f32[0];
+			position.z += climbNormal.m128_f32[2];
+		}
 	}
+
 
 	if (onObject)
 	{
@@ -121,7 +152,7 @@ void Player::Update()
 	UpdateWorldMatrix();
 
 	//落下処理
-	if (!onGround)
+	if (!onGround && climbOperation == false)
 	{
 		//下向き加速度
 		const float fallAcc = -0.01f;
@@ -134,7 +165,7 @@ void Player::Update()
 		position.y += fallV.m128_f32[1];
 		position.z += fallV.m128_f32[2];
 	}
-	else if (Input::GetInstance()->TriggerKey(DIK_SPACE))//ジャンプ
+	else if (Input::GetInstance()->TriggerKey(DIK_SPACE) && climbOperation == false)//ジャンプ
 	{
 		onGround = false;
 		nowMove = true;
@@ -198,6 +229,9 @@ void Player::Update()
 	UpdateWorldMatrix();
 	collider->Update();
 
+
+	//壁のぼり判定
+	ClimbWallJudge(callback.move);
 
 
 	//球の上端から球の下端までのレイキャスト用レイを準備
@@ -389,5 +423,55 @@ void Player::PushBack(const DirectX::XMVECTOR& normal, const XMFLOAT3& distance)
 	{
 		position.z += distance.z;
 	}
+}
+
+void Player::ClimbWallJudge(XMVECTOR move)
+{
+	//壁のぼり用板ポリに当たっているかの判別
+	Plate climbWall;
+	
+	climbWall.position = XMLoadFloat3(&JsonLoader::climbWallObjects[0].get()->GetPosition());
+	climbWall.size = JsonLoader::climbWallObjects[0].get()->GetScale();
+	XMFLOAT3 rota = JsonLoader::climbWallObjects[0].get()->GetRotation();
+
+	//面の法線を求める
+	XMVECTOR vertPos1 = XMLoadFloat3(&JsonLoader::climbWallObjects[0].get()->GetModel()->GetMeshes()[0]->GetVertices()[0].pos);
+	XMVECTOR vertPos2 = XMLoadFloat3(&JsonLoader::climbWallObjects[0].get()->GetModel()->GetMeshes()[0]->GetVertices()[1].pos);
+	XMVECTOR vertPos3 = XMLoadFloat3(&JsonLoader::climbWallObjects[0].get()->GetModel()->GetMeshes()[0]->GetVertices()[2].pos);
+	
+	XMVECTOR p0_p1 = vertPos2 - vertPos1;
+	XMVECTOR p0_p2 = vertPos3 - vertPos1;
+
+	//外積により、 2辺に垂直なベクトルを算出する
+	climbWall.normal = XMVector3Cross(p0_p1, p0_p2);
+	climbWall.normal = XMVector3Normalize(climbWall.normal);
+
+
+
+	Sphere player;
+	player.center = XMLoadFloat3(&position);
+	player.radius = 1.0f;
+
+	//壁にめり込んでいる
+	if (climbOperation == false)
+	{
+		if (move.m128_f32[0] != 0.0f || move.m128_f32[2] != 0.0f)
+		{
+			count++;
+		}
+		else
+		{
+			count = 0;
+		}
+	}
+
+
+	if (count == 60)
+	{
+		climbNormal = move;
+		climbOperation = true;
+		count = 0;
+	}
+
 }
 

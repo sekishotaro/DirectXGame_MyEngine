@@ -131,6 +131,8 @@ float MyMath::Sign(const float& num)
 	{
 		return -1;
 	}
+
+	return 0;
 }
 
 float MyMath::maxElement(const float* array, int size)

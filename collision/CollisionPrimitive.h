@@ -26,6 +26,9 @@ struct SphereF
 	float radius = 1.0f;
 };
 
+/// <summary>
+/// 円
+/// </summary>
 struct Circle
 {
 	//中心座標
@@ -34,6 +37,9 @@ struct Circle
 	float radius = 1.0f;
 };
 
+/// <summary>
+/// 円柱
+/// </summary>
 struct Cylinder
 {
 	//中心座標
@@ -63,11 +69,10 @@ struct Plane
 /// </summary>
 struct Plate
 {
-	//4頂点
-	DirectX::XMVECTOR vertex1 = { 0,0,0,0 };
-	DirectX::XMVECTOR vertex2 = { 0,0,0,0 };
-	DirectX::XMVECTOR vertex3 = { 0,0,0,0 };
-	DirectX::XMVECTOR vertex4 = { 0,0,0,0 };
+	//座標
+	DirectX::XMVECTOR position;
+	//サイズ
+	DirectX::XMFLOAT3 size;
 	//法線ベクトル
 	DirectX::XMVECTOR normal = { 0,1,0,0 };
 };

@@ -110,9 +110,9 @@ void JsonLoader::LoadFile(const std::string& fileName)
 			objectData.rotation.m128_f32[2] = (float)transform["rotation"][0];
 			objectData.rotation.m128_f32[3] = 0.0;
 			//スケーリング
-			objectData.scaling.m128_f32[0] = (float)transform["scaling"][1];
+			objectData.scaling.m128_f32[0] = (float)transform["scaling"][0];
 			objectData.scaling.m128_f32[1] = (float)transform["scaling"][2];
-			objectData.scaling.m128_f32[2] = (float)transform["scaling"][0];
+			objectData.scaling.m128_f32[2] = (float)transform["scaling"][1];
 			objectData.scaling.m128_f32[3] = 0.0;
 
 			// TODO: オブジェクト走査を再帰関数にまとめ、再帰呼出しで枝を走査する

@@ -191,6 +191,9 @@ public: // メンバ関数
 	/// <param name="scale">スケール</param>
 	void SetScale(const XMFLOAT3& scale) { this->scale = scale; }
 
+
+	const XMFLOAT3 &GetScale() { return scale; }
+
 	//setter
 	void SetModel(Model *model) { this->model = model; }
 
@@ -199,6 +202,11 @@ public: // メンバ関数
 	inline Model* GetModel() { return model; }
 
 	void UpdateWorldMatrix();
+
+	void SetPSShaderName(std::wstring PSShaderName) { this->PSshaderName = PSshaderName; }
+
+	void SetVSShaderName(std::wstring VSShaderName) { this->VSshaderName = VSshaderName; }
+
 
 protected: // メンバ変数
 	ComPtr<ID3D12Resource> constBuffB0; // 定数バッファ

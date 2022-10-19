@@ -50,6 +50,9 @@ public:
 
 	void PushBack(const DirectX::XMVECTOR& normal, const XMFLOAT3& distance);
 
+	void ClimbWallJudge(const DirectX::XMVECTOR move);
+
+
 	//デバック用ゲッター
 	static XMFLOAT3 GetPos() { return pos; }
 
@@ -88,5 +91,10 @@ private:
 
 	//クリスタルの数
 	static int crystalNum;
+
+	int count = 0;
+	bool climbOperation = false;
+	//壁のぼり用保存めり込み法線
+	DirectX::XMVECTOR climbNormal;
 };
 

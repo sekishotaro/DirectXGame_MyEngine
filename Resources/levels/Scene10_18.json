@@ -212,29 +212,6 @@
         },
         {
             "type": "MESH",
-            "type_name": "climbWall",
-            "name": "平面.002",
-            "transform": {
-                "translation": [
-                    -15.0,
-                    213.0,
-                    28.0
-                ],
-                "rotation": [
-                    0.0,
-                    0.0,
-                    -90.00000762939453
-                ],
-                "scaling": [
-                    10.0,
-                    7.0,
-                    28.0
-                ]
-            },
-            "file_name": "climbWall"
-        },
-        {
-            "type": "MESH",
             "type_name": "goal",
             "name": "円柱",
             "transform": {
@@ -255,6 +232,52 @@
                 ]
             },
             "file_name": "goal"
+        },
+        {
+            "type": "MESH",
+            "type_name": "climbWall",
+            "name": "平面",
+            "transform": {
+                "translation": [
+                    -11.51655387878418,
+                    213.99746704101562,
+                    24.62358283996582
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    -90.00000762939453
+                ],
+                "scaling": [
+                    1.0,
+                    10.718099594116211,
+                    24.544034957885742
+                ]
+            },
+            "file_name": "climbWall"
+        },
+        {
+            "type": "MESH",
+            "type_name": "climbWall",
+            "name": "平面.002",
+            "transform": {
+                "translation": [
+                    107.46641540527344,
+                    13.762496948242188,
+                    43.033348083496094
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    -179.99998474121094
+                ],
+                "scaling": [
+                    1.0,
+                    10.718099594116211,
+                    24.544034957885742
+                ]
+            },
+            "file_name": "climbWall"
         }
     ]
 }

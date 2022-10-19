@@ -204,6 +204,8 @@ CollisionSet::XMFLOAT3 CollisionSet::GetNearVertex(const Box& box, const XMFLOAT
 	Pos[2] = {	 box.MaxPos.x, 0, box.MaxPos.z	};		//右奥
 	Pos[3] = {	 box.MaxPos.x, 0, box.LeastPos.z };		//右前
 
+	XMFLOAT3 returnPos = {};
+
 	float dis[4];
 	for (int i = 0; i < 4; i++)
 	{
@@ -219,9 +221,14 @@ CollisionSet::XMFLOAT3 CollisionSet::GetNearVertex(const Box& box, const XMFLOAT
 	{
 		if (dis[i] == min)
 		{
-			return Pos[i];
+			returnPos = Pos[i];
+			break;
 		}
 	}
+
+	return returnPos;
+
+	assert(0);
 }
 
 CollisionSet::XMFLOAT3 CollisionSet::GetScecondNearVertex(const Box& box, const XMFLOAT3& pos)
@@ -231,6 +238,8 @@ CollisionSet::XMFLOAT3 CollisionSet::GetScecondNearVertex(const Box& box, const 
 	Pos[1] = { box.LeastPos.x, 0, box.MaxPos.z };		//左奥
 	Pos[2] = { box.MaxPos.x, 0, box.MaxPos.z };		//右奥
 	Pos[3] = { box.MaxPos.x, 0, box.LeastPos.z };		//右前
+
+	XMFLOAT3 returnPos = {};
 
 	float dis[4];
 	for (int i = 0; i < 4; i++)
@@ -264,10 +273,12 @@ CollisionSet::XMFLOAT3 CollisionSet::GetScecondNearVertex(const Box& box, const 
 	{
 		if (disA[1] == dis[i])
 		{
-			return Pos[i];
+			returnPos = Pos[i];
+			break;
 		}
 	}
 
+	return returnPos;
 }
 
 CollisionSet::XMFLOAT3 CollisionSet::GetThirdNearVertex(const Box& box, const XMFLOAT3& pos)
@@ -277,6 +288,8 @@ CollisionSet::XMFLOAT3 CollisionSet::GetThirdNearVertex(const Box& box, const XM
 	Pos[1] = { box.LeastPos.x, 0, box.MaxPos.z };		//左奥
 	Pos[2] = { box.MaxPos.x, 0, box.MaxPos.z };		//右奥
 	Pos[3] = { box.MaxPos.x, 0, box.LeastPos.z };		//右前
+
+	XMFLOAT3 returnPos = {};
 
 	float dis[4];
 	for (int i = 0; i < 4; i++)
@@ -310,9 +323,11 @@ CollisionSet::XMFLOAT3 CollisionSet::GetThirdNearVertex(const Box& box, const XM
 	{
 		if (disA[2] == dis[i])
 		{
-			return Pos[i];
+			returnPos = Pos[i];
 		}
 	}
+
+	return returnPos;
 }
 
 CollisionSet::XMFLOAT3 CollisionSet::GetFourthNearVertex(const Box& box, const XMFLOAT3& pos)
@@ -322,6 +337,8 @@ CollisionSet::XMFLOAT3 CollisionSet::GetFourthNearVertex(const Box& box, const X
 	Pos[1] = { box.LeastPos.x, 0, box.MaxPos.z };		//左奥
 	Pos[2] = { box.MaxPos.x, 0, box.MaxPos.z };		//右奥
 	Pos[3] = { box.MaxPos.x, 0, box.LeastPos.z };		//右前
+
+	XMFLOAT3 returnPos = {};
 
 	float dis[4];
 	for (int i = 0; i < 4; i++)
@@ -355,9 +372,12 @@ CollisionSet::XMFLOAT3 CollisionSet::GetFourthNearVertex(const Box& box, const X
 	{
 		if (disA[3] == dis[i])
 		{
-			return Pos[i];
+			returnPos = Pos[i];
+			break;
 		}
 	}
+
+	return returnPos;
 }
 
 CollisionSet::XMFLOAT3 CollisionSet::GetwhichNearPos(const XMFLOAT3& criteriaPos, const XMFLOAT3& posA, const XMFLOAT3& posB)

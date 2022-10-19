@@ -349,15 +349,5 @@ void GamePlayScene::Draw()
 	ImGui::Text("cameraZ :%.4f", camera->GetEye().z);
 	ImGui::Text("crystal :%d", objFighter->GetCrystal());
 	ImGui::Checkbox("GoalFlag", &objFighter->GetGoalFlag());
-	//static int radio = 0;
-	//ImGui::RadioButton("Radio 1", &radio, 0);
-	//ImGui::SameLine();
-	//ImGui::RadioButton("Radio 2", &radio, 1);
-	//ImGui::SameLine();
-	//ImGui::RadioButton("Radio 3", &radio, 2);
-	//static int nSlider = 0;
-	//ImGui::SliderInt("Int Slider", &nSlider, 0, 100);
-	//static float fSlider = 0.0f;
-	//ImGui::SliderFloat("float Slider", &fSlider, 0.0f, 100.0f);
 	imguiManager::PosDraw();
 }
