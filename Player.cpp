@@ -438,7 +438,37 @@ void Player::ClimbWallJudge(XMVECTOR move)
 	XMVECTOR vertPos1 = XMLoadFloat3(&JsonLoader::climbWallObjects[0].get()->GetModel()->GetMeshes()[0]->GetVertices()[0].pos);
 	XMVECTOR vertPos2 = XMLoadFloat3(&JsonLoader::climbWallObjects[0].get()->GetModel()->GetMeshes()[0]->GetVertices()[1].pos);
 	XMVECTOR vertPos3 = XMLoadFloat3(&JsonLoader::climbWallObjects[0].get()->GetModel()->GetMeshes()[0]->GetVertices()[2].pos);
-	
+
+	XMMATRIX rotY;
+	rotY = XMMatrixIdentity();
+	//matRot *= XMMatrixRotationZ(XMConvertToRadians(rotation.z));
+	//matRot *= XMMatrixRotationX(XMConvertToRadians(rotation.x));
+	rotY *= XMMatrixRotationY(XMConvertToRadians(rotation.y));
+
+	float w = vertPos1.m128_f32[0] * rotY.r[0].m128_f32[0] + vertPos1.m128_f32[1] * rotY.r[1].m128_f32[0] + vertPos1.m128_f32[2] * rotY.r[2].m128_f32[0];
+
+	vertPos1.m128_f32[0] = (vertPos1.m128_f32[0] * rotY.r[0].m128_f32[0] + vertPos1.m128_f32[1] * rotY.r[1].m128_f32[0] + vertPos1.m128_f32[2] * rotY.r[2].m128_f32[0] + rotY.r[3].m128_f32[0]) / w;
+	vertPos1.m128_f32[1] = (vertPos1.m128_f32[0] * rotY.r[0].m128_f32[1] + vertPos1.m128_f32[1] * rotY.r[1].m128_f32[1] + vertPos1.m128_f32[2] * rotY.r[2].m128_f32[1] + rotY.r[3].m128_f32[0]) / w;
+	vertPos1.m128_f32[2] = (vertPos1.m128_f32[0] * rotY.r[0].m128_f32[2] + vertPos1.m128_f32[1] * rotY.r[1].m128_f32[2] + vertPos1.m128_f32[2] * rotY.r[2].m128_f32[2] + rotY.r[3].m128_f32[0]) / w;
+
+
+
+	//çsóÒÇÃåvéZ
+	//XMVECTOR transform(const XMVECTOR & v, const XMMATRIX & m)
+	//{
+	//	float w = v.x * m.m[0][3] + v.y * m.m[1][3] + v.z * m.m[2][3] + m.m[3][3];
+
+	//	Vector3 result
+	//	{
+	//		 (v.x * m.m[0][0] + v.y * m.m[1][0] + v.z * m.m[2][0] + m.m[3][0]) / w,
+	//		 (v.x * m.m[0][1] + v.y * m.m[1][1] + v.z * m.m[2][1] + m.m[3][1]) / w,
+	//		 (v.x * m.m[0][2] + v.y * m.m[1][2] + v.z * m.m[2][2] + m.m[3][2]) / w
+	//	};
+
+	//	return result;
+	//}
+
+
 	XMVECTOR p0_p1 = vertPos2 - vertPos1;
 	XMVECTOR p0_p2 = vertPos3 - vertPos1;
 
