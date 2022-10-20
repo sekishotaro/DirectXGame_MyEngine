@@ -439,17 +439,11 @@ void Player::ClimbWallJudge(XMVECTOR move)
 	XMVECTOR vertPos2 = XMLoadFloat3(&JsonLoader::climbWallObjects[0].get()->GetModel()->GetMeshes()[0]->GetVertices()[1].pos);
 	XMVECTOR vertPos3 = XMLoadFloat3(&JsonLoader::climbWallObjects[0].get()->GetModel()->GetMeshes()[0]->GetVertices()[2].pos);
 
-	XMMATRIX rotY;
-	rotY = XMMatrixIdentity();
-	//matRot *= XMMatrixRotationZ(XMConvertToRadians(rotation.z));
-	//matRot *= XMMatrixRotationX(XMConvertToRadians(rotation.x));
-	rotY *= XMMatrixRotationY(XMConvertToRadians(rotation.y));
+	XMMATRIX matWorld = JsonLoader::climbWallObjects[0].get()->GetMatWorld();
 
-	float w = vertPos1.m128_f32[0] * rotY.r[0].m128_f32[0] + vertPos1.m128_f32[1] * rotY.r[1].m128_f32[0] + vertPos1.m128_f32[2] * rotY.r[2].m128_f32[0];
-
-	vertPos1.m128_f32[0] = (vertPos1.m128_f32[0] * rotY.r[0].m128_f32[0] + vertPos1.m128_f32[1] * rotY.r[1].m128_f32[0] + vertPos1.m128_f32[2] * rotY.r[2].m128_f32[0] + rotY.r[3].m128_f32[0]) / w;
-	vertPos1.m128_f32[1] = (vertPos1.m128_f32[0] * rotY.r[0].m128_f32[1] + vertPos1.m128_f32[1] * rotY.r[1].m128_f32[1] + vertPos1.m128_f32[2] * rotY.r[2].m128_f32[1] + rotY.r[3].m128_f32[0]) / w;
-	vertPos1.m128_f32[2] = (vertPos1.m128_f32[0] * rotY.r[0].m128_f32[2] + vertPos1.m128_f32[1] * rotY.r[1].m128_f32[2] + vertPos1.m128_f32[2] * rotY.r[2].m128_f32[2] + rotY.r[3].m128_f32[0]) / w;
+	vertPos1 = XMVector3TransformNormal(vertPos1, matWorld);
+	vertPos2 = XMVector3TransformNormal(vertPos2, matWorld);
+	vertPos3 = XMVector3TransformNormal(vertPos3, matWorld);
 
 
 

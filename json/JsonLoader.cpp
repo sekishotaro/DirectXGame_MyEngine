@@ -754,6 +754,11 @@ void JsonLoader::TypeclimbWallModel(LevelData::ObjectData& objectData)
 	//‰ñ“]Šp
 	XMFLOAT3 rot;
 	DirectX::XMStoreFloat3(&rot, objectData.rotation);
+
+	//int a = (int)rot.y;
+	//a -= 90;
+	//rot.y = (float)a;
+
 	rot.y -= 90.0f;
 	newObject->SetRotation(rot);
 
