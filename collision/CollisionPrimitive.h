@@ -70,11 +70,19 @@ struct Plane
 struct Plate
 {
 	//座標
-	DirectX::XMVECTOR position;
+	DirectX::XMVECTOR position = {};
 	//サイズ
-	DirectX::XMFLOAT3 size;
+	DirectX::XMFLOAT3 size = {};
 	//法線ベクトル
 	DirectX::XMVECTOR normal = { 0,1,0,0 };
+
+	//板ポリの四角形を構成する三角ポリゴン2つの頂点6つ(Todo:4つでもできるように)
+	DirectX::XMVECTOR vert1 = { 0,0,0,0 };
+	DirectX::XMVECTOR vert2 = { 0,0,0,0 };
+	DirectX::XMVECTOR vert3 = { 0,0,0,0 };
+	DirectX::XMVECTOR vert4 = { 0,0,0,0 };
+	DirectX::XMVECTOR vert5 = { 0,0,0,0 };
+	DirectX::XMVECTOR vert6 = { 0,0,0,0 };
 };
 
 

@@ -462,6 +462,40 @@ bool Collision::Check2LineSegment(const LineSegment& line1, const LineSegment& l
 	return true;
 }
 
+bool Collision::CheckPlateRay(const Plate& plate, const Ray& ray)
+{
+	////平面としたときの原点からの距離を求める
+	//float dis = (plate.position.m128_f32[0] * plate.position.m128_f32[0]) + (plate.position.m128_f32[1] * plate.position.m128_f32[1]) + (plate.position.m128_f32[2] * plate.position.m128_f32[2]);
+	//dis = sqrtf(dis);
+	//
+	//Plane p1;
+	//p1.distance = dis;
+	//p1.normal = plate.normal;
+
+	////交点
+	//float distance;
+	//XMVECTOR inter;
+	//if (CheckRay2Plane(ray, p1, &distance, &inter) == false) return false;
+
+	//三角ポリゴンとの当たり判定を調べる
+
+	Triangle pori1, pori2;
+	
+	pori1.p0 = plate.vert1;
+	pori1.p1 = plate.vert2;
+	pori1.p2 = plate.vert3;
+	
+	pori2.p0 = plate.vert4;
+	pori2.p1 = plate.vert5;
+	pori2.p2 = plate.vert6;
+	
+	pori1.normal = pori2.normal = plate.normal;
+
+	if (CheckRay2Triangle(ray, pori1) == true) return true;
+	if (CheckRay2Triangle(ray, pori2) == true) return true;
+
+}
+
 bool Collision::CheckSphereBox(const SphereF& sphere, const Box& box)
 {
 	int Check1 = 0;

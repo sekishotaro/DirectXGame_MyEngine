@@ -128,6 +128,7 @@ public:
 
 	static bool Check2LineSegment(const LineSegment& line1, const LineSegment& line2);
 
+	static bool CheckPlateRay(const Plate& plate, const Ray& ray);
 
 	static bool CheckSphereBox(const SphereF& sphere, const Box& box);
 	static bool CheckAABB(const Box& box1, const Box& box2);

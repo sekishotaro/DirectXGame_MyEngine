@@ -428,53 +428,48 @@ void Player::PushBack(const DirectX::XMVECTOR& normal, const XMFLOAT3& distance)
 void Player::ClimbWallJudge(XMVECTOR move)
 {
 	//壁のぼり用板ポリに当たっているかの判別
+	std::vector <Plate> climbWalls;
 	Plate climbWall;
-	
-	climbWall.position = XMLoadFloat3(&JsonLoader::climbWallObjects[0].get()->GetPosition());
-	climbWall.size = JsonLoader::climbWallObjects[0].get()->GetScale();
-	XMFLOAT3 rota = JsonLoader::climbWallObjects[0].get()->GetRotation();
+	Ray ray;
+	ray.start = XMLoadFloat3(&pos);
+	ray.dir = move;
 
-	//面の法線を求める
-	XMVECTOR vertPos1 = XMLoadFloat3(&JsonLoader::climbWallObjects[0].get()->GetModel()->GetMeshes()[0]->GetVertices()[0].pos);
-	XMVECTOR vertPos2 = XMLoadFloat3(&JsonLoader::climbWallObjects[0].get()->GetModel()->GetMeshes()[0]->GetVertices()[1].pos);
-	XMVECTOR vertPos3 = XMLoadFloat3(&JsonLoader::climbWallObjects[0].get()->GetModel()->GetMeshes()[0]->GetVertices()[2].pos);
+	int isa = 0;
 
-	XMMATRIX matWorld = JsonLoader::climbWallObjects[0].get()->GetMatWorld();
+	for (int i = 0; i < (int)JsonLoader::climbWallObjects.size(); i++)
+	{
+		climbWall.position = XMLoadFloat3(&JsonLoader::climbWallObjects[i].get()->GetPosition());
+		climbWall.size = JsonLoader::climbWallObjects[i].get()->GetScale();
+		
+		//面の法線を求める (今は決め打ちでやってる"climbWall.obj")
+		climbWall.vert1 = XMLoadFloat3(&JsonLoader::climbWallObjects[i].get()->GetModel()->GetMeshes()[0]->GetVertices()[0].pos);
+		climbWall.vert2 = XMLoadFloat3(&JsonLoader::climbWallObjects[i].get()->GetModel()->GetMeshes()[0]->GetVertices()[1].pos);
+		climbWall.vert3 = XMLoadFloat3(&JsonLoader::climbWallObjects[i].get()->GetModel()->GetMeshes()[0]->GetVertices()[2].pos);
+		climbWall.vert4 = XMLoadFloat3(&JsonLoader::climbWallObjects[i].get()->GetModel()->GetMeshes()[0]->GetVertices()[3].pos);
+		climbWall.vert5 = XMLoadFloat3(&JsonLoader::climbWallObjects[i].get()->GetModel()->GetMeshes()[0]->GetVertices()[4].pos);
+		climbWall.vert6 = XMLoadFloat3(&JsonLoader::climbWallObjects[i].get()->GetModel()->GetMeshes()[0]->GetVertices()[5].pos);
 
-	vertPos1 = XMVector3TransformNormal(vertPos1, matWorld);
-	vertPos2 = XMVector3TransformNormal(vertPos2, matWorld);
-	vertPos3 = XMVector3TransformNormal(vertPos3, matWorld);
+		XMMATRIX matWorld = JsonLoader::climbWallObjects[i].get()->GetMatWorld();
 
-
-
-	//行列の計算
-	//XMVECTOR transform(const XMVECTOR & v, const XMMATRIX & m)
-	//{
-	//	float w = v.x * m.m[0][3] + v.y * m.m[1][3] + v.z * m.m[2][3] + m.m[3][3];
-
-	//	Vector3 result
-	//	{
-	//		 (v.x * m.m[0][0] + v.y * m.m[1][0] + v.z * m.m[2][0] + m.m[3][0]) / w,
-	//		 (v.x * m.m[0][1] + v.y * m.m[1][1] + v.z * m.m[2][1] + m.m[3][1]) / w,
-	//		 (v.x * m.m[0][2] + v.y * m.m[1][2] + v.z * m.m[2][2] + m.m[3][2]) / w
-	//	};
-
-	//	return result;
-	//}
+		climbWall.vert1 = XMVector3TransformNormal(climbWall.vert1, matWorld);
+		climbWall.vert2 = XMVector3TransformNormal(climbWall.vert2, matWorld);
+		climbWall.vert3 = XMVector3TransformNormal(climbWall.vert3, matWorld);
+		climbWall.vert4 = XMVector3TransformNormal(climbWall.vert4, matWorld);
+		climbWall.vert5 = XMVector3TransformNormal(climbWall.vert5, matWorld);
+		climbWall.vert6 = XMVector3TransformNormal(climbWall.vert6, matWorld);
 
 
-	XMVECTOR p0_p1 = vertPos2 - vertPos1;
-	XMVECTOR p0_p2 = vertPos3 - vertPos1;
+		//法線を求める、求めるのは一つの三角ポリゴンで十分
+		XMVECTOR p0_p1 = climbWall.vert2 - climbWall.vert1;
+		XMVECTOR p0_p2 = climbWall.vert3 - climbWall.vert1;
 
-	//外積により、 2辺に垂直なベクトルを算出する
-	climbWall.normal = XMVector3Cross(p0_p1, p0_p2);
-	climbWall.normal = XMVector3Normalize(climbWall.normal);
+		//外積により、 2辺に垂直なベクトルを算出する
+		climbWall.normal = XMVector3Cross(p0_p1, p0_p2);
+		climbWall.normal = XMVector3Normalize(climbWall.normal);
 
-
-
-	Sphere player;
-	player.center = XMLoadFloat3(&position);
-	player.radius = 1.0f;
+		if (Collision::CheckPlateRay(climbWall, ray) == false) return;
+		break;
+	}
 
 	//壁にめり込んでいる
 	if (climbOperation == false)
