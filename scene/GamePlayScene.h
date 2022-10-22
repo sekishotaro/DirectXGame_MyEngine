@@ -12,6 +12,7 @@
 #include "Collision.h"
 #include "DebugCamera.h"
 #include "Camera.h"
+#include "Light.h"
 
 class CollisionManager;
 class Player;
@@ -57,6 +58,7 @@ public:
 	
 	DebugCamera* camera = nullptr;
 	//Camera *camera = nullptr;
+	Light* light = nullptr;
 	Sprite *spriteBG = nullptr;
 	
 	//std::unique_ptr<Object3d> objectX;

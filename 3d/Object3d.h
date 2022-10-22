@@ -8,6 +8,7 @@
 #include "Model.h"
 #include "Camera.h"
 #include "CollisionInfo.h"
+#include "Light.h"
 
 class BaseCollider;
 
@@ -33,6 +34,14 @@ public: // サブクラス
 		//XMFLOAT4 color;	// 色 (RGBA)
 		XMMATRIX mat;	// ３Ｄ変換行列
 	};
+
+	struct SceneMatrix
+	{
+		XMMATRIX mat;	// ３Ｄ変換行列
+		XMMATRIX lightCamera;	//ライトから見たビュー
+		XMMATRIX shadow;		//影行列
+	};
+
 
 private: // 定数
 	static const int division = 50;					// 分割数
@@ -89,6 +98,15 @@ public: // 静的メンバ関数
 		Object3d::camera = camera;
 	}
 
+	/// <summary>
+	/// ライトのセット
+	/// </summary>
+	/// <param name="camera">カメラ</param>
+	static void SetLight(Light* light)
+	{
+		Object3d::light = light;
+	}
+
 private: // 静的メンバ変数
 	// デバイス
 	static ID3D12Device* device;
@@ -103,6 +121,7 @@ private: // 静的メンバ変数
 
 	// カメラ
 	static Camera *camera;
+	static Light* light;
 
 private:// 静的メンバ関数
 
@@ -210,6 +229,8 @@ public: // メンバ関数
 
 protected: // メンバ変数
 	ComPtr<ID3D12Resource> constBuffB0; // 定数バッファ
+	ComPtr<ID3D12Resource> constBuffB1; // 定数バッファ
+
 	// 色
 	XMFLOAT4 color = { 1,1,1,1 };
 	// ローカルスケール
@@ -234,5 +255,9 @@ protected: // メンバ変数
 	//シェーダー
 	static std::wstring VSshaderName;
 	static std::wstring PSshaderName;
+
+	//シャドウマップ用
+	//平行ライトの向き
+	XMFLOAT3 _parallelLightVec = { 1, -1, 1 };
 };
 

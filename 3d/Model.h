@@ -100,6 +100,8 @@ private:
 	// デスクリプタヒープ
 	ComPtr<ID3D12DescriptorHeap> descHeap;
 
+	ComPtr<ID3D12DescriptorHeap> _deprhSRVHeap;
+
 private: //非公開のメンバ関数
 	// OBJファイルから3Dモデルを読み込む (非公開)
 	void LoadFormOBJInternal(const std:: string &modelname);

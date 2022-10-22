@@ -23,7 +23,8 @@ ID3D12Device* Object3d::device = nullptr;
 ID3D12GraphicsCommandList* Object3d::cmdList = nullptr;
 ComPtr<ID3D12RootSignature> Object3d::rootsignature;
 ComPtr<ID3D12PipelineState> Object3d::pipelinestate;
-Camera *Object3d::camera = nullptr;
+Camera* Object3d::camera = nullptr;
+Light* Object3d::light = nullptr;
 
 std::wstring Object3d::PSshaderName = L"Resources/shaders/OBJPixelShader.hlsl";
 std::wstring Object3d::VSshaderName = L"Resources/shaders/OBJVertexShader.hlsl";
@@ -267,6 +268,15 @@ bool Object3d::Initialize()
 		nullptr,
 		IID_PPV_ARGS(&constBuffB0));
 
+	// 定数バッファの生成
+	result = device->CreateCommittedResource(
+		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD), 	// アップロード可能
+		D3D12_HEAP_FLAG_NONE,
+		&CD3DX12_RESOURCE_DESC::Buffer((sizeof(ConstBufferDataB0) + 0xff) & ~0xff),
+		D3D12_RESOURCE_STATE_GENERIC_READ,
+		nullptr,
+		IID_PPV_ARGS(&constBuffB1));
+
 	name = typeid(*this).name();
 
 	return true;
@@ -285,6 +295,16 @@ void Object3d::Update()
 	result = constBuffB0->Map(0, nullptr, (void **)&constMap);
 	constMap->mat = matWorld * matViewProjection;	// 行列の合成
 	constBuffB0->Unmap(0, nullptr);
+
+	const XMMATRIX& matViewProjection2 = light->GetViewProjectionMatrix();
+
+	SceneMatrix* sceneMatrix = nullptr;
+	result = constBuffB1->Map(0, nullptr, (void**)&sceneMatrix);
+	sceneMatrix->mat = matWorld * matViewProjection;	// 行列の合成
+	XMFLOAT4 planeVec(0, 1, 0, 0); //平面の方程式
+	sceneMatrix->shadow = XMMatrixShadow(XMLoadFloat4(&planeVec), -XMLoadFloat3(&_parallelLightVec));
+	sceneMatrix->lightCamera = matWorld * matViewProjection2;
+	constBuffB1->Unmap(0, nullptr);
 
 	//当たり判定更新
 	if (collider)

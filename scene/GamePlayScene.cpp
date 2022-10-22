@@ -16,6 +16,7 @@
 #include "SphereCollider.h"
 #include "CollisionManager.h"
 #include "Player.h"
+#include "Light.h"
 
 
 void GamePlayScene::Initialize()
@@ -27,6 +28,8 @@ void GamePlayScene::Initialize()
 	// カメラ生成
 	camera = new DebugCamera(WinApp::window_width, WinApp::window_height);
 	//camera = new Camera(WinApp::window_width, WinApp::window_height);
+	//ライト生成
+	light = new Light(WinApp::window_width, WinApp::window_height);
 
 	//デバイスのセット
 	FbxObject3d::SetDevice(DirectXCommon::GetInstance()->GetDev());
@@ -34,6 +37,9 @@ void GamePlayScene::Initialize()
 	// カメラセット
 	Object3d::SetCamera(camera);
 	ColliderObject::SetCamera(camera);
+
+	//ライトのセット
+	Object3d::SetLight(light);
 
 	MathObject::SetCamera(camera);
 	//dCamera->SetEye({ 0, 0, 100 });			//prinding時
@@ -263,6 +269,7 @@ void GamePlayScene::Update()
 	JsonLoader::Update();
 
 	camera->Update();
+	light->Update();
 	objFighter->Update();
 
 	//全ての衝突をチェック

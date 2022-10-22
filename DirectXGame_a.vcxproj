@@ -314,6 +314,7 @@
     <ClCompile Include="imgui\imgui_widgets.cpp" />
     <ClCompile Include="collision\MeshCollider.cpp" />
     <ClCompile Include="3d\Material.cpp" />
+    <ClCompile Include="Light.cpp" />
     <ClCompile Include="MyMath.cpp" />
     <ClCompile Include="Input\Input.cpp" />
     <ClCompile Include="json\JsonLoader.cpp" />
@@ -365,6 +366,7 @@
     <ClInclude Include="3d\Mesh.h" />
     <ClInclude Include="collision\MeshCollider.h" />
     <ClInclude Include="3d\Material.h" />
+    <ClInclude Include="Light.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="MyMath.h" />
     <ClInclude Include="QueryCallback.h" />

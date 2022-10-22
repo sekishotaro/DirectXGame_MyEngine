@@ -310,6 +310,16 @@ void Model::InitializeDescriptorHeap()
 
 	// デスクリプタサイズを取得
 	descriptorHandleIncrementSize = device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
+
+
+	// デスクリプタヒープを生成	
+	D3D12_DESCRIPTOR_HEAP_DESC heapDesc = {};
+	heapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;//シェーダから見えるように
+	heapDesc.NodeMask = {};
+	heapDesc.NumDescriptors = 1; // シェーダーリソースビュー1つ
+	heapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
+	result = device->CreateDescriptorHeap(&heapDesc, IID_PPV_ARGS(&_deprhSRVHeap));//生成
+
 }
 
 void Model::CreateBuffers()
