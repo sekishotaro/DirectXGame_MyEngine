@@ -2,10 +2,10 @@
 
 using namespace DirectX;
 
-XMFLOAT3 Light::pos = { 0.0f, 50.0f, -30.0f };
-XMFLOAT3 Light::target = { 0.0f, 0.0f, 0.0f };
-float Light::window_width = 0.0f;
-float Light::window_height = 0.0f;
+//XMFLOAT3 Light::pos = { 0.0f, 50.0f, -30.0f };
+//XMFLOAT3 Light::target = { 0.0f, 0.0f, 0.0f };
+float Light::window_width =  1280.0f;
+float Light::window_height =  720.0f;
 
 Light::Light(const int& window_width, const int& window_height)
 {
@@ -136,8 +136,9 @@ void Light::UpdateProjectionMatrix()
 	//);
 
 	// éÀâeçsóÒåvéZ
-	matProjection = XMMatrixOrthographicOffCenterLH(
-		0.0f, (float)window_width,
-		(float)window_height, 0.0f,
-		0.0f, 1.0f);
+	matProjection = XMMatrixOrthographicLH(
+		window_width,
+		window_height,
+		0.1f, 1000.0f
+	);
 }

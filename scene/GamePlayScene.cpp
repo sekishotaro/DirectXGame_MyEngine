@@ -39,6 +39,8 @@ void GamePlayScene::Initialize()
 	ColliderObject::SetCamera(camera);
 
 	//ライトのセット
+	//light->SetPosition(camera->GetEye());
+	//light->SetTarget(camera->GetTarget());
 	Object3d::SetLight(light);
 
 	MathObject::SetCamera(camera);
@@ -261,9 +263,6 @@ void GamePlayScene::Update()
 	{
 		SceneManager::GetInstance()->ChangeScene("TITLE");
 	}
-
-
-	
 	
 	//アップデート
 	JsonLoader::Update();

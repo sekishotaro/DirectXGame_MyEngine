@@ -61,10 +61,10 @@ public:
 		return matBillboard;
 	}
 
-	const XMFLOAT3& GetPosition() { return pos; }
+	const XMFLOAT3& GetPosition() { return pos; viewDirty = true;}
 	void SetPosition(const XMFLOAT3& pos) { this->pos = pos; }
 	const XMFLOAT3& GetTarget() { return target; }
-	void SetTarget(const XMFLOAT3& target) { this->target = target; }
+	void SetTarget(const XMFLOAT3& target) { this->target = target; viewDirty = true;}
 
 
 protected:
@@ -84,9 +84,9 @@ protected:
 	// 射影行列ダーティフラグ
 	bool projectionDirty = false;
 	//ライトの位置
-	static XMFLOAT3 pos;
-	//ライトの向き
-	static XMFLOAT3 target;
+	XMFLOAT3 pos = { 0.0f, 10.0f, -10.0f };
+	//ライトの向き  
+	XMFLOAT3 target = { 0.0f, 0.0f, 0.0f };
 	//上方向ベクトル
 	const XMFLOAT3 up = { 0,1,0 };
 	// アスペクト比

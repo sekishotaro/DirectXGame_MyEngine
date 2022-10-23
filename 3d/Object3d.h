@@ -31,17 +31,10 @@ public: // サブクラス
 	// 定数バッファ用データ構造体B0
 	struct ConstBufferDataB0
 	{
-		//XMFLOAT4 color;	// 色 (RGBA)
-		XMMATRIX mat;	// ３Ｄ変換行列
-	};
-
-	struct SceneMatrix
-	{
-		XMMATRIX mat;	// ３Ｄ変換行列
-		XMMATRIX lightCamera;	//ライトから見たビュー
+		XMMATRIX mat;			// ３Ｄ変換行列 カメラ
+		XMMATRIX lightMat;		// ライトから見た
 		XMMATRIX shadow;		//影行列
 	};
-
 
 private: // 定数
 	static const int division = 50;					// 分割数
@@ -229,7 +222,7 @@ public: // メンバ関数
 
 protected: // メンバ変数
 	ComPtr<ID3D12Resource> constBuffB0; // 定数バッファ
-	ComPtr<ID3D12Resource> constBuffB1; // 定数バッファ
+	ComPtr<ID3D12Resource> _lightDepthBuffer; //シャドウマップ用深度バッファ
 
 	// 色
 	XMFLOAT4 color = { 1,1,1,1 };

@@ -302,7 +302,7 @@ void Model::InitializeDescriptorHeap()
 	D3D12_DESCRIPTOR_HEAP_DESC descHeapDesc = {};
 	descHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
 	descHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;//シェーダから見えるように
-	descHeapDesc.NumDescriptors = 1; // シェーダーリソースビュー1つ
+	descHeapDesc.NumDescriptors = 2; // シェーダーリソースビュー1つ(影用に追加)
 	result = device->CreateDescriptorHeap(&descHeapDesc, IID_PPV_ARGS(&descHeap));//生成
 	if (FAILED(result)) {
 		assert(0);
@@ -316,7 +316,7 @@ void Model::InitializeDescriptorHeap()
 	D3D12_DESCRIPTOR_HEAP_DESC heapDesc = {};
 	heapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;//シェーダから見えるように
 	heapDesc.NodeMask = {};
-	heapDesc.NumDescriptors = 1; // シェーダーリソースビュー1つ
+	heapDesc.NumDescriptors = 2; // シェーダーリソースビュー2つ(影用に追加)
 	heapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
 	result = device->CreateDescriptorHeap(&heapDesc, IID_PPV_ARGS(&_deprhSRVHeap));//生成
 
@@ -614,7 +614,7 @@ void Model::LoadTexture()
 	//);
 }
 
-void Model::Draw(ID3D12GraphicsCommandList *cmdList, UINT rootParamIndexMaterial)
+void Model::Draw(ID3D12GraphicsCommandList *cmdList)
 {
 	//// デスクリプタヒープの配列
 	//ID3D12DescriptorHeap *ppHeaps[] = { descHeap.Get() };

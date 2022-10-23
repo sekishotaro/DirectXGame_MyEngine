@@ -125,7 +125,7 @@ private: // ƒƒ“ƒoŠÖ”
 	void LoadTexture();
 
 public: //ƒƒ“ƒoŠÖ”
-	void Draw(ID3D12GraphicsCommandList *cmdList, UINT rootParamIndexMaterial);
+	void Draw(ID3D12GraphicsCommandList *cmdList);
 
 	inline const std::vector<Mesh*>& GetMeshes() { return meshes; }
 

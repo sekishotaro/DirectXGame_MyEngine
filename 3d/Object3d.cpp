@@ -275,7 +275,8 @@ bool Object3d::Initialize()
 		&CD3DX12_RESOURCE_DESC::Buffer((sizeof(ConstBufferDataB0) + 0xff) & ~0xff),
 		D3D12_RESOURCE_STATE_GENERIC_READ,
 		nullptr,
-		IID_PPV_ARGS(&constBuffB1));
+		IID_PPV_ARGS(&_lightDepthBuffer));
+
 
 	name = typeid(*this).name();
 
@@ -288,23 +289,20 @@ void Object3d::Update()
 	
 	UpdateWorldMatrix();
 
-	const XMMATRIX &matViewProjection = camera->GetViewProjectionMatrix();
+	const XMMATRIX& matViewProjection = camera->GetViewProjectionMatrix();
+	const XMMATRIX& matViewProjection2 = light->GetViewProjectionMatrix();
 
 	// 定数バッファへデータ転送
 	ConstBufferDataB0 *constMap = nullptr;
 	result = constBuffB0->Map(0, nullptr, (void **)&constMap);
 	constMap->mat = matWorld * matViewProjection;	// 行列の合成
+	constMap->lightMat = matWorld * matViewProjection2;
+	XMFLOAT4 planeVec(0, 1, 0, 0); //平面の方程式
+	constMap->shadow = XMMatrixShadow(XMLoadFloat4(&planeVec), -XMLoadFloat3(&_parallelLightVec));
 	constBuffB0->Unmap(0, nullptr);
 
-	const XMMATRIX& matViewProjection2 = light->GetViewProjectionMatrix();
 
-	SceneMatrix* sceneMatrix = nullptr;
-	result = constBuffB1->Map(0, nullptr, (void**)&sceneMatrix);
-	sceneMatrix->mat = matWorld * matViewProjection;	// 行列の合成
-	XMFLOAT4 planeVec(0, 1, 0, 0); //平面の方程式
-	sceneMatrix->shadow = XMMatrixShadow(XMLoadFloat4(&planeVec), -XMLoadFloat3(&_parallelLightVec));
-	sceneMatrix->lightCamera = matWorld * matViewProjection2;
-	constBuffB1->Unmap(0, nullptr);
+
 
 	//当たり判定更新
 	if (collider)
@@ -329,9 +327,8 @@ void Object3d::Draw()
 
 	// 定数バッファビューをセット
 	cmdList->SetGraphicsRootConstantBufferView(0, constBuffB0->GetGPUVirtualAddress());
-	
 	//モデルを描画
-	model->Draw(cmdList, 1);
+	model->Draw(cmdList);
 
 }
 
