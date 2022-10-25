@@ -54,6 +54,11 @@ public:
 	void Draw() override;
 
 	/// <summary>
+	/// 影用描画
+	/// </summary>
+	void ShadowDraw() override;
+
+	/// <summary>
 	/// ゲームシーン用
 	/// </summary>
 	

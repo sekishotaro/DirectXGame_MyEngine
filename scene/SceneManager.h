@@ -32,6 +32,11 @@ public:
 	/// </summary>
 	void Draw();
 
+	/// <summary>
+	/// ‰e—p•`‰æ
+	/// </summary>
+	void ShadowDraw();
+
 private:
 
 	/// <summary>

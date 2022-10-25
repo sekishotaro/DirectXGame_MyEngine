@@ -392,6 +392,32 @@ void JsonLoader::Draw()
 	}
 }
 
+void JsonLoader::ShadowDraw()
+{
+	//描画オブジェクト
+	for (int i = 0; i < objects.size(); i++)
+	{
+		objects[i]->ShadowDraw();
+	}
+
+	for (int i = 0; i < crystalObjects.size(); i++)
+	{
+		crystalObjects[i]->ShadowDraw();
+	}
+
+	objGround->ShadowDraw();
+
+	for (int i = 0; i < climbWallObjects.size(); i++)
+	{
+		climbWallObjects[i]->ShadowDraw();
+	}
+
+	for (int i = 0; i < goalObjects.size(); i++)
+	{
+		goalObjects[i]->ShadowDraw();
+	}
+}
+
 
 void JsonLoader::TypeSetModel( LevelData::ObjectData& objectData)
 {

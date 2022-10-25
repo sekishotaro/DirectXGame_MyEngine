@@ -108,8 +108,15 @@ private: // 静的メンバ変数
 	static ID3D12GraphicsCommandList* cmdList;
 	// ルートシグネチャ
 	static ComPtr<ID3D12RootSignature> rootsignature;
+
+	// ルートシグネチャ 影用
+	static ComPtr<ID3D12RootSignature> rootsignatureShadow;
+	
 	// パイプラインステートオブジェクト
 	static ComPtr<ID3D12PipelineState> pipelinestate;
+
+	//パイプラインステートオブジェクト 影用
+	static ComPtr<ID3D12PipelineState> pipelinestateShadow;
 
 	// カメラ
 	static Camera *camera;
@@ -153,6 +160,11 @@ public: // メンバ関数
 	/// 描画
 	/// </summary>
 	virtual void Draw();
+
+	/// <summary>
+	/// 影用描画
+	/// </summary>
+	virtual void ShadowDraw();
 
 	/// <summary>
 	/// ワールド行列の取得

@@ -31,5 +31,10 @@ public:
 	/// •`‰æ
 	/// </summary>
 	virtual void Draw() = 0;
+
+	/// <summary>
+	/// ‰e—p•`‰æ
+	/// </summary>
+	virtual void ShadowDraw() = 0;
 };
 

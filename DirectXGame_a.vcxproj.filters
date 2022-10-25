@@ -38,6 +38,8 @@
     <FxCompile Include="Resources\shaders\ColliderOBJPS.hlsl" />
     <FxCompile Include="Resources\shaders\MathObjectPS.hlsl" />
     <FxCompile Include="Resources\shaders\MathObjectVS.hlsl" />
+    <FxCompile Include="Resources\shaders\OBJShadowShaderVS.hlsl" />
+    <FxCompile Include="Resources\shaders\OBJShadowShaderPS.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">

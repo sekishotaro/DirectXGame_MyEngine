@@ -134,6 +134,8 @@ public:
 	//描画
 	static void Draw();
 
+	//影用描画
+	static void ShadowDraw();
 
 private:
 	//ブロック

@@ -356,3 +356,29 @@ void GamePlayScene::Draw()
 	ImGui::Checkbox("GoalFlag", &objFighter->GetGoalFlag());
 	imguiManager::PosDraw();
 }
+
+void GamePlayScene::ShadowDraw()
+{
+	// コマンドリストの取得
+	ID3D12GraphicsCommandList* cmdList = DirectXCommon::GetInstance()->GetCmdList();
+	
+	// 深度バッファクリア
+	DirectXCommon::GetInstance()->ClearDepthBuffer();
+	
+
+	// 3Dオブジェクト描画前処理
+	Object3d::PreDraw(cmdList);
+	ColliderObject::PreDraw(cmdList);
+	MathObject::PreDraw(cmdList);
+
+	// 3Dオブクジェクトの描画
+	objFighter->ShadowDraw();
+	//json
+	JsonLoader::ShadowDraw();
+	//FBX3Dオブジェクトの描画
+
+	// 3Dオブジェクト描画後処理
+	Object3d::PostDraw();
+	ColliderObject::PostDraw();
+	MathObject::PostDraw();
+}

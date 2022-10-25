@@ -92,18 +92,20 @@ void Framework::Update()
 
 	//シーンの更新
 	SceneManager::GetInstance()->Update();
-
 }
 
 void Framework::Draw()
 {
+	//レンダリング
 	postEffect->PreDrawScene(dxCommon->GetCmdList());
-	SceneManager::GetInstance()->Draw();
+	SceneManager::GetInstance()->ShadowDraw();
 	postEffect->PostDrawScene(dxCommon->GetCmdList());
+	
+
 	// 描画開始
 	dxCommon->PreDraw();
 	// コマンドリストの取得
-	ID3D12GraphicsCommandList *cmdList = dxCommon->GetCmdList();
+	//ID3D12GraphicsCommandList *cmdList = dxCommon->GetCmdList();
 	//SceneManager::GetInstance()->Draw();
 	postEffect->Draw(dxCommon->GetCmdList());
 	// 描画終了

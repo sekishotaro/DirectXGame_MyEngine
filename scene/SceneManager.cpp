@@ -51,3 +51,8 @@ void SceneManager::Draw()
 {
 	scene_->Draw();
 }
+
+void SceneManager::ShadowDraw()
+{
+	scene_->ShadowDraw();
+}

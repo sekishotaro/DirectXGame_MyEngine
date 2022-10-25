@@ -37,7 +37,7 @@ void TitleScene::Draw()
 {
 	// ゲームシーンの描画
 
-// コマンドリストの取得
+	// コマンドリストの取得
 	ID3D12GraphicsCommandList *cmdList = DirectXCommon::GetInstance()->GetCmdList();
 
 	// 背景スプライト描画前処理
@@ -72,5 +72,9 @@ void TitleScene::Draw()
 
 	// スプライト描画後処理
 	Sprite::PostDraw();
+}
+
+void TitleScene::ShadowDraw()
+{
 }
 
