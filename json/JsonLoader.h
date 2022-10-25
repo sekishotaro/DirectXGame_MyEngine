@@ -134,6 +134,7 @@ public:
 	//•`‰æ
 	static void Draw();
 
+
 private:
 	//ƒuƒƒbƒN
 	static void TypeSetModel( LevelData::ObjectData& objectData);

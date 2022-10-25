@@ -40,8 +40,6 @@ public:
 	/// </summary>
 	void Draw() override;
 
-
-
 	/// <summary>
 	/// ゲームシーン用
 	/// </summary>

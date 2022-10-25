@@ -8,13 +8,3 @@ VSOutput main(float4 pos : POSITION, float3 normal : NORMAL, float2 uv : TEXCOOR
 	output.uv = uv;
 	return output;
 }
-
-//影用頂点座標変換(座標変換のみ)
-VSOutput shadowmain(float4 pos : POSITION, float3 normal : NORMAL, float2 uv : TEXCOORD)
-{
-	VSOutput output; // ピクセルシェーダーに渡す値
-	output.svpos = mul(lightMat, pos);
-	output.normal = normal;
-	output.uv = uv;
-	return output;
-}

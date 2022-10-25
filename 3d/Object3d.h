@@ -32,7 +32,6 @@ public: // サブクラス
 	struct ConstBufferDataB0
 	{
 		XMMATRIX mat;			// ３Ｄ変換行列 カメラ
-		XMMATRIX lightMat;		// ライトから見た
 		XMMATRIX shadow;		//影行列
 	};
 

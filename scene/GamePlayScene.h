@@ -5,6 +5,7 @@
 
 #include "BaseScene.h"
 #include "Sprite.h"
+#include "PostEffect.h"
 #include "Object3d.h"
 #include "MathObject.h"
 #include "ColliderObject.h"

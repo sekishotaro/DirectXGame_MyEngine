@@ -32,6 +32,7 @@ void TitleScene::Update()
 	DebugText::GetInstance()->Print(50, 20, 3, "fafa");
 }
 
+
 void TitleScene::Draw()
 {
 	// ゲームシーンの描画
@@ -72,3 +73,4 @@ void TitleScene::Draw()
 	// スプライト描画後処理
 	Sprite::PostDraw();
 }
+

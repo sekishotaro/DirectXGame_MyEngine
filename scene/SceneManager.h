@@ -23,7 +23,7 @@ public:
 	void SetSceneFactory(AbstractSceneFactory *sceneFactory) { sceneFactory_ = sceneFactory; }
 
 	/// <summary>
-	/// マイフレーム更新
+	/// 毎フレーム更新
 	/// </summary>
 	void Update();
 

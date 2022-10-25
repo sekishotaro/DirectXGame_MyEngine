@@ -1,7 +1,6 @@
 cbuffer cbuff0 : register(b0)
 {
 	matrix mat; // ３Ｄ変換行列
-	matrix lightMat;
 	matrix shadow;		//影行列
 };
 

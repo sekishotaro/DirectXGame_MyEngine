@@ -392,6 +392,7 @@ void JsonLoader::Draw()
 	}
 }
 
+
 void JsonLoader::TypeSetModel( LevelData::ObjectData& objectData)
 {
 	//ファイル名から登録済みモデルを検索

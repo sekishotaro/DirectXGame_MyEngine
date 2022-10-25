@@ -105,8 +105,6 @@ void GamePlayScene::Initialize()
 
 	collisionManager = CollisionManager::GetInstance();
 	objFighter = Player::Create(modelFighter);
-	
-	//コライダーの追加
 }
 
 void GamePlayScene::Finalize()
@@ -335,6 +333,7 @@ void GamePlayScene::Draw()
 	// デバッグテキストの描画
 	DebugText::GetInstance()->DrawAll(cmdList);
 
+	//ポストエフェクト
 	// スプライト描画後処理
 	Sprite::PostDraw();
 
