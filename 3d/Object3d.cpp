@@ -452,6 +452,7 @@ void Object3d::Draw()
 
 	// パイプラインステートの設定
 	cmdList->SetPipelineState(pipelinestate.Get());
+	
 	// ルートシグネチャの設定
 	cmdList->SetGraphicsRootSignature(rootsignature.Get());
 

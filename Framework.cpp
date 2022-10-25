@@ -106,8 +106,9 @@ void Framework::Draw()
 	dxCommon->PreDraw();
 	// コマンドリストの取得
 	//ID3D12GraphicsCommandList *cmdList = dxCommon->GetCmdList();
-	//SceneManager::GetInstance()->Draw();
-	postEffect->Draw(dxCommon->GetCmdList());
+	postEffect->Draw(dxCommon->GetCmdList()); //レンダリングの描画処理
+
+	SceneManager::GetInstance()->Draw();
 	// 描画終了
 	dxCommon->PostDraw();
 }
