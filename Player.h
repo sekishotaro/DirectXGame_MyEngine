@@ -96,5 +96,7 @@ private:
 	bool climbOperation = false;
 	//壁のぼり用保存めり込み法線
 	DirectX::XMVECTOR climbNormal;
+	//のぼり用板ポリとの当たり判定
+	bool climbWallHit = false;
 };
 

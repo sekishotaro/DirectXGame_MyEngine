@@ -494,6 +494,7 @@ bool Collision::CheckPlateRay(const Plate& plate, const Ray& ray)
 	if (CheckRay2Triangle(ray, pori1) == true) return true;
 	if (CheckRay2Triangle(ray, pori2) == true) return true;
 
+	return false;
 }
 
 bool Collision::CheckSphereBox(const SphereF& sphere, const Box& box)

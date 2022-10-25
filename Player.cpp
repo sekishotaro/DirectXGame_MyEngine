@@ -436,6 +436,12 @@ void Player::ClimbWallJudge(XMVECTOR move)
 
 	int isa = 0;
 
+	bool climbWallHit = false;
+
+	//押し出し方向ベクトル保存用
+	XMVECTOR pushvec = {};
+
+
 	for (int i = 0; i < (int)JsonLoader::climbWallObjects.size(); i++)
 	{
 		climbWall.position = XMLoadFloat3(&JsonLoader::climbWallObjects[i].get()->GetPosition());
@@ -450,6 +456,20 @@ void Player::ClimbWallJudge(XMVECTOR move)
 		climbWall.vert6 = XMLoadFloat3(&JsonLoader::climbWallObjects[i].get()->GetModel()->GetMeshes()[0]->GetVertices()[5].pos);
 
 		XMMATRIX matWorld = JsonLoader::climbWallObjects[i].get()->GetMatWorld();
+		
+		XMMATRIX matScale, matRot, matTrans;
+		// スケール、回転、平行移動行列の計算
+		matScale = XMMatrixScaling(JsonLoader::climbWallObjects[i].get()->GetScale().x, JsonLoader::climbWallObjects[i].get()->GetScale().y, JsonLoader::climbWallObjects[i].get()->GetScale().z);
+		matRot = XMMatrixIdentity();
+		matRot *= XMMatrixRotationZ(XMConvertToRadians(JsonLoader::climbWallObjects[i].get()->GetRotation().z));
+		matRot *= XMMatrixRotationX(XMConvertToRadians(JsonLoader::climbWallObjects[i].get()->GetRotation().x));
+		matRot *= XMMatrixRotationY(XMConvertToRadians(JsonLoader::climbWallObjects[i].get()->GetRotation().y));
+		matTrans = XMMatrixTranslation(JsonLoader::climbWallObjects[i].get()->GetPosition().x, JsonLoader::climbWallObjects[i].get()->GetPosition().y, JsonLoader::climbWallObjects[i].get()->GetPosition().z);
+		// ワールド行列の合成
+		matWorld = XMMatrixIdentity(); // 変形をリセット
+		matWorld *= matScale; // ワールド行列にスケーリングを反映
+		matWorld *= matRot; // ワールド行列に回転を反映
+		matWorld *= matTrans; // ワールド行列に平行移動を反映
 
 		climbWall.vert1 = XMVector3TransformNormal(climbWall.vert1, matWorld);
 		climbWall.vert2 = XMVector3TransformNormal(climbWall.vert2, matWorld);
@@ -467,9 +487,23 @@ void Player::ClimbWallJudge(XMVECTOR move)
 		climbWall.normal = XMVector3Cross(p0_p1, p0_p2);
 		climbWall.normal = XMVector3Normalize(climbWall.normal);
 
-		if (Collision::CheckPlateRay(climbWall, ray) == false) return;
-		break;
+		if (Collision::CheckPlateRay(climbWall, ray) == true)
+		{
+			climbWallHit = true; 
+			
+			pushvec = -climbWall.normal;
+		}
+		else
+		{
+			climbWallHit = false;
+		}
 	}
+
+	if (climbWallHit == false)
+	{
+		return;
+	}
+
 
 	//壁にめり込んでいる
 	if (climbOperation == false)
@@ -484,10 +518,9 @@ void Player::ClimbWallJudge(XMVECTOR move)
 		}
 	}
 
-
 	if (count == 60)
 	{
-		climbNormal = move;
+		climbNormal =  pushvec;
 		climbOperation = true;
 		count = 0;
 	}
