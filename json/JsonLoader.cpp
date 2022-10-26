@@ -337,17 +337,17 @@ void JsonLoader::Draw()
 	//当たり判定用オブジェクト
 	for (int i = 0; i < colliderObjects.size(); i++)
 	{
-		colliderObjects[i]->Draw();
+		//colliderObjects[i]->Draw();
 	}
 
 	for (int i = 0; i < crystalColliderObjects.size(); i++)
 	{
-		crystalColliderObjects[i]->Draw();
+		//crystalColliderObjects[i]->Draw();
 	}
 
 	for (int i = 0; i < groundColliderObjects.size(); i++)
 	{
-		groundColliderObjects[i]->Draw();
+		//groundColliderObjects[i]->Draw();
 	}
 
 	for (int i = 0; i < enemyNaviareaObjects.size(); i++)
