@@ -7,6 +7,7 @@
 #include <vector>
 #include "BaseCollider.h"
 #include "CollisionManager.h"
+
 using namespace std;
 
 #pragma comment(lib, "d3dcompiler.lib")
@@ -216,14 +217,16 @@ bool Object3d::InitializeGraphicsPipeline()
 	gpipeline.SampleDesc.Count = 1; // 1ピクセルにつき1回サンプリング
 
 	// デスクリプタレンジ
-	CD3DX12_DESCRIPTOR_RANGE descRangeSRV;
-	descRangeSRV.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0); // t0 レジスタ
+	CD3DX12_DESCRIPTOR_RANGE descRangeSRV1, descRangeSRV2;
+	descRangeSRV1.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0); // t0 レジスタ
+	descRangeSRV2.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 1); // t1 レジスタ
 
 	// ルートパラメータ
-	CD3DX12_ROOT_PARAMETER rootparams[3];
+	CD3DX12_ROOT_PARAMETER rootparams[4];
 	rootparams[0].InitAsConstantBufferView(0, 0, D3D12_SHADER_VISIBILITY_ALL);
 	rootparams[1].InitAsConstantBufferView(1, 0, D3D12_SHADER_VISIBILITY_ALL);
-	rootparams[2].InitAsDescriptorTable(1, &descRangeSRV, D3D12_SHADER_VISIBILITY_ALL);
+	rootparams[2].InitAsDescriptorTable(1, &descRangeSRV1, D3D12_SHADER_VISIBILITY_ALL);
+	rootparams[3].InitAsDescriptorTable(1, &descRangeSRV2, D3D12_SHADER_VISIBILITY_ALL);
 
 	// スタティックサンプラー
 	CD3DX12_STATIC_SAMPLER_DESC samplerDesc = CD3DX12_STATIC_SAMPLER_DESC(0);
@@ -303,25 +306,6 @@ bool Object3d::InitializeGraphicsPipeline()
 		exit(1);
 	}
 
-	// 頂点レイアウト
-	//D3D12_INPUT_ELEMENT_DESC inputLayout[] = {
-	//	{ // xy座標(1行で書いたほうが見やすい)
-	//		"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0,
-	//		D3D12_APPEND_ALIGNED_ELEMENT,
-	//		D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0
-	//	},
-	//	{ // 法線ベクトル(1行で書いたほうが見やすい)
-	//		"NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0,
-	//		D3D12_APPEND_ALIGNED_ELEMENT,
-	//		D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0
-	//	},
-	//	{ // uv座標(1行で書いたほうが見やすい)
-	//		"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0,
-	//		D3D12_APPEND_ALIGNED_ELEMENT,
-	//		D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0
-	//	},
-	//};
-
 	// グラフィックスパイプラインの流れを設定
 	//D3D12_GRAPHICS_PIPELINE_STATE_DESC gpipeline{};
 	gpipeline.VS = CD3DX12_SHADER_BYTECODE(vsBlob.Get());
@@ -364,7 +348,7 @@ bool Object3d::InitializeGraphicsPipeline()
 	gpipeline.SampleDesc.Count = 1; // 1ピクセルにつき1回サンプリング
 
 	// デスクリプタレンジ
-	//CD3DX12_DESCRIPTOR_RANGE descRangeSRV;
+	CD3DX12_DESCRIPTOR_RANGE descRangeSRV;
 	descRangeSRV.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0); // t0 レジスタ
 
 	// ルートパラメータ
@@ -433,6 +417,8 @@ void Object3d::Update()
 	constMap->mat = matWorld * matViewProjection;	// 行列の合成
 	constMap->shadow = matWorld * matViewProjection2;
 	constBuffB0->Unmap(0, nullptr);
+
+
 
 	//当たり判定更新
 	if (collider)

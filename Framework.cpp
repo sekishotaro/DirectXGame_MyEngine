@@ -57,9 +57,10 @@ void Framework::Initialize()
 
 	FbxLoader::GetInstance()->Initialize(DirectXCommon::GetInstance()->GetDev());
 
-	//ポストエフェクトの初期化
-	postEffect = new PostEffect();
-	postEffect->Initialize();
+
+	//シャドウマップ
+	shadowMap = new ShadowMap();
+	shadowMap->Initialize();
 }
 
 void Framework::Finalize()
@@ -74,7 +75,7 @@ void Framework::Finalize()
 
 	FbxLoader::GetInstance()->Finalize();
 
-	delete postEffect;
+	delete shadowMap;
 }
 
 void Framework::Update()
@@ -97,18 +98,20 @@ void Framework::Update()
 void Framework::Draw()
 {
 	//レンダリング
-	postEffect->PreDrawScene(dxCommon->GetCmdList());
+	shadowMap->PreDrawScene(dxCommon->GetCmdList());
 	SceneManager::GetInstance()->ShadowDraw();
-	postEffect->PostDrawScene(dxCommon->GetCmdList());
-	
+	shadowMap->PostDrawScene(dxCommon->GetCmdList());
 
 	// 描画開始
 	dxCommon->PreDraw();
 	// コマンドリストの取得
-	//ID3D12GraphicsCommandList *cmdList = dxCommon->GetCmdList();
-	postEffect->Draw(dxCommon->GetCmdList()); //レンダリングの描画処理
+	//postEffect->Draw(dxCommon->GetCmdList()); //レンダリングの描画処理
+	
+	//SceneManager::GetInstance()->Draw();
+	shadowMap->Draw(dxCommon->GetCmdList());
 
-	SceneManager::GetInstance()->Draw();
+	//SceneManager::GetInstance()->Draw();
+
 	// 描画終了
 	dxCommon->PostDraw();
 }

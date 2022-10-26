@@ -128,13 +128,6 @@ void Light::UpdateViewMatrix()
 
 void Light::UpdateProjectionMatrix()
 {
-	//// “§‹“Š‰e‚É‚æ‚éË‰es—ñ‚Ì¶¬
-	//matProjection = XMMatrixPerspectiveFovLH(
-	//	XMConvertToRadians(60.0f),
-	//	aspectRatio,
-	//	0.1f, 1000.0f
-	//);
-
 	// Ë‰es—ñŒvZ
 	matProjection = XMMatrixOrthographicLH(
 		window_width,

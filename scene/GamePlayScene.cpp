@@ -364,7 +364,6 @@ void GamePlayScene::ShadowDraw()
 	
 	// 深度バッファクリア
 	DirectXCommon::GetInstance()->ClearDepthBuffer();
-	
 
 	// 3Dオブジェクト描画前処理
 	Object3d::PreDraw(cmdList);

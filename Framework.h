@@ -16,6 +16,7 @@
 #include "Camera.h"
 
 #include "PostEffect.h"
+#include "ShadowMap.h"
 #include "imguiManager.h"
 
 /// <summary>
@@ -70,6 +71,7 @@ protected:
 	//シーンファクトリー
 	std::unique_ptr<AbstractSceneFactory> sceneFactory_;
 
-	PostEffect* postEffect = nullptr;
+	//PostEffect* postEffect = nullptr;
+	ShadowMap* shadowMap = nullptr;
 };
 

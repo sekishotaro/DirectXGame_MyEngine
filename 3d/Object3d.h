@@ -102,8 +102,6 @@ public: // 静的メンバ関数
 private: // 静的メンバ変数
 	// デバイス
 	static ID3D12Device* device;
-	// デスクリプタサイズ
-	//static UINT descriptorHandleIncrementSize;
 	// コマンドリスト
 	static ID3D12GraphicsCommandList* cmdList;
 	// ルートシグネチャ
@@ -233,7 +231,6 @@ public: // メンバ関数
 
 protected: // メンバ変数
 	ComPtr<ID3D12Resource> constBuffB0; // 定数バッファ
-	ComPtr<ID3D12Resource> _lightDepthBuffer; //シャドウマップ用深度バッファ
 
 	// 色
 	XMFLOAT4 color = { 1,1,1,1 };

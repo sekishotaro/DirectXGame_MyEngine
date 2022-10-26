@@ -123,15 +123,6 @@ void Mesh::Draw(ID3D12GraphicsCommandList* cmdList)
 	ID3D12Resource* constBuff = material->GetConstantBuffer();
 	cmdList->SetGraphicsRootConstantBufferView(1, constBuff->GetGPUVirtualAddress());
 
-	//定数バッファビューをセット (マテリアル)
-	//cmdList->SetGraphicsRootConstantBufferView(rootParamIndexMaterial, constBuffB1->GetGPUVirtualAddress());
-
-	//if (material.textureFilename.size() > 0)
-	//{
-	//	//シェーダリソースビューをセット
-	//	cmdList->SetGraphicsRootDescriptorTable(2, gpuDescHandleSRV);
-	//}
-
 	// 描画コマンド
 	cmdList->DrawIndexedInstanced((UINT)indices.size(), 1, 0, 0, 0);
 }

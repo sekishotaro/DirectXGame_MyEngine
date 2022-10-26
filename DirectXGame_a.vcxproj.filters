@@ -22,6 +22,7 @@
     <None Include="Resources\shaders\PostEffectTest.hlsli" />
     <None Include="Resources\shaders\ColliderOBJ.hlsli" />
     <None Include="Resources\shaders\MathObject.hlsli" />
+    <None Include="Resources\shaders\ShadowMap.hlsli" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Resources\shaders\BasicPS.hlsl" />
@@ -40,6 +41,8 @@
     <FxCompile Include="Resources\shaders\MathObjectVS.hlsl" />
     <FxCompile Include="Resources\shaders\OBJShadowShaderVS.hlsl" />
     <FxCompile Include="Resources\shaders\OBJShadowShaderPS.hlsl" />
+    <FxCompile Include="Resources\shaders\ShadowMapVS.hlsl" />
+    <FxCompile Include="Resources\shaders\ShadowMapPS.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -187,6 +190,9 @@
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Light.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="2d\ShadowMap.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
@@ -357,6 +363,9 @@
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="Light.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="2d\ShadowMap.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>
