@@ -48,7 +48,7 @@ void GamePlayScene::Initialize()
 	// 背景スプライト生成
 	spriteBG = Sprite::Create(1, { 0.0f,0.0f });
 
-	modelFighter = Model::LoadFromOBJ("modelOb1");
+	modelFighter = Model::LoadFromOBJ("modelObj");
 
 	//モデル名を指定してファイル読み込み
 	//fbxModel1 = FbxLoader::GetInstance()->LoadModelFromFile("model");
