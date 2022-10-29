@@ -121,11 +121,43 @@ void Player::Update()
 	{
 		if (input->PushKey(DIK_A))
 		{
+			if (climbNormal.m128_f32[2] == 1.0f)
+			{
+				position.x += 1.0f;
+			}
+			else if (climbNormal.m128_f32[2] == -1.0f)
+			{
+				position.x -= 1.0f;
+			}
 
+			if (climbNormal.m128_f32[0] == 1.0f)
+			{
+				position.x -= 1.0f;
+			}
+			else if (climbNormal.m128_f32[0] == -1.0f)
+			{
+				position.z += 1.0f;
+			}
 		}
 		else if (input->PushKey(DIK_D))
 		{
+			if (climbNormal.m128_f32[2] == 1.0f)
+			{
+				position.x -= 1.0f;
+			}
+			else if (climbNormal.m128_f32[2] == -1.0f)
+			{
+				position.x += 1.0f;
+			}
 
+			if (climbNormal.m128_f32[0] == 1.0f)
+			{
+				position.x += 1.0f;
+			}
+			else if (climbNormal.m128_f32[0] == -1.0f)
+			{
+				position.z -= 1.0f;
+			}
 		}
 		else if (input->PushKey(DIK_S))
 		{
@@ -169,7 +201,7 @@ void Player::Update()
 	{
 		onGround = false;
 		nowMove = true;
-		const float jumpVYFist = 0.5f; //ジャンプ時上向き初速
+		const float jumpVYFist = 1.5f; //ジャンプ時上向き初速
 		 fallV = { 0, jumpVYFist, 0,0 };
 	}
 	// ワールド行列更新
@@ -428,13 +460,13 @@ void Player::PushBack(const DirectX::XMVECTOR& normal, const XMFLOAT3& distance)
 void Player::ClimbWallJudge(XMVECTOR move)
 {
 	//壁のぼり用板ポリに当たっているかの判別
-	std::vector <Plate> climbWalls;
 	Plate climbWall;
+	
+	Box climbWallBox;
+
 	Ray ray;
 	ray.start = XMLoadFloat3(&pos);
 	ray.dir = move;
-
-	int isa = 0;
 
 	bool climbWallHit = false;
 
@@ -456,20 +488,6 @@ void Player::ClimbWallJudge(XMVECTOR move)
 		climbWall.vert6 = XMLoadFloat3(&JsonLoader::climbWallObjects[i].get()->GetModel()->GetMeshes()[0]->GetVertices()[5].pos);
 
 		XMMATRIX matWorld = JsonLoader::climbWallObjects[i].get()->GetMatWorld();
-		
-		XMMATRIX matScale, matRot, matTrans;
-		// スケール、回転、平行移動行列の計算
-		matScale = XMMatrixScaling(JsonLoader::climbWallObjects[i].get()->GetScale().x, JsonLoader::climbWallObjects[i].get()->GetScale().y, JsonLoader::climbWallObjects[i].get()->GetScale().z);
-		matRot = XMMatrixIdentity();
-		matRot *= XMMatrixRotationZ(XMConvertToRadians(JsonLoader::climbWallObjects[i].get()->GetRotation().z));
-		matRot *= XMMatrixRotationX(XMConvertToRadians(JsonLoader::climbWallObjects[i].get()->GetRotation().x));
-		matRot *= XMMatrixRotationY(XMConvertToRadians(JsonLoader::climbWallObjects[i].get()->GetRotation().y));
-		matTrans = XMMatrixTranslation(JsonLoader::climbWallObjects[i].get()->GetPosition().x, JsonLoader::climbWallObjects[i].get()->GetPosition().y, JsonLoader::climbWallObjects[i].get()->GetPosition().z);
-		// ワールド行列の合成
-		matWorld = XMMatrixIdentity(); // 変形をリセット
-		matWorld *= matScale; // ワールド行列にスケーリングを反映
-		matWorld *= matRot; // ワールド行列に回転を反映
-		matWorld *= matTrans; // ワールド行列に平行移動を反映
 
 		climbWall.vert1 = XMVector3TransformNormal(climbWall.vert1, matWorld);
 		climbWall.vert2 = XMVector3TransformNormal(climbWall.vert2, matWorld);
@@ -487,11 +505,33 @@ void Player::ClimbWallJudge(XMVECTOR move)
 		climbWall.normal = XMVector3Cross(p0_p1, p0_p2);
 		climbWall.normal = XMVector3Normalize(climbWall.normal);
 
-		if (Collision::CheckPlateRay(climbWall, ray) == true)
+
+		climbWallBox.centerPos = JsonLoader::climbWallObjects[i].get()->GetPosition();
+		climbWallBox.size = JsonLoader::climbWallObjects[i].get()->GetScale();
+
+		XMVECTOR size = XMLoadFloat3(&JsonLoader::climbWallObjects[i].get()->GetScale());
+		XMMATRIX matRot;
+		matRot = XMMatrixIdentity();
+		matRot *= XMMatrixRotationZ(XMConvertToRadians(JsonLoader::climbWallObjects[i].get()->GetRotation().z));
+		matRot *= XMMatrixRotationX(XMConvertToRadians(JsonLoader::climbWallObjects[i].get()->GetRotation().x));
+		matRot *= XMMatrixRotationY(XMConvertToRadians(JsonLoader::climbWallObjects[i].get()->GetRotation().y));
+		size = XMVector3TransformNormal(size, matRot);
+		size = XMVectorAbs(size);
+
+		climbWallBox.size.x = XMVectorGetX(size);
+		climbWallBox.size.y = XMVectorGetY(size);
+		climbWallBox.size.z = XMVectorGetZ(size);
+
+		climbWallBox.LeastPos = XMFLOAT3(climbWallBox.centerPos.x - climbWallBox.size.x, climbWallBox.centerPos.y - climbWallBox.size.y, climbWallBox.centerPos.z - climbWallBox.size.z);
+		climbWallBox.MaxPos = XMFLOAT3(climbWallBox.centerPos.x + climbWallBox.size.x, climbWallBox.centerPos.y + climbWallBox.size.y, climbWallBox.centerPos.z + climbWallBox.size.z);
+
+		if (Collision::CheckBoxDot(climbWallBox, pos) == true)
 		{
-			climbWallHit = true; 
-			
+			climbWallHit = true;
+
 			pushvec = -climbWall.normal;
+
+			break;
 		}
 		else
 		{
@@ -501,6 +541,7 @@ void Player::ClimbWallJudge(XMVECTOR move)
 
 	if (climbWallHit == false)
 	{
+		climbOperation = false;
 		return;
 	}
 

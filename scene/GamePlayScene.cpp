@@ -75,7 +75,7 @@ void GamePlayScene::Initialize()
 	//colliderObject->SetScale(Player::GetSize());
 	
 	//json
-	JsonLoader::LoadFile("Scene10_18"); //オブジェクトの当たり判定
+	JsonLoader::LoadFile("Scene10_29"); //オブジェクトの当たり判定
 
 	//JsonLoader::LoadFile("Scene9_27"); //メッシュコライダー
 	

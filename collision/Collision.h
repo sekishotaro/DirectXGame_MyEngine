@@ -126,6 +126,8 @@ public:
 	/// <returns>åç∑ÇµÇƒÇ¢ÇÈÇ©î€Ç©</returns>
 	static bool Check2Box(const Box& box1, const Box& box2, XMFLOAT3& distance);
 
+	static bool CheckBoxDot(const Box& box, const XMFLOAT3& dot);
+
 	static bool Check2LineSegment(const LineSegment& line1, const LineSegment& line2);
 
 	static bool CheckPlateRay(const Plate& plate, const Ray& ray);

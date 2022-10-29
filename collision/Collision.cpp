@@ -426,6 +426,38 @@ bool Collision::Check2Box(const Box& box1, const Box& box2, XMFLOAT3& distance)
 	return true;
 }
 
+bool Collision::CheckBoxDot(const Box& box, const XMFLOAT3& dot)
+{
+	if (dot.x < box.LeastPos.x)
+	{
+		return false;
+	}
+	if (box.MaxPos.x < dot.x)
+	{
+		return false;
+	}
+
+	if (dot.y< box.LeastPos.y)
+	{
+		return false;
+	}
+	if (box.MaxPos.y < dot.y)
+	{
+		return false;
+	}
+
+	if (dot.z < box.LeastPos.z)
+	{
+		return false;
+	}
+	if (box.MaxPos.z < dot.z)
+	{
+		return false;
+	}
+
+	return true;
+}
+
 bool Collision::Check2LineSegment(const LineSegment& line1, const LineSegment& line2)
 {
 
