@@ -55,6 +55,7 @@ public:
     //グラフィックスパイプライン
     ComPtr<ID3D12PipelineState> pipelineState;
     ComPtr<ID3D12RootSignature> rootSignature;
+   
 
     //画面クリアカラー
     static const float clearColor[4];

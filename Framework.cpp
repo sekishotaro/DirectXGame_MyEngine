@@ -102,6 +102,8 @@ void Framework::Draw()
 	SceneManager::GetInstance()->ShadowDraw();
 	shadowMap->PostDrawScene(dxCommon->GetCmdList());
 
+	shadowMap->rootSignature->GetDevice();
+
 	// 描画開始
 	dxCommon->PreDraw();
 	// コマンドリストの取得
