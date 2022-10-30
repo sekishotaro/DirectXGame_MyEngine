@@ -197,11 +197,11 @@ void Player::Update()
 		position.y += fallV.m128_f32[1];
 		position.z += fallV.m128_f32[2];
 	}
-	else if (Input::GetInstance()->TriggerKey(DIK_SPACE) && climbOperation == false)//ジャンプ
+	else if (Input::GetInstance()->PushGamePadButton(Buttun_RB) && climbOperation == false)//ジャンプ
 	{
 		onGround = false;
 		nowMove = true;
-		const float jumpVYFist = 1.5f; //ジャンプ時上向き初速
+		const float jumpVYFist = 0.5f; //ジャンプ時上向き初速
 		 fallV = { 0, jumpVYFist, 0,0 };
 	}
 	// ワールド行列更新

@@ -1,10 +1,11 @@
-#include <windows.h>
-#include <wrl.h>
-#define DIRECTINPUT_VERSION  0x0800   //DirectInputのバージョン指定
-#include <dinput.h>
-#include "WinApp.h"
-#include <DirectXMath.h>
 #pragma once
+#include "WinApp.h"
+#include <windows.h>
+#include <dinput.h>
+#include <wrl.h>
+#include <DirectXMath.h>
+
+#define DIRECTINPUT_VERSION  0x0800   //DirectInputのバージョン指定
 
 enum MouseButton
 {
@@ -12,6 +13,27 @@ enum MouseButton
 	Mouse_Right,		//右
 	Mouse_Middle		//真ん中
 };
+
+enum GamePadButton
+{
+	Buttun_A,
+	Buttun_B,
+	Buttun_X,
+	Buttun_Y,
+	Buttun_LB,
+	Buttun_RB,
+
+};
+
+enum GamePadLeftStick
+{
+	L_UP,
+	L_DOWN,
+	L_RIGHT,
+	L_LEFT,
+};
+
+
 
 //入力
 class Input
@@ -45,6 +67,7 @@ public: //メンバ関数
 
 	//更新
 	void Update();
+
 
 	///<summary>
 	/// キーの押下をチェック
@@ -87,26 +110,39 @@ public: //メンバ関数
 	//代入演算子の禁止
 	Input& operator = (const Input& input) = delete;
 
-private: //メンバ変数
-	//キーボードのデバイス
-	ComPtr<IDirectInputDevice8> devkeyboard;
-	//マウスのデバイス
-	ComPtr<IDirectInputDevice8> devMouse;
+	//ゲームパッドボタン
+	bool PushGamePadButton(GamePadButton gamePadButton);
 
+	//ゲームパッド左スティック
+	bool LeftStick(GamePadLeftStick stick);
+
+private: //メンバ変数
 	//DirectInputのインスタンス生成
 	ComPtr<IDirectInput8> dinput;
 
+	//キーボードのデバイス
+	ComPtr<IDirectInputDevice8> devkeyboard;
 	//全キーの状態
 	BYTE key[256] = {};
-	DIMOUSESTATE2 mouse;
-
 	//前回の全キーの状態
 	BYTE keyPre[256] = {};
+
+	//マウスのデバイス
+	ComPtr<IDirectInputDevice8> devMouse;
+	//マウスの判定
+	DIMOUSESTATE2 mouse;
+	//前フレームの判定
 	DIMOUSESTATE2 mousePre;
+
+	//ゲームパッドのデバイス
+	ComPtr<IDirectInputDevice8> devGamePad;
+	//ゲームパッドの判定
+	DIJOYSTATE gamePad = {};
+	//前ゲームパッドの判定
+	DIJOYSTATE gamePadPre = {};
 
 	//WindowsAPI
 	WinApp *winApp = nullptr;
-
 	POINT p;
 	static XMFLOAT2 mousePos;
 	
