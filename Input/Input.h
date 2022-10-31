@@ -16,24 +16,44 @@ enum MouseButton
 
 enum GamePadButton
 {
-	Buttun_A,
-	Buttun_B,
-	Buttun_X,
-	Buttun_Y,
-	Buttun_LB,
-	Buttun_RB,
+	Button_A,
+	Button_B,
+	Button_X,
+	Button_Y,
+	Button_LB,
+	Button_RB,
+	Button_BACK,
+	Button_START,
+	Button_L_STICK,
+	Button_R_STICK,
+	Button_LT,				//反応なし
+	Button_RT,				//反応なし
+	Button_XBOX,			//反応なし
+};
 
+enum GamePadCrossButton
+{
+	Button_UP,
+	Button_RIGHT,
+	Button_DOWN,
+	Button_LEFT,
 };
 
 enum GamePadLeftStick
 {
 	L_UP,
-	L_DOWN,
 	L_RIGHT,
+	L_DOWN,
 	L_LEFT,
 };
 
-
+enum GamePadRightStick
+{
+	R_UP,
+	R_RIGHT,
+	R_DOWN,
+	R_LEFT,
+};
 
 //入力
 class Input
@@ -113,8 +133,22 @@ public: //メンバ関数
 	//ゲームパッドボタン
 	bool PushGamePadButton(GamePadButton gamePadButton);
 
+	//ゲームパッドボタン長押し不可
+	bool TriggerGamePadButton(GamePadButton gamePadButton);
+
+	//ゲームパッド十字ボタン
+	bool PushGamePadCrossButton(GamePadCrossButton gamePadCrossButton);
+
+	//ゲームパッド十字ボタン長押しナシ
+	bool TriggerGamePadCrossButton(GamePadCrossButton gamePadCrossButton);
+
 	//ゲームパッド左スティック
 	bool LeftStick(GamePadLeftStick stick);
+
+	XMFLOAT2 LeftStickMove();
+
+	//ゲームパッド右スティック
+	bool RightStick(GamePadRightStick stick);
 
 private: //メンバ変数
 	//DirectInputのインスタンス生成
@@ -140,6 +174,12 @@ private: //メンバ変数
 	DIJOYSTATE gamePad = {};
 	//前ゲームパッドの判定
 	DIJOYSTATE gamePadPre = {};
+	//ボタンデータ
+	bool is_push[4] = {};
+	//スティックの反応範囲
+	LONG responsive_range = 100;
+	//スティックの無反応範囲
+	LONG unresponsive_range = 20;
 
 	//WindowsAPI
 	WinApp *winApp = nullptr;

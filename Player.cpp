@@ -71,18 +71,16 @@ bool Player::Initialize()
 
 void Player::Update()
 {
-	Input* input = Input::GetInstance();
-
 	XMVECTOR move = { 0,0,0.1f,0 };
 
 	if (climbOperation == false)
 	{
 		//A,Dで旋回
-		if (input->PushKey(DIK_A))
+		if (Input::GetInstance()->LeftStick(L_LEFT))
 		{
 			rotation.y -= 2.0f;
 		}
-		else if (input->PushKey(DIK_D))
+		else if (Input::GetInstance()->LeftStick(L_RIGHT))
 		{
 			rotation.y += 2.0f;
 		}
@@ -93,19 +91,19 @@ void Player::Update()
 		move = XMVector3TransformNormal(move, matRot);
 		float power = 1.0f;
 		//向いている方向に移動
-		if (input->PushKey(DIK_V))
+		if (Input::GetInstance()->PushGamePadButton(Button_A))
 		{
 			power = 3.0f;
 		}
 
-		if (input->PushKey(DIK_S))
+		if (Input::GetInstance()->LeftStick(L_DOWN))
 		{
 			position.x -= move.m128_f32[0] * power;
 			position.y -= move.m128_f32[1] * power;
 			position.z -= move.m128_f32[2] * power;
 			nowMove = true;
 		}
-		else if (input->PushKey(DIK_W))
+		else if (Input::GetInstance()->LeftStick(L_UP))
 		{
 			position.x += move.m128_f32[0] * power;
 			position.y += move.m128_f32[1] * power;
@@ -119,7 +117,7 @@ void Player::Update()
 	}
 	else
 	{
-		if (input->PushKey(DIK_A))
+		if (Input::GetInstance()->PushKey(DIK_A))
 		{
 			if (climbNormal.m128_f32[2] == 1.0f)
 			{
@@ -139,7 +137,7 @@ void Player::Update()
 				position.z += 1.0f;
 			}
 		}
-		else if (input->PushKey(DIK_D))
+		else if (Input::GetInstance()->PushKey(DIK_D))
 		{
 			if (climbNormal.m128_f32[2] == 1.0f)
 			{
@@ -159,15 +157,15 @@ void Player::Update()
 				position.z -= 1.0f;
 			}
 		}
-		else if (input->PushKey(DIK_S))
+		else if (Input::GetInstance()->PushKey(DIK_S))
 		{
 			position.y -= 1.0f;
 		}
-		else if (input->PushKey(DIK_W))
+		else if (Input::GetInstance()->PushKey(DIK_W))
 		{
 			position.y += 1.0f;
 		}
-		else if (input->PushKey(DIK_P))
+		else if (Input::GetInstance()->PushKey(DIK_P))
 		{
 			climbOperation = false;
 			position.x += climbNormal.m128_f32[0];
@@ -197,7 +195,7 @@ void Player::Update()
 		position.y += fallV.m128_f32[1];
 		position.z += fallV.m128_f32[2];
 	}
-	else if (Input::GetInstance()->PushGamePadButton(Buttun_RB) && climbOperation == false)//ジャンプ
+	else if (Input::GetInstance()->TriggerGamePadButton(Button_Y) && climbOperation == false)//ジャンプ
 	{
 		onGround = false;
 		nowMove = true;
