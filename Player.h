@@ -48,11 +48,43 @@ public:
 	/// <param name="info">衝突情報</param>
 	void OnCollision(const CollisionInfo& info) override;
 
+
+private:
 	void PushBack(const DirectX::XMVECTOR& normal, const XMFLOAT3& distance);
 
 	void ClimbWallJudge(const DirectX::XMVECTOR move);
 
+	/// <summary>
+	/// 移動処理
+	/// </summary>
+	void MoveOperation(DirectX::XMVECTOR& move);
 
+	/// <summary>
+	/// クリスタル処理
+	/// </summary>
+	void CrystalConfirmationProcess();
+
+	/// <summary>
+	/// ゴール接触確認処理
+	/// </summary>
+	void GoalConfirmationProcess();
+
+	/// <summary>
+	/// 障害物接触処理
+	/// </summary>
+	void ObstacleConfirmationProcess(const DirectX::XMVECTOR& move);
+
+	/// <summary>
+	/// 重力処理
+	/// </summary>
+	void GravityConfirmationProcess();
+
+	/// <summary>
+	/// 地形接触判定(メッシュコライダー)
+	/// </summary>
+	void TerrainConfirmationProcess();
+
+public:
 	//デバック用ゲッター
 	static XMFLOAT3 GetPos() { return pos; }
 
@@ -65,6 +97,9 @@ public:
 	static int GetCrystal() { return crystalNum; }
 
 	static bool &GetGoalFlag() { return goalFlag; }
+
+	static bool &GetWallHitFlag() { return climbOperation; }
+
 
 private:
 	//接地フラグ
@@ -93,10 +128,13 @@ private:
 	static int crystalNum;
 
 	int count = 0;
-	bool climbOperation = false;
+
+	static bool climbOperation;
 	//壁のぼり用保存めり込み法線
 	DirectX::XMVECTOR climbNormal;
 	//のぼり用板ポリとの当たり判定
-	bool climbWallHit = false;
+	static bool climbWallHit;
+	//前フレームの当たり判定の結果
+	bool climbWallHitPar = false;
 };
 

@@ -23,13 +23,19 @@ void DebugCamera::Update()
 	static XMFLOAT3 pos = { 0, 5.0f, -10.0};
 	
 	//ƒJƒƒ‰‚ÌˆÚ“®
-	// ˆÚ“®Œã‚ÌÀ•W‚ðŒvŽZ
-	//if (Input::GetInstance()->RightStick(R_UP)) { pos.y += 1.0f; }
-	//else if (Input::GetInstance()->RightStick(R_DOWN)) { pos.y -= 1.0f; }
-	//if (Input::GetInstance()->RightStick(R_RIGHT)) { pos.x += 1.0f; }
-	//else if (Input::GetInstance()->RightStick(R_LEFT)) { pos.x -= 1.0f; }
-	//if (Input::GetInstance()->PushKey(DIK_E)) { pos.z += 1.0f; }
-	//else if (Input::GetInstance()->PushKey(DIK_Z)) { pos.z -= 1.0f; }
+	if (Input::GetInstance()->PushKey(DIK_UP)) { pos.y += 1.0f; }
+	else if (Input::GetInstance()->PushKey(DIK_DOWN)) { pos.y -= 1.0f; }
+	if (Input::GetInstance()->PushKey(DIK_RIGHT)) { pos.x += 1.0f; }
+	else if (Input::GetInstance()->PushKey(DIK_LEFT)) { pos.x -= 1.0f; }
+	if (Input::GetInstance()->PushKey(DIK_E)) { pos.z += 1.0f; }
+	else if (Input::GetInstance()->PushKey(DIK_Z)) { pos.z -= 1.0f; }
+
+	if (Input::GetInstance()->RightStickIn(UP)) { pos.y += 1.0f; }
+	else if (Input::GetInstance()->RightStickIn(DOWN)) { pos.y -= 1.0f; }
+	if (Input::GetInstance()->RightStickIn(RIGHT)) { pos.x += 1.0f; }
+	else if (Input::GetInstance()->RightStickIn(LEFT)) { pos.x -= 1.0f; }
+	if (Input::GetInstance()->PushPadbutton(GAMEPAD_LEFT_TRIGGER)) { pos.z += 1.0f; }
+	else if (Input::GetInstance()->PushPadbutton(GAMEPAD_RIGHT_TRIGGER)) { pos.z -= 1.0f; }
 
 	cameraPos.x += pos.x;
 	cameraPos.y += pos.y;

@@ -4,6 +4,9 @@
 #include <dinput.h>
 #include <wrl.h>
 #include <DirectXMath.h>
+#include <Xinput.h>
+
+#pragma comment (lib, "xinput.lib")
 
 #define DIRECTINPUT_VERSION  0x0800   //DirectInputのバージョン指定
 
@@ -14,46 +17,34 @@ enum MouseButton
 	Mouse_Middle		//真ん中
 };
 
-enum GamePadButton
+enum PadButton
 {
+	GAMEPAD_DPAD_UP,
+	GAMEPAD_DPAD_DOWN,
+	GAMEPAD_DPAD_LEFT,
+	GAMEPAD_DPAD_RIGHT,
+	GAMEPAD_START,
+	GAMEPAD_BACK,
+	GAMEPAD_LEFT_THUMB,
+	GAMEPAD_RIGHT_THUMB,
+	GAMEPAD_LEFT_SHOULDER,
+	GAMEPAD_RIGHT_SHOULDER,
 	Button_A,
 	Button_B,
 	Button_X,
 	Button_Y,
-	Button_LB,
-	Button_RB,
-	Button_BACK,
-	Button_START,
-	Button_L_STICK,
-	Button_R_STICK,
-	Button_LT,				//反応なし
-	Button_RT,				//反応なし
-	Button_XBOX,			//反応なし
+	GAMEPAD_LEFT_TRIGGER,
+	GAMEPAD_RIGHT_TRIGGER,
 };
 
-enum GamePadCrossButton
+enum PadStick
 {
-	Button_UP,
-	Button_RIGHT,
-	Button_DOWN,
-	Button_LEFT,
+	UP,
+	RIGHT,
+	DOWN,
+	LEFT,
 };
 
-enum GamePadLeftStick
-{
-	L_UP,
-	L_RIGHT,
-	L_DOWN,
-	L_LEFT,
-};
-
-enum GamePadRightStick
-{
-	R_UP,
-	R_RIGHT,
-	R_DOWN,
-	R_LEFT,
-};
 
 //入力
 class Input
@@ -125,30 +116,18 @@ public: //メンバ関数
 	/// <returns></returns>
 	static XMFLOAT2 GetMousePos() { return mousePos; }
 
+
+	//パッドのボタン入力
+	bool PushPadbutton(int num);
+	//パッドの左スティック入力
+	bool LeftStickIn(PadStick stick);
+	//パッドの右スティック入力
+	bool RightStickIn(PadStick stick);
+
 	//コピーコンストラクタの禁止
 	Input(const Input& input) = delete;
 	//代入演算子の禁止
 	Input& operator = (const Input& input) = delete;
-
-	//ゲームパッドボタン
-	bool PushGamePadButton(GamePadButton gamePadButton);
-
-	//ゲームパッドボタン長押し不可
-	bool TriggerGamePadButton(GamePadButton gamePadButton);
-
-	//ゲームパッド十字ボタン
-	bool PushGamePadCrossButton(GamePadCrossButton gamePadCrossButton);
-
-	//ゲームパッド十字ボタン長押しナシ
-	bool TriggerGamePadCrossButton(GamePadCrossButton gamePadCrossButton);
-
-	//ゲームパッド左スティック
-	bool LeftStick(GamePadLeftStick stick);
-
-	XMFLOAT2 LeftStickMove();
-
-	//ゲームパッド右スティック
-	bool RightStick(GamePadRightStick stick);
 
 private: //メンバ変数
 	//DirectInputのインスタンス生成
@@ -168,18 +147,11 @@ private: //メンバ変数
 	//前フレームの判定
 	DIMOUSESTATE2 mousePre;
 
-	//ゲームパッドのデバイス
-	ComPtr<IDirectInputDevice8> devGamePad;
-	//ゲームパッドの判定
-	DIJOYSTATE gamePad = {};
-	//前ゲームパッドの判定
-	DIJOYSTATE gamePadPre = {};
-	//ボタンデータ
-	bool is_push[4] = {};
-	//スティックの反応範囲
-	LONG responsive_range = 100;
-	//スティックの無反応範囲
-	LONG unresponsive_range = 20;
+	//コントローラー
+	XINPUT_STATE state;
+	float stickDistance = 50.0f;
+	#define XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE  7849
+	#define XINPUT_GAMEPAD_RIGHT_THUMB_DEADZONE 8689
 
 	//WindowsAPI
 	WinApp *winApp = nullptr;

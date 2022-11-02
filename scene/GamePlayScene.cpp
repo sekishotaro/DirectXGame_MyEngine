@@ -75,7 +75,7 @@ void GamePlayScene::Initialize()
 	//colliderObject->SetScale(Player::GetSize());
 	
 	//json
-	JsonLoader::LoadFile("Scene10_29"); //オブジェクトの当たり判定
+	JsonLoader::LoadFile("Scene11_01"); //オブジェクトの当たり判定
 
 	//JsonLoader::LoadFile("Scene9_27"); //メッシュコライダー
 	
@@ -325,5 +325,6 @@ void GamePlayScene::Draw()
 	ImGui::Text("cameraZ :%.4f", camera->GetEye().z);
 	ImGui::Text("crystal :%d", objFighter->GetCrystal());
 	ImGui::Checkbox("GoalFlag", &objFighter->GetGoalFlag());
+	ImGui::Checkbox("Wall", &objFighter->GetWallHitFlag());
 	imguiManager::PosDraw();
 }
