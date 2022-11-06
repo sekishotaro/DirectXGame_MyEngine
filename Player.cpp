@@ -52,9 +52,9 @@ bool Player::Initialize()
 		return false;
 	}
 
-	position.x = JsonLoader::goalObjects[0].get()->GetPosition().x;
-	position.y = JsonLoader::goalObjects[0].get()->GetPosition().y +5.0f;
-	position.z = JsonLoader::goalObjects[0].get()->GetPosition().z;
+	position.x = 25;
+	position.y = 30;
+	position.z = 135;
 
 	//コライダーの追加
 	float radius = 0.6f;
@@ -545,7 +545,7 @@ void Player::GravityConfirmationProcess()
 	{
 		onGround = false;
 		nowMove = true;
-		const float jumpVYFist = 0.5f; //ジャンプ時上向き初速
+		const float jumpVYFist = 1.0f; //ジャンプ時上向き初速
 		fallV = { 0, jumpVYFist, 0,0 };
 	}
 	// ワールド行列更新
