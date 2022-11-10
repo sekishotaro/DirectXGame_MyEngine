@@ -293,7 +293,7 @@ bool Collision::CheckLineSegmentBox(const LineSegment& line, const Box& box)
 bool Collision::CheckRayBox(const Ray& ray, const Box& box)
 {
 	int sign = 0;
-	XMFLOAT3 pos[4];
+	XMFLOAT3 pos[4] = {};
 	pos[0] = { box.LeastPos.x, box.LeastPos.y, box.LeastPos.z };
 	pos[1] = { box.LeastPos.x, box.LeastPos.y,   box.MaxPos.z };
 	pos[2] = { box.MaxPos.x, box.LeastPos.y,   box.MaxPos.z };
@@ -511,8 +511,9 @@ bool Collision::CheckPlateRay(const Plate& plate, const Ray& ray)
 
 	//ŽOŠpƒ|ƒŠƒSƒ“‚Æ‚Ì“–‚½‚è”»’è‚ð’²‚×‚é
 
-	Triangle pori1, pori2;
-	
+	Triangle pori1 = {};
+	Triangle pori2 = {};
+
 	pori1.p0 = plate.vert1;
 	pori1.p1 = plate.vert2;
 	pori1.p2 = plate.vert3;

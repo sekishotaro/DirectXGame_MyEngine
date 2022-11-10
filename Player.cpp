@@ -18,6 +18,9 @@ bool Player::adhesionMesh = false;
 int Player::crystalNum = 0;
 bool Player::goalFlag = false;
 bool Player::climbOperation = false;
+float Player::timeLimit = 10.0f;
+bool Player::staminaBoostFlag = false;
+float Player::staminaQuantity = 100.0f;
 
 Player* Player::Create(Model* model)
 {
@@ -52,9 +55,9 @@ bool Player::Initialize()
 		return false;
 	}
 
-	position.x = 25;
+	position.x = -52;
 	position.y = 30;
-	position.z = 135;
+	position.z = 50;
 
 	//コライダーの追加
 	float radius = 0.6f;
@@ -71,9 +74,11 @@ bool Player::Initialize()
 void Player::Update()
 {
 	//移動量初期化
-	XMVECTOR move = { 0,0,0.1f,0 };
+	XMVECTOR move = { 0,0,0.0f,0 };
 
 	MoveOperation(move);
+
+	StaminaManagement(move);
 
 	if (onObject)
 	{
@@ -91,11 +96,14 @@ void Player::Update()
 	//障害物(AABB)の衝突処理
 	ObstacleConfirmationProcess(move);
 
+	//ゴールとプレイヤーの当たり判定
+	GoalConfirmationProcess();
+
 	//クリスタルとの接触
 	CrystalConfirmationProcess();
 
-	//ゴールとプレイヤーの当たり判定
-	GoalConfirmationProcess();
+	//制限時間
+	TimeManagement();
 }
 
 void Player::OnCollision(const CollisionInfo& info)
@@ -221,19 +229,19 @@ void Player::ClimbWallJudge(XMVECTOR move)
 	{
 		if (move.m128_f32[0] != 0.0f || move.m128_f32[2] != 0.0f)
 		{
-			count++;
+			wallCount++;
 		}
 		else
 		{
-			count = 0;
+			wallCount = 0;
 		}
 	}
 
-	if (count == 3)
+	if (wallCount == 60)
 	{
 		climbNormal =  pushvec;
 		climbOperation = true;
-		count = 0;
+		wallCount = 0;
 	}
 }
 
@@ -271,7 +279,12 @@ void Player::MoveOperation(XMVECTOR& move)
 		//向いている方向に移動
 		if (Input::GetInstance()->PushKey(DIK_V))
 		{
+			staminaBoostFlag = true;
 			power = 3.0f;
+		}
+		else
+		{
+			staminaBoostFlag = false;
 		}
 
 		if (Input::GetInstance()->PushPadbutton(Button_A) == true)
@@ -293,12 +306,7 @@ void Player::MoveOperation(XMVECTOR& move)
 			position.z += move.m128_f32[2] * power;
 			nowMove = true;
 		}
-		else
-		{
-			nowMove = false;
-		}
-
-		if (Input::GetInstance()->LeftStickIn(DOWN))
+		else if (Input::GetInstance()->LeftStickIn(DOWN))
 		{
 			position.x -= move.m128_f32[0] * power;
 			position.y -= move.m128_f32[1] * power;
@@ -322,6 +330,15 @@ void Player::MoveOperation(XMVECTOR& move)
 	{
 		moveV = { 0,0,0 };
 
+		if (Input::GetInstance()->PushKey(DIK_V))
+		{
+			staminaBoostFlag = true;
+		}
+		else
+		{
+			staminaBoostFlag = false;
+		}
+
 		if (Input::GetInstance()->PushKey(DIK_A))
 		{
 			if (climbNormal.m128_f32[2] == 1.0f)
@@ -341,6 +358,8 @@ void Player::MoveOperation(XMVECTOR& move)
 			{
 				moveV.z += 0.5f;
 			}
+
+			nowMove = true;
 		}
 		else if (Input::GetInstance()->PushKey(DIK_D))
 		{
@@ -361,15 +380,23 @@ void Player::MoveOperation(XMVECTOR& move)
 			{
 				moveV.z -= 0.5f;
 			}
-		}
 
+			nowMove = true;
+		}
+		else
+		{
+			nowMove = false;
+		}
+		
 		if (Input::GetInstance()->PushKey(DIK_S))
 		{
 			moveV.y -= 0.5f;
+			nowMove = true;
 		}
 		else if (Input::GetInstance()->PushKey(DIK_W))
 		{
 			moveV.y += 0.5f;
+			nowMove = true;
 		}
 
 		if (Input::GetInstance()->PushKey(DIK_P))
@@ -415,6 +442,9 @@ void Player::CrystalConfirmationProcess()
 			JsonLoader::crystalObjects.erase(JsonLoader::crystalObjects.begin() + i);
 
 			crystalNum--;
+
+			//制限時間の初期化
+			timeLimit = 60.0f;
 		}
 	}
 }
@@ -577,6 +607,7 @@ void Player::TerrainConfirmationProcess()
 
 			//地面判定しきい値角度
 			const float threshold = cosf(XMConvertToRadians(45.0f));
+			
 			//角度差によって天井または地面と判定されるものを除いて
 			if (-threshold < cos && cos < threshold)
 			{
@@ -659,3 +690,28 @@ void Player::TerrainConfirmationProcess()
 
 }
 
+void Player::StaminaManagement(const DirectX::XMVECTOR& move)
+{
+	if (staminaBoostFlag != true || nowMove != true)
+	{
+		if (staminaQuantity >= 100.0f) return;
+		staminaQuantity += 0.5f;
+	}
+	else
+	{
+		if (staminaQuantity <= 0.0f) return;
+		staminaQuantity -= 1.0f;
+	}
+}
+
+void Player::TimeManagement()
+{
+	if (timeLimit <= 0)return;
+	
+	flame += 1.0f;
+	
+	if (flame != 60.0) return;
+	
+	timeLimit -= 1.0f;
+	flame = 0.0f;
+}

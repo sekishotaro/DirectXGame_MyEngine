@@ -84,6 +84,12 @@ private:
 	/// </summary>
 	void TerrainConfirmationProcess();
 
+	//スタミナ管理
+	void StaminaManagement(const DirectX::XMVECTOR& move);
+
+	//時間管理
+	void TimeManagement();
+
 public:
 	//デバック用ゲッター
 	static XMFLOAT3 GetPos() { return pos; }
@@ -100,6 +106,11 @@ public:
 
 	static bool &GetWallHitFlag() { return climbOperation; }
 
+	static float GetTimeLimit() { return timeLimit; }
+
+	static bool& GetStaminaFlag() { return staminaBoostFlag; }
+
+	static float& GetStaminaQuantity() { return staminaQuantity; }
 
 private:
 	//接地フラグ
@@ -118,7 +129,7 @@ private:
 	static bool goalFlag;
 
 	//落下ベクトル
-	DirectX::XMVECTOR fallV;
+	DirectX::XMVECTOR fallV = {};
 	//プレイヤーの位置
 
 	static XMFLOAT3 pos;
@@ -127,14 +138,28 @@ private:
 	//クリスタルの数
 	static int crystalNum;
 
-	int count = 0;
+	//ツタに当たった時のめり込み時カウント
+	int wallCount = 0;
 
 	static bool climbOperation;
 	//壁のぼり用保存めり込み法線
-	DirectX::XMVECTOR climbNormal;
+	DirectX::XMVECTOR climbNormal = {};
 	//のぼり用板ポリとの当たり判定
 	static bool climbWallHit;
 	//前フレームの当たり判定の結果
 	bool climbWallHitPar = false;
+	
+	//制限時間
+	static float timeLimit;
+	float flame = 0.0f;
+
+
+	//スタミナを使うか
+	static bool staminaBoostFlag;
+	//スタミナ残量
+	static float staminaQuantity;
+	//スタミナがなくなった時の回復時間
+	float forciblyRecoveryTime = 10.0f;
+
 };
 

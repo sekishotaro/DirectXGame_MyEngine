@@ -146,9 +146,9 @@ void JsonLoader::LoadFile(const std::string& fileName)
 					//colliderObjectData.rotation.m128_f32[2] = (float)collider["rotation"][0];
 					//colliderObjectData.rotation.m128_f32[3] = 0.0;
 					//スケーリング
-					colliderObjectData.scaling.m128_f32[0] = (float)collider["size"][1];
-					colliderObjectData.scaling.m128_f32[1] = (float)collider["size"][2];
-					colliderObjectData.scaling.m128_f32[2] = (float)collider["size"][0];
+					colliderObjectData.scaling.m128_f32[0] = (float)collider["size"][1] * objectData.scaling.m128_f32[0];
+					colliderObjectData.scaling.m128_f32[1] = (float)collider["size"][2] * objectData.scaling.m128_f32[1];
+					colliderObjectData.scaling.m128_f32[2] = (float)collider["size"][0] * objectData.scaling.m128_f32[2];
 					colliderObjectData.scaling.m128_f32[3] = 0.0;
 				}
 				objectData.colliderName = colliderObjectData.fileName;
