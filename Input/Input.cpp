@@ -21,29 +21,36 @@ Input *Input::GetInstance()
 
 void Input::Initialize(WinApp *winApp)
 {
+	HRESULT result;
+
 	//借りてきたWinAppのインスタンスを記録
 	this->winApp = winApp;
-
-	HRESULT result;
 
 	result = DirectInput8Create(
 		winApp->GetHInstance(), DIRECTINPUT_VERSION, IID_IDirectInput8, (void **)&dinput, nullptr);
 
 	//キーボードデバイス生成
 	result = dinput->CreateDevice(GUID_SysKeyboard, &devkeyboard, NULL);
-	//入力形式のセット
-	result = devkeyboard->SetDataFormat(&c_dfDIKeyboard);
-	//排他制御レベルのセット
-	result = devkeyboard->SetCooperativeLevel(
-		winApp->GetHwnd(), DISCL_FOREGROUND | DISCL_NONEXCLUSIVE | DISCL_NOWINKEY);
-
 	//マウス生成
 	result = dinput->CreateDevice(GUID_SysMouse, &devMouse, NULL);
-	//入力形式のセット
-	result = devMouse->SetDataFormat(&c_dfDIMouse2);
-	//排他制御レベルのセット
-	result = devMouse->SetCooperativeLevel(
-		winApp->GetHwnd(), DISCL_FOREGROUND | DISCL_NONEXCLUSIVE | DISCL_NOWINKEY);
+
+	if (devkeyboard != nullptr)
+	{
+		//入力形式のセット
+		result = devkeyboard->SetDataFormat(&c_dfDIKeyboard);
+		//排他制御レベルのセット
+		result = devkeyboard->SetCooperativeLevel(winApp->GetHwnd(), DISCL_FOREGROUND | DISCL_NONEXCLUSIVE | DISCL_NOWINKEY);
+	}
+	
+
+	if (devMouse != nullptr)
+	{
+		//入力形式のセット
+		result = devMouse->SetDataFormat(&c_dfDIMouse2);
+		//排他制御レベルのセット
+		result = devMouse->SetCooperativeLevel(winApp->GetHwnd(), DISCL_FOREGROUND | DISCL_NONEXCLUSIVE | DISCL_NOWINKEY);
+
+	}
 }
 
 void Input::Update()
@@ -51,6 +58,7 @@ void Input::Update()
 	HRESULT result;
 
 	//キーボード
+	if (devkeyboard != nullptr)
 	{
 		//キーボード情報の取得を開始
 		result = devkeyboard->Acquire();
@@ -62,6 +70,7 @@ void Input::Update()
 	}
 
 	//マウス
+	if (devMouse != nullptr)
 	{
 		//マウス情報の取得を開始
 		result = devMouse->Acquire();
@@ -71,7 +80,13 @@ void Input::Update()
 
 		result = devMouse->GetDeviceState(sizeof(mouse), &mouse);
 	}
-	
+
+	//ゲームパッド
+		//ゲームパッドの生成
+	if (XInputGetState(0, &state) != ERROR_SUCCESS)
+	{
+		//assert(0);
+	}
 }
 
 bool Input::PushKey(BYTE keyNumber)
@@ -130,5 +145,119 @@ Input::MousePos Input::MousePosLoad()
 	mpos.lY = mouse.lY;
 	mpos.lZ = mouse.lZ;
 	return mpos;
+}
+
+bool Input::PushPadbutton(int num)
+{
+	if (state.Gamepad.wButtons == XINPUT_GAMEPAD_DPAD_UP && num == GAMEPAD_DPAD_UP)
+	{
+		return true;
+	}
+	else if (state.Gamepad.wButtons == XINPUT_GAMEPAD_DPAD_DOWN && num == GAMEPAD_DPAD_DOWN)
+	{
+		return true;
+	}
+	else if (state.Gamepad.wButtons == XINPUT_GAMEPAD_DPAD_LEFT && num == GAMEPAD_DPAD_LEFT)
+	{
+		return true;
+	}
+	else if (state.Gamepad.wButtons == XINPUT_GAMEPAD_DPAD_RIGHT && num == GAMEPAD_DPAD_RIGHT)
+	{
+		return true;
+	}
+	else if (state.Gamepad.wButtons == XINPUT_GAMEPAD_START && num == GAMEPAD_START)
+	{
+		return true;
+	}
+	else if (state.Gamepad.wButtons == XINPUT_GAMEPAD_BACK && num == GAMEPAD_BACK)
+	{
+		return true;
+	}
+	else if (state.Gamepad.wButtons == XINPUT_GAMEPAD_LEFT_THUMB && num == GAMEPAD_LEFT_THUMB)
+	{
+		return true;
+	}
+	else if (state.Gamepad.wButtons == XINPUT_GAMEPAD_RIGHT_THUMB && num == GAMEPAD_RIGHT_THUMB)
+	{
+		return true;
+	}
+	else if (state.Gamepad.wButtons == XINPUT_GAMEPAD_LEFT_SHOULDER && num == GAMEPAD_LEFT_SHOULDER)
+	{
+		return true;
+	}
+	else if (state.Gamepad.wButtons == XINPUT_GAMEPAD_RIGHT_SHOULDER && num == GAMEPAD_RIGHT_SHOULDER)
+	{
+		return true;
+	}
+	else if (state.Gamepad.wButtons == XINPUT_GAMEPAD_A && num == Button_A)
+	{
+		return true;
+	}
+	else if (state.Gamepad.wButtons == XINPUT_GAMEPAD_B && num == Button_B)
+	{
+		return true;
+	}
+	else if (state.Gamepad.wButtons == XINPUT_GAMEPAD_X && num == Button_X)
+	{
+		return true;
+	}
+	else if (state.Gamepad.wButtons == XINPUT_GAMEPAD_Y && num == Button_Y)
+	{
+		return true;
+	}
+	else if (state.Gamepad.bLeftTrigger > XINPUT_GAMEPAD_TRIGGER_THRESHOLD && num == GAMEPAD_LEFT_TRIGGER)
+	{
+		return true;
+	}
+	else if (state.Gamepad.bRightTrigger > XINPUT_GAMEPAD_TRIGGER_THRESHOLD && num == GAMEPAD_RIGHT_TRIGGER)
+	{
+		return true;
+	}
+
+	return false;
+}
+
+bool Input::LeftStickIn(PadStick stick)
+{
+	if (state.Gamepad.sThumbLX < -XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE && stick == LEFT)
+	{
+		return true;
+	}
+	else if (state.Gamepad.sThumbLX > XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE && stick == RIGHT)
+	{
+		return true;
+	}
+	else if (state.Gamepad.sThumbLY < -XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE && stick == DOWN)
+	{
+		return true;
+	}
+	else if (state.Gamepad.sThumbLY > XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE && stick == UP)
+	{
+		return true;
+	}
+
+	return false;
+}
+
+bool Input::RightStickIn(PadStick stick)
+{
+	if (state.Gamepad.sThumbRX < -XINPUT_GAMEPAD_RIGHT_THUMB_DEADZONE && stick == LEFT)
+	{
+		return true;
+	}
+	else if (state.Gamepad.sThumbRX > XINPUT_GAMEPAD_RIGHT_THUMB_DEADZONE && stick == RIGHT)
+	{
+		return true;
+	}
+	else if (state.Gamepad.sThumbRY < -XINPUT_GAMEPAD_RIGHT_THUMB_DEADZONE && stick == DOWN)
+	{
+		return true;
+	}
+	else if (state.Gamepad.sThumbRY > XINPUT_GAMEPAD_RIGHT_THUMB_DEADZONE && stick == UP)
+	{
+		return true;
+	}
+
+	return false;
 }
 

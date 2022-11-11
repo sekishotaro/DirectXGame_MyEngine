@@ -5,122 +5,122 @@
 
 bool CollisionSet::PlayerWallCollisionFlag = false;
 
-void CollisionSet::CollisionCheck(const XMFLOAT3& pos, const XMFLOAT3& size, float& groundY)
-{
-	Box colPlayer;
-	colPlayer.centerPos = pos;
-	colPlayer.size = { size.x / 2, size.y, size.z / 2 };
-	colPlayer.MaxPos = { colPlayer.centerPos.x + colPlayer.size.x,colPlayer.centerPos.y + colPlayer.size.y,colPlayer.centerPos.z + colPlayer.size.z };
-	colPlayer.LeastPos = { colPlayer.centerPos.x - colPlayer.size.x,colPlayer.centerPos.y,colPlayer.centerPos.z - colPlayer.size.z };
+//void CollisionSet::CollisionCheck(const XMFLOAT3& pos, const XMFLOAT3& size, float& groundY)
+//{
+//	Box colPlayer;
+//	colPlayer.centerPos = pos;
+//	colPlayer.size = { size.x / 2, size.y, size.z / 2 };
+//	colPlayer.MaxPos = { colPlayer.centerPos.x + colPlayer.size.x,colPlayer.centerPos.y + colPlayer.size.y,colPlayer.centerPos.z + colPlayer.size.z };
+//	colPlayer.LeastPos = { colPlayer.centerPos.x - colPlayer.size.x,colPlayer.centerPos.y,colPlayer.centerPos.z - colPlayer.size.z };
+//
+//	Box colBox[4];
+//	for (int i = 0; i < JsonLoader::colliderObjects.size(); i++)
+//	{
+//		colBox[i].centerPos = JsonLoader::colliderObjects[i].get()->GetPosition();
+//		colBox[i].size = {JsonLoader::colliderObjects[i].get()->GetScale().x / 2, JsonLoader::colliderObjects[i].get()->GetScale().y / 2, JsonLoader::colliderObjects[i].get()->GetScale().z / 2};
+//		colBox[i].MaxPos = {colBox[i].centerPos.x + colBox[i].size.x,colBox[i].centerPos.y + colBox[i].size.y,colBox[i].centerPos.z + colBox[i].size.z};
+//		colBox[i].LeastPos = { colBox[i].centerPos.x - colBox[i].size.x,colBox[i].centerPos.y - colBox[i].size.y,colBox[i].centerPos.z - colBox[i].size.z };
+//	}
+//	
+//	PlayerWallCollisionFlag = false;
+//	for (int i = 0; i < JsonLoader::colliderObjects.size(); i++)
+//	{
+//		if (Collision::CheckAABB(colPlayer, colBox[i]) == true)
+//		{
+//			PlayerWallCollisionFlag = true;
+//			JsonLoader::colliderObjects[i].get()->SetCollFlag(true);
+//		}
+//		else
+//		{
+//			JsonLoader::colliderObjects[i].get()->SetCollFlag(false);
+//		}
+//	}
+//	Player::SetWallColl(PlayerWallCollisionFlag);
+//}
 
-	Box colBox[4];
-	for (int i = 0; i < JsonLoader::colliderObjects.size(); i++)
-	{
-		colBox[i].centerPos = JsonLoader::colliderObjects[i].get()->GetPosition();
-		colBox[i].size = {JsonLoader::colliderObjects[i].get()->GetScale().x / 2, JsonLoader::colliderObjects[i].get()->GetScale().y / 2, JsonLoader::colliderObjects[i].get()->GetScale().z / 2};
-		colBox[i].MaxPos = {colBox[i].centerPos.x + colBox[i].size.x,colBox[i].centerPos.y + colBox[i].size.y,colBox[i].centerPos.z + colBox[i].size.z};
-		colBox[i].LeastPos = { colBox[i].centerPos.x - colBox[i].size.x,colBox[i].centerPos.y - colBox[i].size.y,colBox[i].centerPos.z - colBox[i].size.z };
-	}
-	
-	PlayerWallCollisionFlag = false;
-	for (int i = 0; i < JsonLoader::colliderObjects.size(); i++)
-	{
-		if (Collision::CheckAABB(colPlayer, colBox[i]) == true)
-		{
-			PlayerWallCollisionFlag = true;
-			JsonLoader::colliderObjects[i].get()->SetCollFlag(true);
-		}
-		else
-		{
-			JsonLoader::colliderObjects[i].get()->SetCollFlag(false);
-		}
-	}
-	Player::SetWallColl(PlayerWallCollisionFlag);
-}
-
-void CollisionSet::CollisionPushBack( const XMFLOAT3& size, float& groundY)
-{
-	groundY = 0.0f;
-	for (int i = 0; i < JsonLoader::colliderObjects.size(); i++)
-	{
-		if (JsonLoader::colliderObjects[i]->GetCollFlag() == false)
-		{
-			continue;
-		}
-
-		Box colPlayer;
-		colPlayer.centerPos = { Player::GetPos().x, Player::GetPos().y + (size.y/2), Player::GetPos().z };
-		colPlayer.size = { size.x / 2, size.y / 2, size.z / 2 };
-		colPlayer.MaxPos   = { colPlayer.centerPos.x + colPlayer.size.x, colPlayer.centerPos.y + colPlayer.size.y,colPlayer.centerPos.z + colPlayer.size.z };
-		colPlayer.LeastPos = { colPlayer.centerPos.x - colPlayer.size.x, colPlayer.centerPos.y - colPlayer.size.y, colPlayer.centerPos.z - colPlayer.size.z };
-
-		Box colBox;
-		colBox.centerPos = JsonLoader::colliderObjects[i].get()->GetPosition();
-		colBox.size = { JsonLoader::colliderObjects[i].get()->GetScale().x / 2, JsonLoader::colliderObjects[i].get()->GetScale().y / 2, JsonLoader::colliderObjects[i].get()->GetScale().z / 2 };
-		colBox.MaxPos = { colBox.centerPos.x + colBox.size.x,colBox.centerPos.y + colBox.size.y,colBox.centerPos.z + colBox.size.z };
-		colBox.LeastPos = { colBox.centerPos.x - colBox.size.x,colBox.centerPos.y,colBox.centerPos.z - colBox.size.z };
-
-		XMFLOAT3 m1 = {0,0,0};
-		
-
-		//X
-		if (colPlayer.centerPos.z <= colBox.MaxPos.z && colBox.LeastPos.z <= colPlayer.centerPos.z)
-		{
-			if (colPlayer.centerPos.y <= colBox.MaxPos.y && colBox.LeastPos.y <= colPlayer.centerPos.y)
-			{
-				if (colPlayer.MaxPos.x >= colBox.MaxPos.x)
-				{
-					m1.x = colBox.MaxPos.x - colPlayer.LeastPos.x;
-				}
-				else
-				{
-					m1.x = colPlayer.MaxPos.x - colBox.LeastPos.x;
-					m1.x *= -1;
-				}
-			}
-		}
-		
-		//Z
-		if (colPlayer.centerPos.x <= colBox.MaxPos.x && colBox.LeastPos.x <= colPlayer.centerPos.x)
-		{
-			if (colPlayer.centerPos.y <= colBox.MaxPos.y && colBox.LeastPos.y <= colPlayer.centerPos.y)
-			{
-				if (colPlayer.MaxPos.z >= colBox.MaxPos.z)
-				{
-					m1.z = colBox.MaxPos.z - colPlayer.LeastPos.z;
-				}
-				else
-				{
-					m1.z = colPlayer.MaxPos.z - colBox.LeastPos.z;
-					m1.z *= -1;
-				}
-			}
-		}
-		
-		//Y
-		if (colPlayer.centerPos.z <= colBox.MaxPos.z && colBox.LeastPos.z <= colPlayer.centerPos.z)
-		{
-			if (colPlayer.centerPos.x <= colBox.MaxPos.x && colBox.LeastPos.x <= colPlayer.centerPos.x)
-			{
-				if (colPlayer.MaxPos.y >= colBox.MaxPos.y)
-				{
-					m1.y = colBox.MaxPos.y - colPlayer.LeastPos.y;
-					groundY = colBox.MaxPos.y;
-				}
-				else
-				{
-					m1.y = colPlayer.MaxPos.y - colBox.LeastPos.y;
-					m1.y *= -1;
-				}
-			}
-		}
-		
-
-		XMFLOAT3 pPos = Player::GetPos();
-
-		Player::MoveAdd(m1);
-	}
-}
+//void CollisionSet::CollisionPushBack( const XMFLOAT3& size, float& groundY)
+//{
+//	groundY = 0.0f;
+//	for (int i = 0; i < JsonLoader::colliderObjects.size(); i++)
+//	{
+//		if (JsonLoader::colliderObjects[i]->GetCollFlag() == false)
+//		{
+//			continue;
+//		}
+//
+//		Box colPlayer;
+//		colPlayer.centerPos = { Player::GetPos().x, Player::GetPos().y + (size.y/2), Player::GetPos().z };
+//		colPlayer.size = { size.x / 2, size.y / 2, size.z / 2 };
+//		colPlayer.MaxPos   = { colPlayer.centerPos.x + colPlayer.size.x, colPlayer.centerPos.y + colPlayer.size.y,colPlayer.centerPos.z + colPlayer.size.z };
+//		colPlayer.LeastPos = { colPlayer.centerPos.x - colPlayer.size.x, colPlayer.centerPos.y - colPlayer.size.y, colPlayer.centerPos.z - colPlayer.size.z };
+//
+//		Box colBox;
+//		colBox.centerPos = JsonLoader::colliderObjects[i].get()->GetPosition();
+//		colBox.size = { JsonLoader::colliderObjects[i].get()->GetScale().x / 2, JsonLoader::colliderObjects[i].get()->GetScale().y / 2, JsonLoader::colliderObjects[i].get()->GetScale().z / 2 };
+//		colBox.MaxPos = { colBox.centerPos.x + colBox.size.x,colBox.centerPos.y + colBox.size.y,colBox.centerPos.z + colBox.size.z };
+//		colBox.LeastPos = { colBox.centerPos.x - colBox.size.x,colBox.centerPos.y,colBox.centerPos.z - colBox.size.z };
+//
+//		XMFLOAT3 m1 = {0,0,0};
+//		
+//
+//		//X
+//		if (colPlayer.centerPos.z <= colBox.MaxPos.z && colBox.LeastPos.z <= colPlayer.centerPos.z)
+//		{
+//			if (colPlayer.centerPos.y <= colBox.MaxPos.y && colBox.LeastPos.y <= colPlayer.centerPos.y)
+//			{
+//				if (colPlayer.MaxPos.x >= colBox.MaxPos.x)
+//				{
+//					m1.x = colBox.MaxPos.x - colPlayer.LeastPos.x;
+//				}
+//				else
+//				{
+//					m1.x = colPlayer.MaxPos.x - colBox.LeastPos.x;
+//					m1.x *= -1;
+//				}
+//			}
+//		}
+//		
+//		//Z
+//		if (colPlayer.centerPos.x <= colBox.MaxPos.x && colBox.LeastPos.x <= colPlayer.centerPos.x)
+//		{
+//			if (colPlayer.centerPos.y <= colBox.MaxPos.y && colBox.LeastPos.y <= colPlayer.centerPos.y)
+//			{
+//				if (colPlayer.MaxPos.z >= colBox.MaxPos.z)
+//				{
+//					m1.z = colBox.MaxPos.z - colPlayer.LeastPos.z;
+//				}
+//				else
+//				{
+//					m1.z = colPlayer.MaxPos.z - colBox.LeastPos.z;
+//					m1.z *= -1;
+//				}
+//			}
+//		}
+//		
+//		//Y
+//		if (colPlayer.centerPos.z <= colBox.MaxPos.z && colBox.LeastPos.z <= colPlayer.centerPos.z)
+//		{
+//			if (colPlayer.centerPos.x <= colBox.MaxPos.x && colBox.LeastPos.x <= colPlayer.centerPos.x)
+//			{
+//				if (colPlayer.MaxPos.y >= colBox.MaxPos.y)
+//				{
+//					m1.y = colBox.MaxPos.y - colPlayer.LeastPos.y;
+//					groundY = colBox.MaxPos.y;
+//				}
+//				else
+//				{
+//					m1.y = colPlayer.MaxPos.y - colBox.LeastPos.y;
+//					m1.y *= -1;
+//				}
+//			}
+//		}
+//		
+//
+//		XMFLOAT3 pPos = Player::GetPos();
+//
+//		Player::MoveAdd(m1);
+//	}
+//}
 
 bool CollisionSet::CollisionCheck1(const XMFLOAT3& pos1, const XMFLOAT3& size1, const XMFLOAT3& pos2, const XMFLOAT3& size2)
 {
@@ -204,6 +204,8 @@ CollisionSet::XMFLOAT3 CollisionSet::GetNearVertex(const Box& box, const XMFLOAT
 	Pos[2] = {	 box.MaxPos.x, 0, box.MaxPos.z	};		//右奥
 	Pos[3] = {	 box.MaxPos.x, 0, box.LeastPos.z };		//右前
 
+	XMFLOAT3 returnPos = {};
+
 	float dis[4];
 	for (int i = 0; i < 4; i++)
 	{
@@ -219,9 +221,14 @@ CollisionSet::XMFLOAT3 CollisionSet::GetNearVertex(const Box& box, const XMFLOAT
 	{
 		if (dis[i] == min)
 		{
-			return Pos[i];
+			returnPos = Pos[i];
+			break;
 		}
 	}
+
+	return returnPos;
+
+	assert(0);
 }
 
 CollisionSet::XMFLOAT3 CollisionSet::GetScecondNearVertex(const Box& box, const XMFLOAT3& pos)
@@ -231,6 +238,8 @@ CollisionSet::XMFLOAT3 CollisionSet::GetScecondNearVertex(const Box& box, const 
 	Pos[1] = { box.LeastPos.x, 0, box.MaxPos.z };		//左奥
 	Pos[2] = { box.MaxPos.x, 0, box.MaxPos.z };		//右奥
 	Pos[3] = { box.MaxPos.x, 0, box.LeastPos.z };		//右前
+
+	XMFLOAT3 returnPos = {};
 
 	float dis[4];
 	for (int i = 0; i < 4; i++)
@@ -264,10 +273,12 @@ CollisionSet::XMFLOAT3 CollisionSet::GetScecondNearVertex(const Box& box, const 
 	{
 		if (disA[1] == dis[i])
 		{
-			return Pos[i];
+			returnPos = Pos[i];
+			break;
 		}
 	}
 
+	return returnPos;
 }
 
 CollisionSet::XMFLOAT3 CollisionSet::GetThirdNearVertex(const Box& box, const XMFLOAT3& pos)
@@ -277,6 +288,8 @@ CollisionSet::XMFLOAT3 CollisionSet::GetThirdNearVertex(const Box& box, const XM
 	Pos[1] = { box.LeastPos.x, 0, box.MaxPos.z };		//左奥
 	Pos[2] = { box.MaxPos.x, 0, box.MaxPos.z };		//右奥
 	Pos[3] = { box.MaxPos.x, 0, box.LeastPos.z };		//右前
+
+	XMFLOAT3 returnPos = {};
 
 	float dis[4];
 	for (int i = 0; i < 4; i++)
@@ -310,9 +323,11 @@ CollisionSet::XMFLOAT3 CollisionSet::GetThirdNearVertex(const Box& box, const XM
 	{
 		if (disA[2] == dis[i])
 		{
-			return Pos[i];
+			returnPos = Pos[i];
 		}
 	}
+
+	return returnPos;
 }
 
 CollisionSet::XMFLOAT3 CollisionSet::GetFourthNearVertex(const Box& box, const XMFLOAT3& pos)
@@ -322,6 +337,8 @@ CollisionSet::XMFLOAT3 CollisionSet::GetFourthNearVertex(const Box& box, const X
 	Pos[1] = { box.LeastPos.x, 0, box.MaxPos.z };		//左奥
 	Pos[2] = { box.MaxPos.x, 0, box.MaxPos.z };		//右奥
 	Pos[3] = { box.MaxPos.x, 0, box.LeastPos.z };		//右前
+
+	XMFLOAT3 returnPos = {};
 
 	float dis[4];
 	for (int i = 0; i < 4; i++)
@@ -355,9 +372,12 @@ CollisionSet::XMFLOAT3 CollisionSet::GetFourthNearVertex(const Box& box, const X
 	{
 		if (disA[3] == dis[i])
 		{
-			return Pos[i];
+			returnPos = Pos[i];
+			break;
 		}
 	}
+
+	return returnPos;
 }
 
 CollisionSet::XMFLOAT3 CollisionSet::GetwhichNearPos(const XMFLOAT3& criteriaPos, const XMFLOAT3& posA, const XMFLOAT3& posB)

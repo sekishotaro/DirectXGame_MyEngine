@@ -266,7 +266,6 @@ bool DirectXCommon::CreateSwapChain()
 		&swapchain1);
 	if (FAILED(result)) {
 		assert(0);
-		return result;
 	}
 	swapchain1.As(&swapchain);
 
@@ -282,14 +281,12 @@ bool DirectXCommon::InitializeCommand()
 	result = dev->CreateCommandAllocator( D3D12_COMMAND_LIST_TYPE_DIRECT, IID_PPV_ARGS(&cmdAllocator));
 	if (FAILED(result)) {
 		assert(0);
-		return result;
 	}
 
 	// コマンドリストを生成
 	result = dev->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT, cmdAllocator.Get(), nullptr, IID_PPV_ARGS(&cmdList));
 	if (FAILED(result)) {
 		assert(0);
-		return result;
 	}
 
 	// 標準設定でコマンドキューを生成
@@ -297,7 +294,6 @@ bool DirectXCommon::InitializeCommand()
 	result = dev->CreateCommandQueue(&cmdQueueDesc, IID_PPV_ARGS(&cmdQueue));
 	if (FAILED(result)) {
 		assert(0);
-		return result;
 	}
 
 	return true;
@@ -311,7 +307,8 @@ bool DirectXCommon::CreateFinalRenderTargets()
 	result = swapchain->GetDesc(&swcDesc);
 	if (FAILED(result)) {
 		assert(0);
-		return result;
+
+		return false;
 	}
 
 	// 各種設定をしてディスクリプタヒープを生成
@@ -321,7 +318,8 @@ bool DirectXCommon::CreateFinalRenderTargets()
 	result = dev->CreateDescriptorHeap(&heapDesc, IID_PPV_ARGS(&rtvHeaps));
 	if (FAILED(result)) {
 		assert(0);
-		return result;
+
+		return false;
 	}
 
 	// 裏表の２つ分について
@@ -332,7 +330,8 @@ bool DirectXCommon::CreateFinalRenderTargets()
 		result = swapchain->GetBuffer(i, IID_PPV_ARGS(&backBuffers[i]));
 		if (FAILED(result)) {
 			assert(0);
-			return result;
+
+			return false;
 		}
 
 		// ディスクリプタヒープのハンドルを取得
@@ -344,6 +343,8 @@ bool DirectXCommon::CreateFinalRenderTargets()
 			nullptr,
 			handle);
 	}
+
+	return true;
 }
 
 bool DirectXCommon::CreateDepthBuffer()
@@ -369,7 +370,6 @@ bool DirectXCommon::CreateDepthBuffer()
 		IID_PPV_ARGS(&depthBuffer));
 	if (FAILED(result)) {
 		assert(0);
-		return result;
 	}
 
 	// 深度ビュー用デスクリプタヒープ作成
@@ -379,7 +379,6 @@ bool DirectXCommon::CreateDepthBuffer()
 	result = dev->CreateDescriptorHeap(&dsvHeapDesc, IID_PPV_ARGS(&dsvHeap));
 	if (FAILED(result)) {
 		assert(0);
-		return result;
 	}
 
 	// 深度ビュー作成

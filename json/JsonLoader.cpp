@@ -2,6 +2,8 @@
 #include <fstream>
 #include <cassert>
 
+#include "TouchableObject.h"
+
 std::vector<std::unique_ptr<Object3d>> JsonLoader::objects;
 std::map< std::string, Model> JsonLoader::models;
 std::vector<std::unique_ptr<ColliderObject>> JsonLoader::colliderObjects;
@@ -13,6 +15,7 @@ std::vector<std::unique_ptr<ColliderObject>> JsonLoader::crystalColliderObjects;
 std::map< std::string, ColliderModel> JsonLoader::crystalColliderModels;
 
 std::vector<std::unique_ptr<Object3d>> JsonLoader::groundObjects;
+TouchableObject* JsonLoader::objGround;
 std::map< std::string, Model> JsonLoader::groundModels;
 std::vector<std::unique_ptr<ColliderObject>> JsonLoader::groundColliderObjects;
 std::map< std::string, ColliderModel> JsonLoader::groundColliderModels;
@@ -23,6 +26,11 @@ std::vector<std::unique_ptr<ColliderObject>> JsonLoader::enemyColliderObjects;
 std::map< std::string, ColliderModel> JsonLoader::enemyColliderModels;
 std::vector<std::unique_ptr<ColliderObject>> JsonLoader::enemyNaviareaObjects;
 std::map< std::string, ColliderModel> JsonLoader::enemyNaviareaModels;
+
+std::vector<std::unique_ptr<Object3d>> JsonLoader::climbWallObjects;
+std::map<std::string, Model> JsonLoader::climbWallModels;
+std::vector<std::unique_ptr<Object3d>> JsonLoader::goalObjects;
+std::map<std::string, Model> JsonLoader::goalModels;
 
 LevelData* JsonLoader::levelData;
 
@@ -102,9 +110,9 @@ void JsonLoader::LoadFile(const std::string& fileName)
 			objectData.rotation.m128_f32[2] = (float)transform["rotation"][0];
 			objectData.rotation.m128_f32[3] = 0.0;
 			//スケーリング
-			objectData.scaling.m128_f32[0] = (float)transform["scaling"][1];
+			objectData.scaling.m128_f32[0] = (float)transform["scaling"][0];
 			objectData.scaling.m128_f32[1] = (float)transform["scaling"][2];
-			objectData.scaling.m128_f32[2] = (float)transform["scaling"][0];
+			objectData.scaling.m128_f32[2] = (float)transform["scaling"][1];
 			objectData.scaling.m128_f32[3] = 0.0;
 
 			// TODO: オブジェクト走査を再帰関数にまとめ、再帰呼出しで枝を走査する
@@ -138,9 +146,9 @@ void JsonLoader::LoadFile(const std::string& fileName)
 					//colliderObjectData.rotation.m128_f32[2] = (float)collider["rotation"][0];
 					//colliderObjectData.rotation.m128_f32[3] = 0.0;
 					//スケーリング
-					colliderObjectData.scaling.m128_f32[0] = (float)collider["size"][1];
-					colliderObjectData.scaling.m128_f32[1] = (float)collider["size"][2];
-					colliderObjectData.scaling.m128_f32[2] = (float)collider["size"][0];
+					colliderObjectData.scaling.m128_f32[0] = (float)collider["size"][1] * objectData.scaling.m128_f32[0];
+					colliderObjectData.scaling.m128_f32[1] = (float)collider["size"][2] * objectData.scaling.m128_f32[1];
+					colliderObjectData.scaling.m128_f32[2] = (float)collider["size"][0] * objectData.scaling.m128_f32[2];
 					colliderObjectData.scaling.m128_f32[3] = 0.0;
 				}
 				objectData.colliderName = colliderObjectData.fileName;
@@ -203,6 +211,14 @@ void JsonLoader::SetObject()
 		{
 			TypeSetEnemyModel(objectData);
 		}
+		else if (objectData.typeName == "climbWall")
+		{
+			TypeclimbWallModel(objectData);
+		}
+		else if (objectData.typeName == "goal")
+		{
+			TypeGoalModel(objectData);
+		}
 	}
 
 	//レベルデータからコライダーオブジェクトを生成,配置
@@ -248,10 +264,12 @@ void JsonLoader::Update()
 		crystalObjects[i]->Update();
 	}
 
-	for (int i = 0; i < groundObjects.size(); i++)
+	/*for (int i = 0; i < groundObjects.size(); i++)
 	{
 		groundObjects[i]->Update();
-	}
+	}*/
+
+	objGround->Update();
 
 	//当たり判定用オブジェクト
 	for (int i = 0; i < colliderObjects.size(); i++)
@@ -284,20 +302,16 @@ void JsonLoader::Update()
 		crystalColliderObjects[i]->Update();
 	}
 
-	for (int i = 0; i < groundColliderObjects.size(); i++)
-	{
-		if (groundColliderObjects[i].get()->GetCollFlag() == true)
-		{
-			groundColliderObjects[i].get()->SetColor({ 1,1,0 });
-		}
-		else
-		{
-			groundColliderObjects[i].get()->SetColor({ 1,0,0 });
-		}
-
-
-		groundColliderObjects[i]->Update();
-	}
+	//for (int i = 0; i < groundColliderObjects.size(); i++)
+	//{
+	//	if (groundColliderObjects[i].get()->GetCollFlag() == true)
+	//	{
+	//		groundColliderObjects[i].get()->SetColor({ 1,1,0 });
+	//	}
+	//	else
+	//	{
+	//		groundColliderObjects[i].get()->SetColor({ 1,0,0 });
+	//	}
 
 	for (int i = 0; i < enemyNaviareaObjects.size(); i++)
 	{
@@ -312,6 +326,16 @@ void JsonLoader::Update()
 
 
 		enemyNaviareaObjects[i]->Update();
+	}
+
+	for (int i = 0; i < climbWallObjects.size(); i++)
+	{
+		climbWallObjects[i]->Update();
+	}
+
+	for (int i = 0; i < goalObjects.size(); i++)
+	{
+		goalObjects[i]->Update();
 	}
 
 }
@@ -329,10 +353,12 @@ void JsonLoader::Draw()
 		crystalObjects[i]->Draw();
 	}
 
-	for (int i = 0; i < groundObjects.size(); i++)
+	/*for (int i = 0; i < groundObjects.size(); i++)
 	{
 		groundObjects[i]->Draw();
-	}
+	}*/
+
+	objGround->Draw();
 
 	//当たり判定用オブジェクト
 	for (int i = 0; i < colliderObjects.size(); i++)
@@ -353,6 +379,16 @@ void JsonLoader::Draw()
 	for (int i = 0; i < enemyNaviareaObjects.size(); i++)
 	{
 		//enemyNaviareaObjects[i]->Draw();
+	}
+
+	for (int i = 0; i < climbWallObjects.size(); i++)
+	{
+		climbWallObjects[i]->Draw();
+	}
+
+	for (int i = 0; i < goalObjects.size(); i++)
+	{
+		goalObjects[i]->Draw();
 	}
 }
 
@@ -386,7 +422,6 @@ void JsonLoader::TypeSetModel( LevelData::ObjectData& objectData)
 
 	//配列の最後に登録
 	objects.push_back(std::move(newObject));
-	
 }
 
 void JsonLoader::TypeSetColliderModel(LevelData::ObjectData& colliderObjectData)
@@ -512,13 +547,18 @@ void JsonLoader::TypeSetGroundModel(LevelData::ObjectData& objectData)
 
 	//モデルを指定して3Dオブジェクトを生成
 	std::unique_ptr<Object3d> newObject;
+
 	newObject = Object3d::Create();
 	newObject->SetModel(model);
+
+	objGround = TouchableObject::Create(model);
 
 	//座標
 	XMFLOAT3 pos;
 	DirectX::XMStoreFloat3(&pos, objectData.translation);
 	newObject->SetPosition(pos);
+
+	objGround->SetPosition(pos);
 
 	//回転角
 	XMFLOAT3 rot;
@@ -526,10 +566,14 @@ void JsonLoader::TypeSetGroundModel(LevelData::ObjectData& objectData)
 	rot.y -= 90.0f;
 	newObject->SetRotation(rot);
 
+	objGround->SetRotation(rot);
+
 	//スケール
 	XMFLOAT3 scale;
 	DirectX::XMStoreFloat3(&scale, objectData.scaling);
 	newObject->SetScale(scale);
+
+	objGround->SetScale(scale);
 
 	//配列の最後に登録
 	groundObjects.push_back(std::move(newObject));
@@ -688,5 +732,74 @@ void JsonLoader::TypeSetNaviareaEnemyModel(LevelData::ObjectData& colliderObject
 
 	//配列の最後に登録
 	enemyNaviareaObjects.push_back(std::move(newColliderObject));
+}
+
+void JsonLoader::TypeclimbWallModel(LevelData::ObjectData& objectData)
+{
+	//ファイル名から登録済みモデルを検索
+	Model* model = nullptr;
+	model = Model::LoadFromOBJ(objectData.fileName);
+	climbWallModels[objectData.fileName] = *model;
+
+	//モデルを指定して3Dオブジェクトを生成
+	std::unique_ptr<Object3d> newObject;
+	newObject = Object3d::Create();
+	newObject->SetModel(model);
+
+	//座標
+	XMFLOAT3 pos;
+	DirectX::XMStoreFloat3(&pos, objectData.translation);
+	newObject->SetPosition(pos);
+
+	//回転角
+	XMFLOAT3 rot;
+	DirectX::XMStoreFloat3(&rot, objectData.rotation);
+
+	//int a = (int)rot.y;
+	//a -= 90;
+	//rot.y = (float)a;
+
+	rot.y -= 90.0f;
+	newObject->SetRotation(rot);
+
+	//スケール
+	XMFLOAT3 scale;
+	DirectX::XMStoreFloat3(&scale, objectData.scaling);
+	newObject->SetScale(scale);
+
+	//配列の最後に登録
+	climbWallObjects.push_back(std::move(newObject));
+}
+
+void JsonLoader::TypeGoalModel(LevelData::ObjectData& objectData)
+{
+	//ファイル名から登録済みモデルを検索
+	Model* model = nullptr;
+	model = Model::LoadFromOBJ(objectData.fileName);
+	goalModels[objectData.fileName] = *model;
+
+	//モデルを指定して3Dオブジェクトを生成
+	std::unique_ptr<Object3d> newObject;
+	newObject = Object3d::Create();
+	newObject->SetModel(model);
+
+	//座標
+	XMFLOAT3 pos;
+	DirectX::XMStoreFloat3(&pos, objectData.translation);
+	newObject->SetPosition(pos);
+
+	//回転角
+	XMFLOAT3 rot;
+	DirectX::XMStoreFloat3(&rot, objectData.rotation);
+	rot.y -= 90.0f;
+	newObject->SetRotation(rot);
+
+	//スケール
+	XMFLOAT3 scale;
+	DirectX::XMStoreFloat3(&scale, objectData.scaling);
+	newObject->SetScale(scale);
+
+	//配列の最後に登録
+	goalObjects.push_back(std::move(newObject));
 }
 

@@ -125,6 +125,7 @@
       <AdditionalIncludeDirectories>$(projectDir)imgui;$(projectDir)scene;$(projectDir)collision;$(projectDir)Input;$(projectDir)base;$(projectDir)Audio;$(ProjectDir)3d;$(SolutionDir)DirectXTex;$(projectDir)2d;$(projectDir)</AdditionalIncludeDirectories>
       <AdditionalIncludeDirectories>$(projectDir)camera;$(projectDir)imgui;$(projectDir)json;$(projectDir)json;$(projectDir)scene;$(projectDir)collision;$(projectDir)Input;$(projectDir)base;$(projectDir)Audio;$(ProjectDir)3d;$(SolutionDir)DirectXTex;$(projectDir)2d;$(projectDir);$(projectDir)camera</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <TreatWarningAsError>false</TreatWarningAsError>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -145,6 +146,7 @@
       <AdditionalIncludeDirectories>$(projectDir)camera;$(projectDir)imgui;$(projectDir)json;$(projectDir)imgui;$(projectDir)scene;$(projectDir)collision;$(projectDir)Input;$(projectDir)base;$(projectDir)Audio;$(ProjectDir)3d;$(SolutionDir)DirectXTex;$(projectDir)2d;$(projectDir)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <TreatWarningAsError>false</TreatWarningAsError>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -287,9 +289,11 @@
     <ClCompile Include="3d\FbxLoader.cpp" />
     <ClCompile Include="3d\FbxModel.cpp" />
     <ClCompile Include="3d\FbxObject3d.cpp" />
+    <ClCompile Include="3d\Mesh.cpp" />
     <ClCompile Include="3d\MathModel.cpp" />
     <ClCompile Include="3d\MathObject.cpp" />
     <ClCompile Include="Audio\Audio.cpp" />
+    <ClCompile Include="collision\BaseCollider.cpp" />
     <ClCompile Include="camera\Camera.cpp" />
     <ClCompile Include="3d\ColliderModel.cpp" />
     <ClCompile Include="3d\ColliderObject.cpp" />
@@ -299,6 +303,7 @@
     <ClCompile Include="2d\DebugText.cpp" />
     <ClCompile Include="base\DirectXCommon.cpp" />
     <ClCompile Include="camera\DebugCamera.cpp" />
+    <ClCompile Include="collision\CollisionManager.cpp" />
     <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="Framework.cpp" />
     <ClCompile Include="imgui\imguiManager.cpp" />
@@ -309,6 +314,8 @@
     <ClCompile Include="imgui\imgui_impl_win32.cpp" />
     <ClCompile Include="imgui\imgui_tables.cpp" />
     <ClCompile Include="imgui\imgui_widgets.cpp" />
+    <ClCompile Include="collision\MeshCollider.cpp" />
+    <ClCompile Include="3d\Material.cpp" />
     <ClCompile Include="MyMath.cpp" />
     <ClCompile Include="Input\Input.cpp" />
     <ClCompile Include="json\JsonLoader.cpp" />
@@ -318,22 +325,31 @@
     <ClCompile Include="3d\Object3d.cpp" />
     <ClCompile Include="2d\PostEffect.cpp" />
     <ClCompile Include="Player.cpp" />
+    <ClCompile Include="QueryCallback.cpp" />
     <ClCompile Include="scene\GamePlayScene.cpp" />
     <ClCompile Include="scene\SceneFactory.cpp" />
     <ClCompile Include="scene\SceneManager.cpp" />
     <ClCompile Include="2d\Sprite.cpp" />
     <ClCompile Include="scene\TitleScene.cpp" />
     <ClCompile Include="base\WinApp.cpp" />
+    <ClCompile Include="collision\SphereCollider.cpp" />
+    <ClCompile Include="TouchableObject.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="3d\FbxLoader.h" />
     <ClInclude Include="3d\FbxModel.h" />
     <ClInclude Include="3d\FbxObject3d.h" />
+    <ClInclude Include="collision\CollisionAttribute.h" />
+    <ClInclude Include="collision\CollisionInfo.h" />
+    <ClInclude Include="collision\CollisionTypes.h" />
+    <ClInclude Include="collision\BaseCollider.h" />
     <ClInclude Include="3d\MathModel.h" />
     <ClInclude Include="3d\MathObject.h" />
     <ClInclude Include="camera\Camera.h" />
     <ClInclude Include="2d\PostEffect.h" />
     <ClInclude Include="collision\CollisionSet.h" />
+    <ClInclude Include="collision\CollisionManager.h" />
+    <ClInclude Include="collision\RaycastHit.h" />
     <ClInclude Include="Enemy.h" />
     <ClInclude Include="imgui\imguiManager.h" />
     <ClInclude Include="imgui\imconfig.h" />
@@ -348,8 +364,12 @@
     <ClInclude Include="3d\ColliderModel.h" />
     <ClInclude Include="3d\ColliderObject.h" />
     <ClInclude Include="json\JsonLoader.h" />
+    <ClInclude Include="3d\Mesh.h" />
+    <ClInclude Include="collision\MeshCollider.h" />
+    <ClInclude Include="3d\Material.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="MyMath.h" />
+    <ClInclude Include="QueryCallback.h" />
     <ClInclude Include="scene\AbstractSceneFactory.h" />
     <ClInclude Include="Audio\Audio.h" />
     <ClInclude Include="scene\BaseScene.h" />
@@ -369,6 +389,8 @@
     <ClInclude Include="2d\Sprite.h" />
     <ClInclude Include="scene\TitleScene.h" />
     <ClInclude Include="base\WinApp.h" />
+    <ClInclude Include="collision\SphereCollider.h" />
+    <ClInclude Include="TouchableObject.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -8,9 +8,15 @@
 #include "FbxObject3d.h"
 #include "JsonLoader.h"
 #include "imguiManager.h"
+#include "imgui.h"
 #include "MyMath.h"
 #include "CollisionSet.h"
 #include "Enemy.h"
+
+#include "SphereCollider.h"
+#include "CollisionManager.h"
+#include "Player.h"
+
 
 void GamePlayScene::Initialize()
 {
@@ -42,59 +48,21 @@ void GamePlayScene::Initialize()
 	// 背景スプライト生成
 	spriteBG = Sprite::Create(1, { 0.0f,0.0f });
 
-	// オブジェクト生成
-	//model = Model::LoadFromOBJ("sphere");
-	//objectX = Object3d::Create();
-	//オブジェクトにモデルをひも付ける
-	//objectX->SetModel(model);
-
-	//モデル名を指定してファイル読み込み
-	fbxModel1 = FbxLoader::GetInstance()->LoadModelFromFile("model");
-	fbxModel2 = FbxLoader::GetInstance()->LoadModelFromFile("Enemy1");
-
-	//3Dオブジェクト生成とモデルのセット
-	fbxObject1 = new FbxObject3d;
-	fbxObject1->Initialize();
-	fbxObject1->SetModel(fbxModel1);
-	fbxObject1->SetScale({ 0.01f,0.01f,0.01f });
-
-	fbxObject2 = new FbxObject3d;
-	fbxObject2->Initialize();
-	fbxObject2->SetModel(fbxModel2);
-	fbxObject2->SetPosition(Enemy::GetPos());
-	fbxObject2->SetScale({ 0.01f,0.01f,0.01f });
-
-
-	colliderModel = ColliderModel::ColliderModelCreate("BOX");
-	colliderObject = ColliderObject::Create();
-	colliderObject->SetModel(colliderModel);
-
-	colliderObject->SetCenter({ 0, 2.5f, 0 });
-	colliderObject->SetScale(Player::GetSize());
+	modelFighter = Model::LoadFromOBJ("modelObj");
+	
 	//json
-	JsonLoader::LoadFile("Scene8_31");
+	JsonLoader::LoadFile("Scene11_01"); //オブジェクトの当たり判定
+
 	JsonLoader::SetObject();
 
-	Enemy::Initialize();
-	mathModel = MathModel::LoadFromOBJ("sphere");
-	enemyCollider1Object = MathObject::Create();
-	enemyCollider2Object = MathObject::Create();
-
-	//オブジェクトにモデルをひも付ける
-	enemyCollider1Object->SetModel(mathModel);
-	enemyCollider1Object->SetPosition(XMFLOAT3(0, 5, 0));
-
-	enemyCollider2Object->SetModel(mathModel);
-	enemyCollider2Object->SetPosition(XMFLOAT3(0, 5, 0));
-	enemyCollider2Object->SetScale(XMFLOAT3(20, 20, 20));
-	enemyCollider2Object->SetColor(XMFLOAT4(0, 0, 1, 0.2));
+	collisionManager = CollisionManager::GetInstance();
+	objFighter = Player::Create(modelFighter);
+	
+	//コライダーの追加
 }
 
 void GamePlayScene::Finalize()
 {
-	//delete model;
-	delete fbxObject1;
-	delete fbxObject2;
 }
 
 void GamePlayScene::Update()
@@ -103,147 +71,29 @@ void GamePlayScene::Update()
 	Input *input = Input::GetInstance();
 	Input::MousePos mpos = input->MousePosLoad();
 
-	//カメラの移動
-	if (input->PushKey(DIK_UP) || input->PushKey(DIK_DOWN) || input->PushKey(DIK_RIGHT) || input->PushKey(DIK_LEFT) || input->PushKey(DIK_E) || input->PushKey(DIK_Z))
+	//ゲーム終了処理
+	if (objFighter->GetCrystal() == 0 && objFighter->GetGoalFlag() == true)
 	{
-		// 現在の座標を取得
-		XMFLOAT3 position = camera->GetEye();
-
-		// 移動後の座標を計算
-		if (input->PushKey(DIK_UP)) { position.y += 1.0f; }
-		else if (input->PushKey(DIK_DOWN)) { position.y -= 1.0f; }
-		if (input->PushKey(DIK_RIGHT)) { position.x += 1.0f; }
-		else if (input->PushKey(DIK_LEFT)) { position.x -= 1.0f; }
-		if (input->PushKey(DIK_E)) { position.z += 1.0f; }
-		else if (input->PushKey(DIK_Z)) { position.z -= 1.0f; }
-		// 座標の変更を反映
-		camera->SetEye(position);
+		SceneManager::GetInstance()->ChangeScene("TITLE");
 	}
 
-	//プレイヤーの移動
-	Player::Move(input, groundY);
-
-	//プレイヤーと地面の当たり判定処理
-	CollisionSet::CollisionCheck(Player::GetPos(), colliderObject->GetScale(), groundY);
-	CollisionSet::CollisionPushBack(colliderObject->GetScale(), groundY);
-	MyMath::GravityCheck(Player::GetPos(), groundY, Player::groundFlag);
-
-	if (Player::GetWallColl() == true)
-	{
-		colliderObject->SetColor({ 1, 1, 0});
-	}
-	else if (Player::GetWallColl() == false)
-	{
-		colliderObject->SetColor({ 1, 0, 0});
-	}
-
-	if (input->PushKey(DIK_G))
-	{
-		Enemy::Move(Player::GetPos());
-	}
-
-	if (input->PushKey(DIK_I))
-	{
-		XMFLOAT3 pos = Enemy::GetPos();
-		pos.y += 1.0f;
-		Enemy::SetPos(pos);
-	}
-
-	//自機の当たり判定用BOXの設定
-	Pbox.centerPos = Player::GetPos();
-	Pbox.LeastPos = XMFLOAT3(Player::GetPos().x - Player::GetSize().x /2, Player::GetPos().y, Player::GetPos().z - Player::GetSize().z / 2);
-	Pbox.MaxPos = XMFLOAT3(Player::GetPos().x + Player::GetSize().x / 2, Player::GetPos().y + Player::GetSize().y, Player::GetPos().z + Player::GetSize().z / 2);
-
-	//敵の当たり判定計算用の球の初期化
-	SphereF Esphere;
-	Esphere.center = Enemy::GetPos();
-	Esphere.radius = 2;
-
-	SphereF E2sphere;
-	E2sphere.center = Enemy::GetPos();
-	E2sphere.radius = 20;
-
-	//自機と敵の線分
-	LineSegment line;
-	line.start = Enemy::GetPos();
-	line.end = Player::GetPos();
-
-	//壁との当たり判定計算用のBoxの初期化
-	Box wall;
-	wall.centerPos = JsonLoader::colliderObjects[0].get()->GetPosition();
-	wall.size = JsonLoader::colliderObjects[0].get()->GetScale();
-	wall.LeastPos = { wall.centerPos.x - wall.size.x / 2,wall.centerPos.y - wall.size.y / 2, wall.centerPos.z - wall.size.z / 2};
-	wall.MaxPos = { wall.centerPos.x + wall.size.x / 2,wall.centerPos.y + wall.size.y / 2, wall.centerPos.z + wall.size.z /2 };
-
-	if (Collision::CheckLineSegmentBox(line, wall) == true)
-	{
-		enemyCollider1Object->SetColor({ 1, 1, 0, 0.5f });
-	}
-	else
-	{
-		enemyCollider1Object->SetColor({ 1, 1, 1, 0.5f });
-	}
-
-	if (Collision::CheckSphereBox(E2sphere, Pbox) == true)
-	{
-		Enemy::Move(Player::GetPos());
-	}
-
-
-	if (Collision::CheckSphereBox(Esphere, Pbox) == true)
-	{
-		colliderObject->SetColor({ 1, 0, 0 });
-	}
-	else
-	{
-		colliderObject->SetColor({ 1, 1, 1 });
-	}
-	
-
-	DebugText::GetInstance()->Print(50, 30 * 1, 2, "C:X:%f", camera->GetEye().x);
-	DebugText::GetInstance()->Print(50, 30 * 2, 2, "C:Y:%f", camera->GetEye().y);
-	DebugText::GetInstance()->Print(50, 30 * 3, 2, "C:Z:%f", camera->GetEye().z);
-	DebugText::GetInstance()->Print(50, 30 * 4, 2, "P:X:%f", Player::GetPos().x);
-	DebugText::GetInstance()->Print(50, 30 * 5, 2, "P:Y:%f", Player::GetPos().y);
-	DebugText::GetInstance()->Print(50, 30 * 6, 2, "P:Z:%f", Player::GetPos().z);
-	DebugText::GetInstance()->Print(50, 30 * 7, 2, "NearNum:%d", Enemy::GetNearNum());
-	//DebugText::GetInstance()->Print(50, 30 * 8, 2, "M:Y:%f", Player::GetMove().y);
-	//DebugText::GetInstance()->Print(50, 30 * 9, 2, "M:Z:%f", Player::GetMove().z);
-	
-	//if (input->TriggerKey(DIK_SPACE))
-	//{
-	//	//BGM止める
-	//	Audio::GetInstance()->SoundStop("zaza.wav");
-	//	Audio::GetInstance()->PlayWave("zaza.wav", false);
-	//	
-	//	//シーン切り替え
-	//	//SceneManager::GetInstance()->ChangeScene("TITLE");
-	//}	
-
-
-	//描画オブジェクト関連の更新
-	enemyCollider1Object->SetPosition(Enemy::GetPos());
-	enemyCollider2Object->SetPosition(Enemy::GetPos());
-	fbxObject1->SetPosition(Player::GetPos());
-	colliderObject->SetPosition(Player::GetPos());
-	fbxObject2->SetPosition(Enemy::GetPos());
-	fbxObject1->AnimationFlag = false;
-	fbxObject2->AnimationFlag = false;
-	//fbxObject1->AnimationNum = 1;
-	
-	
 	//アップデート
-	camera->Update();
-	enemyCollider1Object->Update();
-	enemyCollider2Object->Update();
-	fbxObject1->Update();
-	fbxObject2->Update();
-	colliderObject->Update();
 	JsonLoader::Update();
+
+	camera->Update();
+	objFighter->Update();
+
+	//UI更新
+	DebugText::GetInstance()->Print(1000, 20, 3, "TIME : %d", (int)objFighter->GetTimeLimit());
+	DebugText::GetInstance()->Print(940, 80, 3, "CRYSTAL : %d", objFighter->GetCrystal());
+
+	//全ての衝突をチェック
+	collisionManager->CheckAllCollisions();
 }
 
 void GamePlayScene::Draw()
 {
+
 	// ゲームシーンの描画
 
 	// コマンドリストの取得
@@ -270,19 +120,10 @@ void GamePlayScene::Draw()
 
 	// 3Dオブクジェクトの描画
 	
+	objFighter->Draw();
 	//json
 	JsonLoader::Draw();
 
-	//FBX3Dオブジェクトの描画
-	fbxObject1->Draw(cmdList);
-	fbxObject2->Draw(cmdList);
-	
-	
-	colliderObject->Draw();
-	
-	enemyCollider1Object->Draw();
-	enemyCollider2Object->Draw();
-	
 	/// <summary>
 	/// ここに3Dオブジェクトの描画処理を追加できる
 	/// </summary>
@@ -301,6 +142,25 @@ void GamePlayScene::Draw()
 	Sprite::PostDraw();
 
 	//imguiの描画
-	//imguiManager::PraDraw();
-	//imguiManager::PosDraw();
+	imguiManager::PraDraw();
+	ImGui::NewFrame();
+	ImGui::Begin("config1");//ウィンドウの名前
+	ImGui::SetWindowSize(ImVec2(400, 500), ImGuiCond_::ImGuiCond_FirstUseEver);
+	
+	ImGui::Text("StaminaQ: %.4f", objFighter->GetStaminaQuantity());
+	ImGui::Text("TimeLimit: %.4f", objFighter->GetTimeLimit());
+	ImGui::Text("PosX    :%.4f", objFighter->GetPosition().x);
+	ImGui::Text("PosY    :%.4f", objFighter->GetPosition().y);
+	ImGui::Text("PosZ    :%.4f", objFighter->GetPosition().z);
+	ImGui::Text("MoveX   :%.4f", objFighter->GetMove().x);
+	ImGui::Text("MoveY   :%.4f", objFighter->GetMove().y);
+	ImGui::Text("MoveZ   :%.4f", objFighter->GetMove().z);
+	ImGui::Text("cameraX :%.4f", camera->GetEye().x);
+	ImGui::Text("cameraY :%.4f", camera->GetEye().y);
+	ImGui::Text("cameraZ :%.4f", camera->GetEye().z);
+	ImGui::Text("crystal :%d", objFighter->GetCrystal());
+	ImGui::Checkbox("GoalFlag", &objFighter->GetGoalFlag());
+	ImGui::Checkbox("Wall", &objFighter->GetWallHitFlag());
+	ImGui::Checkbox("statmina", &objFighter->GetStaminaFlag());
+	imguiManager::PosDraw();
 }

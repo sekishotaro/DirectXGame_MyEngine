@@ -19,20 +19,29 @@ void DebugCamera::Update()
 {
 	Input::MousePos mpos = Input::GetInstance()->MousePosLoad();
 
-	// マウスの中ボタンが押されていたらカメラを並行移動させる
-	if (Input::GetInstance()->PushMouseButton(Mouse_Middle))
-	{
-		dx = mpos.lX / 2.0f;
-		dy = mpos.lY / 2.0f;
-		
-		eye = Camera::GetEye();
-		eye.x += dx;
-		eye.y += dy;
+	XMFLOAT3 cameraPos = Player::GetPos();
+	static XMFLOAT3 pos = { 0, 5.0f, -10.0};
+	
+	//カメラの移動
+	if (Input::GetInstance()->PushKey(DIK_UP)) { pos.y += 1.0f; }
+	else if (Input::GetInstance()->PushKey(DIK_DOWN)) { pos.y -= 1.0f; }
+	if (Input::GetInstance()->PushKey(DIK_RIGHT)) { pos.x += 1.0f; }
+	else if (Input::GetInstance()->PushKey(DIK_LEFT)) { pos.x -= 1.0f; }
+	if (Input::GetInstance()->PushKey(DIK_E)) { pos.z += 1.0f; }
+	else if (Input::GetInstance()->PushKey(DIK_Z)) { pos.z -= 1.0f; }
 
-		target = Camera::GetTarget();
-		target.x += dx;
-		target.y += dy;
-	}
+	if (Input::GetInstance()->RightStickIn(UP)) { pos.y += 1.0f; }
+	else if (Input::GetInstance()->RightStickIn(DOWN)) { pos.y -= 1.0f; }
+	if (Input::GetInstance()->RightStickIn(RIGHT)) { pos.x += 1.0f; }
+	else if (Input::GetInstance()->RightStickIn(LEFT)) { pos.x -= 1.0f; }
+	if (Input::GetInstance()->PushPadbutton(GAMEPAD_LEFT_TRIGGER)) { pos.z += 1.0f; }
+	else if (Input::GetInstance()->PushPadbutton(GAMEPAD_RIGHT_TRIGGER)) { pos.z -= 1.0f; }
+
+	cameraPos.x += pos.x;
+	cameraPos.y += pos.y;
+	cameraPos.z += pos.z;
+
+	SetEye(cameraPos);
 
 	//カメラZ軸移動
 	{
@@ -41,21 +50,6 @@ void DebugCamera::Update()
 		eye.z += dz;
 	}
 
-	//カメラの回転
-	if (Input::GetInstance()->PushMouseButton(Mouse_Left))
-	{
-		float angleX = mpos.lX / 2.0f;
-		float angleY = mpos.lY / 2.0f;
-
-		//注視点座標
-		XMFLOAT3 targetpos = Camera::GetTarget();
-		//カメラ座標
-		XMFLOAT3 eyepos = Camera::GetEye();
-		//カメラと注視点の距離
-		XMVECTOR distance = { targetpos.x - eyepos.x, targetpos.y - eyepos.y, targetpos.z - eyepos.z };
-	}
-
-	//Camera::SetTarget(target);
 	Camera::SetTarget(Player::GetPos());
 	Camera::SetEye(eye);
 	Camera::Update();

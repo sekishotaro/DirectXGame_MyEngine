@@ -1,19 +1,21 @@
 #pragma once
 
+#include <memory>
+#include <DirectXMath.h>
+
 #include "BaseScene.h"
 #include "Sprite.h"
 #include "Object3d.h"
 #include "MathObject.h"
 #include "ColliderObject.h"
 #include "FbxObject3d.h"
-#include <DirectXMath.h>
 #include "Collision.h"
-
-#include <memory>
 #include "DebugCamera.h"
 #include "Camera.h"
 
-#include "Player.h"
+class CollisionManager;
+class Player;
+class TouchableObject;
 
 class GamePlayScene : public BaseScene
 {
@@ -52,29 +54,33 @@ public:
 	/// <summary>
 	/// ゲームシーン用
 	/// </summary>
-	Sprite *spriteBG = nullptr;
-	std::unique_ptr<Object3d> objectX;
-	Model *model = nullptr;
+	
 	DebugCamera* camera = nullptr;
 	//Camera *camera = nullptr;
-
-	FbxModel *fbxModel1 = nullptr;
-	FbxObject3d *fbxObject1 = nullptr;
-
-	FbxModel* fbxModel2 = nullptr;
-	FbxObject3d* fbxObject2 = nullptr;
-
-	std::unique_ptr<ColliderObject> colliderObject;
-	ColliderModel *colliderModel;
-
-	bool graFlag = true;
-	float groundY = 0.0f;
-
-	std::unique_ptr<MathObject> enemyCollider1Object;
-	std::unique_ptr<MathObject> enemyCollider2Object;
-
-	MathModel* mathModel = nullptr;
+	Sprite *spriteBG = nullptr;
 	
-	Box Pbox;
+	//std::unique_ptr<Object3d> objectX;
+	//Model *model = nullptr;
+	//FbxModel *fbxModel1 = nullptr;
+	//FbxObject3d *fbxObject1 = nullptr;
+	//FbxModel* fbxModel2 = nullptr;
+	//FbxObject3d* fbxObject2 = nullptr;
+	//std::unique_ptr<ColliderObject> colliderObject;
+	//ColliderModel *colliderModel;
+	//bool graFlag = true;
+	//float groundY = 0.0f;
+	//std::unique_ptr<MathObject> enemyCollider1Object;
+	//std::unique_ptr<MathObject> enemyCollider2Object;
+	//MathModel* mathModel = nullptr;
+	//Box Pbox;
+
+	//モデルデータ
+	Model* modelFighter = nullptr;
+	//オブジェクトデータ
+	Player* objFighter = nullptr;
+
+	//衝突マネージャー
+	CollisionManager* collisionManager = nullptr;
+	TouchableObject* objGround = nullptr;
 };
 

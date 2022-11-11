@@ -38,6 +38,8 @@ struct LevelData {
 	std::vector<ObjectData> naviareaObjects;
 };
 
+class TouchableObject;
+
 class JsonLoader
 {
 private: // エイリアス
@@ -83,8 +85,11 @@ public:// 定数
 	//床用
 	//オブジェクト
 	static std::vector<std::unique_ptr<Object3d>> groundObjects;
+	
+	static TouchableObject* objGround;
 	//モデル
 	static std::map<std::string, Model> groundModels;
+	
 	//コライダー用
 	//オブジェクト
 	static std::vector<std::unique_ptr<ColliderObject>> groundColliderObjects;
@@ -107,6 +112,14 @@ public:// 定数
 	//モデル
 	static std::map<std::string, ColliderModel> enemyNaviareaModels;
 
+	//壁のぼり用
+	static std::vector<std::unique_ptr<Object3d>> climbWallObjects;
+	static std::map<std::string, Model> climbWallModels;
+
+	//ゴール
+	static std::vector<std::unique_ptr<Object3d>> goalObjects;
+	static std::map<std::string, Model> goalModels;
+
 public:
 
 	//読み込み
@@ -122,7 +135,7 @@ public:
 	static void Draw();
 
 private:
-	//壁
+	//ブロック
 	static void TypeSetModel( LevelData::ObjectData& objectData);
 	static void TypeSetColliderModel( LevelData::ObjectData& colliderObjectData);
 	//クリスタル
@@ -135,5 +148,11 @@ private:
 	static void TypeSetEnemyModel(LevelData::ObjectData& objectData);
 	static void TypeSetColliderEnemyModel(LevelData::ObjectData& colliderObjectData);
 	static void TypeSetNaviareaEnemyModel(LevelData::ObjectData& colliderObjectData);
+
+	//よじ登れる壁
+	static void TypeclimbWallModel(LevelData::ObjectData& objectData);
+
+	//ゴール
+	static void TypeGoalModel(LevelData::ObjectData& objectData);
 };
 

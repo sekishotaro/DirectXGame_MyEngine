@@ -34,6 +34,32 @@ bool Collision::CheckSphereSphere(const SphereF& sphere1, const SphereF& sphere2
 	return false;
 }
 
+bool Collision::CheckSphere2Sphere(const Sphere& sphere1, const Sphere& sphere2, DirectX::XMVECTOR* inter, DirectX::XMVECTOR* reject)
+{
+	// 中心点の距離の２乗 <= 半径の和の２乗　なら交差
+	float dist = XMVector3LengthSq(sphere1.center - sphere2.center).m128_f32[0];
+
+	float radius2 = sphere1.radius + sphere2.radius;
+	radius2 *= radius2;
+
+	if (dist <= radius2) {
+		if (inter) {
+			// Aの半径が0の時座標はBの中心　Bの半径が0の時座標はAの中心　となるよう補完
+			float t = sphere2.radius / (sphere1.radius + sphere2.radius);
+			*inter = XMVectorLerp(sphere1.center, sphere2.center, t);
+		}
+		if (reject)
+		{
+			float rejectLen = sphere1.radius + sphere2.radius - sqrtf(dist);
+			*reject = XMVector3Normalize(sphere1.center - sphere2.center);
+			*reject *= rejectLen;
+		}
+		return true;
+	}
+
+	return false;
+}
+
 void Collision::ClosestPtPoint2Triangle(const DirectX::XMVECTOR &point, const Triangle &triangle, DirectX::XMVECTOR *closest)
 {
 	// pointがp0の外側の頂点領域の中にあるかどうかチェック
@@ -108,7 +134,7 @@ void Collision::ClosestPtPoint2Triangle(const DirectX::XMVECTOR &point, const Tr
 	*closest = triangle.p0 + p0_p1 * v + p0_p2 * w;
 }
 
-bool Collision::CheckSphere2Triangle(const Sphere &sphere, const Triangle &triangle, DirectX::XMVECTOR *inter)
+bool Collision::CheckSphere2Triangle(const Sphere& sphere, const Triangle& triangle, DirectX::XMVECTOR* inter, DirectX::XMVECTOR* reject)
 {
 	XMVECTOR p;
 	//球の中心に対する最近接点である三角形上にある点pを見るける
@@ -126,6 +152,14 @@ bool Collision::CheckSphere2Triangle(const Sphere &sphere, const Triangle &trian
 		//三角形上の最近接点pを疑似交点とする
 		*inter = p;
 	}
+	//押し出すベクトルを計算
+	if (reject)
+	{
+		float ds = XMVector3Dot(sphere.center, triangle.normal).m128_f32[0];
+		float dt = XMVector3Dot(triangle.p0, triangle.normal).m128_f32[0];
+		float rejectLen = dt - ds + sphere.radius;
+		*reject = triangle.normal * rejectLen;
+	}
 	return true;
 }
 
@@ -138,6 +172,7 @@ bool Collision::CheckRay2Plane(const Ray &ray, const Plane &plane, float *distan
 	if (d1 > -epsilon) { return false; }
 	//視点と原点の距離 (平面の法線方向)
 	//面法線とレイの始点座標 (位置ベクトル)の内積
+	XMVECTOR vec1 = XMVector3Dot(plane.normal, ray.start);
 	float d2 = XMVector3Dot(plane.normal, ray.start).m128_f32[0];
 	//始点と平面の距離 (平面の法線方向)
 	float dist = d2 - plane.distance;
@@ -258,7 +293,7 @@ bool Collision::CheckLineSegmentBox(const LineSegment& line, const Box& box)
 bool Collision::CheckRayBox(const Ray& ray, const Box& box)
 {
 	int sign = 0;
-	XMFLOAT3 pos[4];
+	XMFLOAT3 pos[4] = {};
 	pos[0] = { box.LeastPos.x, box.LeastPos.y, box.LeastPos.z };
 	pos[1] = { box.LeastPos.x, box.LeastPos.y,   box.MaxPos.z };
 	pos[2] = { box.MaxPos.x, box.LeastPos.y,   box.MaxPos.z };
@@ -279,17 +314,148 @@ bool Collision::CheckRayBox(const Ray& ray, const Box& box)
 
 		if (i == 0)
 		{
-			sign = MyMath::Sign(dd);
+			sign = (int)MyMath::Sign(dd);
 		}
 		else
 		{
-			if (sign != MyMath::Sign(dd))
+			if (sign != (int)MyMath::Sign(dd))
 			{
 				return true;
 			}
 		}
 	}
 	return false;
+}
+
+Collision::XMVECTOR Collision::CheckRayBoxforPlane(const Ray& ray, const Box& box)
+{
+	Ray r1;
+	r1.start = ray.start;	//初期位置
+	r1.dir = ray.dir;		//方向
+
+
+	int count = 10;			//カウント
+	float distance = 0.0f;	//初期位置からレイと平面が当たったところの長さ
+	float dis = 0.0f;		//比較するときの記録用
+
+	Plane plane[6];
+	plane[0].normal = {  1,  0,  0,  0};	//右面
+	plane[1].normal = { -1,  0,  0,  0};	//左面
+	plane[2].normal = {  0,  1,  0,  0};	//上面
+	plane[3].normal = {  0, -1,  0,  0};	//下面
+	plane[4].normal = {  0,  0,  1,  0};	//奥面
+	plane[5].normal = {  0,  0, -1,  0};	//前面
+	
+	plane[0].distance = box.MaxPos.x;
+	plane[1].distance = -box.LeastPos.x;
+	plane[2].distance = box.MaxPos.y;
+	plane[3].distance = -box.LeastPos.y;
+	plane[4].distance = box.MaxPos.z;
+	plane[5].distance = -box.LeastPos.z;
+
+
+	for (int i = 0; i < 6; i++)
+	{
+		if (CheckRay2Plane(r1, plane[i], &distance))
+		{
+			if (count != 10 && dis <= distance)
+			{
+				distance = dis;
+				return plane[count].normal;
+			}
+			dis = distance;
+			count = i;
+		}
+	}
+
+	//レイがボックスのどの面とも当たっていない
+	if (count == 10)
+	{
+		return XMVECTOR{ 0, 0, 0, 0 };
+	}
+	
+	return plane[count].normal;
+}
+
+bool Collision::Check2Box(const Box& box1, const Box& box2, XMFLOAT3& distance)
+{
+	if (box1.LeastPos.x > box2.MaxPos.x) return false;
+	if (box1.MaxPos.x < box2.LeastPos.x) return false;
+	if (box1.LeastPos.y > box2.MaxPos.y) return false;
+	if (box1.MaxPos.y < box2.LeastPos.y) return false;
+	if (box1.LeastPos.z > box2.MaxPos.z) return false;
+	if (box1.MaxPos.z < box2.LeastPos.z) return false;
+
+	float x1, x2, y1, y2, z1, z2;
+
+	x1 = box2.LeastPos.x - box1.MaxPos.x;
+	y1 = box2.LeastPos.y - box1.MaxPos.y;
+	z1 = box2.LeastPos.z - box1.MaxPos.z;
+
+	x2 = box2.MaxPos.x - box1.LeastPos.x;
+	y2 = box2.MaxPos.y - box1.LeastPos.y;
+	z2 = box2.MaxPos.z - box1.LeastPos.z;
+
+	if ( fabsf(x1) < fabsf(x2))
+	{
+		distance.x = x1;
+	}
+	else
+	{
+		distance.x = x2;
+	}
+	
+	if (fabsf(y1) < fabsf(y2))
+	{
+		distance.y = y1;
+	}
+	else
+	{
+		distance.y = y2;
+	}
+	
+	if (fabsf(z1) < fabsf(z2))
+	{
+		distance.z = z1;
+	}
+	else
+	{
+		distance.z = z2;
+	}
+
+	return true;
+}
+
+bool Collision::CheckBoxDot(const Box& box, const XMFLOAT3& dot)
+{
+	if (dot.x < box.LeastPos.x)
+	{
+		return false;
+	}
+	if (box.MaxPos.x < dot.x)
+	{
+		return false;
+	}
+
+	if (dot.y< box.LeastPos.y)
+	{
+		return false;
+	}
+	if (box.MaxPos.y < dot.y)
+	{
+		return false;
+	}
+
+	if (dot.z < box.LeastPos.z)
+	{
+		return false;
+	}
+	if (box.MaxPos.z < dot.z)
+	{
+		return false;
+	}
+
+	return true;
 }
 
 bool Collision::Check2LineSegment(const LineSegment& line1, const LineSegment& line2)
@@ -326,6 +492,42 @@ bool Collision::Check2LineSegment(const LineSegment& line1, const LineSegment& l
 	}
 
 	return true;
+}
+
+bool Collision::CheckPlateRay(const Plate& plate, const Ray& ray)
+{
+	////平面としたときの原点からの距離を求める
+	//float dis = (plate.position.m128_f32[0] * plate.position.m128_f32[0]) + (plate.position.m128_f32[1] * plate.position.m128_f32[1]) + (plate.position.m128_f32[2] * plate.position.m128_f32[2]);
+	//dis = sqrtf(dis);
+	//
+	//Plane p1;
+	//p1.distance = dis;
+	//p1.normal = plate.normal;
+
+	////交点
+	//float distance;
+	//XMVECTOR inter;
+	//if (CheckRay2Plane(ray, p1, &distance, &inter) == false) return false;
+
+	//三角ポリゴンとの当たり判定を調べる
+
+	Triangle pori1 = {};
+	Triangle pori2 = {};
+
+	pori1.p0 = plate.vert1;
+	pori1.p1 = plate.vert2;
+	pori1.p2 = plate.vert3;
+	
+	pori2.p0 = plate.vert4;
+	pori2.p1 = plate.vert5;
+	pori2.p2 = plate.vert6;
+	
+	pori1.normal = pori2.normal = plate.normal;
+
+	if (CheckRay2Triangle(ray, pori1) == true) return true;
+	if (CheckRay2Triangle(ray, pori2) == true) return true;
+
+	return false;
 }
 
 bool Collision::CheckSphereBox(const SphereF& sphere, const Box& box)
@@ -521,7 +723,7 @@ bool Collision::CheckCircleDot(const Circle& circle, const XMFLOAT2& dot)
 {
 	float a = dot.x - circle.center.x;
 	float b = dot.y - circle.center.y;
-	float c = sqrt(a * a + b * b);
+	float c = (float)sqrt(a * a + b * b);
 
 	if (c <= circle.radius)
 	{
@@ -583,7 +785,7 @@ bool Collision::CheckSphereDot(const SphereF& sphere, XMFLOAT3& dot)
 	float a = dot.x - sphere.center.x;
 	float b = dot.y - sphere.center.y;
 	float c = dot.z - sphere.center.z;
-	float d = sqrt(a * a + b * b + c * c);
+	float d = (float)sqrt(a * a + b * b + c * c);
 
 	if (d <= sphere.radius)
 	{

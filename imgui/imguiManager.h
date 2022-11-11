@@ -16,7 +16,7 @@ public:
 	/// <summary>
 	/// ‰Šú‰»
 	/// </summary>
-	static void Initialize();
+	static void Initialize(); 
 
 	static void PraDraw();
 

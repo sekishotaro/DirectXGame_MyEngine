@@ -71,22 +71,7 @@ void MyMath::Gravity(XMFLOAT3& pos, bool& graflag)
 	}
 
 	pos.y -= gravity * graValue / graAdjustConstant;
-	graValue += 0.1;
-}
-
-void MyMath::GravityCheck(XMFLOAT3& pos, const float& groundY, bool& graFlag)
-{
-	if (pos.y <= groundY)
-	{
-		graFlag = true;
-		float Y = groundY;
-		Player::SetPosY(Y);
-	}
-	
-	if (graFlag == true && pos.y > groundY)
-	{
-		graFlag = false;
-	}
+	graValue += 0.1f;
 }
 
 void MyMath::GravityCheckMove(XMFLOAT3& move, bool& graFlag)
@@ -146,6 +131,8 @@ float MyMath::Sign(const float& num)
 	{
 		return -1;
 	}
+
+	return 0;
 }
 
 float MyMath::maxElement(const float* array, int size)

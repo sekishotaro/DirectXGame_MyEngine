@@ -5,6 +5,8 @@
 #include <sstream>
 #include <string>
 #include <vector>
+#include "BaseCollider.h"
+#include "CollisionManager.h"
 using namespace std;
 
 #pragma comment(lib, "d3dcompiler.lib")
@@ -22,6 +24,18 @@ ID3D12GraphicsCommandList* Object3d::cmdList = nullptr;
 ComPtr<ID3D12RootSignature> Object3d::rootsignature;
 ComPtr<ID3D12PipelineState> Object3d::pipelinestate;
 Camera *Object3d::camera = nullptr;
+
+std::wstring Object3d::PSshaderName = L"Resources/shaders/OBJPixelShader.hlsl";
+std::wstring Object3d::VSshaderName = L"Resources/shaders/OBJVertexShader.hlsl";
+
+Object3d::~Object3d()
+{
+	if (collider){
+		//コリジョンマネージャーから登録を解除
+		CollisionManager::GetInstance()->RemoveCollider(collider);
+		delete collider;
+	}
+}
 
 bool Object3d::StaticInitialize(ID3D12Device * device, Camera *camera)
 {
@@ -72,7 +86,6 @@ std::unique_ptr<Object3d> Object3d::Create()
 	{
 		delete object3d;
 		assert(0);
-		return nullptr;
 	}
 
 	//スケールをセット
@@ -93,7 +106,7 @@ bool Object3d::InitializeGraphicsPipeline()
 
 	// 頂点シェーダの読み込みとコンパイル
 	result = D3DCompileFromFile(
-		L"Resources/shaders/OBJVertexShader.hlsl",	// シェーダファイル名
+		VSshaderName.c_str(),	// シェーダファイル名
 		nullptr,
 		D3D_COMPILE_STANDARD_FILE_INCLUDE, // インクルード可能にする
 		"main", "vs_5_0",	// エントリーポイント名、シェーダーモデル指定
@@ -117,7 +130,7 @@ bool Object3d::InitializeGraphicsPipeline()
 
 	// ピクセルシェーダの読み込みとコンパイル
 	result = D3DCompileFromFile(
-		L"Resources/shaders/OBJPixelShader.hlsl",	// シェーダファイル名
+		PSshaderName.c_str(),	// シェーダファイル名
 		nullptr,
 		D3D_COMPILE_STANDARD_FILE_INCLUDE, // インクルード可能にする
 		"main", "ps_5_0",	// エントリーポイント名、シェーダーモデル指定
@@ -254,43 +267,16 @@ bool Object3d::Initialize()
 		nullptr,
 		IID_PPV_ARGS(&constBuffB0));
 
+	name = typeid(*this).name();
+
 	return true;
 }
 
 void Object3d::Update()
 {
 	HRESULT result;
-	XMMATRIX matScale, matRot, matTrans;
-
-	// スケール、回転、平行移動行列の計算
-	matScale = XMMatrixScaling(scale.x, scale.y, scale.z);
-	matRot = XMMatrixIdentity();
-	matRot *= XMMatrixRotationZ(XMConvertToRadians(rotation.z));
-	matRot *= XMMatrixRotationX(XMConvertToRadians(rotation.x));
-	matRot *= XMMatrixRotationY(XMConvertToRadians(rotation.y));
-	matTrans = XMMatrixTranslation(position.x, position.y, position.z);
-
-	// ワールド行列の合成
-	matWorld = XMMatrixIdentity(); // 変形をリセット
-	matWorld *= matScale; // ワールド行列にスケーリングを反映
-	matWorld *= matRot; // ワールド行列に回転を反映
-	matWorld *= matTrans; // ワールド行列に平行移動を反映
-
-	if (isBillboard) {
-		const XMMATRIX &matBillboard = camera->GetBillboardMatrix();
-		matWorld = XMMatrixIdentity();
-		matWorld *= matScale; // ワールド行列にスケーリングを反映
-		matWorld *= matRot; // ワールド行列に回転を反映
-		matWorld *= matBillboard;
-		matWorld *= matTrans; // ワールド行列に平行移動を反映
-	}
-
-	// 親オブジェクトがあれば
-	if (parent != nullptr)
-	{
-		// 親オブジェクトのワールド行列を掛ける
-		matWorld *= parent->matWorld;
-	}
+	
+	UpdateWorldMatrix();
 
 	const XMMATRIX &matViewProjection = camera->GetViewProjectionMatrix();
 
@@ -299,6 +285,12 @@ void Object3d::Update()
 	result = constBuffB0->Map(0, nullptr, (void **)&constMap);
 	constMap->mat = matWorld * matViewProjection;	// 行列の合成
 	constBuffB0->Unmap(0, nullptr);
+
+	//当たり判定更新
+	if (collider)
+	{
+		collider->Update();
+	}
 }
 
 void Object3d::Draw()
@@ -321,5 +313,55 @@ void Object3d::Draw()
 	//モデルを描画
 	model->Draw(cmdList, 1);
 
+}
+
+void Object3d::SetCollider(BaseCollider* collider)
+{
+	collider->SetObject(this);
+	this->collider = collider;
+	//コリジョンマネージャーに登録
+	CollisionManager::GetInstance()->AddCollider(collider);
+	//コライダーを更新しておく
+	//行列の計算
+	UpdateWorldMatrix();
+	collider->Update();
+}
+
+void Object3d::UpdateWorldMatrix()
+{
+	assert(camera);
+
+	XMMATRIX matScale, matRot, matTrans;
+
+	// スケール、回転、平行移動行列の計算
+	matScale = XMMatrixScaling(scale.x, scale.y, scale.z);
+	matRot = XMMatrixIdentity();
+	matRot *= XMMatrixRotationZ(XMConvertToRadians(rotation.z));
+	matRot *= XMMatrixRotationX(XMConvertToRadians(rotation.x));
+	matRot *= XMMatrixRotationY(XMConvertToRadians(rotation.y));
+	matTrans = XMMatrixTranslation(position.x, position.y, position.z);
+
+	// ワールド行列の合成
+	matWorld = XMMatrixIdentity(); // 変形をリセット
+	matWorld *= matScale; // ワールド行列にスケーリングを反映
+	matWorld *= matRot; // ワールド行列に回転を反映
+	matWorld *= matTrans; // ワールド行列に平行移動を反映
+
+	if (isBillboard) {
+		const XMMATRIX& matBillboard = camera->GetBillboardMatrix();
+		matWorld = XMMatrixIdentity();
+		matWorld *= matScale; // ワールド行列にスケーリングを反映
+		matWorld *= matRot; // ワールド行列に回転を反映
+		matWorld *= matBillboard;
+		matWorld *= matTrans; // ワールド行列に平行移動を反映
+	}
+
+	// 親オブジェクトがあれば
+	if (parent != nullptr)
+	{
+		// 親オブジェクトのワールド行列を掛ける
+		matWorld *= parent->matWorld;
+	}
+	
 }
 
