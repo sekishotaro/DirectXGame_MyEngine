@@ -18,7 +18,7 @@ bool Player::adhesionMesh = false;
 int Player::crystalNum = 0;
 bool Player::goalFlag = false;
 bool Player::climbOperation = false;
-float Player::timeLimit = 10.0f;
+float Player::timeLimit = 60.0f;
 bool Player::staminaBoostFlag = false;
 float Player::staminaQuantity = 100.0f;
 

@@ -96,7 +96,7 @@ public:// 定数
 	//モデル
 	static std::map<std::string, ColliderModel> groundColliderModels;
 
-	//敵用
+	//探索敵用
 	//オブジェクト
 	static std::vector<std::unique_ptr<Object3d>> enemyObjects;
 	//モデル
@@ -111,6 +111,15 @@ public:// 定数
 	static std::vector<std::unique_ptr<ColliderObject>> enemyNaviareaObjects;
 	//モデル
 	static std::map<std::string, ColliderModel> enemyNaviareaModels;
+
+	//襲撃敵
+	//オブジェクト
+	static std::vector<std::unique_ptr<Object3d>> raidEnemyObjects;
+	//モデル
+	static std::map<std::string, Model> raidEnemyModels;
+
+
+
 
 	//壁のぼり用
 	static std::vector<std::unique_ptr<Object3d>> climbWallObjects;
@@ -144,10 +153,12 @@ private:
 	//地面
 	static void TypeSetGroundModel(LevelData::ObjectData& objectData);
 	static void TypeSetColliderGroundModel(LevelData::ObjectData& colliderObjectData);
-	//敵
+	//探索敵
 	static void TypeSetEnemyModel(LevelData::ObjectData& objectData);
 	static void TypeSetColliderEnemyModel(LevelData::ObjectData& colliderObjectData);
 	static void TypeSetNaviareaEnemyModel(LevelData::ObjectData& colliderObjectData);
+	//襲撃敵
+	static void TypeSetRaidEnemyModel(LevelData::ObjectData& objectData);
 
 	//よじ登れる壁
 	static void TypeclimbWallModel(LevelData::ObjectData& objectData);

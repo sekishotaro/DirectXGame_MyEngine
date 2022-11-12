@@ -6,6 +6,8 @@
 #include <d3dx12.h>
 #include "CollisionPrimitive.h"
 
+#include "MathObject.h"
+
 class Enemy
 {
 private:
@@ -19,10 +21,16 @@ private:
 
 private:
 	static XMFLOAT3 pos;
+	static XMFLOAT3 initialPos;
 
 	static int nearNumber;
-
 	static float speedConstant;
+
+	static bool raidMode;
+
+	static float monitoringEnemyColliderScale;
+	static bool chengeScaleFlag;
+
 public:
 
 	static void SetPos(XMFLOAT3& pos1) { pos = pos1; }
@@ -40,5 +48,9 @@ public:
 	static void Move(const XMFLOAT3& playerPos);
 
 	static void PushBack(const Box& wall);
+
+	static void Update(int time, const XMFLOAT3& playerPos);
+
+	static XMFLOAT3 MonitoringCollisionScale();
 };
 

@@ -51,14 +51,29 @@ void GamePlayScene::Initialize()
 	modelFighter = Model::LoadFromOBJ("modelObj");
 	
 	//json
-	JsonLoader::LoadFile("Scene11_01"); //オブジェクトの当たり判定
+	JsonLoader::LoadFile("Scene11_12"); //オブジェクトの当たり判定
 
 	JsonLoader::SetObject();
 
 	collisionManager = CollisionManager::GetInstance();
 	objFighter = Player::Create(modelFighter);
 	
-	//コライダーの追加
+	//敵初期化
+	Enemy::Initialize();
+
+	modelEnemyCollider = MathModel::LoadFromOBJ("sphere2");
+	
+	
+	for (int i = 0; i < JsonLoader::enemyObjects.size(); i++)
+	{
+		std::unique_ptr<MathObject> objectEnemyCollider;
+		objectEnemyCollider = MathObject::Create();
+		objectEnemyCollider->SetModel(modelEnemyCollider);
+		objectEnemyCollider->SetPosition(JsonLoader::enemyObjects[i].get()->GetPosition());
+		objectEnemyCollider->SetScale({ 2.0f, 2.0f, 2.0f });
+		objectEnemyCollider->SetColor({ 1.0f, 1.0f, 1.0f, 0.5f });
+		enemyColliderObjects.push_back(std::move(objectEnemyCollider));
+	}
 }
 
 void GamePlayScene::Finalize()
@@ -78,10 +93,18 @@ void GamePlayScene::Update()
 	}
 
 	//アップデート
+	Enemy::Update((int)objFighter->GetTimeLimit(), objFighter->GetPos());
 	JsonLoader::Update();
 
 	camera->Update();
 	objFighter->Update();
+
+	//test追加探索敵コライダー
+	for (int i = 0; i < enemyColliderObjects.size(); i++)
+	{
+		enemyColliderObjects[i].get()->SetScale(Enemy::MonitoringCollisionScale());
+		enemyColliderObjects[i].get()->Update();
+	}
 
 	//UI更新
 	DebugText::GetInstance()->Print(1000, 20, 3, "TIME : %d", (int)objFighter->GetTimeLimit());
@@ -120,10 +143,15 @@ void GamePlayScene::Draw()
 
 	// 3Dオブクジェクトの描画
 	
+	//test追加探索敵コライダー
 	objFighter->Draw();
 	//json
 	JsonLoader::Draw();
 
+	for (int i = 0; i < enemyColliderObjects.size(); i++)
+	{
+		enemyColliderObjects[i].get()->Draw();
+	}
 	/// <summary>
 	/// ここに3Dオブジェクトの描画処理を追加できる
 	/// </summary>

@@ -5,10 +5,14 @@
 #include "MyMath.h"
 
 Enemy::XMFLOAT3 Enemy::pos = { 0.0f, 0.0f, 3.0f };
-
+Enemy::XMFLOAT3 Enemy::initialPos = { 0.0f, 0.0f, 0.0f };
+float Enemy::monitoringEnemyColliderScale = 2.0f;
+bool Enemy::chengeScaleFlag = false;
 int Enemy::nearNumber = 0;
 
-float Enemy::speedConstant = 15.0f;
+float Enemy::speedConstant = 10.0f;
+
+bool Enemy::raidMode = false;
 
 void Enemy::Tracking(const XMFLOAT3& playerPos)
 {
@@ -119,7 +123,8 @@ void Enemy::ShieldDodge(const XMFLOAT3& playerPos, const Box& wall)
 
 void Enemy::Initialize()
 {
-	pos = JsonLoader::enemyObjects[0].get()->GetPosition();
+	pos = JsonLoader::raidEnemyObjects[0].get()->GetPosition();
+	initialPos = JsonLoader::raidEnemyObjects[0].get()->GetPosition();
 }
 
 void Enemy::Move(const XMFLOAT3& playerPos)
@@ -148,4 +153,68 @@ void Enemy::Move(const XMFLOAT3& playerPos)
 
 void Enemy::PushBack(const Box& wall)
 {
+}
+
+Enemy::XMFLOAT3 Enemy::MonitoringCollisionScale()
+{
+	if (monitoringEnemyColliderScale <= 2.0f)
+	{
+		chengeScaleFlag = true;
+	}
+	else if (monitoringEnemyColliderScale >= 15.0f)
+	{
+		chengeScaleFlag = false;
+	}
+
+	if (chengeScaleFlag == true)
+	{
+		monitoringEnemyColliderScale += 0.01f;
+	}
+	else
+	{
+		monitoringEnemyColliderScale -= 0.01f;
+	}
+
+	return { monitoringEnemyColliderScale , monitoringEnemyColliderScale ,monitoringEnemyColliderScale };
+}
+
+void Enemy::Update(int time, const XMFLOAT3& playerPos)
+{
+	if (time <= 0 && raidMode == false)
+	{
+		raidMode = true;
+	}
+	else if (raidMode == true && time != 60)
+	{
+		raidMode = true;
+	}
+	else if (time == 60.0f)
+	{
+		raidMode = false;
+	}
+
+	if (raidMode == true)		//PŒ‚ƒ‚[ƒhŽž
+	{
+		Tracking(playerPos);
+	}
+	else						//”ñPŒ‚ƒ‚[ƒhŽž
+	{
+		for (int i = 0; i < JsonLoader::enemyObjects.size(); i++)
+		{
+			SphereF sphere;
+			sphere.center = JsonLoader::enemyObjects[i].get()->GetPosition();
+			sphere.radius = monitoringEnemyColliderScale;
+
+			XMFLOAT3 Ppos = playerPos;
+			if (Collision::CheckSphereDot(sphere, Ppos))
+			{
+				raidMode = true;
+			}
+		}
+		
+
+		pos = initialPos;
+	}
+
+	JsonLoader::raidEnemyObjects[0].get()->SetPosition(pos);
 }

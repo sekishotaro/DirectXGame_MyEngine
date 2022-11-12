@@ -59,20 +59,10 @@ public:
 	//Camera *camera = nullptr;
 	Sprite *spriteBG = nullptr;
 	
-	//std::unique_ptr<Object3d> objectX;
-	//Model *model = nullptr;
-	//FbxModel *fbxModel1 = nullptr;
-	//FbxObject3d *fbxObject1 = nullptr;
-	//FbxModel* fbxModel2 = nullptr;
-	//FbxObject3d* fbxObject2 = nullptr;
-	//std::unique_ptr<ColliderObject> colliderObject;
-	//ColliderModel *colliderModel;
-	//bool graFlag = true;
-	//float groundY = 0.0f;
-	//std::unique_ptr<MathObject> enemyCollider1Object;
-	//std::unique_ptr<MathObject> enemyCollider2Object;
-	//MathModel* mathModel = nullptr;
-	//Box Pbox;
+	//オブジェクト
+	std::vector<std::unique_ptr<MathObject>> enemyColliderObjects;
+	//モデル
+	MathModel* modelEnemyCollider = nullptr;
 
 	//モデルデータ
 	Model* modelFighter = nullptr;

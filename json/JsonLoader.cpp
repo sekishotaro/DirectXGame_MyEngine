@@ -27,6 +27,9 @@ std::map< std::string, ColliderModel> JsonLoader::enemyColliderModels;
 std::vector<std::unique_ptr<ColliderObject>> JsonLoader::enemyNaviareaObjects;
 std::map< std::string, ColliderModel> JsonLoader::enemyNaviareaModels;
 
+std::vector<std::unique_ptr<Object3d>> JsonLoader::raidEnemyObjects;
+std::map< std::string, Model> JsonLoader::raidEnemyModels;
+
 std::vector<std::unique_ptr<Object3d>> JsonLoader::climbWallObjects;
 std::map<std::string, Model> JsonLoader::climbWallModels;
 std::vector<std::unique_ptr<Object3d>> JsonLoader::goalObjects;
@@ -207,9 +210,13 @@ void JsonLoader::SetObject()
 		{
 			TypeSetGroundModel(objectData);
 		}
-		else if (objectData.typeName == "enemy")
+		else if (objectData.typeName == "monitoringEnemy")
 		{
 			TypeSetEnemyModel(objectData);
+		}
+		else if (objectData.typeName == "raidEnemy")
+		{
+			TypeSetRaidEnemyModel(objectData);
 		}
 		else if (objectData.typeName == "climbWall")
 		{
@@ -236,7 +243,7 @@ void JsonLoader::SetObject()
 		{
 			TypeSetColliderGroundModel(colliderObjectData);
 		}
-		else if (colliderObjectData.typeName == "enemy")
+		else if (colliderObjectData.typeName == "monitoringEnemy")
 		{
 			TypeSetColliderEnemyModel(colliderObjectData);
 		}
@@ -244,7 +251,7 @@ void JsonLoader::SetObject()
 
 	for (auto& naviareaObjectData : levelData->naviareaObjects)
 	{
-		if (naviareaObjectData.typeName == "enemy")
+		if (naviareaObjectData.typeName == "monitoringEnemy")
 		{
 			TypeSetNaviareaEnemyModel(naviareaObjectData);
 		}
@@ -270,6 +277,16 @@ void JsonLoader::Update()
 	}*/
 
 	objGround->Update();
+
+	for (int i = 0; i < enemyObjects.size(); i++)
+	{
+		enemyObjects[i]->Update();
+	}
+
+	for (int i = 0; i < raidEnemyObjects.size(); i++)
+	{
+		raidEnemyObjects[i]->Update();
+	}
 
 	//当たり判定用オブジェクト
 	for (int i = 0; i < colliderObjects.size(); i++)
@@ -359,6 +376,16 @@ void JsonLoader::Draw()
 	}*/
 
 	objGround->Draw();
+
+	for (int i = 0; i < enemyObjects.size(); i++)
+	{
+		enemyObjects[i]->Draw();
+	}
+
+	for (int i = 0; i < raidEnemyObjects.size(); i++)
+	{
+		raidEnemyObjects[i]->Draw();
+	}
 
 	//当たり判定用オブジェクト
 	for (int i = 0; i < colliderObjects.size(); i++)
@@ -732,6 +759,38 @@ void JsonLoader::TypeSetNaviareaEnemyModel(LevelData::ObjectData& colliderObject
 
 	//配列の最後に登録
 	enemyNaviareaObjects.push_back(std::move(newColliderObject));
+}
+
+void JsonLoader::TypeSetRaidEnemyModel(LevelData::ObjectData& objectData)
+{
+	//ファイル名から登録済みモデルを検索
+	Model* model = nullptr;
+	model = Model::LoadFromOBJ(objectData.fileName);
+	raidEnemyModels[objectData.fileName] = *model;
+
+	//モデルを指定して3Dオブジェクトを生成
+	std::unique_ptr<Object3d> newObject;
+	newObject = Object3d::Create();
+	newObject->SetModel(model);
+
+	//座標
+	XMFLOAT3 pos;
+	DirectX::XMStoreFloat3(&pos, objectData.translation);
+	newObject->SetPosition(pos);
+
+	//回転角
+	XMFLOAT3 rot;
+	DirectX::XMStoreFloat3(&rot, objectData.rotation);
+	rot.y -= 90.0f;
+	newObject->SetRotation(rot);
+
+	//スケール
+	XMFLOAT3 scale;
+	DirectX::XMStoreFloat3(&scale, objectData.scaling);
+	newObject->SetScale(scale);
+
+	//配列の最後に登録
+	raidEnemyObjects.push_back(std::move(newObject));
 }
 
 void JsonLoader::TypeclimbWallModel(LevelData::ObjectData& objectData)
