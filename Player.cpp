@@ -12,15 +12,17 @@ using namespace DirectX;
 
 XMFLOAT3 Player::pos = { 0,0,0 };
 XMFLOAT3 Player::moveV = { 0,0,0 };
+float Player::moveAdjustmentNum = 1.0f;
 bool Player::nowMove = false;
 bool Player::onGround = false;
 bool Player::adhesionMesh = false;
 int Player::crystalNum = 0;
 bool Player::goalFlag = false;
 bool Player::climbOperation = false;
-float Player::timeLimit = 10.0f;
+float Player::timeLimit = 60.0f;
 bool Player::staminaBoostFlag = false;
 float Player::staminaQuantity = 100.0f;
+bool Player::staminaCut = false;
 
 Player* Player::Create(Model* model)
 {
@@ -250,6 +252,15 @@ void Player::MoveOperation(XMVECTOR& move)
 	//移動量初期化
 	move = { 0,0,0.1f,0 };
 
+	if (staminaCut == true)
+	{
+		moveAdjustmentNum = 0.5f;
+	}
+	else
+	{
+		moveAdjustmentNum = 1.0f;
+	}
+
 	if (climbOperation == false) //通常移動
 	{
 		if (Input::GetInstance()->PushKey(DIK_A))
@@ -277,7 +288,7 @@ void Player::MoveOperation(XMVECTOR& move)
 		move = XMVector3TransformNormal(move, matRot);
 		float power = 1.0f;
 		//向いている方向に移動
-		if (Input::GetInstance()->PushKey(DIK_V))
+		if (Input::GetInstance()->PushKey(DIK_V) && staminaCut == false)
 		{
 			staminaBoostFlag = true;
 			power = 3.0f;
@@ -294,16 +305,16 @@ void Player::MoveOperation(XMVECTOR& move)
 
 		if (Input::GetInstance()->PushKey(DIK_S))
 		{
-			position.x -= move.m128_f32[0] * power;
-			position.y -= move.m128_f32[1] * power;
-			position.z -= move.m128_f32[2] * power;
+			position.x -= move.m128_f32[0] * power * moveAdjustmentNum;
+			position.y -= move.m128_f32[1] * power * moveAdjustmentNum;
+			position.z -= move.m128_f32[2] * power * moveAdjustmentNum;
 			nowMove = true;
 		}
 		else if (Input::GetInstance()->PushKey(DIK_W))
 		{
-			position.x += move.m128_f32[0] * power;
-			position.y += move.m128_f32[1] * power;
-			position.z += move.m128_f32[2] * power;
+			position.x += move.m128_f32[0] * power * moveAdjustmentNum;
+			position.y += move.m128_f32[1] * power * moveAdjustmentNum;
+			position.z += move.m128_f32[2] * power * moveAdjustmentNum;
 			nowMove = true;
 		}
 		else if (Input::GetInstance()->LeftStickIn(DOWN))
@@ -692,15 +703,36 @@ void Player::TerrainConfirmationProcess()
 
 void Player::StaminaManagement(const DirectX::XMVECTOR& move)
 {
-	if (staminaBoostFlag != true || nowMove != true)
+	if (staminaCut == false)	//スタミナがある状態
 	{
-		if (staminaQuantity >= 100.0f) return;
-		staminaQuantity += 0.5f;
+		//スタミナ残量がないかの確認
+		if (staminaQuantity <= 0.0f)
+		{
+			staminaCut = true;
+			return;
+		}
+
+		//	スタミナが使われていない または 今移動していない場合
+		if (staminaBoostFlag != true || nowMove != true)
+		{
+			if (staminaQuantity >= 100.0f) return;
+			staminaQuantity += 0.5f;
+		}
+		else //スタミナを消費している場合
+		{
+			if (staminaQuantity <= 0.0f) return;
+			staminaQuantity -= 1.0f;
+		}
 	}
-	else
+	else						//スタミナがない場合
 	{
-		if (staminaQuantity <= 0.0f) return;
-		staminaQuantity -= 1.0f;
+		if (staminaQuantity >= 100.0f)
+		{
+			staminaCut = false;
+			return;
+		}
+
+		staminaQuantity += 0.25f;
 	}
 }
 
