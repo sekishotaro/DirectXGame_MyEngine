@@ -112,6 +112,8 @@ public:
 
 	static float& GetStaminaQuantity() { return staminaQuantity; }
 
+	static bool& GetStaminaCut() { return staminaCut; }
+
 private:
 	//接地フラグ
 	static bool onGround;
@@ -134,6 +136,9 @@ private:
 
 	static XMFLOAT3 pos;
 	static XMFLOAT3 moveV;
+
+	//移動量調整数
+	static float moveAdjustmentNum;
 
 	//クリスタルの数
 	static int crystalNum;
@@ -160,6 +165,7 @@ private:
 	static float staminaQuantity;
 	//スタミナがなくなった時の回復時間
 	float forciblyRecoveryTime = 10.0f;
-
+	//スタミナが使えるかどうか(スタミナを使い切った場合になる状態)
+	static bool staminaCut;
 };
 

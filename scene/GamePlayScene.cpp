@@ -16,7 +16,7 @@
 #include "SphereCollider.h"
 #include "CollisionManager.h"
 #include "Player.h"
-
+#include "UI.h"
 
 void GamePlayScene::Initialize()
 {
@@ -74,6 +74,8 @@ void GamePlayScene::Initialize()
 		objectEnemyCollider->SetColor({ 1.0f, 1.0f, 1.0f, 0.5f });
 		enemyColliderObjects.push_back(std::move(objectEnemyCollider));
 	}
+
+	UI::Initialize();
 }
 
 void GamePlayScene::Finalize()
@@ -95,6 +97,8 @@ void GamePlayScene::Update()
 	//アップデート
 	Enemy::Update((int)objFighter->GetTimeLimit(), objFighter->GetPos());
 	JsonLoader::Update();
+
+	UI::Update();
 
 	camera->Update();
 	objFighter->Update();
@@ -162,6 +166,9 @@ void GamePlayScene::Draw()
 	MathObject::PostDraw();
 	// 前景スプライト描画前処理
 	Sprite::PreDraw(cmdList);
+	
+	UI::Draw();
+
 
 	// デバッグテキストの描画
 	DebugText::GetInstance()->DrawAll(cmdList);

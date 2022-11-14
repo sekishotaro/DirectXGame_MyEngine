@@ -168,6 +168,9 @@ public: //ƒƒ“ƒoŠÖ”
 	/// </summary>
 	void Draw();
 
+	XMFLOAT2 GetSize() { return size; }
+
+	void SetColor(XMFLOAT4 color) { this->color = color; }
 
 
 protected: //ƒƒ“ƒo•Ï”

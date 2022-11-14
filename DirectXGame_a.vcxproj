@@ -334,6 +334,7 @@
     <ClCompile Include="base\WinApp.cpp" />
     <ClCompile Include="collision\SphereCollider.cpp" />
     <ClCompile Include="TouchableObject.cpp" />
+    <ClCompile Include="UI.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="3d\FbxLoader.h" />
@@ -370,6 +371,7 @@
     <ClInclude Include="Player.h" />
     <ClInclude Include="MyMath.h" />
     <ClInclude Include="QueryCallback.h" />
+    <ClInclude Include="resource.h" />
     <ClInclude Include="scene\AbstractSceneFactory.h" />
     <ClInclude Include="Audio\Audio.h" />
     <ClInclude Include="scene\BaseScene.h" />
@@ -391,6 +393,7 @@
     <ClInclude Include="base\WinApp.h" />
     <ClInclude Include="collision\SphereCollider.h" />
     <ClInclude Include="TouchableObject.h" />
+    <ClInclude Include="UI.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
