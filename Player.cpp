@@ -731,6 +731,9 @@ void Player::StaminaManagement(const DirectX::XMVECTOR& move)
 		if (staminaQuantity >= staminaQuantityMax)
 		{
 			staminaCut = false;
+
+			staminaQuantity = (int)staminaQuantity;
+
 			return;
 		}
 
