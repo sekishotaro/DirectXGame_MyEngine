@@ -16,7 +16,7 @@
 #include "SphereCollider.h"
 #include "CollisionManager.h"
 #include "Player.h"
-
+#include "UI.h"
 
 void GamePlayScene::Initialize()
 {
@@ -57,8 +57,8 @@ void GamePlayScene::Initialize()
 
 	collisionManager = CollisionManager::GetInstance();
 	objFighter = Player::Create(modelFighter);
-	
-	//コライダーの追加
+
+	UI::Initialize();
 }
 
 void GamePlayScene::Finalize()
@@ -79,6 +79,8 @@ void GamePlayScene::Update()
 
 	//アップデート
 	JsonLoader::Update();
+
+	UI::Update();
 
 	camera->Update();
 	objFighter->Update();
@@ -134,6 +136,9 @@ void GamePlayScene::Draw()
 	MathObject::PostDraw();
 	// 前景スプライト描画前処理
 	Sprite::PreDraw(cmdList);
+	
+	UI::Draw();
+
 
 	// デバッグテキストの描画
 	DebugText::GetInstance()->DrawAll(cmdList);

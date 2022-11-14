@@ -703,6 +703,8 @@ void Player::TerrainConfirmationProcess()
 
 void Player::StaminaManagement(const DirectX::XMVECTOR& move)
 {
+	const float staminaQuantityMax = 100.0f;
+
 	if (staminaCut == false)	//スタミナがある状態
 	{
 		//スタミナ残量がないかの確認
@@ -715,24 +717,24 @@ void Player::StaminaManagement(const DirectX::XMVECTOR& move)
 		//	スタミナが使われていない または 今移動していない場合
 		if (staminaBoostFlag != true || nowMove != true)
 		{
-			if (staminaQuantity >= 100.0f) return;
-			staminaQuantity += 0.5f;
+			if (staminaQuantity >= staminaQuantityMax) return;
+			staminaQuantity += staminaQuantityMax * (1.0f / 300.0f);
 		}
 		else //スタミナを消費している場合
 		{
 			if (staminaQuantity <= 0.0f) return;
-			staminaQuantity -= 1.0f;
+			staminaQuantity -= staminaQuantityMax * (1.0f/ 300.0f);
 		}
 	}
 	else						//スタミナがない場合
 	{
-		if (staminaQuantity >= 100.0f)
+		if (staminaQuantity >= staminaQuantityMax)
 		{
 			staminaCut = false;
 			return;
 		}
 
-		staminaQuantity += 0.25f;
+		staminaQuantity += staminaQuantityMax * (2.0f / 300.0f);
 	}
 }
 

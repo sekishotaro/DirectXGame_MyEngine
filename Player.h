@@ -112,6 +112,8 @@ public:
 
 	static float& GetStaminaQuantity() { return staminaQuantity; }
 
+	static bool& GetStaminaCut() { return staminaCut; }
+
 private:
 	//Ú’nƒtƒ‰ƒO
 	static bool onGround;
