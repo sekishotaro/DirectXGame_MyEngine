@@ -124,6 +124,8 @@ void Enemy::ShieldDodge(const XMFLOAT3& playerPos, const Box& wall)
 
 void Enemy::Initialize()
 {
+	gameOverFlag = false;
+
 	pos = JsonLoader::raidEnemyObjects[0].get()->GetPosition();
 	initialPos = JsonLoader::raidEnemyObjects[0].get()->GetPosition();
 }

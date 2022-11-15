@@ -52,6 +52,11 @@ Player* Player::Create(Model* model)
 
 bool Player::Initialize()
 {
+	goalFlag = false;
+	timeLimit = 60.0f;
+	staminaQuantity = 100.0f;
+	staminaCut = false;
+
 	if (!Object3d::Initialize())
 	{
 		return false;

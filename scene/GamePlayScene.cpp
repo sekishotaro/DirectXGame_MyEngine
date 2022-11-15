@@ -18,6 +18,8 @@
 #include "Player.h"
 #include "UI.h"
 
+#include "SafeDelete.h"
+
 void GamePlayScene::Initialize()
 {
 	Audio::GetInstance()->LoadWave("futta-dream.wav");
@@ -80,6 +82,11 @@ void GamePlayScene::Initialize()
 
 void GamePlayScene::Finalize()
 {
+	safe_delete(camera);
+	safe_delete(modelFighter);
+	safe_delete(spriteBG);
+
+	JsonLoader::Finalize();
 }
 
 void GamePlayScene::Update()

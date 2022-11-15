@@ -143,6 +143,9 @@ public:
 	//描画
 	static void Draw();
 
+	//終了
+	static void Finalize();
+
 private:
 	//ブロック
 	static void TypeSetModel( LevelData::ObjectData& objectData);

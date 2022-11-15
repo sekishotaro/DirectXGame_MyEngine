@@ -419,6 +419,39 @@ void JsonLoader::Draw()
 	}
 }
 
+void JsonLoader::Finalize()
+{
+	objects.clear();
+	models.clear();
+	colliderObjects.clear();
+	colliderModels.clear();
+
+	crystalObjects.clear();;
+	crystalModels.clear();;
+	crystalColliderObjects.clear();;
+	crystalColliderModels.clear();;
+
+	groundObjects.clear();
+	groundModels.clear();
+	groundColliderObjects.clear();
+	groundColliderModels.clear();
+
+	enemyObjects.clear();
+	enemyModels.clear();
+	enemyColliderObjects.clear();
+	enemyColliderModels.clear();
+	enemyNaviareaObjects.clear();
+	enemyNaviareaModels.clear();
+
+	raidEnemyObjects.clear();
+	raidEnemyModels.clear();
+
+	climbWallObjects.clear();
+	climbWallModels.clear();
+	goalObjects.clear();
+	goalModels.clear();
+}
+
 void JsonLoader::TypeSetModel( LevelData::ObjectData& objectData)
 {
 	//ファイル名から登録済みモデルを検索
