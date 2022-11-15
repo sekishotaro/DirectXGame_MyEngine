@@ -746,7 +746,12 @@ bool Collision::CheckCylinderDotXY(const Cylinder& cylinder, const XMFLOAT3& dot
 	circle.radius = cylinder.radius;
 
 	XMFLOAT2 Dot = XMFLOAT2(dot.x, dot.y);
-	if(CheckCircleDot(circle, Dot) == true ) return true;
+	if (CheckCircleDot(circle, Dot) == true)
+	{
+		return true;
+	}
+
+	return false;
 }
 
 bool Collision::CheckCylinderDotXZ(const Cylinder& cylinder, const XMFLOAT3& dot)
@@ -761,7 +766,7 @@ bool Collision::CheckCylinderDotXZ(const Cylinder& cylinder, const XMFLOAT3& dot
 	circle.radius = cylinder.radius;
 
 	XMFLOAT2 Dot = XMFLOAT2(dot.x, dot.z);
-	CheckCircleDot(circle, Dot);
+	return CheckCircleDot(circle, Dot);
 }
 
 bool Collision::CheckCylinderDotZY(const Cylinder& cylinder, const XMFLOAT3& dot)
@@ -777,7 +782,7 @@ bool Collision::CheckCylinderDotZY(const Cylinder& cylinder, const XMFLOAT3& dot
 	circle.radius = cylinder.radius;
 
 	XMFLOAT2 Dot = XMFLOAT2(dot.z, dot.y);
-	CheckCircleDot(circle, Dot);
+	return CheckCircleDot(circle, Dot);
 }
 
 bool Collision::CheckSphereDot(const SphereF& sphere, XMFLOAT3& dot)

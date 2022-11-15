@@ -732,7 +732,9 @@ void Player::StaminaManagement(const DirectX::XMVECTOR& move)
 		{
 			staminaCut = false;
 
-			staminaQuantity = (int)staminaQuantity;
+			int stamina = (int)staminaQuantity;
+			staminaQuantity = (float)stamina;
+
 
 			return;
 		}
