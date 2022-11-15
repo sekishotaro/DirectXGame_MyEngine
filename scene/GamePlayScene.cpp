@@ -116,6 +116,12 @@ void GamePlayScene::Update()
 
 	//全ての衝突をチェック
 	collisionManager->CheckAllCollisions();
+
+
+	if (Enemy::GetGameOver() == true)
+	{
+		SceneManager::GetInstance()->ChangeScene("GAMEOVER");
+	}
 }
 
 void GamePlayScene::Draw()

@@ -13,6 +13,7 @@ int Enemy::nearNumber = 0;
 float Enemy::speedConstant = 10.0f;
 
 bool Enemy::raidMode = false;
+bool Enemy::gameOverFlag = false;
 
 void Enemy::Tracking(const XMFLOAT3& playerPos)
 {
@@ -196,6 +197,20 @@ void Enemy::Update(int time, const XMFLOAT3& playerPos)
 	if (raidMode == true)		//襲撃モード時
 	{
 		Tracking(playerPos);
+
+		SphereF player, Enemy;
+
+		Enemy.center = pos;
+		Enemy.radius = 5.0f;
+
+		player.center = playerPos;
+		player.radius = 5.0f;
+
+		if (Collision::CheckSphereSphere(player, Enemy) == true)
+		{
+			gameOverFlag = true;
+		}
+		
 	}
 	else						//非襲撃モード時
 	{

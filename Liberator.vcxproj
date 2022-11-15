@@ -311,6 +311,7 @@
     <ClCompile Include="collision\CollisionManager.cpp" />
     <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="Framework.cpp" />
+    <ClCompile Include="scene\GameOver.cpp" />
     <ClCompile Include="imgui\imguiManager.cpp" />
     <ClCompile Include="imgui\imgui.cpp" />
     <ClCompile Include="imgui\imgui_demo.cpp" />
@@ -357,6 +358,7 @@
     <ClInclude Include="collision\CollisionManager.h" />
     <ClInclude Include="collision\RaycastHit.h" />
     <ClInclude Include="Enemy.h" />
+    <ClInclude Include="scene\GameOver.h" />
     <ClInclude Include="imgui\imguiManager.h" />
     <ClInclude Include="imgui\imconfig.h" />
     <ClInclude Include="imgui\imgui.h" />

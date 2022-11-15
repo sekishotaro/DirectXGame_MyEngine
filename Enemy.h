@@ -31,6 +31,8 @@ private:
 	static float monitoringEnemyColliderScale;
 	static bool chengeScaleFlag;
 
+	static bool gameOverFlag;
+
 public:
 
 	static void SetPos(XMFLOAT3& pos1) { pos = pos1; }
@@ -38,6 +40,8 @@ public:
 	static XMFLOAT3 GetPos() { return pos; }
 
 	static int GetNearNum() { return nearNumber; }
+
+	static bool GetGameOver() { return gameOverFlag; }
 
 	static void Tracking(const XMFLOAT3& playerPos);
 
@@ -50,6 +54,8 @@ public:
 	static void PushBack(const Box& wall);
 
 	static void Update(int time, const XMFLOAT3& playerPos);
+
+
 
 	static XMFLOAT3 MonitoringCollisionScale();
 };
