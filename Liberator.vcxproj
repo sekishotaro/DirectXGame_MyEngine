@@ -24,6 +24,7 @@
     <ProjectGuid>{971a970d-f169-464e-b983-047f18261dd6}</ProjectGuid>
     <RootNamespace>DirectXGamea</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <ProjectName>Liberator</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
