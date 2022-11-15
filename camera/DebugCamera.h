@@ -28,6 +28,9 @@ public:
 	static float dx;
 	static float dy;
 	static float dz;
-	static XMVECTOR distance;
+	static XMFLOAT3 distance;
+	static float rotaX;
+	static float rotaY;
+	static float dis;
 };
 

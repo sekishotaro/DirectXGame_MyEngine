@@ -112,7 +112,7 @@ void GamePlayScene::Update()
 
 	//UI更新
 	DebugText::GetInstance()->Print(1000, 20, 3, "TIME : %d", (int)objFighter->GetTimeLimit());
-	DebugText::GetInstance()->Print(940, 80, 3, "CRYSTAL : %d", objFighter->GetCrystal());
+	DebugText::GetInstance()->Print(920, 80, 3, "CRYSTAL : %d/6", objFighter->GetCrystal());
 
 	//全ての衝突をチェック
 	collisionManager->CheckAllCollisions();
@@ -182,6 +182,8 @@ void GamePlayScene::Draw()
 	ImGui::Begin("config1");//ウィンドウの名前
 	ImGui::SetWindowSize(ImVec2(400, 500), ImGuiCond_::ImGuiCond_FirstUseEver);
 	
+	ImGui::Text("cameraRotX: %.4f", camera->rotaX);
+	ImGui::Text("cameraRotY: %.4f", camera->rotaY);
 	ImGui::Text("StaminaQ: %.4f", objFighter->GetStaminaQuantity());
 	ImGui::Text("TimeLimit: %.4f", objFighter->GetTimeLimit());
 	ImGui::Text("PosX    :%.4f", objFighter->GetPosition().x);
