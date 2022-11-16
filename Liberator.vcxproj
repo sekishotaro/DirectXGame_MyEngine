@@ -329,6 +329,7 @@
     <ClCompile Include="MyGame.cpp" />
     <ClCompile Include="3d\Object3d.cpp" />
     <ClCompile Include="2d\PostEffect.cpp" />
+    <ClCompile Include="OpticalPost.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="QueryCallback.cpp" />
     <ClCompile Include="scene\GamePlayScene.cpp" />
@@ -373,6 +374,7 @@
     <ClInclude Include="3d\Mesh.h" />
     <ClInclude Include="collision\MeshCollider.h" />
     <ClInclude Include="3d\Material.h" />
+    <ClInclude Include="OpticalPost.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="MyMath.h" />
     <ClInclude Include="QueryCallback.h" />

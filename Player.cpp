@@ -7,6 +7,7 @@
 #include "CollisionAttribute.h"
 #include "Collision.h"
 #include "JsonLoader.h"
+#include "OpticalPost.h"
 
 using namespace DirectX;
 
@@ -451,6 +452,8 @@ void Player::CrystalConfirmationProcess()
 		{
 			JsonLoader::crystalColliderObjects.erase(JsonLoader::crystalColliderObjects.begin() + i);
 			JsonLoader::crystalObjects.erase(JsonLoader::crystalObjects.begin() + i);
+
+			OpticalPost::Erase(i);
 
 			crystalNum--;
 
