@@ -134,7 +134,7 @@ void GamePlayScene::Update()
 
 	//UI更新
 	DebugText::GetInstance()->Print(1000, 20, 3, "TIME : %d", (int)objFighter->GetTimeLimit());
-	DebugText::GetInstance()->Print(920, 80, 3, "CRYSTAL : %d/6", objFighter->GetCrystal());
+	DebugText::GetInstance()->Print(910, 80, 3, "CRYSTAL : %d/7", objFighter->GetCrystal());
 
 	//全ての衝突をチェック
 	collisionManager->CheckAllCollisions();

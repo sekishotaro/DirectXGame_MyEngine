@@ -63,9 +63,10 @@ bool Player::Initialize()
 		return false;
 	}
 
-	position.x = -52;
-	position.y = 30;
-	position.z = 50;
+	position = JsonLoader::goalObjects[0].get()->GetPosition();
+	//position.x = -52;
+	//position.y = 30;
+	//position.z = 50;
 
 	//コライダーの追加
 	float radius = 0.6f;

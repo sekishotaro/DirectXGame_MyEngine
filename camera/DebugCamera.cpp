@@ -60,6 +60,9 @@ void DebugCamera::Update()
 
 	SetEye(cameraPos);
 
-	Camera::SetTarget(Player::GetPos());
+	XMFLOAT3 targetPos = Player::GetPos();
+	targetPos.y += 6.0f;
+
+	Camera::SetTarget(targetPos);
 	Camera::Update();
 }
