@@ -17,6 +17,7 @@
 #include "CollisionManager.h"
 #include "Player.h"
 #include "UI.h"
+#include "OpticalPost.h"
 
 #include "SafeDelete.h"
 
@@ -78,6 +79,8 @@ void GamePlayScene::Initialize()
 	}
 
 	UI::Initialize();
+
+	OpticalPost::Initialize();
 }
 
 void GamePlayScene::Finalize()
@@ -87,6 +90,7 @@ void GamePlayScene::Finalize()
 	safe_delete(spriteBG);
 
 	JsonLoader::Finalize();
+	OpticalPost::Finalize();
 }
 
 void GamePlayScene::Update()
@@ -106,9 +110,20 @@ void GamePlayScene::Update()
 	JsonLoader::Update();
 
 	UI::Update();
+	OpticalPost::Update();
 
 	camera->Update();
 	objFighter->Update();
+
+	if (input->PushKey(DIK_1))
+	{
+		OpticalPost::SetDrawFlag(true);
+	}
+	else
+	{
+		OpticalPost::SetDrawFlag(false);
+	}
+
 
 	//test追加探索敵コライダー
 	for (int i = 0; i < enemyColliderObjects.size(); i++)
@@ -164,6 +179,8 @@ void GamePlayScene::Draw()
 	objFighter->Draw();
 	//json
 	JsonLoader::Draw();
+
+	OpticalPost::Draw();
 
 	for (int i = 0; i < enemyColliderObjects.size(); i++)
 	{
