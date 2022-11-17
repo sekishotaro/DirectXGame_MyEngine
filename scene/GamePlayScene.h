@@ -64,6 +64,9 @@ public:
 	//モデル
 	MathModel* modelEnemyCollider = nullptr;
 
+	std::unique_ptr<Object3d> skydomeObject;
+	Model* skydomeModel = nullptr;
+
 	//モデルデータ
 	Model* modelFighter = nullptr;
 	//オブジェクトデータ

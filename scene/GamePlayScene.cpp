@@ -52,7 +52,8 @@ void GamePlayScene::Initialize()
 	spriteBG = Sprite::Create(1, { 0.0f,0.0f });
 
 	modelFighter = Model::LoadFromOBJ("modelObj");
-	
+	skydomeModel = Model::LoadFromOBJ("skydome");
+
 	//json
 	JsonLoader::LoadFile("Scene11_12"); //オブジェクトの当たり判定
 
@@ -60,6 +61,8 @@ void GamePlayScene::Initialize()
 
 	collisionManager = CollisionManager::GetInstance();
 	objFighter = Player::Create(modelFighter);
+	skydomeObject = Object3d::Create();
+	skydomeObject->SetModel(skydomeModel);
 	
 	//敵初期化
 	Enemy::Initialize();
@@ -132,6 +135,9 @@ void GamePlayScene::Update()
 		enemyColliderObjects[i].get()->Update();
 	}
 
+	skydomeObject->SetScale({ 5.0f, 5.0f, 5.0f });
+	skydomeObject->Update();
+
 	//UI更新
 	DebugText::GetInstance()->Print(1000, 20, 3, "TIME : %d", (int)objFighter->GetTimeLimit());
 	DebugText::GetInstance()->Print(910, 80, 3, "CRYSTAL : %d/7", objFighter->GetCrystal());
@@ -186,6 +192,8 @@ void GamePlayScene::Draw()
 	{
 		enemyColliderObjects[i].get()->Draw();
 	}
+
+	skydomeObject->Draw();
 	/// <summary>
 	/// ここに3Dオブジェクトの描画処理を追加できる
 	/// </summary>
