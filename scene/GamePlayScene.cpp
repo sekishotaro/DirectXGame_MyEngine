@@ -89,11 +89,11 @@ void GamePlayScene::Initialize()
 	lightGroup = LightGroup::Create();
 	lightGroup->SetDirLightColor(0,{ 1,1,1 });
 	Object3d::SetLight(lightGroup);
-	lightGroup->SetDirLightActive(0, true);
-	lightGroup->SetDirLightActive(1, true);
-	lightGroup->SetDirLightActive(2, true);
+	//lightGroup->SetDirLightActive(0, true);
+	//lightGroup->SetDirLightActive(1, true);
+	//lightGroup->SetDirLightActive(2, true);
 	lightGroup->SetCircleShadowActive(0, true);
-	/*lightGroup->SetCircleShadowActive(1, true);*/
+	lightGroup->SetCircleShadowActive(1, true);
 }
 
 void GamePlayScene::Finalize()
@@ -134,10 +134,10 @@ void GamePlayScene::Update()
 	lightGroup->SetCircleShadowAtten(0, XMFLOAT3(circleShadowAtten));
 	lightGroup->SetCircleShadowFactorAngle(0, XMFLOAT2(circleShadowFactorAngle));
 
-	//lightGroup->SetCircleShadowDir(1, XMVECTOR({ circleShadowDir[0], circleShadowDir[1], circleShadowDir[2], 0 }));
-	//lightGroup->SetCircleShadowCasterPos(1, XMFLOAT3(JsonLoader::raidEnemyObjects[0].get()->GetPosition()));
-	//lightGroup->SetCircleShadowAtten(1, XMFLOAT3(circleShadowAtten));
-	//lightGroup->SetCircleShadowFactorAngle(1, XMFLOAT2(circleShadowFactorAngle));
+	lightGroup->SetCircleShadowDir(1, XMVECTOR({ circleShadowDir[0], circleShadowDir[1], circleShadowDir[2], 0 }));
+	lightGroup->SetCircleShadowCasterPos(1, XMFLOAT3(JsonLoader::raidEnemyObjects[0].get()->GetPosition()));
+	lightGroup->SetCircleShadowAtten(1, XMFLOAT3(circleShadowAtten));
+	lightGroup->SetCircleShadowFactorAngle(1, XMFLOAT2(circleShadowFactorAngle2));
 
 	objFighter->Update();
 	

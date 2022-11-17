@@ -127,6 +127,9 @@ void Enemy::Initialize()
 	gameOverFlag = false;
 
 	pos = JsonLoader::raidEnemyObjects[0].get()->GetPosition();
+	pos.y += 0.01f;
+	JsonLoader::raidEnemyObjects[0].get()->SetPosition(pos);
+
 	initialPos = JsonLoader::raidEnemyObjects[0].get()->GetPosition();
 }
 
