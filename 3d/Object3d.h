@@ -8,6 +8,7 @@
 #include "Model.h"
 #include "Camera.h"
 #include "CollisionInfo.h"
+#include "LightGroup.h"
 
 class BaseCollider;
 
@@ -31,7 +32,10 @@ public: // サブクラス
 	struct ConstBufferDataB0
 	{
 		//XMFLOAT4 color;	// 色 (RGBA)
-		XMMATRIX mat;	// ３Ｄ変換行列
+		//XMMATRIX mat;	// ３Ｄ変換行列
+		XMMATRIX viewproj;
+		XMMATRIX world;
+		XMFLOAT3 cameraPos;
 	};
 
 private: // 定数
@@ -207,6 +211,7 @@ public: // メンバ関数
 
 	void SetVSShaderName(std::wstring VSShaderName) { this->VSshaderName = VSshaderName; }
 
+	static void SetLight(LightGroup* light) { Object3d::light = light; }
 
 protected: // メンバ変数
 	ComPtr<ID3D12Resource> constBuffB0; // 定数バッファ
@@ -230,6 +235,9 @@ protected: // メンバ変数
 	const char* name = nullptr;
 	//コライダー
 	BaseCollider* collider = nullptr;
+	//ライト
+	static LightGroup* light;
+
 
 	//シェーダー
 	static std::wstring VSshaderName;

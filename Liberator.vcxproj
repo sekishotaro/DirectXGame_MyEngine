@@ -207,6 +207,7 @@
     <ClCompile Include="3d\MathModel.cpp" />
     <ClCompile Include="3d\MathObject.cpp" />
     <ClCompile Include="Audio\Audio.cpp" />
+    <ClCompile Include="CircleShadow.cpp" />
     <ClCompile Include="collision\BaseCollider.cpp" />
     <ClCompile Include="camera\Camera.cpp" />
     <ClCompile Include="3d\ColliderModel.cpp" />
@@ -220,6 +221,8 @@
     <ClCompile Include="collision\CollisionManager.cpp" />
     <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="Framework.cpp" />
+    <ClCompile Include="LightGroup.cpp" />
+    <ClCompile Include="PointLight.cpp" />
     <ClCompile Include="scene\GameOver.cpp" />
     <ClCompile Include="imgui\imguiManager.cpp" />
     <ClCompile Include="imgui\imgui.cpp" />
@@ -256,6 +259,7 @@
     <ClInclude Include="3d\FbxLoader.h" />
     <ClInclude Include="3d\FbxModel.h" />
     <ClInclude Include="3d\FbxObject3d.h" />
+    <ClInclude Include="CircleShadow.h" />
     <ClInclude Include="collision\CollisionAttribute.h" />
     <ClInclude Include="collision\CollisionInfo.h" />
     <ClInclude Include="collision\CollisionTypes.h" />
@@ -267,7 +271,10 @@
     <ClInclude Include="collision\CollisionSet.h" />
     <ClInclude Include="collision\CollisionManager.h" />
     <ClInclude Include="collision\RaycastHit.h" />
+    <ClInclude Include="DirectionalLight.h" />
     <ClInclude Include="Enemy.h" />
+    <ClInclude Include="LightGroup.h" />
+    <ClInclude Include="PointLight.h" />
     <ClInclude Include="scene\GameOver.h" />
     <ClInclude Include="imgui\imguiManager.h" />
     <ClInclude Include="imgui\imconfig.h" />
@@ -310,6 +317,7 @@
     <ClInclude Include="scene\TitleScene.h" />
     <ClInclude Include="base\WinApp.h" />
     <ClInclude Include="collision\SphereCollider.h" />
+    <ClInclude Include="SpotLight.h" />
     <ClInclude Include="TouchableObject.h" />
     <ClInclude Include="UI.h" />
   </ItemGroup>

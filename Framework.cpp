@@ -3,7 +3,7 @@
 #include "SafeDelete.h"
 #include "FbxLoader.h"
 #include "imguiManager.h"
-
+#include "LightGroup.h"
 
 void Framework::Initialize()
 {
@@ -56,6 +56,8 @@ void Framework::Initialize()
 	}
 
 	FbxLoader::GetInstance()->Initialize(DirectXCommon::GetInstance()->GetDev());
+
+	LightGroup::StaticInitialize(dxCommon->GetDev());
 
 	//ポストエフェクトの初期化
 	//postEffect = new PostEffect();

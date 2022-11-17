@@ -84,6 +84,16 @@ void GamePlayScene::Initialize()
 	UI::Initialize();
 
 	OpticalPost::Initialize();
+
+	//ƒ‰ƒCƒg
+	lightGroup = LightGroup::Create();
+	lightGroup->SetDirLightColor(0,{ 1,1,1 });
+	Object3d::SetLight(lightGroup);
+	lightGroup->SetDirLightActive(0, true);
+	lightGroup->SetDirLightActive(1, true);
+	lightGroup->SetDirLightActive(2, true);
+	lightGroup->SetCircleShadowActive(0, true);
+	/*lightGroup->SetCircleShadowActive(1, true);*/
 }
 
 void GamePlayScene::Finalize()
@@ -91,6 +101,7 @@ void GamePlayScene::Finalize()
 	safe_delete(camera);
 	safe_delete(modelFighter);
 	safe_delete(spriteBG);
+	safe_delete(lightGroup);
 
 	JsonLoader::Finalize();
 	OpticalPost::Finalize();
@@ -116,7 +127,20 @@ void GamePlayScene::Update()
 	OpticalPost::Update();
 
 	camera->Update();
+	lightGroup->Update();
+
+	lightGroup->SetCircleShadowDir(0, XMVECTOR({ circleShadowDir[0], circleShadowDir[1], circleShadowDir[2], 0 }));
+	lightGroup->SetCircleShadowCasterPos(0, XMFLOAT3(objFighter->GetPos()));
+	lightGroup->SetCircleShadowAtten(0, XMFLOAT3(circleShadowAtten));
+	lightGroup->SetCircleShadowFactorAngle(0, XMFLOAT2(circleShadowFactorAngle));
+
+	//lightGroup->SetCircleShadowDir(1, XMVECTOR({ circleShadowDir[0], circleShadowDir[1], circleShadowDir[2], 0 }));
+	//lightGroup->SetCircleShadowCasterPos(1, XMFLOAT3(JsonLoader::raidEnemyObjects[0].get()->GetPosition()));
+	//lightGroup->SetCircleShadowAtten(1, XMFLOAT3(circleShadowAtten));
+	//lightGroup->SetCircleShadowFactorAngle(1, XMFLOAT2(circleShadowFactorAngle));
+
 	objFighter->Update();
+	
 
 	if (input->PushKey(DIK_1))
 	{

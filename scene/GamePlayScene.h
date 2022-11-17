@@ -12,6 +12,7 @@
 #include "Collision.h"
 #include "DebugCamera.h"
 #include "Camera.h"
+#include "LightGroup.h"
 
 class CollisionManager;
 class Player;
@@ -75,5 +76,14 @@ public:
 	//衝突マネージャー
 	CollisionManager* collisionManager = nullptr;
 	TouchableObject* objGround = nullptr;
+
+	//ライト
+	LightGroup* lightGroup = nullptr;
+	float ambientColor0[3] = { 1,1,1 };
+
+	float circleShadowDir[3] = { 0,-1,0 };
+	float circleShadowPos[3] = { 1,2,0 };
+	float circleShadowAtten[3] = { 0.5f,0.6f,0.0f };
+	float circleShadowFactorAngle[2] = { 0.0f, 0.5f };
 };
 
