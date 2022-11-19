@@ -121,6 +121,9 @@ public: //メンバ関数
 	bool PushPadbutton(int num);
 	//パッドの左スティック入力
 	bool LeftStickIn(PadStick stick);
+	//パッドの左スティックの入力値;
+	int LeftStickInXNum();
+	int LeftStickInYNum();
 	//パッドの右スティック入力
 	bool RightStickIn(PadStick stick);
 

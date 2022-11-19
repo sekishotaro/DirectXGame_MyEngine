@@ -24,6 +24,8 @@ float Player::timeLimit = 60.0f;
 bool Player::staminaBoostFlag = false;
 float Player::staminaQuantity = 100.0f;
 bool Player::staminaCut = false;
+int Player::inputX = 0;
+int Player::inputY = 0;
 
 Player* Player::Create(Model* model)
 {
@@ -256,6 +258,8 @@ void Player::ClimbWallJudge(XMVECTOR move)
 
 void Player::MoveOperation(XMVECTOR& move)
 {
+	inputX = Input::GetInstance()->LeftStickInXNum();
+	inputY = Input::GetInstance()->LeftStickInYNum();
 	//ˆÚ“®—Ê‰Šú‰»
 	move = { 0,0,0.1f,0 };
 
@@ -279,15 +283,33 @@ void Player::MoveOperation(XMVECTOR& move)
 			rotation.y += 2.0f;
 		}
 
-		if (Input::GetInstance()->LeftStickIn(LEFT))
+		//if (Input::GetInstance()->LeftStickIn(LEFT))
+		//{
+		//	rotation.y -= 2.0f;
+		//}
+		//else if (Input::GetInstance()->LeftStickIn(RIGHT))
+		//{
+		//	rotation.y += 2.0f;
+		//}
+
+		const int MAX = 24918;
+		int x = 0;
+		int y = 0;
+		if (inputX != 0)
 		{
-			rotation.y -= 2.0f;
+			float xX = (float)inputX / MAX;
+			inputX = (int)(xX * 100);
 		}
-		else if (Input::GetInstance()->LeftStickIn(RIGHT))
+		if (inputY != 0)
 		{
-			rotation.y += 2.0f;
+			float xX = (float)inputY / MAX;
+			inputY = (int)(xX * 100);
 		}
 
+		//if (inputX > 0 && inputY == 0) { rotation.y = 90; }
+		//else if (inputX < 0 && inputY == 0) { rotation.y = 270; }
+		//else if (inputX == 0 && inputY > 0) { rotation.y = 0; }
+		//else if (inputX == 0 && inputY < 0) { rotation.y = 180; }
 
 		//ˆÚ“®ƒxƒNƒgƒ‹‚ðYŽ²‰ñ‚è‚ÌŠp“x‚Å‰ñ“]
 
@@ -307,7 +329,12 @@ void Player::MoveOperation(XMVECTOR& move)
 
 		if (Input::GetInstance()->PushPadbutton(Button_A) == true)
 		{
+			staminaBoostFlag = true;
 			power = 3.0f;
+		}
+		else
+		{
+			staminaBoostFlag = false;
 		}
 
 		if (Input::GetInstance()->PushKey(DIK_S))
@@ -324,14 +351,29 @@ void Player::MoveOperation(XMVECTOR& move)
 			position.z += move.m128_f32[2] * power * moveAdjustmentNum;
 			nowMove = true;
 		}
-		else if (Input::GetInstance()->LeftStickIn(DOWN))
+		//else if (Input::GetInstance()->LeftStickInYNum() < 0)
+		//{
+		//	int num = Input::GetInstance()->LeftStickInYNum();
+		//	position.x -= move.m128_f32[0] * power;
+		//	position.y -= move.m128_f32[1] * power;
+		//	position.z -= move.m128_f32[2] * power;
+		//	nowMove = true;
+		//}
+		//else if (Input::GetInstance()->LeftStickInYNum() > 0)
+		//{
+		//	position.x += move.m128_f32[0] * power;
+		//	position.y += move.m128_f32[1] * power;
+		//	position.z += move.m128_f32[2] * power;
+		//	nowMove = true;
+		//}
+		else if (Input::GetInstance()->LeftStickIn(LEFT) || Input::GetInstance()->LeftStickIn(RIGHT))
 		{
-			position.x -= move.m128_f32[0] * power;
-			position.y -= move.m128_f32[1] * power;
-			position.z -= move.m128_f32[2] * power;
+			position.x += move.m128_f32[0] * power;
+			position.y += move.m128_f32[1] * power;
+			position.z += move.m128_f32[2] * power;
 			nowMove = true;
 		}
-		else if (Input::GetInstance()->LeftStickIn(UP))
+		else if (Input::GetInstance()->LeftStickIn(UP) || Input::GetInstance()->LeftStickIn(DOWN))
 		{
 			position.x += move.m128_f32[0] * power;
 			position.y += move.m128_f32[1] * power;

@@ -244,16 +244,16 @@ void GamePlayScene::Draw()
 	ImGui::Begin("config1");//ウィンドウの名前
 	ImGui::SetWindowSize(ImVec2(400, 500), ImGuiCond_::ImGuiCond_FirstUseEver);
 	
-	ImGui::Text("cameraRotX: %.4f", camera->rotaX);
-	ImGui::Text("cameraRotY: %.4f", camera->rotaY);
+	ImGui::Text("inputX: %d", objFighter->GetInputNumX());
+	ImGui::Text("inputY: %d", objFighter->GetInputNumY());
 	ImGui::Text("StaminaQ: %.4f", objFighter->GetStaminaQuantity());
 	ImGui::Text("TimeLimit: %.4f", objFighter->GetTimeLimit());
 	ImGui::Text("PosX    :%.4f", objFighter->GetPosition().x);
 	ImGui::Text("PosY    :%.4f", objFighter->GetPosition().y);
 	ImGui::Text("PosZ    :%.4f", objFighter->GetPosition().z);
-	ImGui::Text("MoveX   :%.4f", objFighter->GetMove().x);
-	ImGui::Text("MoveY   :%.4f", objFighter->GetMove().y);
-	ImGui::Text("MoveZ   :%.4f", objFighter->GetMove().z);
+	ImGui::Text("RotaX   :%.4f", objFighter->GetRotation().x);
+	ImGui::Text("RotaY   :%.4f", objFighter->GetRotation().y);
+	ImGui::Text("RotaZ   :%.4f", objFighter->GetRotation().z);
 	ImGui::Text("cameraX :%.4f", camera->GetEye().x);
 	ImGui::Text("cameraY :%.4f", camera->GetEye().y);
 	ImGui::Text("cameraZ :%.4f", camera->GetEye().z);

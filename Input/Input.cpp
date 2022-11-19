@@ -239,21 +239,49 @@ bool Input::LeftStickIn(PadStick stick)
 	return false;
 }
 
+int Input::LeftStickInXNum()
+{
+	int result = 0;
+	if (state.Gamepad.sThumbLX < -XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE)
+	{
+		result = (int)(state.Gamepad.sThumbLX + XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE);
+	}
+	else if (state.Gamepad.sThumbLX > XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE)
+	{
+		result = (int)(state.Gamepad.sThumbLX - XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE);
+	}
+	return result;
+}
+
+int Input::LeftStickInYNum()
+{
+	int result = 0;
+	if (state.Gamepad.sThumbLY < -XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE)
+	{
+		result = (int)(state.Gamepad.sThumbLY + XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE);
+	}
+	else if (state.Gamepad.sThumbLY > XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE)
+	{
+		result = (int)(state.Gamepad.sThumbLY - XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE);
+	}
+	return result;
+}
+
 bool Input::RightStickIn(PadStick stick)
 {
-	if (state.Gamepad.sThumbRX < -XINPUT_GAMEPAD_RIGHT_THUMB_DEADZONE && stick == LEFT)
+	if (state.Gamepad.sThumbRX < -(XINPUT_GAMEPAD_RIGHT_THUMB_DEADZONE + 200) && stick == LEFT)
 	{
 		return true;
 	}
-	else if (state.Gamepad.sThumbRX > XINPUT_GAMEPAD_RIGHT_THUMB_DEADZONE && stick == RIGHT)
+	else if (state.Gamepad.sThumbRX > XINPUT_GAMEPAD_RIGHT_THUMB_DEADZONE + 200 && stick == RIGHT)
 	{
 		return true;
 	}
-	else if (state.Gamepad.sThumbRY < -XINPUT_GAMEPAD_RIGHT_THUMB_DEADZONE && stick == DOWN)
+	else if (state.Gamepad.sThumbRY < -(XINPUT_GAMEPAD_RIGHT_THUMB_DEADZONE + 1500) && stick == DOWN)
 	{
 		return true;
 	}
-	else if (state.Gamepad.sThumbRY > XINPUT_GAMEPAD_RIGHT_THUMB_DEADZONE && stick == UP)
+	else if (state.Gamepad.sThumbRY > XINPUT_GAMEPAD_RIGHT_THUMB_DEADZONE + 1500 && stick == UP)
 	{
 		return true;
 	}
