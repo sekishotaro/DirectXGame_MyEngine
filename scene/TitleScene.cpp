@@ -23,13 +23,13 @@ void TitleScene::Update()
 
 	Input *input = Input::GetInstance();
 
-	if (input->TriggerKey(DIK_RETURN))
+	if (input->TriggerKey(DIK_RETURN) || input->PushPadbutton(Button_A))
 	{
 		//ƒV[ƒ“Ø‚è‘Ö‚¦
 		SceneManager::GetInstance()->ChangeScene("GAMEPLAY");
 	}
 
-	DebugText::GetInstance()->Print(50, 20, 3, "Push ENTER");
+	DebugText::GetInstance()->Print(50, 20, 3, "Push_Key [ENTER] or Push_Pad [A]");
 }
 
 void TitleScene::Draw()
