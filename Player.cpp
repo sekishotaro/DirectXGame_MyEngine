@@ -660,7 +660,14 @@ void Player::GravityConfirmationProcess()
 	{
 		onGround = false;
 		nowMove = true;
-		const float jumpVYFist = 1.0f; //ジャンプ時上向き初速
+		const float jumpVYFist = 0.3f; //ジャンプ時上向き初速
+		fallV = { 0, jumpVYFist, 0,0 };
+	}
+	else if (Input::GetInstance()->PushPadbutton(Button_Y) && climbOperation == false)
+	{
+		onGround = false;
+		nowMove = true;
+		const float jumpVYFist = 0.3f; //ジャンプ時上向き初速
 		fallV = { 0, jumpVYFist, 0,0 };
 	}
 	// ワールド行列更新
