@@ -114,6 +114,9 @@ public:
 
 	static bool& GetStaminaCut() { return staminaCut; }
 
+	static int& GetInputNumX() { return inputX; }
+	static int& GetInputNumY() { return inputY; }
+
 private:
 	//接地フラグ
 	static bool onGround;
@@ -139,6 +142,10 @@ private:
 
 	//移動量調整数
 	static float moveAdjustmentNum;
+
+
+	static int inputX;
+	static int inputY;
 
 	//クリスタルの数
 	static int crystalNum;

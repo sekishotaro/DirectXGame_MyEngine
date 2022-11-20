@@ -50,6 +50,13 @@ void DebugCamera::Update()
 	if (Input::GetInstance()->PushKey(DIK_E) && dis >= 5.0f ) { dis -= 1.0f; }
 	else if (Input::GetInstance()->PushKey(DIK_Z) && dis <= 20.0f) { dis += 1.0f; }
 
+	if(Input::GetInstance()->RightStickIn(UP) && rotaY > 5) { rotaY -= 1.0f; }
+	else if (Input::GetInstance()->RightStickIn(DOWN) && rotaY < 175) { rotaY += 1.0f; }
+	if (Input::GetInstance()->RightStickIn(RIGHT)) { rotaX += 1.0f; }
+	else if (Input::GetInstance()->RightStickIn(LEFT)) { rotaX -= 1.0f; }
+	if (Input::GetInstance()->PushPadbutton(GAMEPAD_LEFT_SHOULDER) && dis >= 5.0f) { dis -= 1.0f; }
+	else if (Input::GetInstance()->PushPadbutton(GAMEPAD_RIGHT_SHOULDER) && dis <= 20.0f) { dis += 1.0f; }
+
 	float radiusX = rotaX * 3.14f / 180.0f;
 	float radiusY = rotaY * 3.14f / 180.0f;
 

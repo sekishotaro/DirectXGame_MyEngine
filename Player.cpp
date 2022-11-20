@@ -24,6 +24,8 @@ float Player::timeLimit = 60.0f;
 bool Player::staminaBoostFlag = false;
 float Player::staminaQuantity = 100.0f;
 bool Player::staminaCut = false;
+int Player::inputX = 0;
+int Player::inputY = 0;
 
 Player* Player::Create(Model* model)
 {
@@ -256,6 +258,8 @@ void Player::ClimbWallJudge(XMVECTOR move)
 
 void Player::MoveOperation(XMVECTOR& move)
 {
+	inputX = Input::GetInstance()->LeftStickInXNum();
+	inputY = Input::GetInstance()->LeftStickInYNum();
 	//移動量初期化
 	move = { 0,0,0.1f,0 };
 
@@ -279,21 +283,62 @@ void Player::MoveOperation(XMVECTOR& move)
 			rotation.y += 2.0f;
 		}
 
-		if (Input::GetInstance()->LeftStickIn(LEFT))
+		//if (Input::GetInstance()->LeftStickIn(LEFT))
+		//{
+		//	rotation.y -= 2.0f;
+		//}
+		//else if (Input::GetInstance()->LeftStickIn(RIGHT))
+		//{
+		//	rotation.y += 2.0f;
+		//}
+
+		const int MAX = 24918;
+		int x = 0;
+		int y = 0;
+		if (inputX != 0)
 		{
-			rotation.y -= 2.0f;
+			float xX = (float)inputX / MAX;
+			inputX = (int)(xX * 100);
 		}
-		else if (Input::GetInstance()->LeftStickIn(RIGHT))
+		if (inputY != 0)
 		{
-			rotation.y += 2.0f;
+			float xX = (float)inputY / MAX;
+			inputY = (int)(xX * 100);
 		}
 
+		//if (inputX > 0 && inputY == 0) { rotation.y = 90; }
+		//else if (inputX < 0 && inputY == 0) { rotation.y = 270; }
+		//else if (inputX == 0 && inputY > 0) { rotation.y = 0; }
+		//else if (inputX == 0 && inputY < 0) { rotation.y = 180; }
+		float rot = 0;
+		if (inputX != 0 || inputY != 0)
+		{
+			XMFLOAT2 vec1 = { 0, 100 };
+			XMFLOAT2 vec2 = { (float)inputX,(float)inputY };
+
+			float inner = vec1.x * vec2.x + vec1.y * vec2.y;
+			float veclong = sqrtf((vec1.x * vec1.x) + (vec1.y * vec1.y)) * sqrtf((vec2.x * vec2.x) + (vec2.y * vec2.y));
+			float cos = inner / veclong;
+			rot = acosf(cos);
+			rot = rot * 180.0f / 3.1415f;
+			
+			if (inputX >= 0)
+			{
+				rotation.y = rot;
+			}
+			else
+			{
+				rotation.y = 360.0f - rot;
+			}
+
+		}
 
 		//移動ベクトルをY軸回りの角度で回転
 
 		XMMATRIX matRot = XMMatrixRotationY(XMConvertToRadians(rotation.y));
 		move = XMVector3TransformNormal(move, matRot);
 		float power = 1.0f;
+
 		//向いている方向に移動
 		if (Input::GetInstance()->PushKey(DIK_V) && staminaCut == false)
 		{
@@ -307,7 +352,12 @@ void Player::MoveOperation(XMVECTOR& move)
 
 		if (Input::GetInstance()->PushPadbutton(Button_A) == true)
 		{
+			staminaBoostFlag = true;
 			power = 3.0f;
+		}
+		else
+		{
+			staminaBoostFlag = false;
 		}
 
 		if (Input::GetInstance()->PushKey(DIK_S))
@@ -324,14 +374,29 @@ void Player::MoveOperation(XMVECTOR& move)
 			position.z += move.m128_f32[2] * power * moveAdjustmentNum;
 			nowMove = true;
 		}
-		else if (Input::GetInstance()->LeftStickIn(DOWN))
+		//else if (Input::GetInstance()->LeftStickInYNum() < 0)
+		//{
+		//	int num = Input::GetInstance()->LeftStickInYNum();
+		//	position.x -= move.m128_f32[0] * power;
+		//	position.y -= move.m128_f32[1] * power;
+		//	position.z -= move.m128_f32[2] * power;
+		//	nowMove = true;
+		//}
+		//else if (Input::GetInstance()->LeftStickInYNum() > 0)
+		//{
+		//	position.x += move.m128_f32[0] * power;
+		//	position.y += move.m128_f32[1] * power;
+		//	position.z += move.m128_f32[2] * power;
+		//	nowMove = true;
+		//}
+		else if (Input::GetInstance()->LeftStickIn(LEFT) || Input::GetInstance()->LeftStickIn(RIGHT))
 		{
-			position.x -= move.m128_f32[0] * power;
-			position.y -= move.m128_f32[1] * power;
-			position.z -= move.m128_f32[2] * power;
+			position.x += move.m128_f32[0] * power;
+			position.y += move.m128_f32[1] * power;
+			position.z += move.m128_f32[2] * power;
 			nowMove = true;
 		}
-		else if (Input::GetInstance()->LeftStickIn(UP))
+		else if (Input::GetInstance()->LeftStickIn(UP) || Input::GetInstance()->LeftStickIn(DOWN))
 		{
 			position.x += move.m128_f32[0] * power;
 			position.y += move.m128_f32[1] * power;
@@ -592,6 +657,13 @@ void Player::GravityConfirmationProcess()
 		position.z += fallV.m128_f32[2];
 	}
 	else if (Input::GetInstance()->PushKey(DIK_SPACE) && climbOperation == false)//ジャンプ
+	{
+		onGround = false;
+		nowMove = true;
+		const float jumpVYFist = 0.3f; //ジャンプ時上向き初速
+		fallV = { 0, jumpVYFist, 0,0 };
+	}
+	else if (Input::GetInstance()->PushPadbutton(Button_Y) && climbOperation == false)
 	{
 		onGround = false;
 		nowMove = true;
