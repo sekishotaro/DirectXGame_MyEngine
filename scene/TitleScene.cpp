@@ -29,7 +29,7 @@ void TitleScene::Update()
 		SceneManager::GetInstance()->ChangeScene("GAMEPLAY");
 	}
 
-	DebugText::GetInstance()->Print(50, 20, 3, "fafa");
+	DebugText::GetInstance()->Print(50, 20, 3, "Push ENTER");
 }
 
 void TitleScene::Draw()
