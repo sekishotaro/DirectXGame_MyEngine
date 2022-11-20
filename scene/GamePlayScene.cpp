@@ -146,6 +146,10 @@ void GamePlayScene::Update()
 	{
 		OpticalPost::SetDrawFlag(true);
 	}
+	else if(input->PushPadbutton(Button_X))
+	{
+		OpticalPost::SetDrawFlag(true);
+	}
 	else
 	{
 		OpticalPost::SetDrawFlag(false);
@@ -206,6 +210,7 @@ void GamePlayScene::Draw()
 	// 3Dオブクジェクトの描画
 	
 	//test追加探索敵コライダー
+	skydomeObject->Draw();
 	objFighter->Draw();
 	//json
 	JsonLoader::Draw();
@@ -217,7 +222,6 @@ void GamePlayScene::Draw()
 		enemyColliderObjects[i].get()->Draw();
 	}
 
-	skydomeObject->Draw();
 	/// <summary>
 	/// ここに3Dオブジェクトの描画処理を追加できる
 	/// </summary>
