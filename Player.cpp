@@ -310,12 +310,35 @@ void Player::MoveOperation(XMVECTOR& move)
 		//else if (inputX < 0 && inputY == 0) { rotation.y = 270; }
 		//else if (inputX == 0 && inputY > 0) { rotation.y = 0; }
 		//else if (inputX == 0 && inputY < 0) { rotation.y = 180; }
+		float rot = 0;
+		if (inputX != 0 || inputY != 0)
+		{
+			XMFLOAT2 vec1 = { 0, 100 };
+			XMFLOAT2 vec2 = { (float)inputX,(float)inputY };
+
+			float inner = vec1.x * vec2.x + vec1.y * vec2.y;
+			float veclong = sqrtf((vec1.x * vec1.x) + (vec1.y * vec1.y)) * sqrtf((vec2.x * vec2.x) + (vec2.y * vec2.y));
+			float cos = inner / veclong;
+			rot = acosf(cos);
+			rot = rot * 180.0f / 3.1415f;
+			
+			if (inputX >= 0)
+			{
+				rotation.y = rot;
+			}
+			else
+			{
+				rotation.y = 360.0f - rot;
+			}
+
+		}
 
 		//ˆÚ“®ƒxƒNƒgƒ‹‚ðYŽ²‰ñ‚è‚ÌŠp“x‚Å‰ñ“]
 
 		XMMATRIX matRot = XMMatrixRotationY(XMConvertToRadians(rotation.y));
 		move = XMVector3TransformNormal(move, matRot);
 		float power = 1.0f;
+
 		//Œü‚¢‚Ä‚¢‚é•ûŒü‚ÉˆÚ“®
 		if (Input::GetInstance()->PushKey(DIK_V) && staminaCut == false)
 		{
