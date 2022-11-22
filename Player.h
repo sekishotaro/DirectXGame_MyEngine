@@ -117,6 +117,8 @@ public:
 	static int& GetInputNumX() { return inputX; }
 	static int& GetInputNumY() { return inputY; }
 
+	static float& GEtTestFloatNum() { return testRota; }
+
 private:
 	//接地フラグ
 	static bool onGround;
@@ -146,6 +148,9 @@ private:
 
 	static int inputX;
 	static int inputY;
+
+	//確認用
+	static float testRota;
 
 	//クリスタルの数
 	static int crystalNum;

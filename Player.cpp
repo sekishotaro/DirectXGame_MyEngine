@@ -26,6 +26,7 @@ float Player::staminaQuantity = 100.0f;
 bool Player::staminaCut = false;
 int Player::inputX = 0;
 int Player::inputY = 0;
+float Player::testRota = 0;
 
 Player* Player::Create(Model* model)
 {
@@ -310,32 +311,41 @@ void Player::MoveOperation(XMVECTOR& move)
 		//else if (inputX < 0 && inputY == 0) { rotation.y = 270; }
 		//else if (inputX == 0 && inputY > 0) { rotation.y = 0; }
 		//else if (inputX == 0 && inputY < 0) { rotation.y = 180; }
-		float rot = 0;
+		float rot1 = 0;
+		float rot2 = 0;
 		if (inputX != 0 || inputY != 0)
 		{
 			XMFLOAT2 vec1 = { 0, 100 };
 			XMFLOAT2 vec2 = { (float)inputX,(float)inputY };
+			XMFLOAT2 vec3 = { position.x - cameraPos2d.x, position.z - cameraPos2d.y };
 
 			float inner = vec1.x * vec2.x + vec1.y * vec2.y;
 			float veclong = sqrtf((vec1.x * vec1.x) + (vec1.y * vec1.y)) * sqrtf((vec2.x * vec2.x) + (vec2.y * vec2.y));
 			float cos = inner / veclong;
-			rot = acosf(cos);
-			rot = rot * 180.0f / 3.1415f;
-			
-			if (inputX >= 0)
+			rot1 = acosf(cos);
+			rot1 = rot1 * 180.0f / 3.1415f;
+			if (inputX <= 0)
 			{
-				rotation.y = rot;
+				rot1 = (360.0f - rot1);
 			}
-			else
+
+			inner = vec1.x * vec3.x + vec1.y * vec3.y;
+			veclong = sqrtf((vec1.x * vec1.x) + (vec1.y * vec1.y)) * sqrtf((vec3.x * vec3.x) + (vec3.y * vec3.y));
+			cos = inner / veclong;
+			rot2 = acosf(cos);
+			rot2 = rot2 * 180.0f / 3.1415f;
+			if (vec3.x <= 0)
 			{
-				rotation.y = 360.0f - rot;
+				rot2 = (360.0f - rot2);
 			}
+			rotation.y = rot1 + rot2;
 
 		}
 
 		//移動ベクトルをY軸回りの角度で回転
 
 		XMMATRIX matRot = XMMatrixRotationY(XMConvertToRadians(rotation.y));
+		testRota = rotation.y;
 		move = XMVector3TransformNormal(move, matRot);
 		float power = 1.0f;
 
@@ -350,10 +360,18 @@ void Player::MoveOperation(XMVECTOR& move)
 			staminaBoostFlag = false;
 		}
 
-		if (Input::GetInstance()->PushPadbutton(Button_A) == true)
+		if (Input::GetInstance()->PushPadbutton(Button_A) && staminaCut == false)
 		{
-			staminaBoostFlag = true;
-			power = 3.0f;
+			if (inputX == 0 && inputY == 0)
+			{
+				staminaBoostFlag = false;
+			}
+			else
+			{
+				staminaBoostFlag = true;
+				power = 3.0f;
+			}
+			
 		}
 		else
 		{
@@ -422,6 +440,16 @@ void Player::MoveOperation(XMVECTOR& move)
 			staminaBoostFlag = false;
 		}
 
+		if (Input::GetInstance()->PushPadbutton(Button_A))
+		{
+			staminaBoostFlag = true;
+		}
+		else
+		{
+			staminaBoostFlag = false;
+		}
+
+		//キーボード
 		if (Input::GetInstance()->PushKey(DIK_A))
 		{
 			if (climbNormal.m128_f32[2] == 1.0f)
@@ -470,19 +498,69 @@ void Player::MoveOperation(XMVECTOR& move)
 		{
 			nowMove = false;
 		}
+
+		//コントローラー
+		if (Input::GetInstance()->LeftStickIn(LEFT))
+		{
+			if (climbNormal.m128_f32[2] == 1.0f)
+			{
+				moveV.x += 0.5f;
+			}
+			else if (climbNormal.m128_f32[2] == -1.0f)
+			{
+				moveV.x -= 0.5f;
+			}
+
+			if (climbNormal.m128_f32[0] == 1.0f)
+			{
+				moveV.x -= 0.5f;
+			}
+			else if (climbNormal.m128_f32[0] == -1.0f)
+			{
+				moveV.z += 0.5f;
+			}
+
+			nowMove = true;
+		}
+		else if (Input::GetInstance()->LeftStickIn(RIGHT))
+		{
+			if (climbNormal.m128_f32[2] == 1.0f)
+			{
+				moveV.x -= 0.5f;
+			}
+			else if (climbNormal.m128_f32[2] == -1.0f)
+			{
+				moveV.x += 0.5f;
+			}
+
+			if (climbNormal.m128_f32[0] == 1.0f)
+			{
+				moveV.x += 0.5f;
+			}
+			else if (climbNormal.m128_f32[0] == -1.0f)
+			{
+				moveV.z -= 0.5f;
+			}
+
+			nowMove = true;
+		}
+		else
+		{
+			nowMove = false;
+		}
 		
-		if (Input::GetInstance()->PushKey(DIK_S))
+		if (Input::GetInstance()->LeftStickIn(DOWN))
 		{
 			moveV.y -= 0.5f;
 			nowMove = true;
 		}
-		else if (Input::GetInstance()->PushKey(DIK_W))
+		else if (Input::GetInstance()->LeftStickIn(UP))
 		{
 			moveV.y += 0.5f;
 			nowMove = true;
 		}
 
-		if (Input::GetInstance()->PushKey(DIK_P))
+		if (Input::GetInstance()->PushKey(DIK_P) || Input::GetInstance()->PushPadbutton(Button_B))
 		{
 			climbOperation = false;
 			position.x += climbNormal.m128_f32[0];

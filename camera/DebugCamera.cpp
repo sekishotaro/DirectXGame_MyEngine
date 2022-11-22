@@ -54,8 +54,9 @@ void DebugCamera::Update()
 	else if (Input::GetInstance()->RightStickIn(DOWN) && rotaY < 175) { rotaY += 1.0f; }
 	if (Input::GetInstance()->RightStickIn(RIGHT)) { rotaX += 1.0f; }
 	else if (Input::GetInstance()->RightStickIn(LEFT)) { rotaX -= 1.0f; }
-	if (Input::GetInstance()->PushPadbutton(GAMEPAD_LEFT_SHOULDER) && dis >= 5.0f) { dis -= 1.0f; }
-	else if (Input::GetInstance()->PushPadbutton(GAMEPAD_RIGHT_SHOULDER) && dis <= 20.0f) { dis += 1.0f; }
+	if (Input::GetInstance()->PushPadbutton(GAMEPAD_LEFT_TRIGGER) && dis >= 5.0f) { dis -= 1.0f; }
+	else if (Input::GetInstance()->PushPadbutton(GAMEPAD_RIGHT_TRIGGER) && dis <= 20.0f) { dis += 1.0f; }
+	//if (Input::GetInstance()->PushPadbutton(GAMEPAD_RIGHT_SHOULDER)) { rotaX = Player::GEtTestFloatNum(); }
 
 	float radiusX = rotaX * 3.14f / 180.0f;
 	float radiusY = rotaY * 3.14f / 180.0f;

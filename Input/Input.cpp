@@ -149,72 +149,74 @@ Input::MousePos Input::MousePosLoad()
 
 bool Input::PushPadbutton(int num)
 {
-	if (state.Gamepad.wButtons == XINPUT_GAMEPAD_DPAD_UP && num == GAMEPAD_DPAD_UP)
+	bool result = false;
+
+	if (state.Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_UP && num == GAMEPAD_DPAD_UP)
 	{
-		return true;
+		result = true;
 	}
-	else if (state.Gamepad.wButtons == XINPUT_GAMEPAD_DPAD_DOWN && num == GAMEPAD_DPAD_DOWN)
+	else if (state.Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_DOWN && num == GAMEPAD_DPAD_DOWN)
 	{
-		return true;
+		result = true;
 	}
-	else if (state.Gamepad.wButtons == XINPUT_GAMEPAD_DPAD_LEFT && num == GAMEPAD_DPAD_LEFT)
+	else if (state.Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_LEFT && num == GAMEPAD_DPAD_LEFT)
 	{
-		return true;
+		result = true;
 	}
-	else if (state.Gamepad.wButtons == XINPUT_GAMEPAD_DPAD_RIGHT && num == GAMEPAD_DPAD_RIGHT)
+	else if (state.Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_RIGHT && num == GAMEPAD_DPAD_RIGHT)
 	{
-		return true;
+		result = true;
 	}
-	else if (state.Gamepad.wButtons == XINPUT_GAMEPAD_START && num == GAMEPAD_START)
+	else if (state.Gamepad.wButtons & XINPUT_GAMEPAD_START && num == GAMEPAD_START)
 	{
-		return true;
+		result = true;
 	}
-	else if (state.Gamepad.wButtons == XINPUT_GAMEPAD_BACK && num == GAMEPAD_BACK)
+	else if (state.Gamepad.wButtons & XINPUT_GAMEPAD_BACK && num == GAMEPAD_BACK)
 	{
-		return true;
+		result = true;
 	}
-	else if (state.Gamepad.wButtons == XINPUT_GAMEPAD_LEFT_THUMB && num == GAMEPAD_LEFT_THUMB)
+	else if (state.Gamepad.wButtons & XINPUT_GAMEPAD_LEFT_THUMB && num == GAMEPAD_LEFT_THUMB)
 	{
-		return true;
+		result = true;
 	}
-	else if (state.Gamepad.wButtons == XINPUT_GAMEPAD_RIGHT_THUMB && num == GAMEPAD_RIGHT_THUMB)
+	else if (state.Gamepad.wButtons & XINPUT_GAMEPAD_RIGHT_THUMB && num == GAMEPAD_RIGHT_THUMB)
 	{
-		return true;
+		result = true;
 	}
-	else if (state.Gamepad.wButtons == XINPUT_GAMEPAD_LEFT_SHOULDER && num == GAMEPAD_LEFT_SHOULDER)
+	else if (state.Gamepad.wButtons & XINPUT_GAMEPAD_LEFT_SHOULDER && num == GAMEPAD_LEFT_SHOULDER)
 	{
-		return true;
+		result = true;
 	}
-	else if (state.Gamepad.wButtons == XINPUT_GAMEPAD_RIGHT_SHOULDER && num == GAMEPAD_RIGHT_SHOULDER)
+	else if (state.Gamepad.wButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER && num == GAMEPAD_RIGHT_SHOULDER)
 	{
-		return true;
+		result = true;
 	}
-	else if (state.Gamepad.wButtons == XINPUT_GAMEPAD_A && num == Button_A)
+	else if (state.Gamepad.wButtons & XINPUT_GAMEPAD_A && num == Button_A)
 	{
-		return true;
+		result = true;
 	}
-	else if (state.Gamepad.wButtons == XINPUT_GAMEPAD_B && num == Button_B)
+	else if (state.Gamepad.wButtons & XINPUT_GAMEPAD_B && num == Button_B)
 	{
-		return true;
+		result = true;
 	}
-	else if (state.Gamepad.wButtons == XINPUT_GAMEPAD_X && num == Button_X)
+	else if (state.Gamepad.wButtons & XINPUT_GAMEPAD_X && num == Button_X)
 	{
-		return true;
+		result = true;
 	}
-	else if (state.Gamepad.wButtons == XINPUT_GAMEPAD_Y && num == Button_Y)
+	else if (state.Gamepad.wButtons & XINPUT_GAMEPAD_Y && num == Button_Y)
 	{
-		return true;
+		result = true;
 	}
 	else if (state.Gamepad.bLeftTrigger > XINPUT_GAMEPAD_TRIGGER_THRESHOLD && num == GAMEPAD_LEFT_TRIGGER)
 	{
-		return true;
+		result = true;
 	}
 	else if (state.Gamepad.bRightTrigger > XINPUT_GAMEPAD_TRIGGER_THRESHOLD && num == GAMEPAD_RIGHT_TRIGGER)
 	{
-		return true;
+		result = true;
 	}
 
-	return false;
+	return result;
 }
 
 bool Input::LeftStickIn(PadStick stick)

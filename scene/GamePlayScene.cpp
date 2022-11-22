@@ -250,7 +250,7 @@ void GamePlayScene::Draw()
 	
 	ImGui::Text("inputX: %d", objFighter->GetInputNumX());
 	ImGui::Text("inputY: %d", objFighter->GetInputNumY());
-	ImGui::Text("StaminaQ: %.4f", objFighter->GetStaminaQuantity());
+	ImGui::Text("testRota: %.4f", objFighter->GEtTestFloatNum());
 	ImGui::Text("TimeLimit: %.4f", objFighter->GetTimeLimit());
 	ImGui::Text("PosX    :%.4f", objFighter->GetPosition().x);
 	ImGui::Text("PosY    :%.4f", objFighter->GetPosition().y);

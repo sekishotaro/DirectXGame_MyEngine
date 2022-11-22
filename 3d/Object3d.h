@@ -237,7 +237,8 @@ protected: // メンバ変数
 	BaseCollider* collider = nullptr;
 	//ライト
 	static LightGroup* light;
-
+	//カメラいち
+	XMFLOAT2 cameraPos2d = {};
 
 	//シェーダー
 	static std::wstring VSshaderName;
