@@ -124,7 +124,8 @@ void GamePlayScene::Update()
 	JsonLoader::Update();
 
 	UI::Update();
-	OpticalPost::Update();
+	
+	OpticalPost::Update(camera->GetEye());
 
 	camera->Update();
 	lightGroup->Update();
@@ -141,10 +142,10 @@ void GamePlayScene::Update()
 
 	objFighter->Update();
 	
-
-	if (input->PushKey(DIK_1))
+	OpticalPost::SetDrawFlag(true);
+	/*if (input->PushKey(DIK_1))
 	{
-		OpticalPost::SetDrawFlag(true);
+		
 	}
 	else if(input->PushPadbutton(Button_X))
 	{
@@ -153,7 +154,7 @@ void GamePlayScene::Update()
 	else
 	{
 		OpticalPost::SetDrawFlag(false);
-	}
+	}*/
 
 
 	//test追加探索敵コライダー
@@ -215,12 +216,12 @@ void GamePlayScene::Draw()
 	//json
 	JsonLoader::Draw();
 
-	OpticalPost::Draw();
-
 	for (int i = 0; i < enemyColliderObjects.size(); i++)
 	{
 		enemyColliderObjects[i].get()->Draw();
 	}
+
+	OpticalPost::Draw();
 
 	/// <summary>
 	/// ここに3Dオブジェクトの描画処理を追加できる
@@ -250,7 +251,7 @@ void GamePlayScene::Draw()
 	
 	ImGui::Text("inputX: %d", objFighter->GetInputNumX());
 	ImGui::Text("inputY: %d", objFighter->GetInputNumY());
-	ImGui::Text("testRota: %.4f", objFighter->GEtTestFloatNum());
+	ImGui::Text("testRota: %.4f", OpticalPost::GetNum());
 	ImGui::Text("TimeLimit: %.4f", objFighter->GetTimeLimit());
 	ImGui::Text("PosX    :%.4f", objFighter->GetPosition().x);
 	ImGui::Text("PosY    :%.4f", objFighter->GetPosition().y);

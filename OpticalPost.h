@@ -15,7 +15,7 @@ public:
 
 	static void Initialize();
 
-	static void Update();
+	static void Update(const XMFLOAT3 &cameraPos);
 
 	static void Draw();
 
@@ -25,6 +25,8 @@ public:
 
 	static void SetDrawFlag(bool flag) { drawFlag = flag; }
 
+	static float& GetNum() { return num; }
+
 public:
 	//オブジェクト
 	static std::vector<std::unique_ptr<Object3d>> OpticalPosts;
@@ -32,5 +34,8 @@ public:
 	static Model* modelOpticalPost;
 
 	static bool drawFlag;
+
+	//デバック用数
+	static float num;
 };
 

@@ -67,9 +67,9 @@ bool Player::Initialize()
 	}
 
 	position = JsonLoader::goalObjects[0].get()->GetPosition();
-	//position.x = -52;
+	position.x = -59;
 	//position.y = 30;
-	//position.z = 50;
+	position.z = 43;
 
 	//コライダーの追加
 	float radius = 0.6f;
@@ -560,6 +560,17 @@ void Player::MoveOperation(XMVECTOR& move)
 			nowMove = true;
 		}
 
+		if (Input::GetInstance()->PushKey(DIK_S))
+		{
+			moveV.y -= 0.5f;
+			nowMove = true;
+		}
+		else if (Input::GetInstance()->PushKey(DIK_W))
+		{
+			moveV.y += 0.5f;
+			nowMove = true;
+		}
+
 		if (Input::GetInstance()->PushKey(DIK_P) || Input::GetInstance()->PushPadbutton(Button_B))
 		{
 			climbOperation = false;
@@ -904,12 +915,12 @@ void Player::StaminaManagement(const DirectX::XMVECTOR& move)
 
 void Player::TimeManagement()
 {
-	if (timeLimit <= 0)return;
-	
-	flame += 1.0f;
-	
-	if (flame != 60.0) return;
-	
-	timeLimit -= 1.0f;
-	flame = 0.0f;
+	//if (timeLimit <= 0)return;
+	//
+	//flame += 1.0f;
+	//
+	//if (flame != 60.0) return;
+	//
+	//timeLimit -= 1.0f;
+	//flame = 0.0f;
 }
