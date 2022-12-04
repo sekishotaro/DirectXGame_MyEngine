@@ -27,6 +27,8 @@ public:
 	/// </summary>
 	void Update() override;
 
+	void UpdateF() override;
+
 	inline void SetRadius(float radius) { this->radius = radius; }
 
 	inline const XMVECTOR& GetOffset() { return offset; }

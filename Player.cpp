@@ -28,7 +28,7 @@ int Player::inputX = 0;
 int Player::inputY = 0;
 float Player::testRota = 0;
 
-Player* Player::Create(Model* model)
+Player* Player::Create(FbxModel* model)
 {
 	//3Dオブジェクトのインスタンスを生成
 	Player* instance = new Player();
@@ -39,11 +39,7 @@ Player* Player::Create(Model* model)
 	}
 
 	//初期化
-	if (!instance->Initialize())
-	{
-		delete instance;
-		assert(0);
-	}
+	instance->Initialize();
 
 	//モデルのセット
 	if (model)
@@ -54,22 +50,23 @@ Player* Player::Create(Model* model)
 	return instance;
 }
 
-bool Player::Initialize()
+void Player::Initialize()
 {
 	goalFlag = false;
 	timeLimit = 60.0f;
 	staminaQuantity = 100.0f;
 	staminaCut = false;
 
-	if (!Object3d::Initialize())
-	{
-		return false;
-	}
+	FbxObject3d::Initialize();
 
 	position = JsonLoader::goalObjects[0].get()->GetPosition();
 	position.x = -59;
 	//position.y = 30;
 	position.z = 43;
+
+	scale.x = 0.02f;
+	scale.y = 0.02f;
+	scale.z = 0.02f;
 
 	//コライダーの追加
 	float radius = 0.6f;
@@ -80,7 +77,7 @@ bool Player::Initialize()
 
 	crystalNum = (int)JsonLoader::crystalObjects.size();
 
-	return true;
+	return;
 }
 
 void Player::Update()
@@ -703,7 +700,7 @@ void Player::ObstacleConfirmationProcess(const XMVECTOR &move)
 				adhesion = true;
 				PushBack(normal, distance);
 				//行列の更新など
-				Object3d::Update();
+				FbxObject3d::Update();
 			}
 			else
 			{
@@ -720,13 +717,13 @@ void Player::ObstacleConfirmationProcess(const XMVECTOR &move)
 				//めり込まないように押し戻し処理
 				PushBack(normal, distance);
 				//行列の更新など
-				Object3d::Update();
+				FbxObject3d::Update();
 			}
 		}
 	}
 
 	pos = position;
-	Object3d::Update();
+	FbxObject3d::Update();
 }
 
 void Player::GravityConfirmationProcess()
@@ -761,7 +758,7 @@ void Player::GravityConfirmationProcess()
 	}
 	// ワールド行列更新
 	UpdateWorldMatrix();
-	collider->Update();
+	collider->UpdateF();
 }
 
 void Player::TerrainConfirmationProcess()
@@ -817,7 +814,7 @@ void Player::TerrainConfirmationProcess()
 	position.z += callback.move.m128_f32[2];
 	//コライダー更新
 	UpdateWorldMatrix();
-	collider->Update();
+	collider->UpdateF();
 
 
 	//壁のぼり判定
@@ -846,7 +843,7 @@ void Player::TerrainConfirmationProcess()
 			onGround = true;
 			position.y -= (raycastHit.distance - sphereCollider->GetRadius() * 2.0f);
 			//行列の更新など
-			Object3d::Update();
+			FbxObject3d::Update();
 		}
 		else
 		{
@@ -864,7 +861,7 @@ void Player::TerrainConfirmationProcess()
 			onGround = true;
 			position.y -= (raycastHit.distance - sphereCollider->GetRadius() * 2.0f);
 			//行列の更新など
-			Object3d::Update();
+			FbxObject3d::Update();
 		}
 	}
 

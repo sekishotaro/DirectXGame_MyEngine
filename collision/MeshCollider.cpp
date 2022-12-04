@@ -50,6 +50,12 @@ void MeshCollider::Update()
 	invMatWorld = XMMatrixInverse(nullptr, GetObject3d()->GetMatWorld());
 }
 
+void MeshCollider::UpdateF()
+{
+	//ワールド行列の逆行列を計算
+	invMatWorld = XMMatrixInverse(nullptr, GetFbxObject3d()->GetMatWorld());
+}
+
 bool MeshCollider::CheckCollisionSphere(const Sphere& sphere, DirectX::XMVECTOR* inter, DirectX::XMVECTOR* reject)
 {
 	//オブジェクトのローカル座標系での球を得る (半径はXスケールを参照)

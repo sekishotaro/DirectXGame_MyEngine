@@ -1,4 +1,6 @@
 #include "FbxObject3d.h"
+#include "BaseCollider.h"
+#include "CollisionManager.h"
 #include <d3dcompiler.h>
 #pragma comment(lib, "d3dcompiler.lib")
 
@@ -190,21 +192,7 @@ void FbxObject3d::CreateGraphicsPipeline()
 
 void FbxObject3d::Update()
 {
-	XMMATRIX matScale, matRot, matTrans;
-
-	// スケール、回転、平行移動行列の計算
-	matScale = XMMatrixScaling(scale.x, scale.y, scale.z);
-	matRot = XMMatrixIdentity();
-	matRot *= XMMatrixRotationZ(XMConvertToRadians(rotation.z));
-	matRot *= XMMatrixRotationX(XMConvertToRadians(rotation.x));
-	matRot *= XMMatrixRotationY(XMConvertToRadians(rotation.y));
-	matTrans = XMMatrixTranslation(position.x, position.y, position.z);
-
-	// ワールド行列の合成
-	matWorld = XMMatrixIdentity(); // 変形をリセット
-	matWorld *= matScale; // ワールド行列にスケーリングを反映
-	matWorld *= matRot; // ワールド行列に回転を反映
-	matWorld *= matTrans; // ワールド行列に平行移動を反映
+	UpdateWorldMatrix();
 
 	// ビュープロダクション行列
 	const XMMATRIX &matViewProjection = camera->GetViewProjectionMatrix();
@@ -214,6 +202,8 @@ void FbxObject3d::Update()
 
 	// カメラ座標
 	const XMFLOAT3 &cameraPos = camera->GetEye();
+
+	cameraPos2d = { cameraPos.x, cameraPos.z };
 
 	HRESULT result;
 
@@ -269,6 +259,12 @@ void FbxObject3d::Update()
 		constMapSkin->bones[i] = fbxModel->GetModelTransform() * bones[i].invInitialPose * matCurrentPose * fbxModel->GetInverseGlobalTransform();
 	}
 	constBuffSkin->Unmap(0, nullptr);
+
+	//当たり判定更新
+	if (collider)
+	{
+		collider->UpdateF();
+	}
 }
 
 void FbxObject3d::Draw(ID3D12GraphicsCommandList *cmdList)
@@ -327,6 +323,46 @@ void FbxObject3d::PlayAnimation()
 	isPlay = true;
 }
 
+void FbxObject3d::SetCollider(BaseCollider* collider)
+{
+	collider->SetFbxObject(this);
+	this->collider = collider;
+	//コリジョンマネージャーに登録
+	CollisionManager::GetInstance()->AddCollider(collider);
+	//コライダーを更新しておく
+	//行列の計算
+	UpdateWorldMatrix();
+	collider->UpdateF();
+}
+
+void FbxObject3d::UpdateWorldMatrix()
+{
+	XMMATRIX matScale, matRot, matTrans;
+
+	// スケール、回転、平行移動行列の計算
+	matScale = XMMatrixScaling(scale.x, scale.y, scale.z);
+	matRot = XMMatrixIdentity();
+	matRot *= XMMatrixRotationZ(XMConvertToRadians(rotation.z));
+	matRot *= XMMatrixRotationX(XMConvertToRadians(rotation.x));
+	matRot *= XMMatrixRotationY(XMConvertToRadians(rotation.y));
+	matTrans = XMMatrixTranslation(position.x, position.y, position.z);
+
+	// ワールド行列の合成
+	matWorld = XMMatrixIdentity(); // 変形をリセット
+	matWorld *= matScale; // ワールド行列にスケーリングを反映
+	matWorld *= matRot; // ワールド行列に回転を反映
+	matWorld *= matTrans; // ワールド行列に平行移動を反映
+}
+
+FbxObject3d::~FbxObject3d()
+{
+	if (collider) {
+		//コリジョンマネージャーから登録を解除
+		CollisionManager::GetInstance()->RemoveCollider(collider);
+		delete collider;
+	}
+}
+
 void FbxObject3d::Initialize()
 {
 	//1フレーム分の時間を60FPSで設定
@@ -358,4 +394,6 @@ void FbxObject3d::Initialize()
 		constMapSkin->bones[i] = XMMatrixIdentity();
 	}
 	constBuffSkin->Unmap(0, nullptr);
+
+	name = typeid(*this).name();
 }

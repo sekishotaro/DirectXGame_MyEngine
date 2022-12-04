@@ -10,6 +10,10 @@
 #include <d3dx12.h>
 #include <string>
 
+#include "CollisionInfo.h"
+
+class BaseCollider;
+
 class FbxObject3d
 {
 protected: // エイリアス
@@ -57,10 +61,15 @@ private: // 静的メンバ変数
 	static ComPtr<ID3D12PipelineState> pipelinestate;
 
 public: // メンバ関数
+
+	FbxObject3d() = default;
+
+	virtual ~FbxObject3d();
+
 	/// <summary>
 	/// 初期化
 	/// </summary>
-	void Initialize();
+	virtual void Initialize();
 	/// <summary>
 	/// グラフィックスパイプラインの生成
 	/// </summary>
@@ -68,27 +77,47 @@ public: // メンバ関数
 	/// <summary>
 	/// マイフレーム処理
 	/// </summary>
-	void Update();
+	virtual void Update();
 	/// <summary>
 	/// モデルのセット
 	/// </summary>
 	/// <param name="model">モデル</param>
-	void SetModel(FbxModel *fbxModel) { this->fbxModel = fbxModel; };
+	virtual void SetModel(FbxModel *fbxModel) { this->fbxModel = fbxModel; };
 	/// <summary>
 	/// 描画
 	/// </summary>
 	/// <param name="cmdList">コマンドリスト</param>
-	void Draw(ID3D12GraphicsCommandList *cmdList);
+	virtual void Draw(ID3D12GraphicsCommandList *cmdList);
 
 	/// <summary>
 	/// アニメーション読み込み
 	/// </summary>
-	void LoadAnimation();
+	virtual void LoadAnimation();
 
 	/// <summary>
 	/// アニメーション開始
 	/// </summary>
-	void PlayAnimation();
+	virtual void PlayAnimation();
+
+	/// <summary>
+	/// コライダーのセット
+	/// </summary>
+	/// <param name="collider">コライダー</param>
+	void SetCollider(BaseCollider* collider);
+
+	/// <summary>
+	/// 衝突時コールバック関数
+	/// </summary>
+	/// <param name="info">衝突情報</param>
+	virtual void OnCollision(const CollisionInfo& info) {}
+
+	void UpdateWorldMatrix();
+
+	/// <summary>
+	/// ワールド行列の取得
+	/// </summary>
+	/// <returns>ワールド行列</returns>
+	const XMMATRIX& GetMatWorld() { return matWorld; }
 
 protected:
 	// 定数バッファ
@@ -119,6 +148,13 @@ protected:
 	int fbxAnimationNum;
 	//アニメーションをロードしたかの確認用フラグ
 	bool LoadedFlag = false;
+	//カメラいち
+	XMFLOAT2 cameraPos2d = {};
+
+	//クラス名 (デバック用)
+	const char* name = nullptr;
+	BaseCollider* collider = nullptr;
+
 public:
 	//アニメーションをするかのフラグ
 	bool AnimationFlag = false;
@@ -130,9 +166,9 @@ public:
 	bool GetisPlay() { return isPlay; }
 
 	/// <summary>
-/// 座標の取得
-/// </summary>
-/// <returns>座標</returns>
+	/// 座標の取得
+	/// </summary>
+	/// <returns>座標</returns>
 	const XMFLOAT3& GetPosition() { return position; }
 
 	/// <summary>

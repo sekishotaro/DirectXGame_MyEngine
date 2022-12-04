@@ -10,7 +10,7 @@
 #include "FbxObject3d.h"
 #include "Object3d.h"
 
-class Player : public Object3d
+class Player : public FbxObject3d
 {
 private: // エイリアス
 	// Microsoft::WRL::を省略
@@ -27,7 +27,7 @@ public:
 	/// 3Dオブジェクト生成
 	/// </summary>
 	/// <returns>インスタンス生成</returns>
-	static Player* Create(Model* model = nullptr);
+	static Player* Create(FbxModel* model = nullptr);
 
 public:
 
@@ -35,7 +35,7 @@ public:
 	/// 初期化
 	/// </summary>
 	/// <returns>成否</returns>
-	bool Initialize() override;
+	void Initialize() override;
 
 	/// <summary>
 	/// マイフレーム処理

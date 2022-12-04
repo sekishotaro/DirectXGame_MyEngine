@@ -26,6 +26,8 @@ public:
 	/// </summary>
 	void Update() override;
 
+	void UpdateF() override;
+
 	/// <summary>
 	/// 弾との当たり判定
 	/// </summary>

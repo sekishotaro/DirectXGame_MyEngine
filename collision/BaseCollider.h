@@ -2,6 +2,7 @@
 
 #include "CollisionTypes.h"
 #include "Object3d.h"
+#include "FbxObject3d.h"
 #include "CollisionInfo.h"
 
 /// <summary>
@@ -18,8 +19,10 @@ public:
 	virtual ~BaseCollider() = default;
 
 	inline void SetObject(Object3d* object) { this->object3d = object; }
+	inline void SetFbxObject(FbxObject3d* fbxObject) { this->fbxObject = fbxObject; }
 
 	inline Object3d* GetObject3d() { return object3d; }
+	inline FbxObject3d* GetFbxObject3d() { return fbxObject; }
 
 	inline void SetAttribute(unsigned short attribute)
 	{
@@ -40,6 +43,8 @@ public:
 	/// 更新
 	/// </summary>
 	virtual void Update() = 0;
+	virtual void UpdateF() = 0;
+
 	//形状タイプ取得
 	inline CollisionShapeType GetShapeType() { return shapeType; }
 
@@ -47,6 +52,7 @@ public:
 
 protected:
 	Object3d* object3d = nullptr;
+	FbxObject3d* fbxObject = nullptr;
 	//形状タイプ
 	CollisionShapeType shapeType = SHAPE_UNKNOWN;
 	unsigned short attribute = 0b1111111111111111;
