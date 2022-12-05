@@ -49,6 +49,7 @@ public:
 	inline CollisionShapeType GetShapeType() { return shapeType; }
 
 	inline void OnCollision(const CollisionInfo& info) { object3d->OnCollision(info); }
+	inline void OnCollisionF(const CollisionInfo& info) { fbxObject->OnCollision(info); }
 
 protected:
 	Object3d* object3d = nullptr;

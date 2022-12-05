@@ -221,6 +221,11 @@ void FbxObject3d::Update()
 		constBuffTransform->Unmap(0, nullptr);
 	}
 
+	if (AnimationFlag == false)
+	{
+		isPlay  = false;
+	}
+
 	if (isPlay == false && AnimationFlag == true)
 	{
 		if (LoadedFlag == false)

@@ -31,7 +31,7 @@ public: // サブクラス
 	// 定数バッファ用データ構造体B0
 	struct ConstBufferDataB0
 	{
-		//XMFLOAT4 color;	// 色 (RGBA)
+		XMFLOAT4 color;	// 色 (RGBA)
 		//XMMATRIX mat;	// ３Ｄ変換行列
 		XMMATRIX viewproj;
 		XMMATRIX world;
@@ -107,6 +107,9 @@ private: // 静的メンバ変数
 
 	// カメラ
 	static Camera *camera;
+	
+	//襲撃用フラグ
+	static bool raidFlag;
 
 private:// 静的メンバ関数
 
@@ -212,6 +215,8 @@ public: // メンバ関数
 	void SetVSShaderName(std::wstring VSShaderName) { this->VSshaderName = VSshaderName; }
 
 	static void SetLight(LightGroup* light) { Object3d::light = light; }
+
+	static void SetRaidFlag(bool raidFlag) { Object3d::raidFlag = raidFlag; }
 
 protected: // メンバ変数
 	ComPtr<ID3D12Resource> constBuffB0; // 定数バッファ

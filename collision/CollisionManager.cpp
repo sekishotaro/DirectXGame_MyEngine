@@ -57,8 +57,23 @@ void CollisionManager::CheckAllCollisions()
                 DirectX::XMVECTOR inter;
                 if (meshCollider->CheckCollisionSphere(*sphere, &inter))
                 {
-                    colA->OnCollision(CollisionInfo(colB->GetObject3d(), colB, inter));
-                    colB->OnCollision(CollisionInfo(colA->GetObject3d(), colA, inter));
+                    if (colA->object3d == nullptr)
+                    {
+                        colA->OnCollisionF(CollisionInfo(colB->GetObject3d(), colB, inter));
+                    }
+                    else
+                    {
+                        colA->OnCollision(CollisionInfo(colB->GetObject3d(), colB, inter));
+                    }
+                    
+                    if (colB->object3d == nullptr)
+                    {
+                        colB->OnCollisionF(CollisionInfo(colB->GetObject3d(), colB, inter));
+                    }
+                    else
+                    {
+                        colB->OnCollision(CollisionInfo(colA->GetObject3d(), colA, inter));
+                    }
                 }
             }
 

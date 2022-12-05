@@ -24,6 +24,7 @@ ID3D12GraphicsCommandList* Object3d::cmdList = nullptr;
 ComPtr<ID3D12RootSignature> Object3d::rootsignature;
 ComPtr<ID3D12PipelineState> Object3d::pipelinestate;
 Camera *Object3d::camera = nullptr;
+bool Object3d::raidFlag = false;
 LightGroup* Object3d::light = nullptr;
 
 std::wstring Object3d::PSshaderName = L"Resources/shaders/OBJPixelShader.hlsl";
@@ -283,11 +284,19 @@ void Object3d::Update()
 	const XMMATRIX &matViewProjection = camera->GetViewProjectionMatrix();
 	const XMFLOAT3& cameraPos = camera->GetEye();
 
+	XMFLOAT4 ModeColor = { 1.0f, 1.0f, 1.0f, 1.0f };
+
+	if (raidFlag == true)
+	{
+		ModeColor = { 1.0f, 0.3f, 0.3f, 1.0f };
+	}
+
 	cameraPos2d = { cameraPos.x, cameraPos.z };
 
 	// 定数バッファへデータ転送
 	ConstBufferDataB0 *constMap = nullptr;
 	result = constBuffB0->Map(0, nullptr, (void **)&constMap);
+	constMap->color = ModeColor;
 	//constMap->mat = matWorld * matViewProjection;	// 行列の合成
 	constMap->viewproj = matViewProjection;
 	constMap->world = matWorld;

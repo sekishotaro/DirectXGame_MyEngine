@@ -117,7 +117,6 @@ void Player::Update()
 
 void Player::OnCollision(const CollisionInfo& info)
 {
-	//DebugText::GetInstance()->Print(50, 30 * 8, 2, "Hit");
 }
 
 void Player::PushBack(const DirectX::XMVECTOR& normal, const XMFLOAT3& distance)
@@ -336,7 +335,6 @@ void Player::MoveOperation(XMVECTOR& move)
 				rot2 = (360.0f - rot2);
 			}
 			rotation.y = rot1 + rot2;
-
 		}
 
 		//ˆÚ“®ƒxƒNƒgƒ‹‚ðYŽ²‰ñ‚è‚ÌŠp“x‚Å‰ñ“]
@@ -381,6 +379,10 @@ void Player::MoveOperation(XMVECTOR& move)
 			position.y -= move.m128_f32[1] * power * moveAdjustmentNum;
 			position.z -= move.m128_f32[2] * power * moveAdjustmentNum;
 			nowMove = true;
+			
+			this->AnimationNum = 1;
+			this->AnimationFlag = true;
+			
 		}
 		else if (Input::GetInstance()->PushKey(DIK_W))
 		{
@@ -388,28 +390,19 @@ void Player::MoveOperation(XMVECTOR& move)
 			position.y += move.m128_f32[1] * power * moveAdjustmentNum;
 			position.z += move.m128_f32[2] * power * moveAdjustmentNum;
 			nowMove = true;
+			
+			this->AnimationNum = 2;
+			this->AnimationFlag = true;
+			
 		}
-		//else if (Input::GetInstance()->LeftStickInYNum() < 0)
-		//{
-		//	int num = Input::GetInstance()->LeftStickInYNum();
-		//	position.x -= move.m128_f32[0] * power;
-		//	position.y -= move.m128_f32[1] * power;
-		//	position.z -= move.m128_f32[2] * power;
-		//	nowMove = true;
-		//}
-		//else if (Input::GetInstance()->LeftStickInYNum() > 0)
-		//{
-		//	position.x += move.m128_f32[0] * power;
-		//	position.y += move.m128_f32[1] * power;
-		//	position.z += move.m128_f32[2] * power;
-		//	nowMove = true;
-		//}
 		else if (Input::GetInstance()->LeftStickIn(LEFT) || Input::GetInstance()->LeftStickIn(RIGHT))
 		{
 			position.x += move.m128_f32[0] * power;
 			position.y += move.m128_f32[1] * power;
 			position.z += move.m128_f32[2] * power;
 			nowMove = true;
+			this->AnimationFlag = true;
+			this->AnimationNum = 2;
 		}
 		else if (Input::GetInstance()->LeftStickIn(UP) || Input::GetInstance()->LeftStickIn(DOWN))
 		{
@@ -417,10 +410,13 @@ void Player::MoveOperation(XMVECTOR& move)
 			position.y += move.m128_f32[1] * power;
 			position.z += move.m128_f32[2] * power;
 			nowMove = true;
+			this->AnimationFlag = true;
+			this->AnimationNum = 2;
 		}
 		else
 		{
 			nowMove = false;
+			this->AnimationFlag = false;
 		}
 
 	}

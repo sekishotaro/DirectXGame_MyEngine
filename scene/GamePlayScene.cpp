@@ -61,10 +61,6 @@ void GamePlayScene::Initialize()
 
 	//モデル名を指定してファイル読み込み
 	fbxModel = FbxLoader::GetInstance()->LoadModelFromFile("model");
-	//3Dオブジェクト生成とモデルのセット
-	fbxObject3d = new FbxObject3d;
-	fbxObject3d->Initialize();
-	fbxObject3d->SetModel(fbxModel);
 
 	collisionManager = CollisionManager::GetInstance();
 	objFighter = Player::Create(fbxModel);
@@ -183,12 +179,20 @@ void GamePlayScene::Update()
 	collisionManager->CheckAllCollisions();
 
 
+	if (input->PushKey(DIK_2))
+	{
+		Object3d::SetRaidFlag(true);
+	}
+	else
+	{
+		Object3d::SetRaidFlag(false);
+	}
+
+
 	if (Enemy::GetGameOver() == true)
 	{
 		SceneManager::GetInstance()->ChangeScene("GAMEOVER");
 	}
-
-	fbxObject3d->Update();
 }
 
 void GamePlayScene::Draw()
@@ -219,8 +223,6 @@ void GamePlayScene::Draw()
 	MathObject::PreDraw(cmdList);
 
 	// 3Dオブクジェクトの描画
-
-	fbxObject3d->Draw(cmdList);
 	
 	//test追加探索敵コライダー
 	skydomeObject->Draw();
