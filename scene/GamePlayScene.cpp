@@ -54,6 +54,7 @@ void GamePlayScene::Initialize()
 	modelFighter = Model::LoadFromOBJ("modelObj");
 	skydomeModel = Model::LoadFromOBJ("skydome");
 
+
 	//json
 	JsonLoader::LoadFile("Scene11_12"); //オブジェクトの当たり判定
 
@@ -226,6 +227,7 @@ void GamePlayScene::Draw()
 	
 	//test追加探索敵コライダー
 	skydomeObject->Draw();
+
 	objFighter->Draw(cmdList);
 	//json
 	JsonLoader::Draw();

@@ -380,9 +380,11 @@ void Player::MoveOperation(XMVECTOR& move)
 			position.z -= move.m128_f32[2] * power * moveAdjustmentNum;
 			nowMove = true;
 			
-			this->AnimationNum = 1;
-			this->AnimationFlag = true;
-			
+			if (AnimationFlag == false)
+			{
+				this->AnimationNum = 1;
+				this->AnimationFlag = true;
+			}
 		}
 		else if (Input::GetInstance()->PushKey(DIK_W))
 		{
@@ -391,8 +393,11 @@ void Player::MoveOperation(XMVECTOR& move)
 			position.z += move.m128_f32[2] * power * moveAdjustmentNum;
 			nowMove = true;
 			
-			this->AnimationNum = 2;
-			this->AnimationFlag = true;
+			if (AnimationFlag == false)
+			{
+				this->AnimationNum = 1;
+				this->AnimationFlag = true;
+			}
 			
 		}
 		else if (Input::GetInstance()->LeftStickIn(LEFT) || Input::GetInstance()->LeftStickIn(RIGHT))
@@ -401,8 +406,6 @@ void Player::MoveOperation(XMVECTOR& move)
 			position.y += move.m128_f32[1] * power;
 			position.z += move.m128_f32[2] * power;
 			nowMove = true;
-			this->AnimationFlag = true;
-			this->AnimationNum = 2;
 		}
 		else if (Input::GetInstance()->LeftStickIn(UP) || Input::GetInstance()->LeftStickIn(DOWN))
 		{
@@ -410,8 +413,6 @@ void Player::MoveOperation(XMVECTOR& move)
 			position.y += move.m128_f32[1] * power;
 			position.z += move.m128_f32[2] * power;
 			nowMove = true;
-			this->AnimationFlag = true;
-			this->AnimationNum = 2;
 		}
 		else
 		{
