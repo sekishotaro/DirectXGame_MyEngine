@@ -284,7 +284,7 @@ void Object3d::Update()
 	const XMMATRIX &matViewProjection = camera->GetViewProjectionMatrix();
 	const XMFLOAT3& cameraPos = camera->GetEye();
 
-	XMFLOAT4 ModeColor = { 1.0f, 1.0f, 1.0f, 1.0f };
+	XMFLOAT4 ModeColor = { 0.8f, 0.8f, 1.0f, 1.0f };
 
 	if (raidFlag == true)
 	{

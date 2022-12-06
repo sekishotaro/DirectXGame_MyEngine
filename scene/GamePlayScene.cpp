@@ -98,7 +98,6 @@ void GamePlayScene::Initialize()
 	//lightGroup->SetDirLightActive(2, true);
 	lightGroup->SetCircleShadowActive(0, true);
 	lightGroup->SetCircleShadowActive(1, true);
-
 }
 
 void GamePlayScene::Finalize()
@@ -178,17 +177,6 @@ void GamePlayScene::Update()
 
 	//全ての衝突をチェック
 	collisionManager->CheckAllCollisions();
-
-
-	if (input->PushKey(DIK_2))
-	{
-		Object3d::SetRaidFlag(true);
-	}
-	else
-	{
-		Object3d::SetRaidFlag(false);
-	}
-
 
 	if (Enemy::GetGameOver() == true)
 	{

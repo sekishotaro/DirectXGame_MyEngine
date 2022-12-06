@@ -380,11 +380,11 @@ void Player::MoveOperation(XMVECTOR& move)
 			position.z -= move.m128_f32[2] * power * moveAdjustmentNum;
 			nowMove = true;
 			
-			if (AnimationFlag == false)
-			{
-				this->AnimationNum = 1;
-				this->AnimationFlag = true;
-			}
+			//if (AnimationFlag == false)
+			//{
+			//	this->AnimationNum = 1;
+			//	this->AnimationFlag = true;
+			//}
 		}
 		else if (Input::GetInstance()->PushKey(DIK_W))
 		{
@@ -393,11 +393,11 @@ void Player::MoveOperation(XMVECTOR& move)
 			position.z += move.m128_f32[2] * power * moveAdjustmentNum;
 			nowMove = true;
 			
-			if (AnimationFlag == false)
-			{
-				this->AnimationNum = 1;
-				this->AnimationFlag = true;
-			}
+			//if (AnimationFlag == false)
+			//{
+			//	this->AnimationNum = 1;
+			//	this->AnimationFlag = true;
+			//}
 			
 		}
 		else if (Input::GetInstance()->LeftStickIn(LEFT) || Input::GetInstance()->LeftStickIn(RIGHT))
@@ -909,12 +909,12 @@ void Player::StaminaManagement(const DirectX::XMVECTOR& move)
 
 void Player::TimeManagement()
 {
-	//if (timeLimit <= 0)return;
-	//
-	//flame += 1.0f;
-	//
-	//if (flame != 60.0) return;
-	//
-	//timeLimit -= 1.0f;
-	//flame = 0.0f;
+	if (timeLimit <= 0)return;
+	
+	flame += 1.0f;
+	
+	if (flame != 60.0) return;
+	
+	timeLimit -= 1.0f;
+	flame = 0.0f;
 }

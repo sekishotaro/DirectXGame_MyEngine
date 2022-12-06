@@ -3,6 +3,7 @@
 #include "JsonLoader.h"
 #include "CollisionSet.h"
 #include "MyMath.h"
+#include "Object3d.h"
 
 Enemy::XMFLOAT3 Enemy::pos = { 0.0f, 0.0f, 3.0f };
 Enemy::XMFLOAT3 Enemy::initialPos = { 0.0f, 0.0f, 0.0f };
@@ -20,9 +21,10 @@ void Enemy::Tracking(const XMFLOAT3& playerPos)
 
 	XMFLOAT3 dis = { playerPos.x - pos.x, playerPos.y - pos.y ,playerPos.z - pos.z };
 
-	float sb = sqrt(dis.x * dis.x + dis.z * dis.z);
+	float sb = sqrt(dis.x * dis.x + dis.y * dis.y + dis.z * dis.z);
 
 	pos.x += (dis.x / sb) / speedConstant;
+	pos.y += (dis.y / sb) / speedConstant;
 	pos.z += (dis.z / sb) / speedConstant;
 }
 
@@ -231,10 +233,11 @@ void Enemy::Update(int time, const XMFLOAT3& playerPos)
 				raidMode = true;
 			}
 		}
-		
 
 		pos = initialPos;
 	}
 
 	JsonLoader::raidEnemyObjects[0].get()->SetPosition(pos);
+
+	Object3d::SetRaidFlag(raidMode);
 }
