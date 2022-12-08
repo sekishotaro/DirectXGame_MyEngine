@@ -280,15 +280,6 @@ void Player::MoveOperation(XMVECTOR& move)
 			rotation.y += 2.0f;
 		}
 
-		//if (Input::GetInstance()->LeftStickIn(LEFT))
-		//{
-		//	rotation.y -= 2.0f;
-		//}
-		//else if (Input::GetInstance()->LeftStickIn(RIGHT))
-		//{
-		//	rotation.y += 2.0f;
-		//}
-
 		const int MAX = 24918;
 		int x = 0;
 		int y = 0;
@@ -303,10 +294,6 @@ void Player::MoveOperation(XMVECTOR& move)
 			inputY = (int)(xX * 100);
 		}
 
-		//if (inputX > 0 && inputY == 0) { rotation.y = 90; }
-		//else if (inputX < 0 && inputY == 0) { rotation.y = 270; }
-		//else if (inputX == 0 && inputY > 0) { rotation.y = 0; }
-		//else if (inputX == 0 && inputY < 0) { rotation.y = 180; }
 		float rot1 = 0;
 		float rot2 = 0;
 		if (inputX != 0 || inputY != 0)
@@ -382,7 +369,7 @@ void Player::MoveOperation(XMVECTOR& move)
 			
 			if (AnimationFlag == false)
 			{
-				this->AnimationNum = 1;
+				this->AnimationNum = 2;
 				this->AnimationFlag = true;
 			}
 		}
@@ -395,7 +382,7 @@ void Player::MoveOperation(XMVECTOR& move)
 			
 			if (AnimationFlag == false)
 			{
-				this->AnimationNum = 1;
+				this->AnimationNum = 2;
 				this->AnimationFlag = true;
 			}
 			

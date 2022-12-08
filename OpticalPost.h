@@ -30,6 +30,7 @@ public:
 public:
 	//オブジェクト
 	static std::vector<std::unique_ptr<Object3d>> OpticalPosts;
+	static std::vector<std::unique_ptr<Object3d>> OpticalPostEffects;
 	//モデル
 	static Model* modelOpticalPost;
 
@@ -37,5 +38,7 @@ public:
 
 	//デバック用数
 	static float num;
+	//エフェクト用の数
+	static int effectNum;
 };
 
