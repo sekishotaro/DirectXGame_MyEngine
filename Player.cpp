@@ -12,6 +12,7 @@
 using namespace DirectX;
 
 XMFLOAT3 Player::pos = { 0,0,0 };
+XMFLOAT3 Player::rot = { 0,0,0 };
 XMFLOAT3 Player::moveV = { 0,0,0 };
 float Player::moveAdjustmentNum = 1.0f;
 bool Player::nowMove = false;
@@ -104,6 +105,9 @@ void Player::Update()
 	
 	//障害物(AABB)の衝突処理
 	ObstacleConfirmationProcess(move);
+
+	pos = position;
+	rot = rotation;
 
 	//ゴールとプレイヤーの当たり判定
 	GoalConfirmationProcess();
@@ -719,7 +723,6 @@ void Player::ObstacleConfirmationProcess(const XMVECTOR &move)
 		}
 	}
 
-	pos = position;
 	FbxObject3d::Update();
 }
 

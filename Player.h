@@ -93,6 +93,8 @@ public:
 	//デバック用ゲッター
 	static XMFLOAT3 GetPos() { return pos; }
 
+	static XMFLOAT3 GetRot() { return rot; }
+
 	static XMFLOAT3 GetMove() { return moveV; };
 
 	static bool &GetNowMove() { return nowMove;}
@@ -139,6 +141,7 @@ private:
 	//プレイヤーの位置
 
 	static XMFLOAT3 pos;
+	static XMFLOAT3 rot;
 	static XMFLOAT3 moveV;
 
 	//移動量調整数

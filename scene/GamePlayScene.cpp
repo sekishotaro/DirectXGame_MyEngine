@@ -18,6 +18,7 @@
 #include "Player.h"
 #include "UI.h"
 #include "OpticalPost.h"
+#include "Effect.h"
 
 #include "SafeDelete.h"
 
@@ -50,6 +51,8 @@ void GamePlayScene::Initialize()
 	Sprite::LoadTexture(1, L"Resources/background.png");
 	// 背景スプライト生成
 	spriteBG = Sprite::Create(1, { 0.0f,0.0f });
+
+	Effect::Initialize();
 
 	modelFighter = Model::LoadFromOBJ("modelObj");
 	skydomeModel = Model::LoadFromOBJ("skydome");
@@ -109,6 +112,7 @@ void GamePlayScene::Finalize()
 
 	JsonLoader::Finalize();
 	OpticalPost::Finalize();
+	Effect::Finalize();
 }
 
 void GamePlayScene::Update()
@@ -182,6 +186,8 @@ void GamePlayScene::Update()
 	{
 		SceneManager::GetInstance()->ChangeScene("GAMEOVER");
 	}
+
+	Effect::Update(camera->GetEye());
 }
 
 void GamePlayScene::Draw()
@@ -239,7 +245,7 @@ void GamePlayScene::Draw()
 	Sprite::PreDraw(cmdList);
 	
 	UI::Draw();
-
+	Effect::Draw();
 
 	// デバッグテキストの描画
 	DebugText::GetInstance()->DrawAll(cmdList);

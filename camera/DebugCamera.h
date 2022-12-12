@@ -22,6 +22,8 @@ public: // ƒƒ“ƒoŠÖ”
 	/// </summary>
 	virtual void Update();
 
+	static float GetRotaY() { return rotaX; }
+
 public:
 	static XMFLOAT3 eye;
 	static XMFLOAT3 target;
