@@ -120,6 +120,7 @@ public:
 
 	static float& GEtTestFloatNum() { return testRota; }
 
+	static bool GetCrystalGetFlag() { return crystalGetFlag; }
 private:
 	//接地フラグ
 	static bool onGround;
@@ -181,5 +182,7 @@ private:
 	float forciblyRecoveryTime = 10.0f;
 	//スタミナが使えるかどうか(スタミナを使い切った場合になる状態)
 	static bool staminaCut;
+
+	static bool crystalGetFlag;
 };
 

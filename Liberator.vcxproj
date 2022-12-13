@@ -215,6 +215,7 @@
     <ClCompile Include="camera\DebugCamera.cpp" />
     <ClCompile Include="collision\CollisionManager.cpp" />
     <ClCompile Include="Effect.cpp" />
+    <ClCompile Include="2d\Effect2d.cpp" />
     <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="Framework.cpp" />
     <ClCompile Include="LightGroup.cpp" />
@@ -269,6 +270,7 @@
     <ClInclude Include="collision\RaycastHit.h" />
     <ClInclude Include="DirectionalLight.h" />
     <ClInclude Include="Effect.h" />
+    <ClInclude Include="2d\Effect2d.h" />
     <ClInclude Include="Enemy.h" />
     <ClInclude Include="LightGroup.h" />
     <ClInclude Include="PointLight.h" />

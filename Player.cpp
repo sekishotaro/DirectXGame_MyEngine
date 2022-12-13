@@ -28,6 +28,7 @@ bool Player::staminaCut = false;
 int Player::inputX = 0;
 int Player::inputY = 0;
 float Player::testRota = 0;
+bool Player::crystalGetFlag = false;
 
 Player* Player::Create(FbxModel* model)
 {
@@ -597,6 +598,8 @@ void Player::CrystalConfirmationProcess()
 	std::vector<Box> crystal;
 	onObject = false;
 
+
+	crystalGetFlag = false;
 	//自機からXZ軸で一定の距離の中に障害物オブジェクトの中心座標があるものだけ当たり判定用のコンテナに格納する
 	for (int i = 0; i < JsonLoader::crystalColliderObjects.size(); i++)
 	{
@@ -608,6 +611,8 @@ void Player::CrystalConfirmationProcess()
 
 		if (Collision::Check2Box(playerBox, crystal[i], distance) == true)
 		{
+			crystalGetFlag = true;
+
 			JsonLoader::crystalColliderObjects.erase(JsonLoader::crystalColliderObjects.begin() + i);
 			JsonLoader::crystalObjects.erase(JsonLoader::crystalObjects.begin() + i);
 

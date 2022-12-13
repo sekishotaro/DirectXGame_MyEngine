@@ -5,6 +5,7 @@
 #include "DirectXCommon.h"
 #include "Audio.h"
 #include "Sprite.h"
+#include "Effect2d.h"
 #include "Object3d.h"
 #include "MathObject.h"
 #include "ColliderObject.h"

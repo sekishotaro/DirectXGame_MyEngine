@@ -5,7 +5,9 @@
 #include <DirectXMath.h>
 #include <d3dx12.h>
 #include "Sprite.h"
+#include "Effect2d.h"
 #include "Camera.h"
+
 
 class Effect
 {
@@ -43,11 +45,20 @@ public:
 private:
 	static void EnemyAccessEffectUpdate(XMFLOAT3 cameraPos);
 
+	static void ClystalEffectUpdate();
+
+	static XMFLOAT2 leap(XMFLOAT2 start, XMFLOAT2 end, float time);
+
 private:
 	static Sprite* EnemyAccessEffect;
+	static Effect2d* crystalEffect;
+	static std::vector<Effect2d*> crystalEffects;
 	static float EnemyAccessEffectSize;
 	static float EnemyAccessDisSpeed;
 	static bool oldRaidFlag;
 	static float EnemyPlayerDis;		//PŒ‚‹N“®‚Ì‹——£‚Ì•Û‘¶
+
+
+	static float crystalMoveTime;
 };
 

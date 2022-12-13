@@ -32,6 +32,11 @@ void Framework::Initialize()
 		assert(0);
 	}
 
+	if (!Effect2d::StaticInitialize(dxCommon->GetDev(), WinApp::window_width, WinApp::window_height))
+	{
+		assert(0);
+	}
+
 	// デバックテキスト
 	Sprite::LoadTexture(debugTextTexNumber, L"Resources/ASCII.png");
 	DebugText::GetInstance()->Initialize(debugTextTexNumber);

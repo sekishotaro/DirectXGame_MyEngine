@@ -12,6 +12,7 @@
 #include "MyMath.h"
 #include "CollisionSet.h"
 #include "Enemy.h"
+#include "Effect2d.h"
 
 #include "SphereCollider.h"
 #include "CollisionManager.h"
@@ -243,7 +244,8 @@ void GamePlayScene::Draw()
 	MathObject::PostDraw();
 	// 前景スプライト描画前処理
 	Sprite::PreDraw(cmdList);
-	
+	Effect2d::PreDraw(cmdList);
+
 	UI::Draw();
 	Effect::Draw();
 
@@ -252,7 +254,7 @@ void GamePlayScene::Draw()
 
 	// スプライト描画後処理
 	Sprite::PostDraw();
-
+	Effect2d::PostDraw();
 	//imguiの描画
 	imguiManager::PraDraw();
 	ImGui::NewFrame();
