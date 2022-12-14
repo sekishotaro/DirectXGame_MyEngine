@@ -152,19 +152,6 @@ void GamePlayScene::Update()
 	objFighter->Update();
 	
 	OpticalPost::SetDrawFlag(true);
-	/*if (input->PushKey(DIK_1))
-	{
-		
-	}
-	else if(input->PushPadbutton(Button_X))
-	{
-		OpticalPost::SetDrawFlag(true);
-	}
-	else
-	{
-		OpticalPost::SetDrawFlag(false);
-	}*/
-
 
 	//test追加探索敵コライダー
 	for (int i = 0; i < enemyColliderObjects.size(); i++)
@@ -222,11 +209,11 @@ void GamePlayScene::Draw()
 	
 	//test追加探索敵コライダー
 	skydomeObject->Draw();
-
+	
 	objFighter->Draw(cmdList);
 	//json
 	JsonLoader::Draw();
-
+	
 	for (int i = 0; i < enemyColliderObjects.size(); i++)
 	{
 		enemyColliderObjects[i].get()->Draw();

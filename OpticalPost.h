@@ -37,5 +37,7 @@ public:
 
 	//デバック用数
 	static float num;
+	//エフェクト用の数
+	static int effectNum;
 };
 

@@ -1,12 +1,14 @@
 #include "OpticalPost.h"
 #include "JsonLoader.h"
 #include "Player.h"
+#include "stdlib.h"
 
 std::vector<std::unique_ptr<Object3d>> OpticalPost::OpticalPosts;
 Model* OpticalPost::modelOpticalPost = nullptr;
 
 bool OpticalPost::drawFlag = false;
 float OpticalPost::num = 0.0f;
+int OpticalPost::effectNum = 7;
 
 void OpticalPost::Initialize()
 {
@@ -30,38 +32,6 @@ void OpticalPost::Initialize()
 void OpticalPost::Update(const XMFLOAT3& cameraPos)
 {
 	////光の柱用の板ポリを常に自機に向ける
-	//XMFLOAT3 a, b;
-
-	//a = cameraPos;
-	//for (int i = 0; i < OpticalPosts.size(); i++)
-	//{
-	//	//クリスタルの位置
-	//	b = OpticalPosts[i].get()->GetPosition();
-	//	
-	//	a.x -= b.x;
-	//	a.z -= b.z;
-	//	b.x += 1.0f;
-
-	//	//長さ
-	//	float vecLengA = (float)pow((a.x * a.x) + (a.z * a.z), 0.5);
-	//	float vecLengB = (float)pow((b.x * b.x) + (b.z * b.z), 0.5);
-
-	//	//内積
-	//	float innerProduct = (a.x * b.x) + (a.z + b.z);
-
-	//	float cos_sita = innerProduct / (vecLengA * vecLengB);
-
-	//	float sita = acos(cos_sita);
-
-	//	sita = -sita * 180.0f / 3.1415f;
-
-	//	if (cameraPos.z < a.z)
-	//	{
-	//		sita = 360 - sita;
-	//	}
-
-	//	OpticalPosts[i].get()->SetRotation({ 0, sita,0 });
-	//}
 
 	//光の柱の法線
 	XMFLOAT3 normal = { -1, 0, 0 };
@@ -103,8 +73,6 @@ void OpticalPost::Update(const XMFLOAT3& cameraPos)
 
 		OpticalPosts[i].get()->SetRotation({ 0, sita,0 });
 	}
-
-
 
 	for (int i = 0; i < OpticalPosts.size(); i++)
 	{
