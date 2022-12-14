@@ -257,6 +257,7 @@ void Player::MoveOperation(XMVECTOR& move)
 {
 	inputX = Input::GetInstance()->LeftStickInXNum();
 	inputY = Input::GetInstance()->LeftStickInYNum();
+	AnimationFlag = false;
 	//ˆÚ“®—Ê‰Šú‰»
 	move = { 0,0,0.1f,0 };
 
@@ -393,6 +394,12 @@ void Player::MoveOperation(XMVECTOR& move)
 			position.y += move.m128_f32[1] * power;
 			position.z += move.m128_f32[2] * power;
 			nowMove = true;
+
+			if (AnimationFlag == false)
+			{
+				this->AnimationNum = 2;
+				this->AnimationFlag = true;
+			}
 		}
 		else if (Input::GetInstance()->LeftStickIn(UP) || Input::GetInstance()->LeftStickIn(DOWN))
 		{
@@ -400,6 +407,12 @@ void Player::MoveOperation(XMVECTOR& move)
 			position.y += move.m128_f32[1] * power;
 			position.z += move.m128_f32[2] * power;
 			nowMove = true;
+
+			if (AnimationFlag == false)
+			{
+				this->AnimationNum = 2;
+				this->AnimationFlag = true;
+			}
 		}
 		else
 		{
@@ -502,6 +515,12 @@ void Player::MoveOperation(XMVECTOR& move)
 			}
 
 			nowMove = true;
+
+			if (AnimationFlag == false)
+			{
+				this->AnimationNum = 1;
+				this->AnimationFlag = true;
+			}
 		}
 		else if (Input::GetInstance()->LeftStickIn(RIGHT))
 		{
@@ -524,6 +543,12 @@ void Player::MoveOperation(XMVECTOR& move)
 			}
 
 			nowMove = true;
+
+			if (AnimationFlag == false)
+			{
+				this->AnimationNum = 1;
+				this->AnimationFlag = true;
+			}
 		}
 		else
 		{
@@ -534,11 +559,23 @@ void Player::MoveOperation(XMVECTOR& move)
 		{
 			moveV.y -= 0.5f;
 			nowMove = true;
+
+			if (AnimationFlag == false)
+			{
+				this->AnimationNum = 1;
+				this->AnimationFlag = true;
+			}
 		}
 		else if (Input::GetInstance()->LeftStickIn(UP))
 		{
 			moveV.y += 0.5f;
 			nowMove = true;
+
+			if (AnimationFlag == false)
+			{
+				this->AnimationNum = 1;
+				this->AnimationFlag = true;
+			}
 		}
 
 		if (Input::GetInstance()->PushKey(DIK_S))
