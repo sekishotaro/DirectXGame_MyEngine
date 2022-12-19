@@ -124,6 +124,11 @@ void Player::OnCollision(const CollisionInfo& info)
 {
 }
 
+void Player::ObjectUpdate()
+{
+	FbxObject3d::Update();
+}
+
 void Player::PushBack(const DirectX::XMVECTOR& normal, const XMFLOAT3& distance)
 {
 	if (normal.m128_f32[0] != 0)

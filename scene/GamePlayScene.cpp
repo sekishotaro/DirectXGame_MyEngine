@@ -49,7 +49,7 @@ void GamePlayScene::Initialize()
 	FbxObject3d::CreateGraphicsPipeline();
 
 	// テクスチャ読み込み
-	Sprite::LoadTexture(1, L"Resources/background.png");
+	Sprite::LoadTexture(1, L"Resources/background2.png");
 	// 背景スプライト生成
 	spriteBG = Sprite::Create(1, { 0.0f,0.0f });
 
@@ -97,9 +97,6 @@ void GamePlayScene::Initialize()
 	lightGroup = LightGroup::Create();
 	lightGroup->SetDirLightColor(0,{ 1,1,1 });
 	Object3d::SetLight(lightGroup);
-	//lightGroup->SetDirLightActive(0, true);
-	//lightGroup->SetDirLightActive(1, true);
-	//lightGroup->SetDirLightActive(2, true);
 	lightGroup->SetCircleShadowActive(0, true);
 	lightGroup->SetCircleShadowActive(1, true);
 }
@@ -122,11 +119,29 @@ void GamePlayScene::Update()
 	Input *input = Input::GetInstance();
 	Input::MousePos mpos = input->MousePosLoad();
 
+	//開始処理
+	static int count = 0;
+	//if(true)
+	//{
+	//	ObjectsUpdate();
+	//	return;
+	//}
+
+
+
 	//ゲーム終了処理
+	//static int count = 0;
 	if (objFighter->GetCrystal() == 0 && objFighter->GetGoalFlag() == true)
 	{
-		SceneManager::GetInstance()->ChangeScene("TITLE");
+		count++;
+
+		if (count >= 600)
+		{
+			SceneManager::GetInstance()->ChangeScene("TITLE");
+		}
+		return;
 	}
+
 
 	//アップデート
 	Enemy::Update((int)objFighter->GetTimeLimit(), objFighter->GetPos());
@@ -266,4 +281,14 @@ void GamePlayScene::Draw()
 	ImGui::Checkbox("Wall", &objFighter->GetWallHitFlag());
 	ImGui::Checkbox("statmina", &objFighter->GetStaminaFlag());
 	imguiManager::PosDraw();
+}
+
+void GamePlayScene::ObjectsUpdate()
+{
+	//プレーヤーオブジェクトのアップデート
+	objFighter->ObjectUpdate();
+	//Json読み込みのオブジェクトのアップデート
+	JsonLoader::Update();
+	//光の柱オブジェクトのアップデート
+	OpticalPost::Update(camera->GetEye());
 }

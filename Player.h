@@ -48,6 +48,11 @@ public:
 	/// <param name="info">衝突情報</param>
 	void OnCollision(const CollisionInfo& info) override;
 
+	/// <summary>
+	/// オブジェクトのアップデート
+	/// </summary>
+	void ObjectUpdate();
+
 private:
 	void PushBack(const DirectX::XMVECTOR& normal, const XMFLOAT3& distance);
 

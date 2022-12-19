@@ -52,6 +52,15 @@ public:
 	/// </summary>
 	void Draw() override;
 
+private:
+
+	/// <summary>
+	/// オブジェクトのアップデートだけ用
+	/// </summary>
+	void ObjectsUpdate();
+
+public:
+
 	/// <summary>
 	/// ゲームシーン用
 	/// </summary>
