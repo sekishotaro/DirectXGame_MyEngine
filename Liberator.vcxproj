@@ -203,6 +203,7 @@
     <ClCompile Include="3d\MathObject.cpp" />
     <ClCompile Include="Audio\Audio.cpp" />
     <ClCompile Include="CircleShadow.cpp" />
+    <ClCompile Include="ClockTime.cpp" />
     <ClCompile Include="collision\BaseCollider.cpp" />
     <ClCompile Include="camera\Camera.cpp" />
     <ClCompile Include="3d\ColliderModel.cpp" />
@@ -218,6 +219,7 @@
     <ClCompile Include="2d\Effect2d.cpp" />
     <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="Framework.cpp" />
+    <ClCompile Include="camera\InterpolationCamera.cpp" />
     <ClCompile Include="LightGroup.cpp" />
     <ClCompile Include="PointLight.cpp" />
     <ClCompile Include="scene\GameOver.cpp" />
@@ -257,6 +259,7 @@
     <ClInclude Include="3d\FbxModel.h" />
     <ClInclude Include="3d\FbxObject3d.h" />
     <ClInclude Include="CircleShadow.h" />
+    <ClInclude Include="ClockTime.h" />
     <ClInclude Include="collision\CollisionAttribute.h" />
     <ClInclude Include="collision\CollisionInfo.h" />
     <ClInclude Include="collision\CollisionTypes.h" />
@@ -272,6 +275,7 @@
     <ClInclude Include="Effect.h" />
     <ClInclude Include="2d\Effect2d.h" />
     <ClInclude Include="Enemy.h" />
+    <ClInclude Include="camera\InterpolationCamera.h" />
     <ClInclude Include="LightGroup.h" />
     <ClInclude Include="PointLight.h" />
     <ClInclude Include="scene\GameOver.h" />

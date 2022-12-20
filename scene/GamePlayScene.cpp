@@ -23,6 +23,8 @@
 
 #include "SafeDelete.h"
 
+#include "ClockTime.h"
+
 void GamePlayScene::Initialize()
 {
 	Audio::GetInstance()->LoadWave("futta-dream.wav");
@@ -71,7 +73,7 @@ void GamePlayScene::Initialize()
 	objFighter = Player::Create(fbxModel);
 	skydomeObject = Object3d::Create();
 	skydomeObject->SetModel(skydomeModel);
-	
+	skydomeObject->SetScale({ 5.0f, 5.0f, 5.0f });
 	//敵初期化
 	Enemy::Initialize();
 
@@ -107,7 +109,6 @@ void GamePlayScene::Finalize()
 	safe_delete(modelFighter);
 	safe_delete(spriteBG);
 	safe_delete(lightGroup);
-
 	JsonLoader::Finalize();
 	OpticalPost::Finalize();
 	Effect::Finalize();
@@ -121,11 +122,20 @@ void GamePlayScene::Update()
 
 	//開始処理
 	static int count = 0;
-	//if(true)
-	//{
-	//	ObjectsUpdate();
-	//	return;
-	//}
+	if(count <= 10)
+	{
+		if (ClockTime::GetAddSecFlag() == true)
+		{
+			count++;
+		}
+		interpolationCamera.StartInterpolationCamera(camera);
+		ObjectsUpdate();
+		return;
+	}
+	else
+	{
+		count = 110;
+	}
 
 
 
@@ -134,8 +144,9 @@ void GamePlayScene::Update()
 	if (objFighter->GetCrystal() == 0 && objFighter->GetGoalFlag() == true)
 	{
 		count++;
-
-		if (count >= 600)
+		interpolationCamera.EndInterpolationCamera(camera);
+		ObjectsUpdate();
+		if (count >= 125)
 		{
 			SceneManager::GetInstance()->ChangeScene("TITLE");
 		}
@@ -175,7 +186,6 @@ void GamePlayScene::Update()
 		enemyColliderObjects[i].get()->Update();
 	}
 
-	skydomeObject->SetScale({ 5.0f, 5.0f, 5.0f });
 	skydomeObject->Update();
 
 	//UI更新
@@ -263,6 +273,7 @@ void GamePlayScene::Draw()
 	ImGui::Begin("config1");//ウィンドウの名前
 	ImGui::SetWindowSize(ImVec2(400, 500), ImGuiCond_::ImGuiCond_FirstUseEver);
 	
+	ImGui::Text("Time: %d", (int)ClockTime::GetSec());
 	ImGui::Text("inputX: %d", objFighter->GetInputNumX());
 	ImGui::Text("inputY: %d", objFighter->GetInputNumY());
 	ImGui::Text("testRota: %.4f", OpticalPost::GetNum());
@@ -291,4 +302,8 @@ void GamePlayScene::ObjectsUpdate()
 	JsonLoader::Update();
 	//光の柱オブジェクトのアップデート
 	OpticalPost::Update(camera->GetEye());
+	//スカイドーム
+	skydomeObject->Update();
+	//カメラ
+	camera->Update();
 }

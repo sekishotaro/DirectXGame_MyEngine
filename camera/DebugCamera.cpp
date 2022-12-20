@@ -74,3 +74,8 @@ void DebugCamera::Update()
 	Camera::SetTarget(targetPos);
 	Camera::Update();
 }
+
+void DebugCamera::UpdateOnly()
+{
+	Camera::Update();
+}

@@ -4,6 +4,7 @@
 #include "FbxLoader.h"
 #include "imguiManager.h"
 #include "LightGroup.h"
+#include "ClockTime.h"
 
 void Framework::Initialize()
 {
@@ -99,6 +100,8 @@ void Framework::Update()
 
 	//シーンの更新
 	SceneManager::GetInstance()->Update();
+
+	ClockTime::ClockUpdate();
 
 }
 

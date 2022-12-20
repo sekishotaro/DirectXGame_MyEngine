@@ -62,9 +62,11 @@ void Player::Initialize()
 	FbxObject3d::Initialize();
 
 	position = JsonLoader::goalObjects[0].get()->GetPosition();
-	position.x = -59;
+	//position.x = -59;
 	//position.y = 30;
-	position.z = 43;
+	//position.z = 43;
+
+	pos = position;
 
 	scale.x = 0.02f;
 	scale.y = 0.02f;

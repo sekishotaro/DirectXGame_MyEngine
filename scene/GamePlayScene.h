@@ -13,6 +13,7 @@
 #include "DebugCamera.h"
 #include "Camera.h"
 #include "LightGroup.h"
+#include "InterpolationCamera.h"
 
 class CollisionManager;
 class Player;
@@ -97,5 +98,7 @@ public:
 	float circleShadowFactorAngle[2] = { 0.0f, 0.5f };
 	float circleShadowFactorAngle2[2] = { 0.0f, 2.0f };
 	FbxModel* fbxModel = nullptr;
+
+	InterpolationCamera interpolationCamera;
 };
 

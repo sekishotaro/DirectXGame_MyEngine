@@ -22,6 +22,8 @@ public: // ƒƒ“ƒoŠÖ”
 	/// </summary>
 	virtual void Update();
 
+	void UpdateOnly();
+
 	static float GetRotaY() { return rotaX; }
 
 public:
