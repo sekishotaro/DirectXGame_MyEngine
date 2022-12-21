@@ -158,14 +158,14 @@ void Effect::ClystalEffectUpdate()
 		}
 	}
 
-	const float MoveMaxTime = 3.0f; //移動にかかる時間
+	const float MoveMaxTime = 1.0f; //移動にかかる時間
 	float timeRatio = crystalMoveTime / MoveMaxTime;
 
 	//取得したアイテムのカメラ座標 (画面中央) :Todo
 	float width = (float)WinApp::window_width / 2.0f;
 	float height = (float)WinApp::window_height / 2.0f;
 	XMFLOAT2 startPos = {width, height};
-	XMFLOAT2 endPos = { (float)WinApp::window_width - 50.0f, 50.0f };
+	XMFLOAT2 endPos = { 1130.0f , 110.0f };
 
 
 	XMFLOAT2 nowPos = Effect::leap(startPos, endPos, timeRatio);

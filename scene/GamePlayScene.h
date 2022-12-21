@@ -100,5 +100,7 @@ public:
 	FbxModel* fbxModel = nullptr;
 
 	InterpolationCamera interpolationCamera;
+
+	bool moveFlag = false;
 };
 

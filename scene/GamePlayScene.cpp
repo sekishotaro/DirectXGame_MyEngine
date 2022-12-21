@@ -124,6 +124,7 @@ void GamePlayScene::Update()
 	static int count = 0;
 	if(count <= 10)
 	{
+		moveFlag = true;
 		if (ClockTime::GetAddSecFlag() == true)
 		{
 			count++;
@@ -135,6 +136,7 @@ void GamePlayScene::Update()
 	else
 	{
 		count = 110;
+		moveFlag = false;
 	}
 
 
@@ -144,6 +146,7 @@ void GamePlayScene::Update()
 	if (objFighter->GetCrystal() == 0 && objFighter->GetGoalFlag() == true)
 	{
 		count++;
+		moveFlag = true;
 		interpolationCamera.EndInterpolationCamera(camera);
 		ObjectsUpdate();
 		if (count >= 125)
@@ -190,7 +193,7 @@ void GamePlayScene::Update()
 
 	//UI更新
 	DebugText::GetInstance()->Print(1000, 20, 3, "TIME : %d", (int)objFighter->GetTimeLimit());
-	DebugText::GetInstance()->Print(910, 80, 3, "CRYSTAL : %d/7", objFighter->GetCrystal());
+	//DebugText::GetInstance()->Print(910, 80, 3, "CRYSTAL : %d/7", objFighter->GetCrystal());
 
 	//全ての衝突をチェック
 	collisionManager->CheckAllCollisions();
@@ -258,7 +261,11 @@ void GamePlayScene::Draw()
 	Sprite::PreDraw(cmdList);
 	Effect2d::PreDraw(cmdList);
 
-	UI::Draw();
+	if (moveFlag != true)
+	{
+		UI::Draw();
+	}
+	
 	Effect::Draw();
 
 	// デバッグテキストの描画
