@@ -127,6 +127,7 @@ void Enemy::ShieldDodge(const XMFLOAT3& playerPos, const Box& wall)
 void Enemy::Initialize()
 {
 	gameOverFlag = false;
+	raidMode = false;
 
 	pos = JsonLoader::raidEnemyObjects[0].get()->GetPosition();
 	pos.y += 0.01f;
@@ -240,4 +241,10 @@ void Enemy::Update(int time, const XMFLOAT3& playerPos)
 	JsonLoader::raidEnemyObjects[0].get()->SetPosition(pos);
 
 	Object3d::SetRaidFlag(raidMode);
+}
+
+void Enemy::Finalize()
+{
+	gameOverFlag = false;
+	raidMode = false;
 }

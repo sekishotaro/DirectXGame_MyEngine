@@ -1,6 +1,10 @@
 #include "InterpolationCamera.h"
 #include "Player.h"
 
+float InterpolationCamera::rotaX = 270.0f;
+float InterpolationCamera::rotaY = 70.0f;
+float InterpolationCamera::dis = 10.0f;
+
 void InterpolationCamera::StartInterpolationCamera(DebugCamera* camera)
 {
 	//Input::MousePos mpos = Input::GetInstance()->MousePosLoad();
@@ -42,11 +46,9 @@ void InterpolationCamera::StartInterpolationCamera(DebugCamera* camera)
 	//if (Input::GetInstance()->PushPadbutton(GAMEPAD_RIGHT_SHOULDER)) { rotaX = Player::GEtTestFloatNum(); }
 
 
-	static float rotaX = 270.0f;
-	static float rotaY = 70.0f;
-	static float dis = 10.0f;
 
-	rotaX -= 2.0f;
+
+	rotaX -= 0.6f;
 	rotaY += 0.01f;
 
 	float radiusX = rotaX * 3.14f / 180.0f;

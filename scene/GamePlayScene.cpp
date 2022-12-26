@@ -112,6 +112,7 @@ void GamePlayScene::Finalize()
 	JsonLoader::Finalize();
 	OpticalPost::Finalize();
 	Effect::Finalize();
+	Enemy::Finalize();
 }
 
 void GamePlayScene::Update()
@@ -121,7 +122,6 @@ void GamePlayScene::Update()
 	Input::MousePos mpos = input->MousePosLoad();
 
 	//ŠJnˆ—
-	static int count = 0;
 	if(count <= 10)
 	{
 		moveFlag = true;
@@ -133,7 +133,7 @@ void GamePlayScene::Update()
 		ObjectsUpdate();
 		return;
 	}
-	else
+	else if(count >= 11 && count <= 109)
 	{
 		count = 110;
 		moveFlag = false;
@@ -145,11 +145,14 @@ void GamePlayScene::Update()
 	//static int count = 0;
 	if (objFighter->GetCrystal() == 0 && objFighter->GetGoalFlag() == true)
 	{
-		count++;
+		if (ClockTime::GetAddSecFlag() == true)
+		{
+			count++;
+		}
 		moveFlag = true;
 		interpolationCamera.EndInterpolationCamera(camera);
 		ObjectsUpdate();
-		if (count >= 125)
+		if (count >= 115)
 		{
 			SceneManager::GetInstance()->ChangeScene("TITLE");
 		}
@@ -200,7 +203,17 @@ void GamePlayScene::Update()
 
 	if (Enemy::GetGameOver() == true)
 	{
-		SceneManager::GetInstance()->ChangeScene("GAMEOVER");
+		if (ClockTime::GetAddSecFlag() == true)
+		{
+			count++;
+		}
+		moveFlag = true;
+		interpolationCamera.EndInterpolationCamera(camera);
+		ObjectsUpdate();
+		if (count >= 115)
+		{
+			SceneManager::GetInstance()->ChangeScene("GAMEOVER");
+		} 
 	}
 
 	Effect::Update(camera->GetEye());

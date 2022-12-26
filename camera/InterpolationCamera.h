@@ -16,4 +16,8 @@ public:
 
 	void EndInterpolationCamera(DebugCamera* camera);
 
+	static float rotaX;
+	static float rotaY;
+	static float dis;
+
 };

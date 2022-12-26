@@ -55,6 +55,8 @@ public:
 
 	static void Update(int time, const XMFLOAT3& playerPos);
 
+	static void Finalize();
+
 	static XMFLOAT3 MonitoringCollisionScale();
 
 	static bool GetRaidFlag() { return raidMode; }

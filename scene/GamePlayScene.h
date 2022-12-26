@@ -102,5 +102,6 @@ public:
 	InterpolationCamera interpolationCamera;
 
 	bool moveFlag = false;
+	int count = 0;
 };
 
