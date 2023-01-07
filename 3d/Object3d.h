@@ -218,6 +218,10 @@ public: // メンバ関数
 
 	static void SetRaidFlag(bool raidFlag) { Object3d::raidFlag = raidFlag; }
 
+
+	void SetBaseCollider(BaseCollider* collider) { Object3d::collider = collider; }
+	BaseCollider* GetBaseCollider() { return collider; }
+
 protected: // メンバ変数
 	ComPtr<ID3D12Resource> constBuffB0; // 定数バッファ
 	// 色

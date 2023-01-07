@@ -121,56 +121,6 @@ void GamePlayScene::Update()
 	Input *input = Input::GetInstance();
 	Input::MousePos mpos = input->MousePosLoad();
 
-	//開始処理
-	if(count <= 10)
-	{
-		moveFlag = true;
-		if (ClockTime::GetAddSecFlag() == true)
-		{
-			count++;
-		}
-		interpolationCamera.StartInterpolationCamera(camera);
-		ObjectsUpdate();
-		return;
-	}
-	else if(count >= 11 && count <= 109)
-	{
-		count = 110;
-		moveFlag = false;
-	}
-
-
-
-	//ゲーム終了処理
-	//static int count = 0;
-	if (objFighter->GetCrystal() == 0 && objFighter->GetGoalFlag() == true)
-	{
-		if (ClockTime::GetAddSecFlag() == true)
-		{
-			count++;
-		}
-		moveFlag = true;
-		interpolationCamera.EndInterpolationCamera(camera);
-		ObjectsUpdate();
-		if (count >= 115)
-		{
-			SceneManager::GetInstance()->ChangeScene("TITLE");
-		}
-		return;
-	}
-
-
-	//アップデート
-	Enemy::Update((int)objFighter->GetTimeLimit(), objFighter->GetPos());
-	JsonLoader::Update();
-
-	UI::Update();
-	
-	OpticalPost::Update(camera->GetEye());
-
-	camera->Update();
-	lightGroup->Update();
-
 	lightGroup->SetCircleShadowDir(0, XMVECTOR({ circleShadowDir[0], circleShadowDir[1], circleShadowDir[2], 0 }));
 	lightGroup->SetCircleShadowCasterPos(0, XMFLOAT3(objFighter->GetPos()));
 	lightGroup->SetCircleShadowAtten(0, XMFLOAT3(circleShadowAtten));
@@ -181,42 +131,22 @@ void GamePlayScene::Update()
 	lightGroup->SetCircleShadowAtten(1, XMFLOAT3(circleShadowAtten));
 	lightGroup->SetCircleShadowFactorAngle(1, XMFLOAT2(circleShadowFactorAngle2));
 
-	objFighter->Update();
-	
-	OpticalPost::SetDrawFlag(true);
-
-	//test追加探索敵コライダー
-	for (int i = 0; i < enemyColliderObjects.size(); i++)
+	int state = 2;
+	switch(state)
 	{
-		enemyColliderObjects[i].get()->SetScale(Enemy::MonitoringCollisionScale());
-		enemyColliderObjects[i].get()->Update();
+		 case 1:
+			 StartStatus();
+			 return;
+		 case 2:
+			 GameStatus();
+			 return;
+		 case 3:
+			 GameOverStatus();
+			 return;
+		 case 4:
+			 ClearStatus();
+			 return;
 	}
-
-	skydomeObject->Update();
-
-	//UI更新
-	DebugText::GetInstance()->Print(1000, 20, 3, "TIME : %d", (int)objFighter->GetTimeLimit());
-	//DebugText::GetInstance()->Print(910, 80, 3, "CRYSTAL : %d/7", objFighter->GetCrystal());
-
-	//全ての衝突をチェック
-	collisionManager->CheckAllCollisions();
-
-	if (Enemy::GetGameOver() == true)
-	{
-		if (ClockTime::GetAddSecFlag() == true)
-		{
-			count++;
-		}
-		moveFlag = true;
-		interpolationCamera.EndInterpolationCamera(camera);
-		ObjectsUpdate();
-		if (count >= 115)
-		{
-			SceneManager::GetInstance()->ChangeScene("GAMEOVER");
-		} 
-	}
-
-	Effect::Update(camera->GetEye());
 }
 
 void GamePlayScene::Draw()
@@ -326,4 +256,98 @@ void GamePlayScene::ObjectsUpdate()
 	skydomeObject->Update();
 	//カメラ
 	camera->Update();
+}
+
+void GamePlayScene::StartStatus()
+{
+	//開始処理
+	if(count <= 10)
+	{
+		moveFlag = true;
+		if (ClockTime::GetAddSecFlag() == true)
+		{
+			count++;
+		}
+		interpolationCamera.StartInterpolationCamera(camera);
+		ObjectsUpdate();
+		return;
+	}
+	else if(count >= 11 && count <= 109)
+	{
+		count = 110;
+		moveFlag = false;
+	}
+}
+
+void GamePlayScene::GameStatus()
+{
+	//アップデート
+	Enemy::Update((int)objFighter->GetTimeLimit(), objFighter->GetPos());
+	JsonLoader::Update();
+
+	UI::Update();
+
+	OpticalPost::Update(camera->GetEye());
+
+	camera->Update();
+	lightGroup->Update();
+	objFighter->Update();
+
+	OpticalPost::SetDrawFlag(true);
+
+	//test追加探索敵コライダー
+	for (int i = 0; i < enemyColliderObjects.size(); i++)
+	{
+		enemyColliderObjects[i].get()->SetScale(Enemy::MonitoringCollisionScale());
+		enemyColliderObjects[i].get()->Update();
+	}
+
+	skydomeObject->Update();
+
+	//UI更新
+	DebugText::GetInstance()->Print(1000, 20, 3, "TIME : %d", (int)objFighter->GetTimeLimit());
+	//DebugText::GetInstance()->Print(910, 80, 3, "CRYSTAL : %d/7", objFighter->GetCrystal());
+
+	//全ての衝突をチェック
+	collisionManager->CheckAllCollisions();
+	Effect::Update(camera->GetEye());
+}
+
+void GamePlayScene::GameOverStatus()
+{
+	if (Enemy::GetGameOver() == true)
+	{
+		if (ClockTime::GetAddSecFlag() == true)
+		{
+			count++;
+		}
+		moveFlag = true;
+		interpolationCamera.EndInterpolationCamera(camera);
+		ObjectsUpdate();
+		if (count >= 115)
+		{
+			SceneManager::GetInstance()->ChangeScene("GAMEOVER");
+		}
+	}
+}
+
+void GamePlayScene::ClearStatus()
+{
+	//ゲーム終了処理
+	//static int count = 0;
+	if (objFighter->GetCrystal() == 0 && objFighter->GetGoalFlag() == true)
+	{
+		if (ClockTime::GetAddSecFlag() == true)
+		{
+			count++;
+		}
+		moveFlag = true;
+		interpolationCamera.EndInterpolationCamera(camera);
+		ObjectsUpdate();
+		if (count >= 115)
+		{
+			SceneManager::GetInstance()->ChangeScene("TITLE");
+		}
+		return;
+	}
 }

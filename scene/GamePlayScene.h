@@ -60,6 +60,26 @@ private:
 	/// </summary>
 	void ObjectsUpdate();
 
+	/// <summary>
+	/// スタート状態
+	/// </summary>
+	void StartStatus();
+
+	/// <summary>
+	/// ゲーム中状態
+	/// </summary>
+	void GameStatus();
+
+	/// <summary>
+	/// ゲーム状態
+	/// </summary>
+	void GameOverStatus();
+
+	/// <summary>
+	/// クリア状態
+	/// </summary>
+	void ClearStatus();
+
 public:
 
 	/// <summary>

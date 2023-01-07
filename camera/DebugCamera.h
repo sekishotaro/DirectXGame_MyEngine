@@ -1,6 +1,9 @@
 #pragma once
 #include <DirectXMath.h>
 #include "Camera.h"
+#include "Object3d.h"
+#include "BaseCollider.h"
+#include "CollisionAttribute.h"
 
 class DebugCamera : public Camera
 {
@@ -36,5 +39,9 @@ public:
 	static float rotaX;
 	static float rotaY;
 	static float dis;
+
+	static std::unique_ptr<Object3d> Object;
+	static Model* Model;
+	BaseCollider* collider = nullptr;
 };
 

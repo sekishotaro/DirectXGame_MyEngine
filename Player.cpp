@@ -901,7 +901,6 @@ void Player::TerrainConfirmationProcess()
 		}
 	}
 
-
 }
 
 void Player::StaminaManagement(const DirectX::XMVECTOR& move)
