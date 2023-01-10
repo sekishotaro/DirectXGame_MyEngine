@@ -94,6 +94,9 @@ private:
 	//時間管理
 	void TimeManagement();
 
+	//アニメーション
+	void AnimetionProcess();
+
 public:
 	//デバック用ゲッター
 	static XMFLOAT3 GetPos() { return pos; }
@@ -187,7 +190,11 @@ private:
 	float forciblyRecoveryTime = 10.0f;
 	//スタミナが使えるかどうか(スタミナを使い切った場合になる状態)
 	static bool staminaCut;
-
 	static bool crystalGetFlag;
+
+	//アニメーション
+	static int animeNum;
+	static int oldAnimeNum;
+	static bool animeFlag;
 };
 

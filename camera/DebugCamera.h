@@ -25,9 +25,15 @@ public: // ÉÅÉìÉoä÷êî
 	/// </summary>
 	virtual void Update();
 
+	XMFLOAT3 SphereCoordinateSystem();
+
+	XMFLOAT3 MoveUpdate();
+
+	void UpdateProcess( XMFLOAT3 &cameraPos);
+
 	void UpdateOnly();
 
-	static float GetRotaY() { return rotaX; }
+	static float GetRotaY() { return rotaY; }
 
 public:
 	static XMFLOAT3 eye;
@@ -39,6 +45,7 @@ public:
 	static float rotaX;
 	static float rotaY;
 	static float dis;
+	static bool hitFlag;
 
 	static std::unique_ptr<Object3d> Object;
 	static Model* Model;

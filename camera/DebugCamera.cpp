@@ -14,7 +14,8 @@ XMFLOAT3 DebugCamera::target;
 XMFLOAT3 DebugCamera::distance = { 0, 5.0f, -10.0 };
 float DebugCamera::rotaX = 270.0f;
 float DebugCamera::rotaY = 70.0f;
-float DebugCamera::dis = 10.0f;
+float DebugCamera::dis = 20.0f;
+bool DebugCamera::hitFlag = false;
 std::unique_ptr<Object3d> DebugCamera::Object;
 Model* DebugCamera::Model = nullptr;
 
@@ -38,42 +39,26 @@ void DebugCamera::Update()
 {
 	Input::MousePos mpos = Input::GetInstance()->MousePosLoad();
 
+	XMFLOAT3 cameraPos = MoveUpdate();
+
+	UpdateProcess(cameraPos);
+
+	//コライダー更新
+	Object->UpdateWorldMatrix();
+	collider->Update();
+
+	SetEye(cameraPos);
+
+	XMFLOAT3 targetPos = Player::GetPos();
+	targetPos.y += 6.0f;
+
+	Camera::SetTarget(targetPos);
+	Camera::Update();
+}
+
+DebugCamera::XMFLOAT3 DebugCamera::SphereCoordinateSystem()
+{
 	XMFLOAT3 cameraPos = Player::GetPos();
-	//cameraPos.y += 10.0f;
-
-	////カメラの移動
-	//if (Input::GetInstance()->PushKey(DIK_UP)) { distance.y += 1.0f; }
-	//else if (Input::GetInstance()->PushKey(DIK_DOWN)) { distance.y -= 1.0f; }
-	//if (Input::GetInstance()->PushKey(DIK_RIGHT)) { distance.x += 1.0f; }
-	//else if (Input::GetInstance()->PushKey(DIK_LEFT)) { distance.x -= 1.0f; }
-	//if (Input::GetInstance()->PushKey(DIK_E)) { distance.z += 1.0f; }
-	//else if (Input::GetInstance()->PushKey(DIK_Z)) { distance.z -= 1.0f; }
-	//if (Input::GetInstance()->RightStickIn(UP)) { distance.y += 1.0f; }
-	//else if (Input::GetInstance()->RightStickIn(DOWN)) { distance.y -= 1.0f; }
-	//if (Input::GetInstance()->RightStickIn(RIGHT)) { distance.x += 1.0f; }
-	//else if (Input::GetInstance()->RightStickIn(LEFT)) { distance.x -= 1.0f; }
-	//if (Input::GetInstance()->PushPadbutton(GAMEPAD_LEFT_TRIGGER)) { distance.z += 1.0f; }
-	//else if (Input::GetInstance()->PushPadbutton(GAMEPAD_RIGHT_TRIGGER)) { distance.z -= 1.0f; }
-
-	//cameraPos.x += distance.x;
-	//cameraPos.y += distance.y;
-	//cameraPos.z += distance.z;
-
-	if (Input::GetInstance()->PushKey(DIK_UP)) { rotaY -= 1.0f; }
-	else if (Input::GetInstance()->PushKey(DIK_DOWN)) { rotaY += 1.0f; }
-	if (Input::GetInstance()->PushKey(DIK_RIGHT)) { rotaX += 1.0f; }
-	else if (Input::GetInstance()->PushKey(DIK_LEFT)) { rotaX -= 1.0f; }
-	if (Input::GetInstance()->PushKey(DIK_E) && dis >= 5.0f ) { dis -= 1.0f; }
-	else if (Input::GetInstance()->PushKey(DIK_Z) && dis <= 20.0f) { dis += 1.0f; }
-
-	if(Input::GetInstance()->RightStickIn(UP) && rotaY > 5) { rotaY -= 1.0f; }
-	else if (Input::GetInstance()->RightStickIn(DOWN) && rotaY < 175) { rotaY += 1.0f; }
-	if (Input::GetInstance()->RightStickIn(RIGHT)) { rotaX += 1.0f; }
-	else if (Input::GetInstance()->RightStickIn(LEFT)) { rotaX -= 1.0f; }
-	if (Input::GetInstance()->PushPadbutton(GAMEPAD_LEFT_TRIGGER) && dis >= 5.0f) { dis -= 1.0f; }
-	else if (Input::GetInstance()->PushPadbutton(GAMEPAD_RIGHT_TRIGGER) && dis <= 20.0f) { dis += 1.0f; }
-	//if (Input::GetInstance()->PushPadbutton(GAMEPAD_RIGHT_SHOULDER)) { rotaX = Player::GEtTestFloatNum(); }
-
 	float radiusX = rotaX * 3.14f / 180.0f;
 	float radiusY = rotaY * 3.14f / 180.0f;
 
@@ -82,6 +67,50 @@ void DebugCamera::Update()
 	cameraPos.x += dis * sin(radiusY) * cos(radiusX);
 	cameraPos.z += dis * sin(radiusY) * sin(radiusX);
 
+	return cameraPos;
+}
+
+DebugCamera::XMFLOAT3 DebugCamera::MoveUpdate()
+{
+	XMFLOAT3 cameraPos = Player::GetPos();
+
+	if (Input::GetInstance()->PushKey(DIK_UP)) { rotaY -= 1.0f; }
+	else if (Input::GetInstance()->PushKey(DIK_DOWN)) { rotaY += 1.0f; }
+	if (Input::GetInstance()->PushKey(DIK_RIGHT)) { rotaX += 1.0f; }
+	else if (Input::GetInstance()->PushKey(DIK_LEFT)) { rotaX -= 1.0f; }
+	if (Input::GetInstance()->PushKey(DIK_E) && dis >= 5.0f) { dis -= 1.0f; }
+	else if (Input::GetInstance()->PushKey(DIK_Z) && dis <= 20.0f) { dis += 1.0f; }
+
+	if (Input::GetInstance()->RightStickIn(UP) && rotaY < 175) 
+	{ 
+		rotaY += 1.0f; 
+		if (dis <= 20.0f && hitFlag == false) { dis += 0.5f;}
+	}
+	else if (Input::GetInstance()->RightStickIn(DOWN) && rotaY > 5) 
+	{ 
+		rotaY -= 1.0f; 
+		if (dis <= 20.0f && hitFlag == false) { dis += 0.5f; }
+	}
+	if (Input::GetInstance()->RightStickIn(RIGHT)) 
+	{ 
+		rotaX -= 1.0f; 
+		if (dis <= 20.0f && hitFlag == false) { dis += 0.5f; }
+	}
+	else if (Input::GetInstance()->RightStickIn(LEFT)) 
+	{ 
+		rotaX += 1.0f; 
+		if (dis <= 20.0f && hitFlag == false) { dis += 0.5f; }
+	}
+	//if (Input::GetInstance()->PushPadbutton(GAMEPAD_LEFT_TRIGGER) && dis >= 5.0f) { dis -= 1.0f; }
+	//else if (Input::GetInstance()->PushPadbutton(GAMEPAD_RIGHT_TRIGGER) && dis <= 20.0f) { dis += 1.0f; }
+
+	cameraPos = SphereCoordinateSystem();
+
+	return cameraPos;
+}
+
+void DebugCamera::UpdateProcess( XMFLOAT3& cameraPos)
+{
 	//球コライダーを取得
 	Object->SetPosition(cameraPos);
 	Object->Update();
@@ -134,34 +163,44 @@ void DebugCamera::Update()
 	cameraPos.x += callback.move.m128_f32[0];
 	cameraPos.y += callback.move.m128_f32[1];
 	cameraPos.z += callback.move.m128_f32[2];
-	//コライダー更新
-	Object->UpdateWorldMatrix();
-	collider->Update();
+
+	if (callback.move.m128_f32[0] != 0)
+	{
+		hitFlag = true;
+		if (dis > 5.0f) { dis -= 0.5f; }
+		cameraPos = SphereCoordinateSystem();
+	} 
+	else if (callback.move.m128_f32[1] != 0)
+	{
+		hitFlag = true;
+		if (dis > 5.0f) { dis -= 0.5f; }
+		cameraPos = SphereCoordinateSystem();
+	}
+	else if (callback.move.m128_f32[2] != 0)
+	{
+		hitFlag = true;
+		if (dis > 5.0f) { dis -= 0.5f; }
+		cameraPos = SphereCoordinateSystem();
+	}
+	else
+	{
+		hitFlag = false;
+	}
 
 	//球の上端から球の下端までのレイキャスト用レイを準備
 	Ray ray;
 	ray.start = sphereCollider->center;
-	//ray.start.m128_f32[1] += sphereCollider->GetRadius();
 	ray.dir = { 0, -1, 0, 0 };
 	RaycastHit raycastHit;
 
-	//接地を維持
 	if (CollisionManager::GetInstance()->Raycast(ray, COLLISION_ATTR_LANDSHAPE,
 		&raycastHit, sphereCollider->GetRadius() * 2.0f) == true)
 	{
-		//onGround = true;
-		cameraPos.y -= (raycastHit.distance - sphereCollider->GetRadius() * 2.0f);
-		//行列の更新など
-		//FbxObject3d::Update();
+		if (dis > 5.0f) { dis -= 1.0f; }
+		hitFlag = true;
+		rotaY -= 1.0f;
+		cameraPos = SphereCoordinateSystem();
 	}
-
-	SetEye(cameraPos);
-
-	XMFLOAT3 targetPos = Player::GetPos();
-	targetPos.y += 6.0f;
-
-	Camera::SetTarget(targetPos);
-	Camera::Update();
 }
 
 void DebugCamera::UpdateOnly()

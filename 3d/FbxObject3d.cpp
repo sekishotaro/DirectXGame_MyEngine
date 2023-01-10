@@ -236,6 +236,11 @@ void FbxObject3d::Update()
 		PlayAnimation();
 	}
 
+	if (loopPlayFlag == false)
+	{
+		AnimetionFinFlag = false;
+	}
+
 	//アニメーション
 	if (isPlay == true && AnimationFlag == true)
 	{
@@ -244,7 +249,14 @@ void FbxObject3d::Update()
 		//最後まで再生したら先頭に戻す
 		if (currentTime > endTime)
 		{
-			currentTime = startTime;
+			if (loopPlayFlag == true)
+			{
+				currentTime = startTime;
+			}
+			else
+			{
+				AnimetionFinFlag = true;
+			}
 		}
 	}
 

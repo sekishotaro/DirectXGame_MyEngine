@@ -144,6 +144,10 @@ protected:
 	FbxTime currentTime;
 	//アニメ―ション再生中
 	bool isPlay = false;
+	//ループ再生するか
+	bool loopPlayFlag = true;
+	//単発再生終了フラグ
+	bool AnimetionFinFlag = false;
 	//アニメーションの数
 	int fbxAnimationNum;
 	//アニメーションをロードしたかの確認用フラグ
