@@ -82,7 +82,7 @@ public: // メンバ関数
 	/// モデルのセット
 	/// </summary>
 	/// <param name="model">モデル</param>
-	virtual void SetModel(FbxModel *fbxModel) { this->fbxModel = fbxModel; };
+	virtual void SetModel(FbxModel* fbxModel) { this->fbxModel = fbxModel; LoadedFlag = false; AnimationFlag = false; }
 	/// <summary>
 	/// 描画
 	/// </summary>

@@ -118,6 +118,8 @@ public:
 	float circleShadowFactorAngle[2] = { 0.0f, 0.5f };
 	float circleShadowFactorAngle2[2] = { 0.0f, 2.0f };
 	FbxModel* fbxModel = nullptr;
+	FbxModel* fbxModel2 = nullptr;
+	FbxModel* fbxModel3 = nullptr;
 
 	InterpolationCamera interpolationCamera;
 

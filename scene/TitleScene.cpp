@@ -8,7 +8,7 @@
 void TitleScene::Initialize()
 {
 	// テクスチャ読み込み
-	Sprite::LoadTexture(1, L"Resources/Titlebackground.png");
+	Sprite::LoadTexture(1, L"Resources/TitleBackground.png");
 	// 背景スプライト生成
 	spriteBG = Sprite::Create(1, { 0.0f,0.0f });
 }

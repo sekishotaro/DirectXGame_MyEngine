@@ -123,12 +123,21 @@ public:
 
 	static bool& GetStaminaCut() { return staminaCut; }
 
+	static bool& GetAnimeFlag() { return animeFlag; }
+
 	static int& GetInputNumX() { return inputX; }
 	static int& GetInputNumY() { return inputY; }
 
 	static float& GEtTestFloatNum() { return testRota; }
 
 	static bool GetCrystalGetFlag() { return crystalGetFlag; }
+
+
+	void SetModel1(FbxModel* fbxModel) { this->fbxModel1 = fbxModel; };
+	void SetModel2(FbxModel* fbxModel) { this->fbxModel2 = fbxModel; };
+	void SetModel3(FbxModel* fbxModel) { this->fbxModel3 = fbxModel; };
+	void SetModel4(FbxModel* fbxModel) { this->fbxModel4 = fbxModel; };
+
 private:
 	//接地フラグ
 	static bool onGround;
@@ -196,5 +205,11 @@ private:
 	static int animeNum;
 	static int oldAnimeNum;
 	static bool animeFlag;
+
+	//モデル
+	static FbxModel* fbxModel1;	//基本
+	static FbxModel* fbxModel2;	//ウォーキング
+	static FbxModel* fbxModel3;	//ランニング
+	static FbxModel* fbxModel4;
 };
 

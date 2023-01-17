@@ -27,10 +27,6 @@
 
 void GamePlayScene::Initialize()
 {
-	Audio::GetInstance()->LoadWave("futta-dream.wav");
-	Audio::GetInstance()->LoadWave("zaza.wav");
-	Audio::GetInstance()->LoadWave("What.wav");
-
 	// カメラ生成
 	camera = new DebugCamera(WinApp::window_width, WinApp::window_height);
 	//camera = new Camera(WinApp::window_width, WinApp::window_height);
@@ -62,15 +58,20 @@ void GamePlayScene::Initialize()
 
 
 	//json
-	JsonLoader::LoadFile("Scene11_12"); //オブジェクトの当たり判定
+	JsonLoader::LoadFile("Scene1_15"); //オブジェクトの当たり判定
 
 	JsonLoader::SetObject();
 
 	//モデル名を指定してファイル読み込み
 	fbxModel = FbxLoader::GetInstance()->LoadModelFromFile("model");
+	fbxModel2 = FbxLoader::GetInstance()->LoadModelFromFile("model2");
+	fbxModel3 = FbxLoader::GetInstance()->LoadModelFromFile("model3");
 
 	collisionManager = CollisionManager::GetInstance();
 	objFighter = Player::Create(fbxModel);
+	objFighter->SetModel1(fbxModel);
+	objFighter->SetModel2(fbxModel2);
+	objFighter->SetModel3(fbxModel3);
 	skydomeObject = Object3d::Create();
 	skydomeObject->SetModel(skydomeModel);
 	skydomeObject->SetScale({ 5.0f, 5.0f, 5.0f });
@@ -131,22 +132,26 @@ void GamePlayScene::Update()
 	lightGroup->SetCircleShadowAtten(1, XMFLOAT3(circleShadowAtten));
 	lightGroup->SetCircleShadowFactorAngle(1, XMFLOAT2(circleShadowFactorAngle2));
 
-	int state = 2;
-	switch(state)
-	{
-		 case 1:
-			 StartStatus();
-			 return;
-		 case 2:
-			 GameStatus();
-			 return;
-		 case 3:
-			 GameOverStatus();
-			 return;
-		 case 4:
-			 ClearStatus();
-			 return;
-	}
+	//int state = 2;
+	//switch(state)
+	//{
+	//	 case 1:
+	//		 StartStatus();
+	//		 return;
+	//	 case 2:
+	//		 GameStatus();
+	//		 return;
+	//	 case 3:
+	//		 GameOverStatus();
+	//		 return;
+	//	 case 4:
+	//		 ClearStatus();
+	//		 return;
+	//}
+
+	GameStatus();
+	GameOverStatus();
+	ClearStatus();
 }
 
 void GamePlayScene::Draw()
@@ -212,7 +217,7 @@ void GamePlayScene::Draw()
 	Effect::Draw();
 
 	// デバッグテキストの描画
-	DebugText::GetInstance()->DrawAll(cmdList);
+	//DebugText::GetInstance()->DrawAll(cmdList);
 
 	// スプライト描画後処理
 	Sprite::PostDraw();
@@ -222,26 +227,25 @@ void GamePlayScene::Draw()
 	ImGui::NewFrame();
 	ImGui::Begin("config1");//ウィンドウの名前
 	ImGui::SetWindowSize(ImVec2(400, 500), ImGuiCond_::ImGuiCond_FirstUseEver);
-	
 	ImGui::Text("Time: %d", (int)ClockTime::GetSec());
 	ImGui::Text("CameraRoteY: %f", camera->GetRotaY());
-	//ImGui::Text("inputX: %d", objFighter->GetInputNumX());
-	//ImGui::Text("inputY: %d", objFighter->GetInputNumY());
-	//ImGui::Text("testRota: %.4f", OpticalPost::GetNum());
-	//ImGui::Text("TimeLimit: %.4f", objFighter->GetTimeLimit());
-	//ImGui::Text("PosX    :%.4f", objFighter->GetPosition().x);
-	//ImGui::Text("PosY    :%.4f", objFighter->GetPosition().y);
-	//ImGui::Text("PosZ    :%.4f", objFighter->GetPosition().z);
-	//ImGui::Text("RotaX   :%.4f", objFighter->GetRotation().x);
-	//ImGui::Text("RotaY   :%.4f", objFighter->GetRotation().y);
-	//ImGui::Text("RotaZ   :%.4f", objFighter->GetRotation().z);
-	//ImGui::Text("cameraX :%.4f", camera->GetEye().x);
-	//ImGui::Text("cameraY :%.4f", camera->GetEye().y);
-	//ImGui::Text("cameraZ :%.4f", camera->GetEye().z);
-	//ImGui::Text("crystal :%d", objFighter->GetCrystal());
-	//ImGui::Checkbox("GoalFlag", &objFighter->GetGoalFlag());
-	//ImGui::Checkbox("Wall", &objFighter->GetWallHitFlag());
-	//ImGui::Checkbox("statmina", &objFighter->GetStaminaFlag());
+	ImGui::Text("inputX: %d", objFighter->GetInputNumX());
+	ImGui::Text("inputY: %d", objFighter->GetInputNumY());
+	ImGui::Text("testRota: %.4f", OpticalPost::GetNum());
+	ImGui::Text("TimeLimit: %.4f", objFighter->GetTimeLimit());
+	ImGui::Text("PosX    :%.4f", objFighter->GetPosition().x);
+	ImGui::Text("PosY    :%.4f", objFighter->GetPosition().y);
+	ImGui::Text("PosZ    :%.4f", objFighter->GetPosition().z);
+	ImGui::Text("RotaX   :%.4f", objFighter->GetRotation().x);
+	ImGui::Text("RotaY   :%.4f", objFighter->GetRotation().y);
+	ImGui::Text("RotaZ   :%.4f", objFighter->GetRotation().z);
+	ImGui::Text("cameraX :%.4f", camera->GetEye().x);
+	ImGui::Text("cameraY :%.4f", camera->GetEye().y);
+	ImGui::Text("cameraZ :%.4f", camera->GetEye().z);
+	ImGui::Text("crystal :%d", objFighter->GetCrystal());
+	ImGui::Checkbox("GoalFlag", &objFighter->GetGoalFlag());
+	ImGui::Checkbox("Wall", &objFighter->GetWallHitFlag());
+	ImGui::Checkbox("statmina", &objFighter->AnimationFlag);
 	imguiManager::PosDraw();
 }
 
@@ -318,17 +322,17 @@ void GamePlayScene::GameOverStatus()
 {
 	if (Enemy::GetGameOver() == true)
 	{
-		if (ClockTime::GetAddSecFlag() == true)
-		{
-			count++;
-		}
-		moveFlag = true;
-		interpolationCamera.EndInterpolationCamera(camera);
-		ObjectsUpdate();
-		if (count >= 115)
-		{
-			SceneManager::GetInstance()->ChangeScene("GAMEOVER");
-		}
+		//if (ClockTime::GetAddSecFlag() == true)
+		//{
+		//	count++;
+		//}
+		//moveFlag = true;
+		//interpolationCamera.EndInterpolationCamera(camera);
+		//ObjectsUpdate();
+		//if (count >= 115)
+		//{
+		//}
+		SceneManager::GetInstance()->ChangeScene("GAMEOVER");
 	}
 }
 
@@ -338,17 +342,17 @@ void GamePlayScene::ClearStatus()
 	//static int count = 0;
 	if (objFighter->GetCrystal() == 0 && objFighter->GetGoalFlag() == true)
 	{
-		if (ClockTime::GetAddSecFlag() == true)
+		/*if (ClockTime::GetAddSecFlag() == true)
 		{
 			count++;
 		}
 		moveFlag = true;
 		interpolationCamera.EndInterpolationCamera(camera);
-		ObjectsUpdate();
-		if (count >= 115)
-		{
-			SceneManager::GetInstance()->ChangeScene("TITLE");
-		}
+		ObjectsUpdate();*/
+		//if (count >= 115)
+		//{
+		//}
+		SceneManager::GetInstance()->ChangeScene("TITLE");
 		return;
 	}
 }
