@@ -61,7 +61,20 @@ private:
 	/// <summary>
 	/// 移動処理
 	/// </summary>
+	/// <param name="move"></param>
 	void MoveOperation(DirectX::XMVECTOR& move);
+
+	/// <summary>
+	/// 通常移動処理
+	/// </summary>
+	/// <param name="move"></param>
+	void MoveNormal(DirectX::XMVECTOR& move);
+
+	/// <summary>
+	/// 壁のぼり移動処理
+	/// </summary>
+	/// <param name="move"></param>
+	void MoveClimb(DirectX::XMVECTOR& move);
 
 	/// <summary>
 	/// クリスタル処理
@@ -137,6 +150,9 @@ public:
 	void SetModel2(FbxModel* fbxModel) { this->fbxModel2 = fbxModel; };
 	void SetModel3(FbxModel* fbxModel) { this->fbxModel3 = fbxModel; };
 	void SetModel4(FbxModel* fbxModel) { this->fbxModel4 = fbxModel; };
+	void SetModel5(FbxModel* fbxModel) { this->fbxModel5 = fbxModel; };
+	void SetModel6(FbxModel* fbxModel) { this->fbxModel6 = fbxModel; };
+	void SetModel7(FbxModel* fbxModel) { this->fbxModel7 = fbxModel; };
 
 private:
 	//接地フラグ
@@ -150,6 +166,10 @@ private:
 	bool onObject = false;
 	//移動中確認フラグ
 	static bool nowMove;
+
+	//ジャンプ確認フラグ
+	static bool jumpFlag;
+	static bool fallFlag;
 
 	//自機とゴールの当たり判定
 	static bool goalFlag;
@@ -210,6 +230,11 @@ private:
 	static FbxModel* fbxModel1;	//基本
 	static FbxModel* fbxModel2;	//ウォーキング
 	static FbxModel* fbxModel3;	//ランニング
-	static FbxModel* fbxModel4;
+	static FbxModel* fbxModel4; //ジャンプ
+	static FbxModel* fbxModel5;	//走りジャンプ
+	static FbxModel* fbxModel6;	//クライミング
+	static FbxModel* fbxModel7; //崖上がり
+
+
 };
 

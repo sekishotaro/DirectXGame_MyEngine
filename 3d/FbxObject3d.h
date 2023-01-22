@@ -82,7 +82,7 @@ public: // メンバ関数
 	/// モデルのセット
 	/// </summary>
 	/// <param name="model">モデル</param>
-	virtual void SetModel(FbxModel* fbxModel) { this->fbxModel = fbxModel; LoadedFlag = false; AnimationFlag = false; }
+	virtual void SetModel(FbxModel* fbxModel) { this->fbxModel = fbxModel; LoadedFlag = false; }
 	/// <summary>
 	/// 描画
 	/// </summary>
@@ -132,6 +132,8 @@ protected:
 	XMMATRIX matWorld = {};
 	//モデル
 	FbxModel *fbxModel = nullptr;
+	//前フレームモデル
+	FbxModel *oldModel = nullptr;
 	//定数バッファ(スキン)
 	ComPtr<ID3D12Resource> constBuffSkin;
 	//1フレームの時間

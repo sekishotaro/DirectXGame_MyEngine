@@ -236,6 +236,13 @@ void FbxObject3d::Update()
 		PlayAnimation();
 	}
 
+	if (oldModel != nullptr && oldModel != fbxModel)
+	{
+		mSkeletalAnimations.clear();
+		LoadAnimation();
+		endTime = mSkeletalAnimations[AnimationNum].takeinfo->mLocalTimeSpan.GetStop();
+	}
+
 	if (loopPlayFlag == false)
 	{
 		AnimetionFinFlag = false;
@@ -282,6 +289,8 @@ void FbxObject3d::Update()
 	{
 		collider->UpdateF();
 	}
+
+	oldModel = fbxModel;
 }
 
 void FbxObject3d::Draw(ID3D12GraphicsCommandList *cmdList)

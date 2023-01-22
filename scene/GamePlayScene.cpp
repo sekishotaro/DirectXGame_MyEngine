@@ -66,12 +66,20 @@ void GamePlayScene::Initialize()
 	fbxModel = FbxLoader::GetInstance()->LoadModelFromFile("model");
 	fbxModel2 = FbxLoader::GetInstance()->LoadModelFromFile("model2");
 	fbxModel3 = FbxLoader::GetInstance()->LoadModelFromFile("model3");
-
+	fbxModel4 = FbxLoader::GetInstance()->LoadModelFromFile("model4");
+	fbxModel5 = FbxLoader::GetInstance()->LoadModelFromFile("model5");
+	fbxModel6 = FbxLoader::GetInstance()->LoadModelFromFile("model6");
+	fbxModel7 = FbxLoader::GetInstance()->LoadModelFromFile("model7");
 	collisionManager = CollisionManager::GetInstance();
 	objFighter = Player::Create(fbxModel);
 	objFighter->SetModel1(fbxModel);
 	objFighter->SetModel2(fbxModel2);
 	objFighter->SetModel3(fbxModel3);
+	objFighter->SetModel4(fbxModel4);
+	objFighter->SetModel5(fbxModel5);
+	objFighter->SetModel6(fbxModel6);
+	objFighter->SetModel7(fbxModel7);
+
 	skydomeObject = Object3d::Create();
 	skydomeObject->SetModel(skydomeModel);
 	skydomeObject->SetScale({ 5.0f, 5.0f, 5.0f });

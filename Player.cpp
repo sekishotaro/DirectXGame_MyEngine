@@ -16,6 +16,8 @@ XMFLOAT3 Player::rot = { 0,0,0 };
 XMFLOAT3 Player::moveV = { 0,0,0 };
 float Player::moveAdjustmentNum = 1.0f;
 bool Player::nowMove = false;
+bool Player::jumpFlag = false;
+bool Player::fallFlag = false;
 bool Player::onGround = false;
 bool Player::adhesionMesh = false;
 int Player::crystalNum = 0;
@@ -36,6 +38,9 @@ FbxModel* Player::fbxModel1 = nullptr;
 FbxModel* Player::fbxModel2 = nullptr;
 FbxModel* Player::fbxModel3 = nullptr;
 FbxModel* Player::fbxModel4 = nullptr;
+FbxModel* Player::fbxModel5 = nullptr;
+FbxModel* Player::fbxModel6 = nullptr;
+FbxModel* Player::fbxModel7 = nullptr;
 
 Player* Player::Create(FbxModel* model)
 {
@@ -96,25 +101,7 @@ void Player::Update()
 	//移動量初期化
 	XMVECTOR move = { 0,0,0.0f,0 };
 
-	if (Input::GetInstance()->PushKey(DIK_3))
-	{
-		SetModel(fbxModel3);
-	}
-	else if (Input::GetInstance()->PushKey(DIK_1))
-	{
-		SetModel(fbxModel1);
-	}
-	else if (Input::GetInstance()->PushKey(DIK_P))
-	{
-		AnimationFlag = true;
-	}
-	else if (Input::GetInstance()->PushKey(DIK_O))
-	{
-		AnimationFlag = false;
-	}
-
-
-	//MoveOperation(move);
+	MoveOperation(move);
 
 	StaminaManagement(move);
 
@@ -128,9 +115,6 @@ void Player::Update()
 	//落下処理
 	GravityConfirmationProcess();
 
-	//アニメーション処理
-	//AnimetionProcess();
-
 	//地形との当たり判定(メッシュコライダー)
 	TerrainConfirmationProcess();
 	
@@ -139,6 +123,21 @@ void Player::Update()
 
 	pos = position;
 	rot = rotation;
+
+	if (jumpFlag == true)
+	{
+		animeFlag = true;
+		animeNum = 3;
+	}
+	else if (fallFlag == true)
+	{
+		animeFlag = true;
+		animeNum = 4;
+	}
+
+
+	//アニメーション処理
+	AnimetionProcess();
 
 	//ゴールとプレイヤーの当たり判定
 	GoalConfirmationProcess();
@@ -295,12 +294,14 @@ void Player::ClimbWallJudge(XMVECTOR move)
 
 void Player::MoveOperation(XMVECTOR& move)
 {
+	//左スティック
 	inputX = Input::GetInstance()->LeftStickInXNum();
 	inputY = Input::GetInstance()->LeftStickInYNum();
-	AnimationFlag = false;
+	
 	//移動量初期化
 	move = { 0,0,0.1f,0 };
 
+	//スタミナ切れ確認
 	if (staminaCut == true)
 	{
 		moveAdjustmentNum = 0.5f;
@@ -312,6 +313,131 @@ void Player::MoveOperation(XMVECTOR& move)
 
 	if (climbOperation == false) //通常移動
 	{
+		MoveNormal(move);
+	}
+	else if (climbOperation == true) //壁のぼり移動
+	{
+		MoveClimb(move);
+	}
+}
+
+void Player::MoveNormal(DirectX::XMVECTOR& move)
+{
+	float power = 1.0f;
+
+	//コントローラー左スティックによるプレイヤーの回転
+	const int MAX = 24918;
+	int x = 0;
+	int y = 0;
+	if (inputX != 0)
+	{
+		float xX = (float)inputX / MAX;
+		inputX = (int)(xX * 100);
+	}
+	if (inputY != 0)
+	{
+		float xX = (float)inputY / MAX;
+		inputY = (int)(xX * 100);
+	}
+
+	float rot1 = 0;
+	float rot2 = 0;
+	if (inputX != 0 || inputY != 0)
+	{
+		XMFLOAT2 vec1 = { 0, 100 };
+		XMFLOAT2 vec2 = { (float)inputX,(float)inputY };
+		XMFLOAT2 vec3 = { position.x - cameraPos2d.x, position.z - cameraPos2d.y };
+
+		float inner = vec1.x * vec2.x + vec1.y * vec2.y;
+		float veclong = sqrtf((vec1.x * vec1.x) + (vec1.y * vec1.y)) * sqrtf((vec2.x * vec2.x) + (vec2.y * vec2.y));
+		float cos = inner / veclong;
+		rot1 = acosf(cos);
+		rot1 = rot1 * 180.0f / 3.1415f;
+		if (inputX <= 0)
+		{
+			rot1 = (360.0f - rot1);
+		}
+
+		inner = vec1.x * vec3.x + vec1.y * vec3.y;
+		veclong = sqrtf((vec1.x * vec1.x) + (vec1.y * vec1.y)) * sqrtf((vec3.x * vec3.x) + (vec3.y * vec3.y));
+		cos = inner / veclong;
+		rot2 = acosf(cos);
+		rot2 = rot2 * 180.0f / 3.1415f;
+		if (vec3.x <= 0)
+		{
+			rot2 = (360.0f - rot2);
+		}
+		rotation.y = rot1 + rot2;
+	}
+
+	//移動ベクトルをY軸回りの角度で回転
+
+	XMMATRIX matRot = XMMatrixRotationY(XMConvertToRadians(rotation.y));
+	testRota = rotation.y;
+	move = XMVector3TransformNormal(move, matRot);
+
+	//スタミナ消費
+	if (Input::GetInstance()->PushPadbutton(Button_A) && staminaCut == false)
+	{
+		if (inputX == 0 && inputY == 0)	//スティック移動させていないときはスタミナを消費しない
+		{
+			staminaBoostFlag = false;
+		}
+		else
+		{
+			staminaBoostFlag = true;
+			power = 3.0f;
+		}
+
+	}
+	else
+	{
+		staminaBoostFlag = false;
+	}
+
+	if (Input::GetInstance()->LeftStickIn(LEFT) || Input::GetInstance()->LeftStickIn(RIGHT))
+	{
+		position.x += move.m128_f32[0] * power;
+		position.y += move.m128_f32[1] * power;
+		position.z += move.m128_f32[2] * power;
+		nowMove = true;
+
+		animeFlag = true;
+		if (staminaBoostFlag == false)
+		{
+			animeNum = 1;
+		}
+		else				//ダッシュ
+		{
+			animeNum = 2;
+		}
+	}
+	else if (Input::GetInstance()->LeftStickIn(UP) || Input::GetInstance()->LeftStickIn(DOWN))
+	{
+		position.x += move.m128_f32[0] * power;
+		position.y += move.m128_f32[1] * power;
+		position.z += move.m128_f32[2] * power;
+		nowMove = true;
+
+		animeFlag = true;
+		if (staminaBoostFlag == false)
+		{
+			animeNum = 1;
+		}
+		else				//ダッシュ
+		{
+			animeNum = 2;
+		}
+	}
+	else
+	{
+		animeFlag = true;
+		animeNum = 0;
+		nowMove = false;
+	}
+
+	//キーボード
+	/*{
 		if (Input::GetInstance()->PushKey(DIK_A))
 		{
 			rotation.y -= 2.0f;
@@ -320,59 +446,7 @@ void Player::MoveOperation(XMVECTOR& move)
 		{
 			rotation.y += 2.0f;
 		}
-
-		const int MAX = 24918;
-		int x = 0;
-		int y = 0;
-		if (inputX != 0)
-		{
-			float xX = (float)inputX / MAX;
-			inputX = (int)(xX * 100);
-		}
-		if (inputY != 0)
-		{
-			float xX = (float)inputY / MAX;
-			inputY = (int)(xX * 100);
-		}
-
-		float rot1 = 0;
-		float rot2 = 0;
-		if (inputX != 0 || inputY != 0)
-		{
-			XMFLOAT2 vec1 = { 0, 100 };
-			XMFLOAT2 vec2 = { (float)inputX,(float)inputY };
-			XMFLOAT2 vec3 = { position.x - cameraPos2d.x, position.z - cameraPos2d.y };
-
-			float inner = vec1.x * vec2.x + vec1.y * vec2.y;
-			float veclong = sqrtf((vec1.x * vec1.x) + (vec1.y * vec1.y)) * sqrtf((vec2.x * vec2.x) + (vec2.y * vec2.y));
-			float cos = inner / veclong;
-			rot1 = acosf(cos);
-			rot1 = rot1 * 180.0f / 3.1415f;
-			if (inputX <= 0)
-			{
-				rot1 = (360.0f - rot1);
-			}
-
-			inner = vec1.x * vec3.x + vec1.y * vec3.y;
-			veclong = sqrtf((vec1.x * vec1.x) + (vec1.y * vec1.y)) * sqrtf((vec3.x * vec3.x) + (vec3.y * vec3.y));
-			cos = inner / veclong;
-			rot2 = acosf(cos);
-			rot2 = rot2 * 180.0f / 3.1415f;
-			if (vec3.x <= 0)
-			{
-				rot2 = (360.0f - rot2);
-			}
-			rotation.y = rot1 + rot2;
-		}
-
-		//移動ベクトルをY軸回りの角度で回転
-
-		XMMATRIX matRot = XMMatrixRotationY(XMConvertToRadians(rotation.y));
-		testRota = rotation.y;
-		move = XMVector3TransformNormal(move, matRot);
-		float power = 1.0f;
-
-		//向いている方向に移動
+		//スタミナダッシュ
 		if (Input::GetInstance()->PushKey(DIK_V) && staminaCut == false)
 		{
 			staminaBoostFlag = true;
@@ -382,32 +456,13 @@ void Player::MoveOperation(XMVECTOR& move)
 		{
 			staminaBoostFlag = false;
 		}
-
-		if (Input::GetInstance()->PushPadbutton(Button_A) && staminaCut == false)
-		{
-			if (inputX == 0 && inputY == 0)
-			{
-				staminaBoostFlag = false;
-			}
-			else
-			{
-				staminaBoostFlag = true;
-				power = 3.0f;
-			}
-			
-		}
-		else
-		{
-			staminaBoostFlag = false;
-		}
-
 		if (Input::GetInstance()->PushKey(DIK_S))
 		{
 			position.x -= move.m128_f32[0] * power * moveAdjustmentNum;
 			position.y -= move.m128_f32[1] * power * moveAdjustmentNum;
 			position.z -= move.m128_f32[2] * power * moveAdjustmentNum;
 			nowMove = true;
-			
+
 			//animeFlag = true;
 			//if (staminaBoostFlag == true)
 			//{
@@ -425,7 +480,7 @@ void Player::MoveOperation(XMVECTOR& move)
 			position.y += move.m128_f32[1] * power * moveAdjustmentNum;
 			position.z += move.m128_f32[2] * power * moveAdjustmentNum;
 			nowMove = true;
-			
+
 			//animeFlag = true;
 			//if (staminaBoostFlag == true)
 			//{
@@ -436,52 +491,127 @@ void Player::MoveOperation(XMVECTOR& move)
 			//	animeNum = 2;
 			//}
 		}
-		else if (Input::GetInstance()->LeftStickIn(LEFT) || Input::GetInstance()->LeftStickIn(RIGHT))
-		{
-			position.x += move.m128_f32[0] * power;
-			position.y += move.m128_f32[1] * power;
-			position.z += move.m128_f32[2] * power;
-			nowMove = true;
+	}*/
 
-			animeFlag = true;
-			if (staminaBoostFlag == false)
-			{
-				animeNum = 2;
-			}
-			else				//ダッシュ
-			{
-				animeNum = 3;
-			}
-		}
-		else if (Input::GetInstance()->LeftStickIn(UP) || Input::GetInstance()->LeftStickIn(DOWN))
-		{
-			position.x += move.m128_f32[0] * power;
-			position.y += move.m128_f32[1] * power;
-			position.z += move.m128_f32[2] * power;
-			nowMove = true;
+}
 
-			animeFlag = true;
-			if (staminaBoostFlag == false)
-			{
-				animeNum = 2;
-			}
-			else				//ダッシュ
-			{
-				animeNum = 3;
-			}
-		}
-		else
-		{
-			//animeFlag = true;
-			//animeNum = 0;
-			nowMove = false;
-		}
+void Player::MoveClimb(DirectX::XMVECTOR& move)
+{
+	moveV = { 0,0,0 };
 
-	}
-	else if (climbOperation == true) //壁のぼり移動
+	if (Input::GetInstance()->PushPadbutton(Button_A))
 	{
-		moveV = { 0,0,0 };
+		staminaBoostFlag = true;
+	}
+	else
+	{
+		staminaBoostFlag = false;
+	}
 
+	//コントローラー
+	if (Input::GetInstance()->LeftStickIn(LEFT))
+	{
+		if (climbNormal.m128_f32[2] == 1.0f)
+		{
+			moveV.x += 0.5f;
+		}
+		else if (climbNormal.m128_f32[2] == -1.0f)
+		{
+			moveV.x -= 0.5f;
+		}
+
+		if (climbNormal.m128_f32[0] == 1.0f)
+		{
+			moveV.x -= 0.5f;
+		}
+		else if (climbNormal.m128_f32[0] == -1.0f)
+		{
+			moveV.z += 0.5f;
+		}
+
+		nowMove = true;
+
+		animeFlag = true;
+		if (staminaBoostFlag == true)
+		{
+			animeNum = 5;
+		}
+		else				//ダッシュ
+		{
+			animeNum = 5;
+		}
+	}
+	else if (Input::GetInstance()->LeftStickIn(RIGHT))
+	{
+		if (climbNormal.m128_f32[2] == 1.0f)
+		{
+			moveV.x -= 0.5f;
+		}
+		else if (climbNormal.m128_f32[2] == -1.0f)
+		{
+			moveV.x += 0.5f;
+		}
+
+		if (climbNormal.m128_f32[0] == 1.0f)
+		{
+			moveV.x += 0.5f;
+		}
+		else if (climbNormal.m128_f32[0] == -1.0f)
+		{
+			moveV.z -= 0.5f;
+		}
+
+		nowMove = true;
+
+		animeFlag = true;
+		if (staminaBoostFlag == true)
+		{
+			animeNum = 5;
+		}
+		else				//ダッシュ
+		{
+			animeNum = 5;
+		}
+	}
+	else if (Input::GetInstance()->LeftStickIn(DOWN))
+	{
+		moveV.y -= 0.5f;
+		nowMove = true;
+
+		animeFlag = true;
+		if (staminaBoostFlag == true)
+		{
+			animeNum = 5;
+		}
+		else				//ダッシュ
+		{
+			animeNum = 5;
+		}
+	}
+	else if (Input::GetInstance()->LeftStickIn(UP))
+	{
+		moveV.y += 0.5f;
+		nowMove = true;
+
+		animeFlag = true;
+		if (staminaBoostFlag == true)
+		{
+			animeNum = 5;
+		}
+		else				//ダッシュ
+		{
+			animeNum = 5;
+		}
+	}
+	else
+	{
+		animeFlag = false;
+		animeNum = 5;
+		nowMove = false;
+	}
+
+	//キーボード
+	{
 		if (Input::GetInstance()->PushKey(DIK_V))
 		{
 			staminaBoostFlag = true;
@@ -491,16 +621,6 @@ void Player::MoveOperation(XMVECTOR& move)
 			staminaBoostFlag = false;
 		}
 
-		if (Input::GetInstance()->PushPadbutton(Button_A))
-		{
-			staminaBoostFlag = true;
-		}
-		else
-		{
-			staminaBoostFlag = false;
-		}
-
-		//キーボード
 		if (Input::GetInstance()->PushKey(DIK_A))
 		{
 			if (climbNormal.m128_f32[2] == 1.0f)
@@ -520,7 +640,7 @@ void Player::MoveOperation(XMVECTOR& move)
 			{
 				moveV.z += 0.5f;
 			}
-			
+
 			nowMove = true;
 
 			//animeFlag = true;
@@ -570,107 +690,6 @@ void Player::MoveOperation(XMVECTOR& move)
 			nowMove = false;
 		}
 
-		//コントローラー
-		if (Input::GetInstance()->LeftStickIn(LEFT))
-		{
-			if (climbNormal.m128_f32[2] == 1.0f)
-			{
-				moveV.x += 0.5f;
-			}
-			else if (climbNormal.m128_f32[2] == -1.0f)
-			{
-				moveV.x -= 0.5f;
-			}
-
-			if (climbNormal.m128_f32[0] == 1.0f)
-			{
-				moveV.x -= 0.5f;
-			}
-			else if (climbNormal.m128_f32[0] == -1.0f)
-			{
-				moveV.z += 0.5f;
-			}
-
-			nowMove = true;
-
-			//animeFlag = true;
-			//if (staminaBoostFlag == true)
-			//{
-			//	animeNum = 1;
-			//}
-			//else				//ダッシュ
-			//{
-			//	animeNum = 2;
-			//}
-		}
-		else if (Input::GetInstance()->LeftStickIn(RIGHT))
-		{
-			if (climbNormal.m128_f32[2] == 1.0f)
-			{
-				moveV.x -= 0.5f;
-			}
-			else if (climbNormal.m128_f32[2] == -1.0f)
-			{
-				moveV.x += 0.5f;
-			}
-
-			if (climbNormal.m128_f32[0] == 1.0f)
-			{
-				moveV.x += 0.5f;
-			}
-			else if (climbNormal.m128_f32[0] == -1.0f)
-			{
-				moveV.z -= 0.5f;
-			}
-
-			nowMove = true;
-
-			//animeFlag = true;
-			//if (staminaBoostFlag == true)
-			//{
-			//	animeNum = 1;
-			//}
-			//else				//ダッシュ
-			//{
-			//	animeNum = 2;
-			//}
-		}
-		else
-		{
-			nowMove = false;
-		}
-		
-		if (Input::GetInstance()->LeftStickIn(DOWN))
-		{
-			moveV.y -= 0.5f;
-			nowMove = true;
-
-			//animeFlag = true;
-			//if (staminaBoostFlag == true)
-			//{
-			//	animeNum = 1;
-			//}
-			//else				//ダッシュ
-			//{
-			//	animeNum = 2;
-			//}
-		}
-		else if (Input::GetInstance()->LeftStickIn(UP))
-		{
-			moveV.y += 0.5f;
-			nowMove = true;
-
-			//animeFlag = true;
-			//if (staminaBoostFlag == true)
-			//{
-			//	animeNum = 1;
-			//}
-			//else				//ダッシュ
-			//{
-			//	animeNum = 2;
-			//}
-		}
-
 		if (Input::GetInstance()->PushKey(DIK_S))
 		{
 			moveV.y -= 0.5f;
@@ -702,17 +721,19 @@ void Player::MoveOperation(XMVECTOR& move)
 			//}
 		}
 
+		//落下
 		if (Input::GetInstance()->PushKey(DIK_P) || Input::GetInstance()->PushPadbutton(Button_B))
 		{
 			climbOperation = false;
 			position.x += climbNormal.m128_f32[0];
 			position.z += climbNormal.m128_f32[2];
 		}
-
-		position.x += moveV.x;
-		position.y += moveV.y;
-		position.z += moveV.z;
 	}
+
+
+	position.x += moveV.x;
+	position.y += moveV.y;
+	position.z += moveV.z;
 }
 
 void Player::CrystalConfirmationProcess()
@@ -868,6 +889,11 @@ void Player::GravityConfirmationProcess()
 	//落下処理
 	if (!onGround && climbOperation == false)
 	{
+		if (jumpFlag != true)
+		{
+			fallFlag = true;
+		}
+
 		//下向き加速度
 		const float fallAcc = -0.01f;
 		const float fallVYMin = -0.5f;
@@ -878,9 +904,6 @@ void Player::GravityConfirmationProcess()
 		position.x += fallV.m128_f32[0];
 		position.y += fallV.m128_f32[1];
 		position.z += fallV.m128_f32[2];
-
-		//animeFlag = true;
-		//animeNum = 0;
 	}
 	else if (Input::GetInstance()->PushKey(DIK_SPACE) && climbOperation == false)//ジャンプ
 	{
@@ -891,6 +914,7 @@ void Player::GravityConfirmationProcess()
 	}
 	else if (Input::GetInstance()->PushPadbutton(Button_Y) && climbOperation == false)
 	{
+		jumpFlag = true;
 		onGround = false;
 		nowMove = true;
 		const float jumpVYFist = 0.3f; //ジャンプ時上向き初速
@@ -981,6 +1005,7 @@ void Player::TerrainConfirmationProcess()
 			&raycastHit, sphereCollider->GetRadius() * 2.0f + adsDistance) == true)
 		{
 			onGround = true;
+			fallFlag = false;
 			position.y -= (raycastHit.distance - sphereCollider->GetRadius() * 2.0f);
 			//行列の更新など
 			FbxObject3d::Update();
@@ -999,6 +1024,8 @@ void Player::TerrainConfirmationProcess()
 		{
 			//着地
 			onGround = true;
+			jumpFlag = false;
+			fallFlag = false;
 			position.y -= (raycastHit.distance - sphereCollider->GetRadius() * 2.0f);
 			//行列の更新など
 			FbxObject3d::Update();
@@ -1066,40 +1093,77 @@ void Player::TimeManagement()
 
 void Player::AnimetionProcess()
 {
-	AnimationFlag = false;
-	if(animeFlag != true) return;
-	animeFlag = false;
+	if (Input::GetInstance()->PushKey(DIK_1))
+	{
+		SetModel(fbxModel1);
+		AnimationNum = 0;
+	}
+	else if (Input::GetInstance()->PushKey(DIK_2))
+	{
+		SetModel(fbxModel2);
+	}
+	else if (Input::GetInstance()->PushKey(DIK_3))
+	{
+		SetModel(fbxModel3);
+	}
+	else if (Input::GetInstance()->PushKey(DIK_4))
+	{
+		SetModel(fbxModel4);
+	}
+	else if (Input::GetInstance()->PushKey(DIK_5))
+	{
+		SetModel(fbxModel5);
+	}
+	else if (Input::GetInstance()->PushKey(DIK_6))
+	{
+		SetModel(fbxModel6);
+	}
+	else if (Input::GetInstance()->PushKey(DIK_7))
+	{
+		SetModel(fbxModel7);
+	}
+
+	if (Input::GetInstance()->PushKey(DIK_P))
+	{
+		AnimationFlag = true;
+	}
 	
+	if (Input::GetInstance()->PushKey(DIK_O))
+	{
+		AnimationFlag = false;
+	}
+
+	AnimationFlag = false;
+	if (animeFlag == false) return;
+
 	if (oldAnimeNum != animeNum)
 	{
-		if (animeNum == 3)
+		switch (animeNum)
 		{
-			SetModel(fbxModel3);
-		}
-		else
-		{
+		case 0:					//基本
 			SetModel(fbxModel1);
+			break;
+		case 1:					//歩き
+			SetModel(fbxModel2);
+			break;
+		case 2:					//走り
+			SetModel(fbxModel3);
+			break;
+		case 3:					//ジャンプ
+			SetModel(fbxModel4);
+			break;
+		case 4:					//走りジャンプ
+			SetModel(fbxModel5);
+			break;
+		case 5:					//壁のぼり
+			SetModel(fbxModel6);
+			break;
+		case 6:					//崖上がり
+			SetModel(fbxModel7);
+			break;
 		}
-
-
-		FbxObject3d::Update();
 	}
-	oldAnimeNum = animeNum;
-
 	AnimationFlag = true;
-	switch (animeNum)
-	{
-	case 0:
-		AnimationNum = 0;
-		return;
-	case 1:
-		AnimationNum = 1;
-		return;
-	case 2:
-		AnimationNum = 2;
-		//loopPlayFlag = false;
-		return;
-	case 3:
-		return;
-	}
+	oldAnimeNum = animeNum;
+	FbxObject3d::Update();
 }
