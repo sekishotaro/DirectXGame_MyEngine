@@ -45,23 +45,23 @@ void UI::Initialize()
 	stamina3->SetAnchorPoint({ 1.0f, 1.0f });
 
 	crystalUI0 = Sprite::Create(20, { 1080.0f , 90.0f });
-	crystalUI0->SetSize({ 90, 90 });
+	crystalUI0->SetSize({ 200, 500 });
 	crystalUI1 = Sprite::Create(21, { 1080.0f , 90.0f });
-	crystalUI1->SetSize({ 90, 90 });
+	crystalUI1->SetSize({ 200, 500 });
 	crystalUI2 = Sprite::Create(22, { 1080.0f , 90.0f });
-	crystalUI2->SetSize({ 90, 90 });
+	crystalUI2->SetSize({ 200, 500 });
 	crystalUI3 = Sprite::Create(23, { 1080.0f , 90.0f });
-	crystalUI3->SetSize({ 90, 90 });
+	crystalUI3->SetSize({ 200, 500 });
 	crystalUI4 = Sprite::Create(24, { 1080.0f , 90.0f });
-	crystalUI4->SetSize({ 90, 90 });
+	crystalUI4->SetSize({ 200, 500 });
 	crystalUI5 = Sprite::Create(25, { 1080.0f , 90.0f });
-	crystalUI5->SetSize({ 90, 90 });
+	crystalUI5->SetSize({ 200, 500 });
 	crystalUI6 = Sprite::Create(26, { 1080.0f , 90.0f });
-	crystalUI6->SetSize({ 90, 90 });
+	crystalUI6->SetSize({ 200, 500 });
 	crystalUI7 = Sprite::Create(27, { 1080.0f , 90.0f });
-	crystalUI7->SetSize({ 90, 90 });
+	crystalUI7->SetSize({ 200, 500 });
 	crystalUI8 = Sprite::Create(28, { 1080.0f , 90.0f });
-	crystalUI8->SetSize({ 90, 90 });
+	crystalUI8->SetSize({ 200, 500 });
 }
 
 void UI::Update()

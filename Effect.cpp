@@ -15,6 +15,9 @@ float Effect::EnemyPlayerDis = 0.0f;
 bool Effect::oldRaidFlag = false;
 
 float Effect::crystalMoveTime = 0.0f;
+const Effect::XMFLOAT2 Effect::crystalUIPos[8] = { { 1190.0f, 165.0f },{ 1250.0f, 180.0f },{ 1230.0f, 290.0f },{ 1200.0f, 300.0f },
+	{ 1130.0f, 300.0f },{ 1140.0f, 390.0f },{ 1145.0f, 440.0f },{ 1210.0f, 460.0f }};
+
 
 void Effect::Initialize()
 {
@@ -152,7 +155,7 @@ void Effect::ClystalEffectUpdate()
 	}
 	else
 	{
-		if (crystalEffects.size() == 1)
+		if (crystalEffects.size() == 0)
 		{
 			crystalMoveTime = 0.0f;
 		}
@@ -165,8 +168,12 @@ void Effect::ClystalEffectUpdate()
 	float width = (float)WinApp::window_width / 2.0f;
 	float height = (float)WinApp::window_height / 2.0f;
 	XMFLOAT2 startPos = {width, height};
-	XMFLOAT2 endPos = { 1130.0f , 110.0f };
 
+	int crystalNum = 7;
+
+	crystalNum -= Player::GetCrystal();
+
+	XMFLOAT2 endPos = crystalUIPos[crystalNum];
 
 	XMFLOAT2 nowPos = Effect::leap(startPos, endPos, timeRatio);
 

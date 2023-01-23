@@ -57,8 +57,10 @@ private:
 	static float EnemyAccessDisSpeed;
 	static bool oldRaidFlag;
 	static float EnemyPlayerDis;		//襲撃起動時の距離の保存
-
-
 	static float crystalMoveTime;
+
+
+	//各クリスタルのUI位置
+	static const XMFLOAT2 crystalUIPos[8];
 };
 
