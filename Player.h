@@ -145,6 +145,8 @@ public:
 
 	static bool GetCrystalGetFlag() { return crystalGetFlag; }
 
+	static bool GetJumpFlag() { return jumpFlag; }
+
 
 	void SetModel1(FbxModel* fbxModel) { this->fbxModel1 = fbxModel; };
 	void SetModel2(FbxModel* fbxModel) { this->fbxModel2 = fbxModel; };

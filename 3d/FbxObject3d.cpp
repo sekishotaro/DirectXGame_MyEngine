@@ -241,6 +241,7 @@ void FbxObject3d::Update()
 		mSkeletalAnimations.clear();
 		LoadAnimation();
 		endTime = mSkeletalAnimations[AnimationNum].takeinfo->mLocalTimeSpan.GetStop();
+		currentTime = startTime;
 	}
 
 	if (loopPlayFlag == false)
@@ -251,8 +252,18 @@ void FbxObject3d::Update()
 	//アニメーション
 	if (isPlay == true && AnimationFlag == true)
 	{
-		//1フレーム進める
-		currentTime += frameTime;
+		//2フレームに一度進める
+		static int frameCount = 0;
+		if (frameCount == 0)
+		{
+			currentTime += frameTime;
+			frameCount++;
+		}
+		else
+		{
+			frameCount = 0;
+		}
+
 		//最後まで再生したら先頭に戻す
 		if (currentTime > endTime)
 		{

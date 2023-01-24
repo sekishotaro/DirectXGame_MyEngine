@@ -1142,21 +1142,27 @@ void Player::AnimetionProcess()
 		{
 		case 0:					//基本
 			SetModel(fbxModel1);
+			loopPlayFlag = true;
 			break;
 		case 1:					//歩き
 			SetModel(fbxModel2);
+			loopPlayFlag = true;
 			break;
 		case 2:					//走り
 			SetModel(fbxModel3);
+			loopPlayFlag = true;
 			break;
 		case 3:					//ジャンプ
 			SetModel(fbxModel4);
+			loopPlayFlag = false;
 			break;
 		case 4:					//走りジャンプ
 			SetModel(fbxModel5);
+			loopPlayFlag = false;
 			break;
 		case 5:					//壁のぼり
 			SetModel(fbxModel6);
+			loopPlayFlag = true;
 			break;
 		case 6:					//崖上がり
 			SetModel(fbxModel7);
