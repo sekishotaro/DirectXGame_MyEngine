@@ -20,6 +20,9 @@ public:
 	static void Draw();
 
 private:
+	static void timeUpdata();
+
+private:
 	static Sprite* stamina0;
 	static Sprite* stamina1;
 	static XMFLOAT2 staminabarSize;
@@ -35,5 +38,16 @@ private:
 	static Sprite* crystalUI6;
 	static Sprite* crystalUI7;
 	static Sprite* crystalUI8;
+
+	static Sprite* timerCenter;
+	static Sprite* timerPetal0;
+	static Sprite* timerPetal1;
+	static Sprite* timerPetal2;
+	static Sprite* timerPetal3;
+	static Sprite* timerPetal4;
+	static Sprite* timerPetal5;
+	static Sprite* timerPetal6;
+	static Sprite* timerPetal7;
+	static Sprite* timerPetal8;
 };
 

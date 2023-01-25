@@ -242,6 +242,7 @@ void FbxObject3d::Update()
 		LoadAnimation();
 		endTime = mSkeletalAnimations[AnimationNum].takeinfo->mLocalTimeSpan.GetStop();
 		currentTime = startTime;
+		AnimetionFinFlag = false;
 	}
 
 	if (loopPlayFlag == false)

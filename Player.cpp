@@ -18,12 +18,14 @@ float Player::moveAdjustmentNum = 1.0f;
 bool Player::nowMove = false;
 bool Player::jumpFlag = false;
 bool Player::fallFlag = false;
+bool Player::landingFlag = false;
 bool Player::onGround = false;
 bool Player::adhesionMesh = false;
 int Player::crystalNum = 0;
 bool Player::goalFlag = false;
 bool Player::climbOperation = false;
-float Player::timeLimit = 60.0f;
+float Player::timeLimit = 108.0f;
+const float Player::timeLimitMax = 108.0f;
 bool Player::staminaBoostFlag = false;
 float Player::staminaQuantity = 100.0f;
 bool Player::staminaCut = false;
@@ -67,7 +69,7 @@ Player* Player::Create(FbxModel* model)
 void Player::Initialize()
 {
 	goalFlag = false;
-	timeLimit = 60.0f;
+	timeLimit = timeLimitMax;
 	staminaQuantity = 100.0f;
 	staminaCut = false;
 
@@ -80,9 +82,9 @@ void Player::Initialize()
 
 	pos = position;
 
-	scale.x = 0.02f;
-	scale.y = 0.02f;
-	scale.z = 0.02f;
+	scale.x = 0.01f;
+	scale.y = 0.01f;
+	scale.z = 0.01f;
 
 	//コライダーの追加
 	float radius = 0.6f;
@@ -135,6 +137,11 @@ void Player::Update()
 		animeNum = 4;
 	}
 
+	if (landingFlag == true)
+	{
+		animeFlag = true;
+		animeNum = 6;
+	}
 
 	//アニメーション処理
 	AnimetionProcess();
@@ -774,7 +781,7 @@ void Player::CrystalConfirmationProcess()
 			crystalNum--;
 
 			//制限時間の初期化
-			timeLimit = 60.0f;
+			timeLimit = timeLimitMax;
 		}
 	}
 }
@@ -1024,6 +1031,7 @@ void Player::TerrainConfirmationProcess()
 		{
 			//着地
 			onGround = true;
+			landingFlag = true;
 			jumpFlag = false;
 			fallFlag = false;
 			position.y -= (raycastHit.distance - sphereCollider->GetRadius() * 2.0f);
@@ -1050,11 +1058,19 @@ void Player::StaminaManagement(const DirectX::XMVECTOR& move)
 		//	スタミナが使われていない または 今移動していない場合
 		if (staminaBoostFlag != true || nowMove != true)
 		{
+			if (staminaRecoveryTime >= 0.0f)
+			{
+				staminaRecoveryTime -= 1.0f / 60.0f;
+				return;
+			}
+
 			if (staminaQuantity >= staminaQuantityMax) return;
 			staminaQuantity += staminaQuantityMax * (1.0f / 300.0f);
 		}
 		else //スタミナを消費している場合
 		{
+			staminaRecoveryTime = 3.0f;
+
 			if (staminaQuantity <= 0.0f) return;
 			staminaQuantity -= staminaQuantityMax * (1.0f/ 300.0f);
 		}
@@ -1093,49 +1109,17 @@ void Player::TimeManagement()
 
 void Player::AnimetionProcess()
 {
-	if (Input::GetInstance()->PushKey(DIK_1))
+	//アニメーションの初期化
+	AnimationFlag = false;
+	//アニメーションをしないなら返す
+	if (animeFlag == false)
 	{
-		SetModel(fbxModel1);
-		AnimationNum = 0;
-	}
-	else if (Input::GetInstance()->PushKey(DIK_2))
-	{
-		SetModel(fbxModel2);
-	}
-	else if (Input::GetInstance()->PushKey(DIK_3))
-	{
-		SetModel(fbxModel3);
-	}
-	else if (Input::GetInstance()->PushKey(DIK_4))
-	{
-		SetModel(fbxModel4);
-	}
-	else if (Input::GetInstance()->PushKey(DIK_5))
-	{
-		SetModel(fbxModel5);
-	}
-	else if (Input::GetInstance()->PushKey(DIK_6))
-	{
-		SetModel(fbxModel6);
-	}
-	else if (Input::GetInstance()->PushKey(DIK_7))
-	{
-		SetModel(fbxModel7);
-	}
-
-	if (Input::GetInstance()->PushKey(DIK_P))
-	{
-		AnimationFlag = true;
+		//全フレームの保存
+		oldAnimeNum = animeNum;
+		return;
 	}
 	
-	if (Input::GetInstance()->PushKey(DIK_O))
-	{
-		AnimationFlag = false;
-	}
-
-	AnimationFlag = false;
-	if (animeFlag == false) return;
-
+	//前フレームと違うアニメーションの場合モデルを入れ替える
 	if (oldAnimeNum != animeNum)
 	{
 		switch (animeNum)
@@ -1156,7 +1140,7 @@ void Player::AnimetionProcess()
 			SetModel(fbxModel4);
 			loopPlayFlag = false;
 			break;
-		case 4:					//走りジャンプ
+		case 4:					//落下
 			SetModel(fbxModel5);
 			loopPlayFlag = false;
 			break;
@@ -1164,12 +1148,27 @@ void Player::AnimetionProcess()
 			SetModel(fbxModel6);
 			loopPlayFlag = true;
 			break;
-		case 6:					//崖上がり
+		case 6:					//着地
 			SetModel(fbxModel7);
+			loopPlayFlag = false;
 			break;
 		}
 	}
+	
+	//アニメーション再生
 	AnimationFlag = true;
-	oldAnimeNum = animeNum;
+	//モデルの更新
 	FbxObject3d::Update();
+	
+	//着地アニメーションが終わった場合着地フラグの解消
+	if (animeNum == 6)
+	{
+		if (AnimetionFinFlag == true)
+		{
+			landingFlag = false;
+		}
+	}
+
+	//全フレームの保存
+	oldAnimeNum = animeNum;
 }

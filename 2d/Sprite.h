@@ -76,12 +76,6 @@ public: //静的メンバ関数
 	/// <returns>生成されたスプライト</returns>
 	static Sprite *Create(UINT texNumber, XMFLOAT2 position, XMFLOAT4 color = { 1, 1, 1, 1 }, XMFLOAT2 anchorpoint = { 0.0f, 0.0f }, bool isFlipX = false, bool isFlipY = false);
 
-
-
-
-
-
-
 protected: //静的メンバ変数
 
 	//デバイス
@@ -160,6 +154,8 @@ public: //メンバ関数
 	/// <param name="texLeftTop">テクスチャ左上座標</param>
 	/// <param name="texSize">テクスチャサイズ</param>
 	void SetTextureRect(XMFLOAT2 texLeftTop, XMFLOAT2 texSize);
+
+	void SetTexNum(UINT texNumber) { this->texNumber = texNumber; }
 
 	void SetIsInvisible(bool isInvisible);
 

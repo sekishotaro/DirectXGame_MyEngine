@@ -172,6 +172,7 @@ private:
 	//ジャンプ確認フラグ
 	static bool jumpFlag;
 	static bool fallFlag;
+	static bool landingFlag;
 
 	//自機とゴールの当たり判定
 	static bool goalFlag;
@@ -210,15 +211,22 @@ private:
 	
 	//制限時間
 	static float timeLimit;
+	static const float timeLimitMax;
 	float flame = 0.0f;
 
 
-	//スタミナを使うか
+	/// <summary>
+	/// スタミナ消費確認フラグ
+	/// </summary>
 	static bool staminaBoostFlag;
-	//スタミナ残量
+	/// <summary>
+	/// スタミナ残量
+	/// </summary>
 	static float staminaQuantity;
 	//スタミナがなくなった時の回復時間
 	float forciblyRecoveryTime = 10.0f;
+	//スタミナ回復待機時間
+	float staminaRecoveryTime = 5.0f;
 	//スタミナが使えるかどうか(スタミナを使い切った場合になる状態)
 	static bool staminaCut;
 	static bool crystalGetFlag;
