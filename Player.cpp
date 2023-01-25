@@ -185,6 +185,7 @@ void Player::PushBack(const DirectX::XMVECTOR& normal, const XMFLOAT3& distance)
 
 void Player::ClimbWallJudge(XMVECTOR move)
 {
+	//移動してない場合return
 	if (move.m128_f32[0] == 0.0f && move.m128_f32[1] == 0.0f && move.m128_f32[2] == 0.0f) return;
 
 	//壁のぼり用板ポリに当たっているかの判別
@@ -269,10 +270,6 @@ void Player::ClimbWallJudge(XMVECTOR move)
 		position.y -= moveV.y;
 		position.z -= moveV.z;
 		climbWallHit = true;
-	}
-	else if (climbWallHit == false && climbWallHitPar == false)
-	{
-		
 	}
 
 	//当たり判定保存
@@ -442,78 +439,11 @@ void Player::MoveNormal(DirectX::XMVECTOR& move)
 		animeNum = 0;
 		nowMove = false;
 	}
-
-	//キーボード
-	/*{
-		if (Input::GetInstance()->PushKey(DIK_A))
-		{
-			rotation.y -= 2.0f;
-		}
-		else if (Input::GetInstance()->PushKey(DIK_D))
-		{
-			rotation.y += 2.0f;
-		}
-		//スタミナダッシュ
-		if (Input::GetInstance()->PushKey(DIK_V) && staminaCut == false)
-		{
-			staminaBoostFlag = true;
-			power = 3.0f;
-		}
-		else
-		{
-			staminaBoostFlag = false;
-		}
-		if (Input::GetInstance()->PushKey(DIK_S))
-		{
-			position.x -= move.m128_f32[0] * power * moveAdjustmentNum;
-			position.y -= move.m128_f32[1] * power * moveAdjustmentNum;
-			position.z -= move.m128_f32[2] * power * moveAdjustmentNum;
-			nowMove = true;
-
-			//animeFlag = true;
-			//if (staminaBoostFlag == true)
-			//{
-			//	animeNum = 1;
-			//}
-			//else				//ダッシュ
-			//{
-			//	animeNum = 2;
-			//}
-
-		}
-		else if (Input::GetInstance()->PushKey(DIK_W))
-		{
-			position.x += move.m128_f32[0] * power * moveAdjustmentNum;
-			position.y += move.m128_f32[1] * power * moveAdjustmentNum;
-			position.z += move.m128_f32[2] * power * moveAdjustmentNum;
-			nowMove = true;
-
-			//animeFlag = true;
-			//if (staminaBoostFlag == true)
-			//{
-			//	animeNum = 1;
-			//}
-			//else				//ダッシュ
-			//{
-			//	animeNum = 2;
-			//}
-		}
-	}*/
-
 }
 
 void Player::MoveClimb(DirectX::XMVECTOR& move)
 {
 	moveV = { 0,0,0 };
-
-	if (Input::GetInstance()->PushPadbutton(Button_A))
-	{
-		staminaBoostFlag = true;
-	}
-	else
-	{
-		staminaBoostFlag = false;
-	}
 
 	//コントローラー
 	if (Input::GetInstance()->LeftStickIn(LEFT))
@@ -617,124 +547,12 @@ void Player::MoveClimb(DirectX::XMVECTOR& move)
 		nowMove = false;
 	}
 
-	//キーボード
+	//落下
+	if (Input::GetInstance()->PushPadbutton(Button_A))
 	{
-		if (Input::GetInstance()->PushKey(DIK_V))
-		{
-			staminaBoostFlag = true;
-		}
-		else
-		{
-			staminaBoostFlag = false;
-		}
-
-		if (Input::GetInstance()->PushKey(DIK_A))
-		{
-			if (climbNormal.m128_f32[2] == 1.0f)
-			{
-				moveV.x += 0.5f;
-			}
-			else if (climbNormal.m128_f32[2] == -1.0f)
-			{
-				moveV.x -= 0.5f;
-			}
-
-			if (climbNormal.m128_f32[0] == 1.0f)
-			{
-				moveV.x -= 0.5f;
-			}
-			else if (climbNormal.m128_f32[0] == -1.0f)
-			{
-				moveV.z += 0.5f;
-			}
-
-			nowMove = true;
-
-			//animeFlag = true;
-			//if (staminaBoostFlag == true)
-			//{
-			//	animeNum = 1;
-			//}
-			//else				//ダッシュ
-			//{
-			//	animeNum = 2;
-			//}
-		}
-		else if (Input::GetInstance()->PushKey(DIK_D))
-		{
-			if (climbNormal.m128_f32[2] == 1.0f)
-			{
-				moveV.x -= 0.5f;
-			}
-			else if (climbNormal.m128_f32[2] == -1.0f)
-			{
-				moveV.x += 0.5f;
-			}
-
-			if (climbNormal.m128_f32[0] == 1.0f)
-			{
-				moveV.x += 0.5f;
-			}
-			else if (climbNormal.m128_f32[0] == -1.0f)
-			{
-				moveV.z -= 0.5f;
-			}
-
-			nowMove = true;
-
-			//animeFlag = true;
-			//if (staminaBoostFlag == true)
-			//{
-			//	animeNum = 1;
-			//}
-			//else				//ダッシュ
-			//{
-			//	animeNum = 2;
-			//}
-		}
-		else
-		{
-			nowMove = false;
-		}
-
-		if (Input::GetInstance()->PushKey(DIK_S))
-		{
-			moveV.y -= 0.5f;
-			nowMove = true;
-
-			//animeFlag = true;
-			//if (staminaBoostFlag == true)
-			//{
-			//	animeNum = 1;
-			//}
-			//else				//ダッシュ
-			//{
-			//	animeNum = 2;
-			//}
-		}
-		else if (Input::GetInstance()->PushKey(DIK_W))
-		{
-			moveV.y += 0.5f;
-			nowMove = true;
-
-			//animeFlag = true;
-			//if (staminaBoostFlag == true)
-			//{
-			//	animeNum = 1;
-			//}
-			//else				//ダッシュ
-			//{
-			//	animeNum = 2;
-			//}
-		}
-
-		//落下
-		if (Input::GetInstance()->PushKey(DIK_P) || Input::GetInstance()->PushPadbutton(Button_B))
-		{
-			climbOperation = false;
-			position.x += climbNormal.m128_f32[0];
-			position.z += climbNormal.m128_f32[2];
-		}
+		climbOperation = false;
+		position.x += climbNormal.m128_f32[0];
+		position.z += climbNormal.m128_f32[2];
 	}
 
 
@@ -919,7 +737,7 @@ void Player::GravityConfirmationProcess()
 		const float jumpVYFist = 1.5f; //ジャンプ時上向き初速
 		fallV = { 0, jumpVYFist, 0,0 };
 	}
-	else if (Input::GetInstance()->PushPadbutton(Button_Y) && climbOperation == false)
+	else if (Input::GetInstance()->TriggerPadbutton(Button_Y) && climbOperation == false)
 	{
 		jumpFlag = true;
 		onGround = false;
@@ -991,6 +809,11 @@ void Player::TerrainConfirmationProcess()
 	//壁のぼり判定
 	ClimbWallJudge(callback.move);
 
+	//壁のぼり状態なら床の判定を飛ばす(保留)
+	if (climbOperation == true)
+	{
+		return;
+	}
 
 	//球の上端から球の下端までのレイキャスト用レイを準備
 	Ray ray;

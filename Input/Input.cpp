@@ -82,7 +82,8 @@ void Input::Update()
 	}
 
 	//ゲームパッド
-		//ゲームパッドの生成
+	//ゲームパッドの生成
+	parState = state;
 	if (XInputGetState(0, &state) != ERROR_SUCCESS)
 	{
 		//assert(0);
@@ -216,6 +217,14 @@ bool Input::PushPadbutton(int num)
 		result = true;
 	}
 
+	return result;
+}
+
+bool Input::TriggerPadbutton(int num)
+{
+	bool result = false;
+	if (parState.Gamepad.wButtons == state.Gamepad.wButtons) return result;
+	result = PushPadbutton(num);
 	return result;
 }
 

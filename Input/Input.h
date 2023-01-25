@@ -119,6 +119,10 @@ public: //メンバ関数
 
 	//パッドのボタン入力
 	bool PushPadbutton(int num);
+
+	//パッドのトリガー入力
+	bool TriggerPadbutton(int num);
+
 	//パッドの左スティック入力
 	bool LeftStickIn(PadStick stick);
 	//パッドの左スティックの入力値;
@@ -152,6 +156,7 @@ private: //メンバ変数
 
 	//コントローラー
 	XINPUT_STATE state;
+	XINPUT_STATE parState;
 	float stickDistance = 50.0f;
 	#define XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE  7849
 	#define XINPUT_GAMEPAD_RIGHT_THUMB_DEADZONE 8689

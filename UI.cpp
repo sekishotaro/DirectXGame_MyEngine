@@ -28,6 +28,7 @@ Sprite* UI::timerPetal6 = nullptr;
 Sprite* UI::timerPetal7 = nullptr;
 Sprite* UI::timerPetal8 = nullptr;
 
+Sprite* UI::controllerUI = nullptr;
 
 void UI::Initialize()
 {
@@ -35,7 +36,7 @@ void UI::Initialize()
 	Sprite::LoadTexture(3, L"Resources/staminaBar/staminaBar_1.png");
 	Sprite::LoadTexture(4, L"Resources/staminaBar/staminaBar_2.png");
 	Sprite::LoadTexture(5, L"Resources/staminaBar/staminaBar_3.png");
-	
+
 	Sprite::LoadTexture(20, L"Resources/UI/CrystalUI/Crystal_Null.png");
 	Sprite::LoadTexture(21, L"Resources/UI/CrystalUI/Crystal_1.png");
 	Sprite::LoadTexture(22, L"Resources/UI/CrystalUI/Crystal_2.png");
@@ -54,6 +55,8 @@ void UI::Initialize()
 	Sprite::LoadTexture(35, L"Resources/UI/timer/timerPetal4.png");
 	Sprite::LoadTexture(36, L"Resources/UI/timer/timerPetal5.png");
 
+	Sprite::LoadTexture(40, L"Resources/UI/controller/controllerUI.png");
+	Sprite::LoadTexture(41, L"Resources/UI/controller/controllerUI3.png");
 
 	stamina0 = Sprite::Create(2, { 800.0f,350.0f });
 	stamina0->SetAnchorPoint({ 1.0f, 1.0f });
@@ -86,8 +89,8 @@ void UI::Initialize()
 
 	timerCenter = Sprite::Create(30, { 1174 , 83.0f });
 	timerCenter->SetSize({ 32, 32 });
-	
-	timerPetal0 = Sprite::Create(31, { 1190 , 100.0f }, XMFLOAT4 { 1, 1, 1, 1 }, XMFLOAT2 { 0.5f, 1.0f });
+
+	timerPetal0 = Sprite::Create(31, { 1190 , 100.0f }, XMFLOAT4{ 1, 1, 1, 1 }, XMFLOAT2{ 0.5f, 1.0f });
 	timerPetal0->SetSize({ 32, 64 });
 	timerPetal0->SetRotation(0.0f);
 	timerPetal1 = Sprite::Create(31, { 1190 , 100.0f }, XMFLOAT4{ 1, 1, 1, 1 }, XMFLOAT2{ 0.5f, 1.0f });
@@ -114,6 +117,8 @@ void UI::Initialize()
 	timerPetal8 = Sprite::Create(31, { 1190 , 100.0f }, XMFLOAT4{ 1, 1, 1, 1 }, XMFLOAT2{ 0.5f, 1.0f });
 	timerPetal8->SetSize({ 32, 64 });
 	timerPetal8->SetRotation(320.0f);
+
+	controllerUI = Sprite::Create(40, { 70.0f , 500.0f });
 }
 
 void UI::Update()
@@ -138,6 +143,15 @@ void UI::Update()
 	}
 
 	timeUpdata();
+	
+	if (Player::GetWallHitFlag() == true)
+	{
+		controllerUI->SetTexNum(41);
+	}
+	else
+	{
+		controllerUI->SetTexNum(40);
+	}
 }
 
 void UI::Draw()
@@ -199,6 +213,8 @@ void UI::Draw()
 	timerPetal7->Draw();
 	timerPetal8->Draw();
 	timerCenter->Draw();
+
+	controllerUI->Draw();
 }
 
 void UI::timeUpdata()
@@ -210,6 +226,21 @@ void UI::timeUpdata()
 	//const int Max = 108;
 	const int time = (int)Player::GetTimeLimit();
 	const int seconds_between = 2;
+
+	if (time == 108)
+	{
+		timerPetal0->SetTexNum(31);
+		timerPetal1->SetTexNum(31);
+		timerPetal2->SetTexNum(31);
+		timerPetal3->SetTexNum(31);
+		timerPetal4->SetTexNum(31);
+		timerPetal5->SetTexNum(31);
+		timerPetal6->SetTexNum(31);
+		timerPetal7->SetTexNum(31);
+		timerPetal8->SetTexNum(31);
+
+	}
+
 
 	//切り替えタイミングでないならそのまま返す
 	if (time % seconds_between != 0) return;

@@ -49,5 +49,8 @@ private:
 	static Sprite* timerPetal6;
 	static Sprite* timerPetal7;
 	static Sprite* timerPetal8;
+
+
+	static Sprite* controllerUI;
 };
 
