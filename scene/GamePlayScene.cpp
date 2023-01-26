@@ -58,7 +58,7 @@ void GamePlayScene::Initialize()
 
 
 	//json
-	JsonLoader::LoadFile("Scene1_15"); //オブジェクトの当たり判定
+	JsonLoader::LoadFile("Scene1_27"); //オブジェクトの当たり判定
 
 	JsonLoader::SetObject();
 
@@ -231,30 +231,30 @@ void GamePlayScene::Draw()
 	Sprite::PostDraw();
 	Effect2d::PostDraw();
 	//imguiの描画
-	imguiManager::PraDraw();
-	ImGui::NewFrame();
-	ImGui::Begin("config1");//ウィンドウの名前
-	ImGui::SetWindowSize(ImVec2(400, 500), ImGuiCond_::ImGuiCond_FirstUseEver);
-	ImGui::Text("Time: %d", (int)ClockTime::GetSec());
-	ImGui::Text("CameraRoteY: %f", camera->GetRotaY());
-	ImGui::Text("inputX: %d", objFighter->GetInputNumX());
-	ImGui::Text("inputY: %d", objFighter->GetInputNumY());
-	ImGui::Text("testRota: %.4f", OpticalPost::GetNum());
-	ImGui::Text("TimeLimit: %.4f", objFighter->GetTimeLimit());
-	ImGui::Text("PosX    :%.4f", objFighter->GetPosition().x);
-	ImGui::Text("PosY    :%.4f", objFighter->GetPosition().y);
-	ImGui::Text("PosZ    :%.4f", objFighter->GetPosition().z);
-	ImGui::Text("RotaX   :%.4f", objFighter->GetRotation().x);
-	ImGui::Text("RotaY   :%.4f", objFighter->GetRotation().y);
-	ImGui::Text("RotaZ   :%.4f", objFighter->GetRotation().z);
-	ImGui::Text("cameraX :%.4f", camera->GetEye().x);
-	ImGui::Text("cameraY :%.4f", camera->GetEye().y);
-	ImGui::Text("cameraZ :%.4f", camera->GetEye().z);
-	ImGui::Text("crystal :%d", objFighter->GetCrystal());
-	ImGui::Checkbox("GoalFlag", &objFighter->GetGoalFlag());
-	ImGui::Checkbox("Wall", &objFighter->GetWallHitFlag());
-	ImGui::Checkbox("statmina", &objFighter->AnimationFlag);
-	imguiManager::PosDraw();
+	//imguiManager::PraDraw();
+	//ImGui::NewFrame();
+	//ImGui::Begin("config1");//ウィンドウの名前
+	//ImGui::SetWindowSize(ImVec2(400, 500), ImGuiCond_::ImGuiCond_FirstUseEver);
+	//ImGui::Text("Time: %d", (int)ClockTime::GetSec());
+	//ImGui::Text("CameraRoteY: %f", camera->GetRotaY());
+	//ImGui::Text("inputX: %d", objFighter->GetInputNumX());
+	//ImGui::Text("inputY: %d", objFighter->GetInputNumY());
+	//ImGui::Text("testRota: %.4f", OpticalPost::GetNum());
+	//ImGui::Text("TimeLimit: %.4f", objFighter->GetTimeLimit());
+	//ImGui::Text("PosX    :%.4f", objFighter->GetPosition().x);
+	//ImGui::Text("PosY    :%.4f", objFighter->GetPosition().y);
+	//ImGui::Text("PosZ    :%.4f", objFighter->GetPosition().z);
+	//ImGui::Text("RotaX   :%.4f", objFighter->GetRotation().x);
+	//ImGui::Text("RotaY   :%.4f", objFighter->GetRotation().y);
+	//ImGui::Text("RotaZ   :%.4f", objFighter->GetRotation().z);
+	//ImGui::Text("cameraX :%.4f", camera->GetEye().x);
+	//ImGui::Text("cameraY :%.4f", camera->GetEye().y);
+	//ImGui::Text("cameraZ :%.4f", camera->GetEye().z);
+	//ImGui::Text("crystal :%d", objFighter->GetCrystal());
+	//ImGui::Checkbox("GoalFlag", &objFighter->GetGoalFlag());
+	//ImGui::Checkbox("Wall", &objFighter->GetWallHitFlag());
+	//ImGui::Checkbox("statmina", &objFighter->AnimationFlag);
+	//imguiManager::PosDraw();
 }
 
 void GamePlayScene::ObjectsUpdate()
