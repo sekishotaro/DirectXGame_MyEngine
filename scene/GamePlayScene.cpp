@@ -70,6 +70,8 @@ void GamePlayScene::Initialize()
 	fbxModel5 = FbxLoader::GetInstance()->LoadModelFromFile("model5");
 	fbxModel6 = FbxLoader::GetInstance()->LoadModelFromFile("model6");
 	fbxModel7 = FbxLoader::GetInstance()->LoadModelFromFile("model7");
+	fbxModel8 = FbxLoader::GetInstance()->LoadModelFromFile("model8");
+	fbxModel9 = FbxLoader::GetInstance()->LoadModelFromFile("model9");
 	collisionManager = CollisionManager::GetInstance();
 	objFighter = Player::Create(fbxModel);
 	objFighter->SetModel1(fbxModel);
@@ -79,6 +81,8 @@ void GamePlayScene::Initialize()
 	objFighter->SetModel5(fbxModel5);
 	objFighter->SetModel6(fbxModel6);
 	objFighter->SetModel7(fbxModel7);
+	objFighter->SetModel8(fbxModel8);
+	objFighter->SetModel9(fbxModel9);
 
 	skydomeObject = Object3d::Create();
 	skydomeObject->SetModel(skydomeModel);
@@ -236,7 +240,7 @@ void GamePlayScene::Draw()
 	ImGui::Begin("config1");//ウィンドウの名前
 	ImGui::SetWindowSize(ImVec2(400, 500), ImGuiCond_::ImGuiCond_FirstUseEver);
 	ImGui::Text("Time: %d", (int)ClockTime::GetSec());
-	ImGui::Text("CameraRoteY: %f", camera->GetRotaY());
+	ImGui::Text("AnimeNum: %d", objFighter->GetAnimeNum());
 	ImGui::Text("inputX: %d", objFighter->GetInputNumX());
 	ImGui::Text("inputY: %d", objFighter->GetInputNumY());
 	ImGui::Text("testRota: %.4f", OpticalPost::GetNum());

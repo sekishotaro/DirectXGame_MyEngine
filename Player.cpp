@@ -43,6 +43,8 @@ FbxModel* Player::fbxModel4 = nullptr;
 FbxModel* Player::fbxModel5 = nullptr;
 FbxModel* Player::fbxModel6 = nullptr;
 FbxModel* Player::fbxModel7 = nullptr;
+FbxModel* Player::fbxModel8 = nullptr;
+FbxModel* Player::fbxModel9 = nullptr;
 
 Player* Player::Create(FbxModel* model)
 {
@@ -114,11 +116,11 @@ void Player::Update()
 
 	UpdateWorldMatrix();
 
-	//落下処理
-	GravityConfirmationProcess();
-
 	//地形との当たり判定(メッシュコライダー)
 	TerrainConfirmationProcess();
+
+	//落下処理
+	GravityConfirmationProcess();
 	
 	//障害物(AABB)の衝突処理
 	ObstacleConfirmationProcess(move);
@@ -445,25 +447,27 @@ void Player::MoveClimb(DirectX::XMVECTOR& move)
 {
 	moveV = { 0,0,0 };
 
+	float power = 0.1f;
+
 	//コントローラー
 	if (Input::GetInstance()->LeftStickIn(LEFT))
 	{
 		if (climbNormal.m128_f32[2] == 1.0f)
 		{
-			moveV.x += 0.5f;
+			moveV.x += 0.5f * power;
 		}
 		else if (climbNormal.m128_f32[2] == -1.0f)
 		{
-			moveV.x -= 0.5f;
+			moveV.x -= 0.5f * power;
 		}
 
 		if (climbNormal.m128_f32[0] == 1.0f)
 		{
-			moveV.x -= 0.5f;
+			moveV.x -= 0.5f * power;
 		}
 		else if (climbNormal.m128_f32[0] == -1.0f)
 		{
-			moveV.z += 0.5f;
+			moveV.z += 0.5f * power;
 		}
 
 		nowMove = true;
@@ -482,20 +486,20 @@ void Player::MoveClimb(DirectX::XMVECTOR& move)
 	{
 		if (climbNormal.m128_f32[2] == 1.0f)
 		{
-			moveV.x -= 0.5f;
+			moveV.x -= 0.5f * power;
 		}
 		else if (climbNormal.m128_f32[2] == -1.0f)
 		{
-			moveV.x += 0.5f;
+			moveV.x += 0.5f * power;
 		}
 
 		if (climbNormal.m128_f32[0] == 1.0f)
 		{
-			moveV.x += 0.5f;
+			moveV.x += 0.5f * power;
 		}
 		else if (climbNormal.m128_f32[0] == -1.0f)
 		{
-			moveV.z -= 0.5f;
+			moveV.z -= 0.5f * power;
 		}
 
 		nowMove = true;
@@ -512,7 +516,7 @@ void Player::MoveClimb(DirectX::XMVECTOR& move)
 	}
 	else if (Input::GetInstance()->LeftStickIn(DOWN))
 	{
-		moveV.y -= 0.5f;
+		moveV.y -= 0.5f * power;
 		nowMove = true;
 
 		animeFlag = true;
@@ -527,7 +531,7 @@ void Player::MoveClimb(DirectX::XMVECTOR& move)
 	}
 	else if (Input::GetInstance()->LeftStickIn(UP))
 	{
-		moveV.y += 0.5f;
+		moveV.y += 0.5f * power;
 		nowMove = true;
 
 		animeFlag = true;
@@ -734,7 +738,7 @@ void Player::GravityConfirmationProcess()
 	{
 		onGround = false;
 		nowMove = true;
-		const float jumpVYFist = 1.5f; //ジャンプ時上向き初速
+		const float jumpVYFist = 0.2f; //ジャンプ時上向き初速
 		fallV = { 0, jumpVYFist, 0,0 };
 	}
 	else if (Input::GetInstance()->TriggerPadbutton(Button_Y) && climbOperation == false)
@@ -742,7 +746,7 @@ void Player::GravityConfirmationProcess()
 		jumpFlag = true;
 		onGround = false;
 		nowMove = true;
-		const float jumpVYFist = 0.3f; //ジャンプ時上向き初速
+		const float jumpVYFist = 0.2f; //ジャンプ時上向き初速
 		fallV = { 0, jumpVYFist, 0,0 };
 	}
 	// ワールド行列更新
@@ -807,7 +811,10 @@ void Player::TerrainConfirmationProcess()
 
 
 	//壁のぼり判定
-	ClimbWallJudge(callback.move);
+	if (fallFlag != true)
+	{
+		ClimbWallJudge(callback.move);
+	}
 
 	//壁のぼり状態なら床の判定を飛ばす(保留)
 	if (climbOperation == true)
@@ -818,7 +825,6 @@ void Player::TerrainConfirmationProcess()
 	//球の上端から球の下端までのレイキャスト用レイを準備
 	Ray ray;
 	ray.start = sphereCollider->center;
-	//ray.start.m128_f32[1] += sphereCollider->GetRadius();
 	ray.dir = { 0, -1, 0, 0 };
 	RaycastHit raycastHit;
 
@@ -828,7 +834,7 @@ void Player::TerrainConfirmationProcess()
 	if (onGround && onObject == false)
 	{
 		//スムーズに坂を下る為の吸着距離
-		const float adsDistance = 0.2f;
+		const float adsDistance = 0.6f;
 
 		//接地を維持
 		if (CollisionManager::GetInstance()->Raycast(ray, COLLISION_ATTR_LANDSHAPE,
@@ -848,6 +854,7 @@ void Player::TerrainConfirmationProcess()
 	}
 	else if (fallV.m128_f32[1] <= 0.0f)//落下状態
 	{
+
 		nowMove = true;
 		if (CollisionManager::GetInstance()->Raycast(ray, COLLISION_ATTR_LANDSHAPE,
 			&raycastHit, sphereCollider->GetRadius() * 2.0f) == true)
@@ -934,6 +941,19 @@ void Player::AnimetionProcess()
 {
 	//アニメーションの初期化
 	AnimationFlag = false;
+
+
+	if (Input::GetInstance()->PushKey(DIK_1))
+	{
+		animeFlag = true;
+		animeNum = 8;
+	}
+	else if (Input::GetInstance()->PushKey(DIK_2))
+	{
+		animeFlag = true;
+		animeNum = 7;
+	}
+
 	//アニメーションをしないなら返す
 	if (animeFlag == false)
 	{
@@ -942,12 +962,23 @@ void Player::AnimetionProcess()
 		return;
 	}
 	
+	if (oldAnimeNum == 5 && animeNum == 4)
+	{
+		animeNum = 8;
+	}
+	else if (oldAnimeNum == 5 && animeNum == 0)
+	{
+		animeNum = 8;
+	}
+
+
+
 	//前フレームと違うアニメーションの場合モデルを入れ替える
 	if (oldAnimeNum != animeNum)
 	{
 		switch (animeNum)
 		{
-		case 0:					//基本
+		case 0:					//アイドリング
 			SetModel(fbxModel1);
 			loopPlayFlag = true;
 			break;
@@ -974,6 +1005,14 @@ void Player::AnimetionProcess()
 		case 6:					//着地
 			SetModel(fbxModel7);
 			loopPlayFlag = false;
+			break;
+		case 7:					//ダンス
+			SetModel(fbxModel8);
+			loopPlayFlag = true;
+			break;
+		case 8:					//キック
+			SetModel(fbxModel9);
+			loopPlayFlag = true;
 			break;
 		}
 	}

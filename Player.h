@@ -147,6 +147,8 @@ public:
 
 	static bool GetJumpFlag() { return jumpFlag; }
 
+	static int& GetAnimeNum() { return animeNum; }
+
 
 	void SetModel1(FbxModel* fbxModel) { this->fbxModel1 = fbxModel; };
 	void SetModel2(FbxModel* fbxModel) { this->fbxModel2 = fbxModel; };
@@ -155,7 +157,8 @@ public:
 	void SetModel5(FbxModel* fbxModel) { this->fbxModel5 = fbxModel; };
 	void SetModel6(FbxModel* fbxModel) { this->fbxModel6 = fbxModel; };
 	void SetModel7(FbxModel* fbxModel) { this->fbxModel7 = fbxModel; };
-
+	void SetModel8(FbxModel* fbxModel) { this->fbxModel8 = fbxModel; };
+	void SetModel9(FbxModel* fbxModel) { this->fbxModel9 = fbxModel; };
 private:
 	//接地フラグ
 	static bool onGround;
@@ -201,7 +204,9 @@ private:
 	//ツタに当たった時のめり込み時カウント
 	int wallCount = 0;
 
+	//壁のぼり状態
 	static bool climbOperation;
+	static bool oldClimbOperation;
 	//壁のぼり用保存めり込み法線
 	DirectX::XMVECTOR climbNormal = {};
 	//のぼり用板ポリとの当たり判定
@@ -244,7 +249,7 @@ private:
 	static FbxModel* fbxModel5;	//走りジャンプ
 	static FbxModel* fbxModel6;	//クライミング
 	static FbxModel* fbxModel7; //崖上がり
-
-
+	static FbxModel* fbxModel8; //ダンス
+	static FbxModel* fbxModel9; //キック
 };
 
