@@ -110,6 +110,9 @@ private:
 	//アニメーション
 	void AnimetionProcess();
 
+	//坂下り当たり判定
+	void SlopeDownhill();
+
 public:
 	//デバック用ゲッター
 	static XMFLOAT3 GetPos() { return pos; }
@@ -149,6 +152,8 @@ public:
 
 	static int& GetAnimeNum() { return animeNum; }
 
+	static bool &GetSlopeFlag() { return slopeFlag; }
+
 
 	void SetModel1(FbxModel* fbxModel) { this->fbxModel1 = fbxModel; };
 	void SetModel2(FbxModel* fbxModel) { this->fbxModel2 = fbxModel; };
@@ -171,6 +176,8 @@ private:
 	bool onObject = false;
 	//移動中確認フラグ
 	static bool nowMove;
+	//坂確認フラグ
+	static bool slopeFlag;
 
 	//ジャンプ確認フラグ
 	static bool jumpFlag;

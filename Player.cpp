@@ -16,6 +16,7 @@ XMFLOAT3 Player::rot = { 0,0,0 };
 XMFLOAT3 Player::moveV = { 0,0,0 };
 float Player::moveAdjustmentNum = 1.0f;
 bool Player::nowMove = false;
+bool Player::slopeFlag = false;
 bool Player::jumpFlag = false;
 bool Player::fallFlag = false;
 bool Player::landingFlag = false;
@@ -116,11 +117,11 @@ void Player::Update()
 
 	UpdateWorldMatrix();
 
-	//地形との当たり判定(メッシュコライダー)
-	TerrainConfirmationProcess();
-
 	//落下処理
 	GravityConfirmationProcess();
+
+	//地形との当たり判定(メッシュコライダー)
+	TerrainConfirmationProcess();
 	
 	//障害物(AABB)の衝突処理
 	ObstacleConfirmationProcess(move);
@@ -392,13 +393,14 @@ void Player::MoveNormal(DirectX::XMVECTOR& move)
 		else
 		{
 			staminaBoostFlag = true;
-			power = 3.0f;
+			power = 3.0f * moveAdjustmentNum;
 		}
 
 	}
 	else
 	{
 		staminaBoostFlag = false;
+		power = 1.0f * moveAdjustmentNum;
 	}
 
 	if (Input::GetInstance()->LeftStickIn(LEFT) || Input::GetInstance()->LeftStickIn(RIGHT))
@@ -777,7 +779,8 @@ void Player::TerrainConfirmationProcess()
 			float cos = XMVector3Dot(rejectDir, up).m128_f32[0];
 
 			//地面判定しきい値角度
-			const float threshold = cosf(XMConvertToRadians(45.0f));
+			const float threshold = cosf(XMConvertToRadians(50.0f));
+			const float threshold2 = cosf(XMConvertToRadians(45.0f));
 			
 			//角度差によって天井または地面と判定されるものを除いて
 			if (-threshold < cos && cos < threshold)
@@ -785,6 +788,11 @@ void Player::TerrainConfirmationProcess()
 				//球を排斥 (押し出す)
 				sphere->center += info.reject;
 				move += info.reject;
+				slopeFlag = false;
+			}
+			else
+			{
+				slopeFlag = true;
 			}
 
 			return true;
@@ -851,8 +859,8 @@ void Player::TerrainConfirmationProcess()
 			onGround = false;
 			fallV = {};
 		}
-	}
-	else if (fallV.m128_f32[1] <= 0.0f)//落下状態
+	}									//↓坂でダッシュジャンプした時の当たり判定用に追加
+	else if (fallV.m128_f32[1] <= 0.0f || jumpFlag == true)//落下状態
 	{
 
 		nowMove = true;
@@ -1033,4 +1041,16 @@ void Player::AnimetionProcess()
 
 	//全フレームの保存
 	oldAnimeNum = animeNum;
+}
+
+void Player::SlopeDownhill()
+{
+	//坂にいるかどうか
+
+	if (false) return;
+	//ダッシュしているかどうか
+	if (false) return;
+
+	//以下坂下り処理
+
 }

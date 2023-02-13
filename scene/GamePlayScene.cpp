@@ -258,6 +258,7 @@ void GamePlayScene::Draw()
 	ImGui::Checkbox("GoalFlag", &objFighter->GetGoalFlag());
 	ImGui::Checkbox("Wall", &objFighter->GetWallHitFlag());
 	ImGui::Checkbox("statmina", &objFighter->AnimationFlag);
+	ImGui::Checkbox("slope", &objFighter->GetSlopeFlag());
 	imguiManager::PosDraw();
 }
 
