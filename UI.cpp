@@ -223,11 +223,14 @@ void UI::timeUpdata()
 	//Todo:絶対時間が出来たら修正
 
 
-	//const int Max = 108;
+	const int timeMax = (int)Player::GetTimeMax();
 	const int time = (int)Player::GetTimeLimit();
+	//float time = Player::GetTimeLimit();
+
+
 	const int seconds_between = 2;
 
-	if (time == 108)
+	if (time == timeMax)
 	{
 		timerPetal0->SetTexNum(31);
 		timerPetal1->SetTexNum(31);
@@ -238,12 +241,232 @@ void UI::timeUpdata()
 		timerPetal6->SetTexNum(31);
 		timerPetal7->SetTexNum(31);
 		timerPetal8->SetTexNum(31);
-
 	}
 
+	
+	if (time <= timeMax * (0))
+	{
+		timerPetal8->SetTexNum(36);
+	}
+	else if (time <= (int)((float)timeMax * (1.0f / 54.0f)))
+	{
+		timerPetal8->SetTexNum(36);
+	}
+	else if (time <= (int)((float)timeMax * (2.0f / 54.0f)))
+	{
+		timerPetal8->SetTexNum(35);
+	}
+	else if (time <= (int)((float)timeMax * (3.0f / 54.0f)))
+	{
+		timerPetal8->SetTexNum(34);
+	}
+	else if (time <= (int)((float)timeMax * (4.0f / 54.0f)))
+	{
+		timerPetal8->SetTexNum(33);
+	}
+	else if (time <= (int)((float)timeMax * (5.0f / 54.0f)))
+	{
+		timerPetal8->SetTexNum(32);
+	}
+	else if (time <= (int)((float)timeMax * (6.0f / 54.0f)))
+	{
+		timerPetal8->SetTexNum(31);
+	}
+	else if (time <= (int)((float)timeMax * (7.0f / 54.0f)))
+	{
+		timerPetal7->SetTexNum(36);
+	}
+	else if (time <= (int)((float)timeMax * (8.0f / 54.0f)))
+	{
+		timerPetal7->SetTexNum(35);
+	}
+	else if (time <= (int)((float)timeMax * (9.0f / 54.0f)))
+	{
+		timerPetal7->SetTexNum(34);
+	}
+	else if (time <= (int)((float)timeMax * (10.0f / 54.0f)))
+	{
+		timerPetal7->SetTexNum(33);
+	}
+	else if (time <= (int)((float)timeMax * (11.0f / 54.0f)))
+	{
+		timerPetal7->SetTexNum(32);
+	}
+	else if (time <= (int)((float)timeMax * (12.0f / 54.0f)))
+	{
+		timerPetal7->SetTexNum(31);
+	}
+	else if (time <= (int)((float)timeMax * (13.0f / 54.0f)))
+	{
+		timerPetal6->SetTexNum(36);
+	}
+	else if (time <= (int)((float)timeMax * (14.0f / 54.0f)))
+	{
+		timerPetal6->SetTexNum(35);
+	}
+	else if (time <= (int)((float)timeMax * (15.0f / 54.0f)))
+	{
+		timerPetal6->SetTexNum(34);
+	}
+	else if (time <= (int)((float)timeMax * (16.0f / 54.0f)))
+	{
+		timerPetal6->SetTexNum(33);
+	}
+	else if (time <= (int)((float)timeMax * (17.0f / 54.0f)))
+	{
+		timerPetal6->SetTexNum(32);
+	}
+	else if (time <= (int)((float)timeMax * (18.0f / 54.0f)))
+	{
+		timerPetal6->SetTexNum(31);
+	}
+	else if (time <= (int)((float)timeMax * (19.0f / 54.0f)))
+	{
+		timerPetal5->SetTexNum(36);
+	}
+	else if (time <= (int)((float)timeMax * (20.0f / 54.0f)))
+	{
+		timerPetal5->SetTexNum(35);
+	}
+	else if (time <= (int)((float)timeMax * (21.0f / 54.0f)))
+	{
+		timerPetal5->SetTexNum(34);
+	}
+	else if (time <= (int)((float)timeMax * (22.0f / 54.0f)))
+	{
+		timerPetal5->SetTexNum(33);
+	}
+	else if (time <= (int)((float)timeMax * (23.0f / 54.0f)))
+	{
+		timerPetal5->SetTexNum(32);
+	}
+	else if (time <= (int)((float)timeMax * (24.0f / 54.0f)))
+	{
+		timerPetal5->SetTexNum(31);
+	}
+	else if (time <= (int)((float)timeMax * (25.0f / 54.0f)))
+	{
+		timerPetal4->SetTexNum(36);
+	}
+	else if (time <= (int)((float)timeMax * (26.0f / 54.0f)))
+	{
+		timerPetal4->SetTexNum(35);
+	}
+	else if (time <= (int)((float)timeMax * (27.0f / 54.0f)))
+	{
+		timerPetal4->SetTexNum(34);
+	}
+	else if (time <= (int)((float)timeMax * (28.0f / 54.0f)))
+	{
+		timerPetal4->SetTexNum(33);
+	}
+	else if (time <= (int)((float)timeMax * (29.0f / 54.0f)))
+	{
+		timerPetal4->SetTexNum(32);
+	}
+	else if (time <= (int)((float)timeMax * (30.0f / 54.0f)))
+	{
+		timerPetal4->SetTexNum(31);
+	}
+	else if (time <= (int)((float)timeMax * (31.0f / 54.0f)))
+	{
+		timerPetal3->SetTexNum(36);
+	}
+	else if (time <= (int)((float)timeMax * (32.0f / 54.0f)))
+	{
+		timerPetal3->SetTexNum(35);
+	}
+	else if (time <= (int)((float)timeMax * (33.0f / 54.0f)))
+	{
+		timerPetal3->SetTexNum(34);
+	}
+	else if (time <= (int)((float)timeMax * (34.0f / 54.0f)))
+	{
+		timerPetal3->SetTexNum(33);
+	}
+	else if (time <= (int)((float)timeMax * (35.0f / 54.0f)))
+	{
+		timerPetal3->SetTexNum(32);
+	}
+	else if (time <= (int)((float)timeMax * (36.0f / 54.0f)))
+	{
+		timerPetal3->SetTexNum(31);
+	}
+	else if (time <= (int)((float)timeMax * (37.0f / 54.0f)))
+	{
+		timerPetal2->SetTexNum(36);
+	}
+	else if (time <= (int)((float)timeMax * (38.0f / 54.0f)))
+	{
+		timerPetal2->SetTexNum(35);
+	}
+	else if (time <= (int)((float)timeMax * (39.0f / 54.0f)))
+	{
+		timerPetal2->SetTexNum(34);
+	}
+	else if (time <= (int)((float)timeMax * (40.0f / 54.0f)))
+	{
+		timerPetal2->SetTexNum(33);
+	}
+	else if (time <= (int)((float)timeMax * (41.0f / 54.0f)))
+	{
+		timerPetal2->SetTexNum(32);
+	}
+	else if (time <= (int)((float)timeMax * (42.0f / 54.0f)))
+	{
+		timerPetal2->SetTexNum(31);
+	}
+	else if (time <= (int)((float)timeMax * (43.0f / 54.0f)))
+	{
+		timerPetal1->SetTexNum(36);
+	}
+	else if (time <= (int)((float)timeMax * (44.0f / 54.0f)))
+	{
+		timerPetal1->SetTexNum(35);
+	}
+	else if (time <= (int)((float)timeMax * (45.0f / 54.0f)))
+	{
+		timerPetal1->SetTexNum(34);
+	}
+	else if (time <= (int)((float)timeMax * (46.0f / 54.0f)))
+	{
+		timerPetal1->SetTexNum(33);
+	}
+	else if (time <= (int)((float)timeMax * (47.0f / 54.0f)))
+	{
+		timerPetal1->SetTexNum(32);
+	}
+	else if (time <= (int)((float)timeMax * (48.0f / 54.0f)))
+	{
+		timerPetal1->SetTexNum(31);
+	}
+	else if (time <= (int)((float)timeMax * (49.0f / 54.0f)))
+	{
+		timerPetal0->SetTexNum(36);
+	}
+	else if (time <= (int)((float)timeMax * (50.0f / 54.0f)))
+	{
+		timerPetal0->SetTexNum(35);
+	}
+	else if (time <= (int)((float)timeMax * (51.0f / 54.0f)))
+	{
+		timerPetal0->SetTexNum(34);
+	}
+	else if (time <= (int)((float)timeMax * (52.0f / 54.0f)))
+	{
+		timerPetal0->SetTexNum(33);
+	}
+	else if (time <= (int)((float)timeMax * (53.0f / 54.0f)))
+	{
+		timerPetal0->SetTexNum(32);
+	}
+	else if (time <= (int)((float)timeMax * (54.0f / 54.0f)))
+	{
+		timerPetal0->SetTexNum(31);
+	}
 
 	//切り替えタイミングでないならそのまま返す
-	if (time % seconds_between != 0) return;
+	/*if (time % seconds_between != 0) return;
 
 	if (time == 108)
 	{
@@ -468,5 +691,5 @@ void UI::timeUpdata()
 	else if (time == 2)
 	{
 		timerPetal8->SetTexNum(36);
-	}
+	}*/
 }

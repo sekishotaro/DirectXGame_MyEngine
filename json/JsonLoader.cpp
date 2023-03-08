@@ -35,6 +35,17 @@ std::map<std::string, Model> JsonLoader::climbWallModels;
 std::vector<std::unique_ptr<Object3d>> JsonLoader::goalObjects;
 std::map<std::string, Model> JsonLoader::goalModels;
 
+std::vector<std::unique_ptr<Object3d>> JsonLoader::moveBoxObjects;
+std::map<std::string, Model> JsonLoader::moveBoxModels;
+
+std::vector<std::unique_ptr<Object3d>> JsonLoader::rockObjects;
+std::map<std::string, Model> JsonLoader::rockModels;
+
+std::vector<std::unique_ptr<Object3d>> JsonLoader::sandGroundObjects;
+std::map<std::string, Model> JsonLoader::sandGroundModels;
+
+bool JsonLoader::hitTerrainDrawFlag = true;
+
 LevelData* JsonLoader::levelData;
 
 const std::string JsonLoader::DefaultDirectory = "Resources/levels/";
@@ -108,9 +119,9 @@ void JsonLoader::LoadFile(const std::string& fileName)
 			objectData.translation.m128_f32[2] = -(float)transform["translation"][0];
 			objectData.translation.m128_f32[3] = 1.0;
 			//回転角
-			objectData.rotation.m128_f32[0] = -(float)transform["rotation"][1];
-			objectData.rotation.m128_f32[1] = -(float)transform["rotation"][2];
-			objectData.rotation.m128_f32[2] = (float)transform["rotation"][0];
+			objectData.rotation.m128_f32[0] = -(float)transform["rotation"][0];
+			objectData.rotation.m128_f32[1] = -(float)transform["rotation"][1];
+			objectData.rotation.m128_f32[2] = (float)transform["rotation"][2];
 			objectData.rotation.m128_f32[3] = 0.0;
 			//スケーリング
 			objectData.scaling.m128_f32[0] = (float)transform["scaling"][0];
@@ -225,6 +236,18 @@ void JsonLoader::SetObject()
 		else if (objectData.typeName == "goal")
 		{
 			TypeGoalModel(objectData);
+		}
+		else if (objectData.typeName == "rock")
+		{
+			TypeRockModel(objectData);
+		}
+		else if (objectData.typeName == "Appearance")
+		{
+			TypeSandGroundModel(objectData);
+		}
+		else if (objectData.typeName == "moveBox")
+		{
+			TypeMoveBoxModel(objectData);
 		}
 	}
 
@@ -355,6 +378,21 @@ void JsonLoader::Update()
 		goalObjects[i]->Update();
 	}
 
+	for (int i = 0; i < moveBoxObjects.size(); i++)
+	{
+		moveBoxObjects[i]->Update();
+	}
+
+	//以下完全描画用
+	for (int i = 0; i < rockObjects.size(); i++)
+	{
+		rockObjects[i]->Update();
+	}
+
+	for (int i = 0; i < sandGroundObjects.size(); i++)
+	{
+		sandGroundObjects[i]->Update();
+	}
 }
 
 void JsonLoader::Draw()
@@ -374,9 +412,12 @@ void JsonLoader::Draw()
 	{
 		groundObjects[i]->Draw();
 	}*/
-
-	objGround->Draw();
-
+	
+	if (hitTerrainDrawFlag == true)
+	{
+		objGround->Draw();
+	}
+	
 	for (int i = 0; i < enemyObjects.size(); i++)
 	{
 		enemyObjects[i]->Draw();
@@ -408,14 +449,35 @@ void JsonLoader::Draw()
 		//enemyNaviareaObjects[i]->Draw();
 	}
 
-	for (int i = 0; i < climbWallObjects.size(); i++)
-	{
-		climbWallObjects[i]->Draw();
-	}
+
 
 	for (int i = 0; i < goalObjects.size(); i++)
 	{
 		goalObjects[i]->Draw();
+	}
+
+	for (int i = 0; i < moveBoxObjects.size(); i++)
+	{
+		moveBoxObjects[i]->Draw();
+	}
+
+	if (hitTerrainDrawFlag == false)
+	{
+		for (int i = 0; i < rockObjects.size(); i++)
+		{
+			rockObjects[i]->Draw();
+		}
+
+		for (int i = 0; i < sandGroundObjects.size(); i++)
+		{
+			sandGroundObjects[i]->Draw();
+		}
+	}
+
+
+	for (int i = 0; i < climbWallObjects.size(); i++)
+	{
+		climbWallObjects[i]->Draw();
 	}
 }
 
@@ -450,6 +512,9 @@ void JsonLoader::Finalize()
 	climbWallModels.clear();
 	goalObjects.clear();
 	goalModels.clear();
+	
+	rockModels.clear();
+	sandGroundModels.clear();
 }
 
 void JsonLoader::TypeSetModel( LevelData::ObjectData& objectData)
@@ -893,5 +958,102 @@ void JsonLoader::TypeGoalModel(LevelData::ObjectData& objectData)
 
 	//配列の最後に登録
 	goalObjects.push_back(std::move(newObject));
+}
+
+void JsonLoader::TypeMoveBoxModel(LevelData::ObjectData& objectData)
+{
+	//ファイル名から登録済みモデルを検索
+	Model* model = nullptr;
+	model = Model::LoadFromOBJ(objectData.fileName);
+	moveBoxModels[objectData.fileName] = *model;
+
+	//モデルを指定して3Dオブジェクトを生成
+	std::unique_ptr<Object3d> newObject;
+	newObject = Object3d::Create();
+	newObject->SetModel(model);
+
+	//座標
+	XMFLOAT3 pos;
+	DirectX::XMStoreFloat3(&pos, objectData.translation);
+	newObject->SetPosition(pos);
+
+	//回転角
+	XMFLOAT3 rot;
+	DirectX::XMStoreFloat3(&rot, objectData.rotation);
+	rot.y -= 90.0f;
+	newObject->SetRotation(rot);
+
+	//スケール
+	XMFLOAT3 scale;
+	DirectX::XMStoreFloat3(&scale, objectData.scaling);
+	newObject->SetScale(scale);
+
+	//配列の最後に登録
+	moveBoxObjects.push_back(std::move(newObject));
+}
+
+void JsonLoader::TypeRockModel(LevelData::ObjectData& objectData)
+{
+	//ファイル名から登録済みモデルを検索
+	Model* model = nullptr;
+	model = Model::LoadFromOBJ(objectData.fileName);
+	rockModels[objectData.fileName] = *model;
+
+	//モデルを指定して3Dオブジェクトを生成
+	std::unique_ptr<Object3d> newObject;
+	newObject = Object3d::Create();
+	newObject->SetModel(model);
+
+	//座標
+	XMFLOAT3 pos;
+	DirectX::XMStoreFloat3(&pos, objectData.translation);
+	newObject->SetPosition(pos);
+
+	//回転角
+	XMFLOAT3 rot;
+	DirectX::XMStoreFloat3(&rot, objectData.rotation);
+	rot.y -= 90.0f;
+	newObject->SetRotation(rot);
+
+	//スケール
+	XMFLOAT3 scale;
+	DirectX::XMStoreFloat3(&scale, objectData.scaling);
+	newObject->SetScale(scale);
+
+	//配列の最後に登録
+	rockObjects.push_back(std::move(newObject));
+
+}
+
+void JsonLoader::TypeSandGroundModel(LevelData::ObjectData& objectData)
+{
+	//ファイル名から登録済みモデルを検索
+	Model* model = nullptr;
+	model = Model::LoadFromOBJ(objectData.fileName);
+	sandGroundModels[objectData.fileName] = *model;
+
+	//モデルを指定して3Dオブジェクトを生成
+	std::unique_ptr<Object3d> newObject;
+	newObject = Object3d::Create();
+	newObject->SetModel(model);
+
+	//座標
+	XMFLOAT3 pos;
+	DirectX::XMStoreFloat3(&pos, objectData.translation);
+	newObject->SetPosition(pos);
+
+	//回転角
+	XMFLOAT3 rot;
+	DirectX::XMStoreFloat3(&rot, objectData.rotation);
+	rot.y += 90.0f;
+	newObject->SetRotation(rot);
+
+	//スケール
+	XMFLOAT3 scale;
+	DirectX::XMStoreFloat3(&scale, objectData.scaling);
+	newObject->SetScale(scale);
+
+	//配列の最後に登録
+	sandGroundObjects.push_back(std::move(newObject));
 }
 

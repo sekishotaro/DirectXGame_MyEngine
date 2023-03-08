@@ -25,8 +25,8 @@ bool Player::adhesionMesh = false;
 int Player::crystalNum = 0;
 bool Player::goalFlag = false;
 bool Player::climbOperation = false;
-float Player::timeLimit = 108.0f;
-const float Player::timeLimitMax = 108.0f;
+float Player::timeLimit = 30.0f;
+const float Player::timeLimitMax = 30.0f;
 bool Player::staminaBoostFlag = false;
 float Player::staminaQuantity = 100.0f;
 bool Player::staminaCut = false;
@@ -105,26 +105,38 @@ void Player::Update()
 {
 	//移動量初期化
 	XMVECTOR move = { 0,0,0.0f,0 };
+	//スタミナによる速度変数
+	float power = 1.0f;
 
-	MoveOperation(move);
+	//移動処理
+	MoveOperation(move, power);
 
-	StaminaManagement(move);
+	//スタミナ処理
+	StaminaManagement();
 
-	if (onObject)
+	//移動確定
+	if (nowMove == true)
 	{
-		onGround = true;
+		position.x += move.m128_f32[0] * power;
+		position.y += move.m128_f32[1] * power;
+		position.z += move.m128_f32[2] * power;
 	}
 
-	UpdateWorldMatrix();
+	//箱移動処理
+	MoveBoxProcess(move, power);
+	
 
+	//OBJのアップデート
+	UpdateWorldMatrix();
+	
 	//落下処理
 	GravityConfirmationProcess();
 
+	////障害物(AABB)の衝突処理
+	ObstacleConfirmationProcess(move);
+
 	//地形との当たり判定(メッシュコライダー)
 	TerrainConfirmationProcess();
-	
-	//障害物(AABB)の衝突処理
-	ObstacleConfirmationProcess(move);
 
 	pos = position;
 	rot = rotation;
@@ -157,6 +169,8 @@ void Player::Update()
 
 	//制限時間
 	TimeManagement();
+
+	parPos = position;
 }
 
 void Player::OnCollision(const CollisionInfo& info)
@@ -299,7 +313,7 @@ void Player::ClimbWallJudge(XMVECTOR move)
 	}
 }
 
-void Player::MoveOperation(XMVECTOR& move)
+void Player::MoveOperation(XMVECTOR& move, float& power)
 {
 	//左スティック
 	inputX = Input::GetInstance()->LeftStickInXNum();
@@ -320,18 +334,16 @@ void Player::MoveOperation(XMVECTOR& move)
 
 	if (climbOperation == false) //通常移動
 	{
-		MoveNormal(move);
+		MoveNormal(move, power);
 	}
 	else if (climbOperation == true) //壁のぼり移動
 	{
-		MoveClimb(move);
+		MoveClimb(move, power);
 	}
 }
 
-void Player::MoveNormal(DirectX::XMVECTOR& move)
+void Player::MoveNormal(DirectX::XMVECTOR& move, float& power)
 {
-	float power = 1.0f;
-
 	//コントローラー左スティックによるプレイヤーの回転
 	const int MAX = 24918;
 	int x = 0;
@@ -405,9 +417,9 @@ void Player::MoveNormal(DirectX::XMVECTOR& move)
 
 	if (Input::GetInstance()->LeftStickIn(LEFT) || Input::GetInstance()->LeftStickIn(RIGHT))
 	{
-		position.x += move.m128_f32[0] * power;
-		position.y += move.m128_f32[1] * power;
-		position.z += move.m128_f32[2] * power;
+		//position.x += move.m128_f32[0] * power;
+		//position.y += move.m128_f32[1] * power;
+		//position.z += move.m128_f32[2] * power;
 		nowMove = true;
 
 		animeFlag = true;
@@ -422,9 +434,9 @@ void Player::MoveNormal(DirectX::XMVECTOR& move)
 	}
 	else if (Input::GetInstance()->LeftStickIn(UP) || Input::GetInstance()->LeftStickIn(DOWN))
 	{
-		position.x += move.m128_f32[0] * power;
-		position.y += move.m128_f32[1] * power;
-		position.z += move.m128_f32[2] * power;
+		//position.x += move.m128_f32[0] * power;
+		//position.y += move.m128_f32[1] * power;
+		//position.z += move.m128_f32[2] * power;
 		nowMove = true;
 
 		animeFlag = true;
@@ -445,31 +457,31 @@ void Player::MoveNormal(DirectX::XMVECTOR& move)
 	}
 }
 
-void Player::MoveClimb(DirectX::XMVECTOR& move)
+void Player::MoveClimb(DirectX::XMVECTOR& move, float& power)
 {
 	moveV = { 0,0,0 };
 
-	float power = 0.1f;
+	float moveAdjustment = 0.2f;
 
 	//コントローラー
 	if (Input::GetInstance()->LeftStickIn(LEFT))
 	{
 		if (climbNormal.m128_f32[2] == 1.0f)
 		{
-			moveV.x += 0.5f * power;
+			moveV.x += moveAdjustment * power;
 		}
 		else if (climbNormal.m128_f32[2] == -1.0f)
 		{
-			moveV.x -= 0.5f * power;
+			moveV.x -= moveAdjustment * power;
 		}
 
 		if (climbNormal.m128_f32[0] == 1.0f)
 		{
-			moveV.x -= 0.5f * power;
+			moveV.x -= moveAdjustment * power;
 		}
 		else if (climbNormal.m128_f32[0] == -1.0f)
 		{
-			moveV.z += 0.5f * power;
+			moveV.z += moveAdjustment * power;
 		}
 
 		nowMove = true;
@@ -488,20 +500,20 @@ void Player::MoveClimb(DirectX::XMVECTOR& move)
 	{
 		if (climbNormal.m128_f32[2] == 1.0f)
 		{
-			moveV.x -= 0.5f * power;
+			moveV.x -= moveAdjustment * power;
 		}
 		else if (climbNormal.m128_f32[2] == -1.0f)
 		{
-			moveV.x += 0.5f * power;
+			moveV.x += moveAdjustment * power;
 		}
 
 		if (climbNormal.m128_f32[0] == 1.0f)
 		{
-			moveV.x += 0.5f * power;
+			moveV.x += moveAdjustment * power;
 		}
 		else if (climbNormal.m128_f32[0] == -1.0f)
 		{
-			moveV.z -= 0.5f * power;
+			moveV.z -= moveAdjustment * power;
 		}
 
 		nowMove = true;
@@ -518,7 +530,7 @@ void Player::MoveClimb(DirectX::XMVECTOR& move)
 	}
 	else if (Input::GetInstance()->LeftStickIn(DOWN))
 	{
-		moveV.y -= 0.5f * power;
+		moveV.y -= moveAdjustment * power;
 		nowMove = true;
 
 		animeFlag = true;
@@ -533,7 +545,7 @@ void Player::MoveClimb(DirectX::XMVECTOR& move)
 	}
 	else if (Input::GetInstance()->LeftStickIn(UP))
 	{
-		moveV.y += 0.5f * power;
+		moveV.y += moveAdjustment * power;
 		nowMove = true;
 
 		animeFlag = true;
@@ -580,7 +592,6 @@ void Player::CrystalConfirmationProcess()
 	XMFLOAT3 distance = { 0, 0, 0 };
 	Box box;
 	std::vector<Box> crystal;
-	onObject = false;
 
 
 	crystalGetFlag = false;
@@ -603,6 +614,8 @@ void Player::CrystalConfirmationProcess()
 			OpticalPost::Erase(i);
 
 			crystalNum--;
+
+			staminaQuantity = 100.0f;
 
 			//制限時間の初期化
 			timeLimit = timeLimitMax;
@@ -634,91 +647,63 @@ void Player::GoalConfirmationProcess()
 
 void Player::ObstacleConfirmationProcess(const XMVECTOR &move)
 {
-	//自機の一定の距離内の障害物を抽出し、その障害物とだけ当たり判定を取る。
-	Box playerBox;
-	playerBox.centerPos = position;
-	playerBox.size = { 0.5f, 1.0f, 0.5f };
-	playerBox.LeastPos = XMFLOAT3(playerBox.centerPos.x - playerBox.size.x, playerBox.centerPos.y - playerBox.size.y, playerBox.centerPos.z - playerBox.size.z);
-	playerBox.MaxPos = XMFLOAT3(playerBox.centerPos.x + playerBox.size.x, playerBox.centerPos.y + playerBox.size.y, playerBox.centerPos.z + playerBox.size.z);
-
 	//球コライダーを取得
 	SphereCollider* sphereCollider = dynamic_cast<SphereCollider*>(collider);
 	assert(sphereCollider);
 
+	//プレイヤーの下方向レイ
 	Ray ray;
 	ray.start = sphereCollider->center;
-	ray.start.m128_f32[0];
-	ray.start.m128_f32[1];
-	ray.start.m128_f32[2];
-	ray.dir = { move.m128_f32[0], move.m128_f32[1], move.m128_f32[2] };
-	ray.dir.m128_f32[1] += fallV.m128_f32[1];
-
-	XMFLOAT3 distance = { 0, 0, 0 };
-
-	Circle circle;
-	circle.center = { position.x, position.z };
-	circle.radius = 50.0f;
-
-	std::vector<Box> boxs;
+	ray.dir = { 0, -1, 0, 0 };
+	RaycastHit raycastHit;
+	//動かせる箱
 	Box box;
-	XMVECTOR normal = { 0,0,0,0 };
-	onObject = false;
-
-	//自機からXZ軸で一定の距離の中に障害物オブジェクトの中心座標があるものだけ当たり判定用のコンテナに格納する
-	for (int i = 0; i < JsonLoader::colliderObjects.size(); i++)
+	box.centerPos = JsonLoader::moveBoxObjects[0].get()->GetPosition();
+	box.size = JsonLoader::moveBoxObjects[0].get()->GetScale();
+	box.LeastPos = XMFLOAT3{ box.centerPos.x - box.size.x, box.centerPos.y - box.size.y, box.centerPos.z - box.size.z };
+	box.MaxPos = XMFLOAT3{ box.centerPos.x + box.size.x, box.centerPos.y + box.size.y, box.centerPos.z + box.size.z };
+	
+	//移動箱の上部による当たり判定と排斥
+	if (fallV.m128_f32[1] >= 0.0f) return;
+	if (onGround == true && onObject == true)
 	{
-		if (Collision::CheckCircleDot(circle, XMFLOAT2(JsonLoader::colliderObjects[i].get()->GetPosition().x, JsonLoader::colliderObjects[i].get()->GetPosition().z)) == true)
+		//スムーズに坂を下る為の吸着距離
+		const float adsDistance = 0.6f;
+
+		//接地を維持
+		if (Collision::CheckRayBox(ray, box) == true)
 		{
-			box.centerPos = JsonLoader::colliderObjects[i].get()->GetPosition();
-			box.size = JsonLoader::colliderObjects[i].get()->GetScale();
-			box.LeastPos = XMFLOAT3(box.centerPos.x - (box.size.x / 2), box.centerPos.y - (box.size.y / 2), box.centerPos.z - (box.size.z / 2));
-			box.MaxPos = XMFLOAT3(box.centerPos.x + (box.size.x / 2), box.centerPos.y + (box.size.y / 2), box.centerPos.z + (box.size.z / 2));
-			boxs.push_back(box);
+			onGround = true;
+			fallFlag = false;
+			position.y = box.MaxPos.y;
+			onObject = true;
+		}
+		else
+		{
+			onGround = false;
+			onObject = false;
+		}
+	}									//↓坂でダッシュジャンプした時の当たり判定用に追加|| jumpFlag == true
+	else if (fallV.m128_f32[1] <= 0.0f)//落下状態
+	{
+		nowMove = true;
+		if (Collision::CheckRayBox(ray, box) == true)
+		{
+			//着地
+			onGround = true;
+			onObject = true;
+			landingFlag = true;
+			jumpFlag = false;
+			fallFlag = false;
+			position.y = box.MaxPos.y;
 		}
 	}
-
-
-	for (int i = 0; i < boxs.size(); i++)
-	{
-		//障害物
-		if (adhesion)
-		{
-			//めり込まないようにする接着状態の維持
-			if (Collision::Check2Box(playerBox, boxs[i], distance) == true)
-			{
-				normal = Collision::CheckRayBoxforPlane(ray, boxs[i]);
-				adhesion = true;
-				PushBack(normal, distance);
-				//行列の更新など
-				FbxObject3d::Update();
-			}
-			else
-			{
-				adhesion = false;
-			}
-		}
-		else if (nowMove == true) //移動状態
-		{
-			//当たっているかの確認
-			if (Collision::Check2Box(playerBox, boxs[i], distance) == true)
-			{
-				normal = Collision::CheckRayBoxforPlane(ray, box);
-				adhesion = true;
-				//めり込まないように押し戻し処理
-				PushBack(normal, distance);
-				//行列の更新など
-				FbxObject3d::Update();
-			}
-		}
-	}
-
-	FbxObject3d::Update();
 }
 
 void Player::GravityConfirmationProcess()
 {
 	//落下処理
-	if (!onGround && climbOperation == false)
+	if (onGround == false && climbOperation == false)
 	{
 		if (jumpFlag != true)
 		{
@@ -740,7 +725,7 @@ void Player::GravityConfirmationProcess()
 	{
 		onGround = false;
 		nowMove = true;
-		const float jumpVYFist = 0.2f; //ジャンプ時上向き初速
+		const float jumpVYFist = 0.3f; //ジャンプ時上向き初速
 		fallV = { 0, jumpVYFist, 0,0 };
 	}
 	else if (Input::GetInstance()->TriggerPadbutton(Button_Y) && climbOperation == false)
@@ -748,7 +733,7 @@ void Player::GravityConfirmationProcess()
 		jumpFlag = true;
 		onGround = false;
 		nowMove = true;
-		const float jumpVYFist = 0.2f; //ジャンプ時上向き初速
+		const float jumpVYFist = 0.35f; //ジャンプ時上向き初速
 		fallV = { 0, jumpVYFist, 0,0 };
 	}
 	// ワールド行列更新
@@ -851,19 +836,18 @@ void Player::TerrainConfirmationProcess()
 			onGround = true;
 			fallFlag = false;
 			position.y -= (raycastHit.distance - sphereCollider->GetRadius() * 2.0f);
-			//行列の更新など
-			FbxObject3d::Update();
 		}
 		else
 		{
 			onGround = false;
 			fallV = {};
 		}
-	}									//↓坂でダッシュジャンプした時の当たり判定用に追加
-	else if (fallV.m128_f32[1] <= 0.0f || jumpFlag == true)//落下状態
+	}
+	else if (onObject == false && fallV.m128_f32[1] <= 0.0f )//落下状態
 	{
 
 		nowMove = true;
+		fallFlag = true;
 		if (CollisionManager::GetInstance()->Raycast(ray, COLLISION_ATTR_LANDSHAPE,
 			&raycastHit, sphereCollider->GetRadius() * 2.0f) == true)
 		{
@@ -873,14 +857,12 @@ void Player::TerrainConfirmationProcess()
 			jumpFlag = false;
 			fallFlag = false;
 			position.y -= (raycastHit.distance - sphereCollider->GetRadius() * 2.0f);
-			//行列の更新など
-			FbxObject3d::Update();
 		}
 	}
 
 }
 
-void Player::StaminaManagement(const DirectX::XMVECTOR& move)
+void Player::StaminaManagement()
 {
 	const float staminaQuantityMax = 100.0f;
 
@@ -931,6 +913,52 @@ void Player::StaminaManagement(const DirectX::XMVECTOR& move)
 		//animeFlag = true;
 		//animeNum = 0;
 	}
+}
+
+void Player::MoveBoxProcess(DirectX::XMVECTOR& move, float& power)
+{
+	//そもそも押せる箱がないなら返す
+	if (JsonLoader::moveBoxObjects.size() == 0) return;
+
+	
+	SphereF playerSphere;
+	playerSphere.center = position;
+	playerSphere.radius = 1;
+	for (int i = 0; i < JsonLoader::moveBoxObjects.size(); i++)
+	{
+		//移動後移動させる箱にめり込んでいるか
+		Box box;
+		box.centerPos = JsonLoader::moveBoxObjects[i].get()->GetPosition();
+		box.size = JsonLoader::moveBoxObjects[i].get()->GetScale();
+		box.LeastPos = XMFLOAT3(box.centerPos.x - box.size.x, box.centerPos.y - box.size.y, box.centerPos.z - box.size.z);
+		box.MaxPos = XMFLOAT3(box.centerPos.x + box.size.x, box.centerPos.y + box.size.y, box.centerPos.z + box.size.z);
+		if (Collision::CheckBoxDot(box, position) == false) return;
+		
+		//めり込んでいたら押せる方向からか確認する
+		if (parPos.y >= box.MaxPos.y)
+		{
+			return;
+		}
+		if (move.m128_f32[2] >= 0.0 || move.m128_f32[2] >= move.m128_f32[0])
+		{
+			position.x -= move.m128_f32[0];
+			position.z -= move.m128_f32[2];
+			return;
+		}
+		if (parPos.z < box.MaxPos.z)
+		{
+			position.x -= move.m128_f32[0];
+			position.z -= move.m128_f32[2];
+			return;
+		}
+		//押せる方向の場合は箱をすこし動かし動かした後の位置に合うように時機を押し戻す
+		
+		position.z -= move.m128_f32[2] / 2.0f;
+		box.centerPos.z += move.m128_f32[2] / 2.0f;
+		JsonLoader::moveBoxObjects[i].get()->SetPosition(box.centerPos);
+		//プレイヤーの押し出しアニメーションに変える
+	}
+	
 }
 
 void Player::TimeManagement()

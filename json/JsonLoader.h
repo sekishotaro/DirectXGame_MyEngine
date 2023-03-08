@@ -118,9 +118,6 @@ public:// 定数
 	//モデル
 	static std::map<std::string, Model> raidEnemyModels;
 
-
-
-
 	//壁のぼり用
 	static std::vector<std::unique_ptr<Object3d>> climbWallObjects;
 	static std::map<std::string, Model> climbWallModels;
@@ -129,6 +126,17 @@ public:// 定数
 	static std::vector<std::unique_ptr<Object3d>> goalObjects;
 	static std::map<std::string, Model> goalModels;
 
+	static std::vector<std::unique_ptr<Object3d>> moveBoxObjects;
+	static std::map<std::string, Model> moveBoxModels;
+
+	//以下見た目用
+	static std::vector<std::unique_ptr<Object3d>> rockObjects;
+	static std::map<std::string, Model> rockModels;
+
+	static std::vector<std::unique_ptr<Object3d>> sandGroundObjects;
+	static std::map<std::string, Model> sandGroundModels;
+
+	static bool hitTerrainDrawFlag;
 public:
 
 	//読み込み
@@ -168,5 +176,12 @@ private:
 
 	//ゴール
 	static void TypeGoalModel(LevelData::ObjectData& objectData);
+
+	//箱
+	static void TypeMoveBoxModel(LevelData::ObjectData& objectData);
+
+	static void TypeRockModel(LevelData::ObjectData& objectData);
+
+	static void TypeSandGroundModel(LevelData::ObjectData& objectData);
 };
 

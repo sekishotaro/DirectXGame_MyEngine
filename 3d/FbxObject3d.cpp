@@ -253,17 +253,7 @@ void FbxObject3d::Update()
 	//アニメーション
 	if (isPlay == true && AnimationFlag == true)
 	{
-		//2フレームに一度進める
-		static int frameCount = 0;
-		if (frameCount == 0)
-		{
-			currentTime += frameTime;
-			frameCount++;
-		}
-		else
-		{
-			frameCount = 0;
-		}
+		currentTime += frameTime;
 
 		//最後まで再生したら先頭に戻す
 		if (currentTime > endTime)

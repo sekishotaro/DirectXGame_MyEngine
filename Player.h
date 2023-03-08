@@ -62,19 +62,19 @@ private:
 	/// 移動処理
 	/// </summary>
 	/// <param name="move"></param>
-	void MoveOperation(DirectX::XMVECTOR& move);
+	void MoveOperation(DirectX::XMVECTOR& move, float &power);
 
 	/// <summary>
 	/// 通常移動処理
 	/// </summary>
 	/// <param name="move"></param>
-	void MoveNormal(DirectX::XMVECTOR& move);
+	void MoveNormal(DirectX::XMVECTOR& move, float &power);
 
 	/// <summary>
 	/// 壁のぼり移動処理
 	/// </summary>
 	/// <param name="move"></param>
-	void MoveClimb(DirectX::XMVECTOR& move);
+	void MoveClimb(DirectX::XMVECTOR& move, float &power);
 
 	/// <summary>
 	/// クリスタル処理
@@ -102,7 +102,10 @@ private:
 	void TerrainConfirmationProcess();
 
 	//スタミナ管理
-	void StaminaManagement(const DirectX::XMVECTOR& move);
+	void StaminaManagement();
+
+	//箱移動処理
+	void MoveBoxProcess(DirectX::XMVECTOR& move, float &power);
 
 	//時間管理
 	void TimeManagement();
@@ -154,6 +157,7 @@ public:
 
 	static bool &GetSlopeFlag() { return slopeFlag; }
 
+	static float GetTimeMax() { return timeLimitMax; }
 
 	void SetModel1(FbxModel* fbxModel) { this->fbxModel1 = fbxModel; };
 	void SetModel2(FbxModel* fbxModel) { this->fbxModel2 = fbxModel; };
@@ -165,6 +169,8 @@ public:
 	void SetModel8(FbxModel* fbxModel) { this->fbxModel8 = fbxModel; };
 	void SetModel9(FbxModel* fbxModel) { this->fbxModel9 = fbxModel; };
 private:
+	//全フレームの位置
+	XMFLOAT3 parPos;
 	//接地フラグ
 	static bool onGround;
 	//接着フラグ

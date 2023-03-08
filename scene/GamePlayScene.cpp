@@ -58,7 +58,7 @@ void GamePlayScene::Initialize()
 
 
 	//json
-	JsonLoader::LoadFile("Scene1_15"); //オブジェクトの当たり判定
+	JsonLoader::LoadFile("Scene2_26"); //オブジェクトの当たり判定
 
 	JsonLoader::SetObject();
 
@@ -255,6 +255,7 @@ void GamePlayScene::Draw()
 	ImGui::Text("cameraY :%.4f", camera->GetEye().y);
 	ImGui::Text("cameraZ :%.4f", camera->GetEye().z);
 	ImGui::Text("crystal :%d", objFighter->GetCrystal());
+	ImGui::Checkbox("Terrain", &JsonLoader::hitTerrainDrawFlag);
 	ImGui::Checkbox("GoalFlag", &objFighter->GetGoalFlag());
 	ImGui::Checkbox("Wall", &objFighter->GetWallHitFlag());
 	ImGui::Checkbox("statmina", &objFighter->AnimationFlag);
@@ -300,16 +301,20 @@ void GamePlayScene::StartStatus()
 void GamePlayScene::GameStatus()
 {
 	//アップデート
-	Enemy::Update((int)objFighter->GetTimeLimit(), objFighter->GetPos());
+	camera->Update();
+	lightGroup->Update();
+	objFighter->Update();
+
 	JsonLoader::Update();
+
+	Enemy::Update((int)objFighter->GetTimeLimit(), (int)objFighter->GetTimeMax(), objFighter->GetPos());
+	
 
 	UI::Update();
 
 	OpticalPost::Update(camera->GetEye());
 
-	camera->Update();
-	lightGroup->Update();
-	objFighter->Update();
+
 
 	OpticalPost::SetDrawFlag(true);
 
