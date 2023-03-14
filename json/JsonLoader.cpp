@@ -1052,7 +1052,7 @@ void JsonLoader::TypeSandGroundModel(LevelData::ObjectData& objectData)
 	XMFLOAT3 scale;
 	DirectX::XMStoreFloat3(&scale, objectData.scaling);
 	newObject->SetScale(scale);
-
+	newObject->OnTitleFlag();
 	//îzóÒÇÃç≈å„Ç…ìoò^
 	sandGroundObjects.push_back(std::move(newObject));
 }

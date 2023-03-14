@@ -188,12 +188,12 @@ void GamePlayScene::Draw()
 	// 深度バッファクリア
 	DirectXCommon::GetInstance()->ClearDepthBuffer();
 
-	// 3Dオブジェクト描画前処理
+	//3Dオブジェクト描画前処理
 	Object3d::PreDraw(cmdList);
 	ColliderObject::PreDraw(cmdList);
 	MathObject::PreDraw(cmdList);
 
-	// 3Dオブクジェクトの描画
+	//3Dオブクジェクトの描画
 	
 	//test追加探索敵コライダー
 	skydomeObject->Draw();

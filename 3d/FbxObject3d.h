@@ -156,10 +156,11 @@ protected:
 	bool LoadedFlag = false;
 	//カメラいち
 	XMFLOAT2 cameraPos2d = {};
-
 	//クラス名 (デバック用)
 	const char* name = nullptr;
 	BaseCollider* collider = nullptr;
+	//タイリングフラグ
+	bool tilingFlag = false;
 
 public:
 	//アニメーションをするかのフラグ

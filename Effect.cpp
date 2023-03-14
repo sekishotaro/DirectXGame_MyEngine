@@ -1,7 +1,6 @@
 #include "Effect.h"
 #include "SafeDelete.h"
 #include "WinApp.h"
-
 #include "Enemy.h"
 #include "Player.h"
 #include "DebugCamera.h"
@@ -28,7 +27,6 @@ void Effect::Initialize()
 	EnemyAccessEffect = Sprite::Create(12, { width, height });
 	EnemyAccessEffect->SetSize({ EnemyAccessEffectSize, EnemyAccessEffectSize });
 	EnemyAccessEffect->SetAnchorPoint({ 0.5f, 0.5f });
-	
 	
 	//crystalEffect = Effect2d::Create(13, { width, height });
 	//crystalEffect->SetAnchorPoint({ 0.5f, 0.5f });
@@ -59,8 +57,6 @@ void Effect::Draw()
 	{
 		EnemyAccessEffect->Draw();
 	}
-
-	/*crystalEffect->Draw();*/
 
 	for (int i = 1; i < crystalEffects.size(); i++)
 	{

@@ -301,6 +301,7 @@ void Object3d::Update()
 	constMap->viewproj = matViewProjection;
 	constMap->world = matWorld;
 	constMap->cameraPos = cameraPos;
+	constMap->tilingFlag = tilingFlag;
 	constBuffB0->Unmap(0, nullptr);
 
 	//当たり判定更新

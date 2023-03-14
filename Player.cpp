@@ -92,7 +92,7 @@ void Player::Initialize()
 	//コライダーの追加
 	float radius = 0.6f;
 	//半径分だけ足元から浮いた座標を球中心にする
-	SetCollider(new SphereCollider(XMVECTOR({ 0, radius, 0,0 }), radius));
+	SetCollider(new SphereCollider(XMVECTOR({ 0, radius, 0, 0 }), radius));
 
 	collider->SetAttribute(COLLISION_ATTR_ALLIES);
 
@@ -124,7 +124,6 @@ void Player::Update()
 
 	//箱移動処理
 	MoveBoxProcess(move, power);
-	
 
 	//OBJのアップデート
 	UpdateWorldMatrix();
@@ -658,46 +657,50 @@ void Player::ObstacleConfirmationProcess(const XMVECTOR &move)
 	RaycastHit raycastHit;
 	//動かせる箱
 	Box box;
-	box.centerPos = JsonLoader::moveBoxObjects[0].get()->GetPosition();
-	box.size = JsonLoader::moveBoxObjects[0].get()->GetScale();
-	box.LeastPos = XMFLOAT3{ box.centerPos.x - box.size.x, box.centerPos.y - box.size.y, box.centerPos.z - box.size.z };
-	box.MaxPos = XMFLOAT3{ box.centerPos.x + box.size.x, box.centerPos.y + box.size.y, box.centerPos.z + box.size.z };
-	
-	//移動箱の上部による当たり判定と排斥
-	if (fallV.m128_f32[1] >= 0.0f) return;
-	if (onGround == true && onObject == true)
+	for (int i = 0; i < JsonLoader::moveBoxObjects.size(); i++)
 	{
-		//スムーズに坂を下る為の吸着距離
-		const float adsDistance = 0.6f;
+		box.centerPos = JsonLoader::moveBoxObjects[i].get()->GetPosition();
+		box.size = JsonLoader::moveBoxObjects[i].get()->GetScale();
+		box.LeastPos = XMFLOAT3{ box.centerPos.x - box.size.x, box.centerPos.y - box.size.y, box.centerPos.z - box.size.z };
+		box.MaxPos = XMFLOAT3{ box.centerPos.x + box.size.x, box.centerPos.y + box.size.y, box.centerPos.z + box.size.z };
 
-		//接地を維持
-		if (Collision::CheckRayBox(ray, box) == true)
+		//移動箱の上部による当たり判定と排斥
+		if (fallV.m128_f32[1] >= 0.0f) return;
+		if (onGround == true && onObject == true)
 		{
-			onGround = true;
-			fallFlag = false;
-			position.y = box.MaxPos.y;
-			onObject = true;
-		}
-		else
+			//スムーズに坂を下る為の吸着距離
+			const float adsDistance = 0.6f;
+
+			//接地を維持
+			if (Collision::CheckRayBox(ray, box) == true)
+			{
+				onGround = true;
+				fallFlag = false;
+				position.y = box.MaxPos.y;
+				onObject = true;
+			}
+			else
+			{
+				onGround = false;
+				onObject = false;
+			}
+		}									//↓坂でダッシュジャンプした時の当たり判定用に追加|| jumpFlag == true
+		else if (fallV.m128_f32[1] <= 0.0f)//落下状態
 		{
-			onGround = false;
-			onObject = false;
-		}
-	}									//↓坂でダッシュジャンプした時の当たり判定用に追加|| jumpFlag == true
-	else if (fallV.m128_f32[1] <= 0.0f)//落下状態
-	{
-		nowMove = true;
-		if (Collision::CheckRayBox(ray, box) == true)
-		{
-			//着地
-			onGround = true;
-			onObject = true;
-			landingFlag = true;
-			jumpFlag = false;
-			fallFlag = false;
-			position.y = box.MaxPos.y;
+			nowMove = true;
+			if (Collision::CheckRayBox(ray, box) == true)
+			{
+				//着地
+				onGround = true;
+				onObject = true;
+				landingFlag = true;
+				jumpFlag = false;
+				fallFlag = false;
+				position.y = box.MaxPos.y;
+			}
 		}
 	}
+
 }
 
 void Player::GravityConfirmationProcess()

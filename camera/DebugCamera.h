@@ -33,6 +33,8 @@ public: // ƒƒ“ƒoŠÖ”
 
 	void UpdateOnly();
 
+	void RaidCameraCount();
+
 	static float GetRotaY() { return rotaY; }
 
 public:
@@ -50,5 +52,9 @@ public:
 	static std::unique_ptr<Object3d> Object;
 	static Model* Model;
 	BaseCollider* collider = nullptr;
+
+	bool RaidTargetCameraFlag = false;
+	bool oldRaidFlag = false;
+	int count = 0;
 };
 
