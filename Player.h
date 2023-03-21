@@ -114,7 +114,9 @@ private:
 	void AnimetionProcess();
 
 	//坂下り当たり判定
-	void SlopeDownhill();
+	void SlopeDownhill(DirectX::XMVECTOR& move, float& power);
+
+	bool StaminaUnusable();
 
 public:
 	//デバック用ゲッター
@@ -168,6 +170,10 @@ public:
 	void SetModel7(FbxModel* fbxModel) { this->fbxModel7 = fbxModel; };
 	void SetModel8(FbxModel* fbxModel) { this->fbxModel8 = fbxModel; };
 	void SetModel9(FbxModel* fbxModel) { this->fbxModel9 = fbxModel; };
+	void SetModel10(FbxModel* fbxModel) { this->fbxModel10 = fbxModel; };
+	void SetModel11(FbxModel* fbxModel) { this->fbxModel11 = fbxModel; };
+	void SetModel12(FbxModel* fbxModel) { this->fbxModel12 = fbxModel; };
+	void SetModel13(FbxModel* fbxModel) { this->fbxModel13 = fbxModel; };
 private:
 	//全フレームの位置
 	XMFLOAT3 parPos;
@@ -248,6 +254,8 @@ private:
 	//スタミナが使えるかどうか(スタミナを使い切った場合になる状態)
 	static bool staminaCut;
 	static bool crystalGetFlag;
+	//箱移動してた確認フラグ
+	static bool moveBoxFlag;
 
 	//アニメーション
 	static int animeNum;
@@ -264,5 +272,9 @@ private:
 	static FbxModel* fbxModel7; //崖上がり
 	static FbxModel* fbxModel8; //ダンス
 	static FbxModel* fbxModel9; //キック
+	static FbxModel* fbxModel10; //スライディング
+	static FbxModel* fbxModel11; //押し歩き
+	static FbxModel* fbxModel12; //疲れ歩き
+	static FbxModel* fbxModel13; //疲れ歩き
 };
 

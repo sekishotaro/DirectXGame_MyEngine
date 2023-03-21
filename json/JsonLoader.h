@@ -82,14 +82,16 @@ public:// 定数
 	//モデル
 	static std::map<std::string, ColliderModel> crystalColliderModels;
 
-	//床用
+	//地形当たり判定用
 	//オブジェクト
 	static std::vector<std::unique_ptr<Object3d>> groundObjects;
-	
 	static TouchableObject* objGround;
 	//モデル
 	static std::map<std::string, Model> groundModels;
-	
+	//別途地形用突起
+	static std::vector<std::unique_ptr<Object3d>> terrainObjects;
+	//モデル
+	static std::map<std::string, Model> terrainModels;
 	//コライダー用
 	//オブジェクト
 	static std::vector<std::unique_ptr<ColliderObject>> groundColliderObjects;
@@ -164,6 +166,8 @@ private:
 	//地面
 	static void TypeSetGroundModel(LevelData::ObjectData& objectData);
 	static void TypeSetColliderGroundModel(LevelData::ObjectData& colliderObjectData);
+	//地形用突起
+	static void TypeSetTerrainModel(LevelData::ObjectData& objectData);
 	//探索敵
 	static void TypeSetEnemyModel(LevelData::ObjectData& objectData);
 	static void TypeSetColliderEnemyModel(LevelData::ObjectData& colliderObjectData);

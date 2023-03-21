@@ -8,6 +8,7 @@
 #include "Collision.h"
 #include "JsonLoader.h"
 #include "OpticalPost.h"
+#include "SafeDelete.h"
 
 using namespace DirectX;
 
@@ -34,6 +35,7 @@ int Player::inputX = 0;
 int Player::inputY = 0;
 float Player::testRota = 0;
 bool Player::crystalGetFlag = false;
+bool Player::moveBoxFlag = false;
 int Player::animeNum = 0;
 int Player::oldAnimeNum = 0;
 bool Player::animeFlag = false;
@@ -46,6 +48,10 @@ FbxModel* Player::fbxModel6 = nullptr;
 FbxModel* Player::fbxModel7 = nullptr;
 FbxModel* Player::fbxModel8 = nullptr;
 FbxModel* Player::fbxModel9 = nullptr;
+FbxModel* Player::fbxModel10 = nullptr;
+FbxModel* Player::fbxModel11 = nullptr;
+FbxModel* Player::fbxModel12 = nullptr;
+FbxModel* Player::fbxModel13 = nullptr;
 
 Player* Player::Create(FbxModel* model)
 {
@@ -114,6 +120,9 @@ void Player::Update()
 	//スタミナ処理
 	StaminaManagement();
 
+	//坂処理
+	SlopeDownhill(move, power);
+
 	//移動確定
 	if (nowMove == true)
 	{
@@ -165,7 +174,7 @@ void Player::Update()
 
 	//クリスタルとの接触
 	CrystalConfirmationProcess();
-
+	
 	//制限時間
 	TimeManagement();
 
@@ -395,7 +404,7 @@ void Player::MoveNormal(DirectX::XMVECTOR& move, float& power)
 	move = XMVector3TransformNormal(move, matRot);
 
 	//スタミナ消費
-	if (Input::GetInstance()->PushPadbutton(Button_A) && staminaCut == false)
+	if (Input::GetInstance()->PushPadbutton(Button_A) && StaminaUnusable() == false)
 	{
 		if (inputX == 0 && inputY == 0)	//スティック移動させていないときはスタミナを消費しない
 		{
@@ -416,9 +425,6 @@ void Player::MoveNormal(DirectX::XMVECTOR& move, float& power)
 
 	if (Input::GetInstance()->LeftStickIn(LEFT) || Input::GetInstance()->LeftStickIn(RIGHT))
 	{
-		//position.x += move.m128_f32[0] * power;
-		//position.y += move.m128_f32[1] * power;
-		//position.z += move.m128_f32[2] * power;
 		nowMove = true;
 
 		animeFlag = true;
@@ -433,9 +439,6 @@ void Player::MoveNormal(DirectX::XMVECTOR& move, float& power)
 	}
 	else if (Input::GetInstance()->LeftStickIn(UP) || Input::GetInstance()->LeftStickIn(DOWN))
 	{
-		//position.x += move.m128_f32[0] * power;
-		//position.y += move.m128_f32[1] * power;
-		//position.z += move.m128_f32[2] * power;
 		nowMove = true;
 
 		animeFlag = true;
@@ -595,9 +598,9 @@ void Player::CrystalConfirmationProcess()
 
 	crystalGetFlag = false;
 	//自機からXZ軸で一定の距離の中に障害物オブジェクトの中心座標があるものだけ当たり判定用のコンテナに格納する
-	for (int i = 0; i < JsonLoader::crystalColliderObjects.size(); i++)
+	for (int i = 0; i < JsonLoader::crystalObjects.size(); i++)
 	{
-		box.centerPos = JsonLoader::crystalColliderObjects[i].get()->GetPosition();
+		box.centerPos = JsonLoader::crystalObjects[i].get()->GetPosition();
 		box.size = JsonLoader::crystalColliderObjects[i].get()->GetScale();
 		box.LeastPos = XMFLOAT3(box.centerPos.x - (box.size.x / 2), box.centerPos.y - (box.size.y / 2), box.centerPos.z - (box.size.z / 2));
 		box.MaxPos = XMFLOAT3(box.centerPos.x + (box.size.x / 2), box.centerPos.y + (box.size.y / 2), box.centerPos.z + (box.size.z / 2));
@@ -607,7 +610,6 @@ void Player::CrystalConfirmationProcess()
 		{
 			crystalGetFlag = true;
 
-			JsonLoader::crystalColliderObjects.erase(JsonLoader::crystalColliderObjects.begin() + i);
 			JsonLoader::crystalObjects.erase(JsonLoader::crystalObjects.begin() + i);
 
 			OpticalPost::Erase(i);
@@ -646,6 +648,8 @@ void Player::GoalConfirmationProcess()
 
 void Player::ObstacleConfirmationProcess(const XMVECTOR &move)
 {
+	if (climbOperation == true) return;
+
 	//球コライダーを取得
 	SphereCollider* sphereCollider = dynamic_cast<SphereCollider*>(collider);
 	assert(sphereCollider);
@@ -678,6 +682,7 @@ void Player::ObstacleConfirmationProcess(const XMVECTOR &move)
 				fallFlag = false;
 				position.y = box.MaxPos.y;
 				onObject = true;
+				return;
 			}
 			else
 			{
@@ -697,10 +702,56 @@ void Player::ObstacleConfirmationProcess(const XMVECTOR &move)
 				jumpFlag = false;
 				fallFlag = false;
 				position.y = box.MaxPos.y;
+				return;
 			}
 		}
 	}
 
+	for (int i = 0; i < JsonLoader::terrainObjects.size(); i++)
+	{
+		box.centerPos = JsonLoader::terrainObjects[i].get()->GetPosition();
+		box.size = JsonLoader::terrainObjects[i].get()->GetScale();
+		box.LeastPos = XMFLOAT3{ box.centerPos.x - box.size.x, box.centerPos.y - box.size.y, box.centerPos.z - box.size.z };
+		box.MaxPos = XMFLOAT3{ box.centerPos.x + box.size.x, box.centerPos.y + box.size.y, box.centerPos.z + box.size.z };
+
+		//移動箱の上部による当たり判定と排斥
+		//if (fallV.m128_f32[1] >= 0.0f) return;
+		if (onGround == true && onObject == true)
+		{
+			//スムーズに坂を下る為の吸着距離
+			const float adsDistance = 0.6f;
+
+			//接地を維持
+			if (Collision::CheckRayBox(ray, box) == true)
+			{
+				onGround = true;
+				fallFlag = false;
+				position.y = box.MaxPos.y;
+				onObject = true;
+				return;
+			}
+			else
+			{
+				onGround = false;
+				onObject = false;
+			}
+		}									//↓坂でダッシュジャンプした時の当たり判定用に追加|| jumpFlag == true
+		else if (fallV.m128_f32[1] <= 0.0f)//落下状態
+		{
+			nowMove = true;
+			if (Collision::CheckRayBox(ray, box) == true)
+			{
+				//着地
+				onGround = true;
+				onObject = true;
+				landingFlag = true;
+				jumpFlag = false;
+				fallFlag = false;
+				position.y = box.MaxPos.y;
+				return;
+			}
+		}
+	}
 }
 
 void Player::GravityConfirmationProcess()
@@ -735,6 +786,7 @@ void Player::GravityConfirmationProcess()
 	{
 		jumpFlag = true;
 		onGround = false;
+		onObject = false;
 		nowMove = true;
 		const float jumpVYFist = 0.35f; //ジャンプ時上向き初速
 		fallV = { 0, jumpVYFist, 0,0 };
@@ -749,7 +801,7 @@ void Player::TerrainConfirmationProcess()
 	//球コライダーを取得
 	SphereCollider* sphereCollider = dynamic_cast<SphereCollider*>(collider);
 	assert(sphereCollider);
-
+	slopeFlag = false;
 	//クエリ―コールバッククラス
 	class PlayerQueryCallback :public QueryCallback
 	{
@@ -767,20 +819,22 @@ void Player::TerrainConfirmationProcess()
 			float cos = XMVector3Dot(rejectDir, up).m128_f32[0];
 
 			//地面判定しきい値角度
-			const float threshold = cosf(XMConvertToRadians(50.0f));
-			const float threshold2 = cosf(XMConvertToRadians(45.0f));
-			
+			const float threshold = cosf(XMConvertToRadians(15.0f));
+			const float threshold2 = cosf(XMConvertToRadians(50.0f));
 			//角度差によって天井または地面と判定されるものを除いて
 			if (-threshold < cos && cos < threshold)
+			{
+				//球を排斥 (押し出す)
+				slopeFlag = true;
+			}
+			
+			
+			if (-threshold2 < cos && cos < threshold2)
 			{
 				//球を排斥 (押し出す)
 				sphere->center += info.reject;
 				move += info.reject;
 				slopeFlag = false;
-			}
-			else
-			{
-				slopeFlag = true;
 			}
 
 			return true;
@@ -848,7 +902,6 @@ void Player::TerrainConfirmationProcess()
 	}
 	else if (onObject == false && fallV.m128_f32[1] <= 0.0f )//落下状態
 	{
-
 		nowMove = true;
 		fallFlag = true;
 		if (CollisionManager::GetInstance()->Raycast(ray, COLLISION_ATTR_LANDSHAPE,
@@ -912,18 +965,25 @@ void Player::StaminaManagement()
 		}
 
 		staminaQuantity += staminaQuantityMax * (2.0f / 300.0f);
-
-		//animeFlag = true;
-		//animeNum = 0;
+		if (nowMove == true)
+		{
+			animeNum = 11;
+		}
+		else
+		{
+			animeNum = 12;
+		}
+		
 	}
 }
 
 void Player::MoveBoxProcess(DirectX::XMVECTOR& move, float& power)
 {
+	//初期化
+	moveBoxFlag = false;
 	//そもそも押せる箱がないなら返す
 	if (JsonLoader::moveBoxObjects.size() == 0) return;
 
-	
 	SphereF playerSphere;
 	playerSphere.center = position;
 	playerSphere.radius = 1;
@@ -944,22 +1004,26 @@ void Player::MoveBoxProcess(DirectX::XMVECTOR& move, float& power)
 		}
 		if (move.m128_f32[2] >= 0.0 || move.m128_f32[2] >= move.m128_f32[0])
 		{
+			moveBoxFlag = true;
 			position.x -= move.m128_f32[0];
 			position.z -= move.m128_f32[2];
 			return;
 		}
 		if (parPos.z < box.MaxPos.z)
 		{
+			moveBoxFlag = true;
 			position.x -= move.m128_f32[0];
 			position.z -= move.m128_f32[2];
 			return;
 		}
 		//押せる方向の場合は箱をすこし動かし動かした後の位置に合うように時機を押し戻す
-		
 		position.z -= move.m128_f32[2] / 2.0f;
 		box.centerPos.z += move.m128_f32[2] / 2.0f;
 		JsonLoader::moveBoxObjects[i].get()->SetPosition(box.centerPos);
 		//プレイヤーの押し出しアニメーションに変える
+		animeNum = 10;
+		moveBoxFlag = true;
+		return;
 	}
 	
 }
@@ -1053,11 +1117,27 @@ void Player::AnimetionProcess()
 			SetModel(fbxModel9);
 			loopPlayFlag = true;
 			break;
+		case 9:					//スライディング
+			SetModel(fbxModel10);
+			//loopPlayFlag = true;
+			break;
+		case 10:					//推し歩き
+			SetModel(fbxModel11);
+			loopPlayFlag = true;
+			break;
+		case 11:					//疲れ歩き
+			SetModel(fbxModel12);
+			loopPlayFlag = true;
+			break;
+		case 12:					//疲れアイドル
+			SetModel(fbxModel13);
+			loopPlayFlag = true;
+			break;
 		}
 	}
 	
 	//アニメーション再生
-	AnimationFlag = true;
+	if(animeNum != 9) AnimationFlag = true;
 	//モデルの更新
 	FbxObject3d::Update();
 	
@@ -1074,14 +1154,43 @@ void Player::AnimetionProcess()
 	oldAnimeNum = animeNum;
 }
 
-void Player::SlopeDownhill()
+void Player::SlopeDownhill(DirectX::XMVECTOR& move, float& power)
 {
 	//坂にいるかどうか
 
-	if (false) return;
+	if (slopeFlag == false) return;
 	//ダッシュしているかどうか
-	if (false) return;
+	if (staminaBoostFlag == true) return;
 
-	//以下坂下り処理
+	nowMove = true;
 
+	// 坂が二つしかないため簡易処置 (Todo : 坂の角度を求める)
+	if (position.x < 0.0f)			//小坂
+	{
+		//自機を X方向
+		move.m128_f32[0] = 0.5f;
+		//坂を下るときに滑らかに下がるため
+		move.m128_f32[1] = -0.9f;
+		//Z軸方向は移動可能だが移動量を変更する可能性あり(滑り落ちながら横移動)
+	}
+	else							//高坂
+	{
+		//自機を -X方向
+		move.m128_f32[0] = -0.5f;
+		//坂を下るときに滑らかに下がるため
+		move.m128_f32[1] = -0.9f;
+		//Z軸方向は移動可能だが移動量を変更する可能性あり(滑り落ちながら横移動)
+	}
+	
+	// 自機モデル変更
+	//animeNum = 9;
+
+	//自機モデルの角度変更
+
+}
+
+bool Player::StaminaUnusable()
+{
+	if (staminaCut == false && moveBoxFlag == false) return false;
+	return true;
 }

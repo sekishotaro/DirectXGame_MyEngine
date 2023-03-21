@@ -2,9 +2,11 @@
 #include "JsonLoader.h"
 #include "Player.h"
 #include "stdlib.h"
+#include "SafeDelete.h"
 
 std::vector<std::unique_ptr<Object3d>> OpticalPost::OpticalPosts;
 std::vector<std::unique_ptr<Object3d>> OpticalPost::smallOpticalPosts;
+std::unique_ptr<Object3d> OpticalPost::goalOpticalPostObject;
 Model* OpticalPost::modelOpticalPost = nullptr;
 Model* OpticalPost::modelCrystalEffect = nullptr;
 std::unique_ptr<Object3d> OpticalPost::CrystalEffectObject;
@@ -21,22 +23,21 @@ void OpticalPost::Initialize()
 	modelOpticalPost = Model::LoadFromOBJ("opticalPost");
 	modelCrystalEffect = Model::LoadFromOBJ("CrystalSurroundingEffect");
 	XMFLOAT3 pos;
+	//åıÇÃíå1ñ{Ç…ëŒÇ∑ÇÈè¨Ç≥Ç»åıÇÃíåÇÃå¬êî
+	int smallOpticalPostNum = 7;
 
-	for (int i = 0; i < JsonLoader::crystalColliderObjects.size(); i++)
+	for (int i = 0; i < JsonLoader::crystalObjects.size(); i++)
 	{
 		std::unique_ptr<Object3d> objectOpticalPost;
 		objectOpticalPost = Object3d::Create();
 		objectOpticalPost->SetModel(modelOpticalPost);
-		pos = JsonLoader::crystalColliderObjects[i].get()->GetPosition();
+		pos = JsonLoader::crystalObjects[i].get()->GetPosition();
 	
 		pos.y += 100.0f;
 		objectOpticalPost->SetPosition(pos);
 		objectOpticalPost->SetScale({ 2.0f, 100.0f, 2.0f });
 		OpticalPosts.push_back(std::move(objectOpticalPost));
 	
-
-		//åıÇÃíå1ñ{Ç…ëŒÇ∑ÇÈè¨Ç≥Ç»åıÇÃíåÇÃå¬êî
-		int smallOpticalPostNum = 7;
 		pos.y -= 90.0f;
 		XMFLOAT3 posA = {};
 		for (int i = 0; i < smallOpticalPostNum; i++)
@@ -56,7 +57,9 @@ void OpticalPost::Initialize()
 		}
 	}
 
-
+	goalOpticalPostObject = Object3d::Create();
+	goalOpticalPostObject->SetModel(modelOpticalPost);
+	goalOpticalPostObject->SetScale({ 5.0f, 100.0f, 5.0f });
 
 	CrystalEffectObject = Object3d::Create();
 	CrystalEffectObject->SetModel(modelCrystalEffect);
@@ -104,7 +107,7 @@ void OpticalPost::Update(const XMFLOAT3& cameraPos)
 	int nearCrystalNum = NearCrystalNum();
 	float CrystalEffectObjectRota = RotaUpdate(cameraPos, OpticalPosts[nearCrystalNum].get()->GetPosition());
 	CrystalEffectObject->SetRotation({ 0, CrystalEffectObjectRota, 0 });
-	CrystalEffectObject->SetPosition(JsonLoader::crystalColliderObjects[nearCrystalNum].get()->GetPosition());
+	CrystalEffectObject->SetPosition(JsonLoader::crystalObjects[nearCrystalNum].get()->GetPosition());
 	CrystalEfectSizeNumUpdate();
 	CrystalEffectObject->SetScale({ sizeNum, sizeNum, sizeNum });
 	CrystalEffectObject->Update();
@@ -128,17 +131,26 @@ void OpticalPost::Draw()
 	{
 		smallOpticalPosts[i].get()->Draw();
 	}
+
+	if (JsonLoader::crystalObjects.size() != 0) return;
+	goalOpticalPostObject->Draw();
 }
 
 void OpticalPost::Finalize()
 {
 	OpticalPosts.clear();
+	smallOpticalPosts.clear();
 	drawFlag = false;
 }
 
 void OpticalPost::Erase(int num)
 {
 	OpticalPosts.erase(OpticalPosts.begin() + num);
+
+	for (int i = 0; i < 7; i++)
+	{
+		smallOpticalPosts.erase(smallOpticalPosts.begin() + ((num * 7)));
+	}
 }
 
 float OpticalPost::RotaUpdate(const XMFLOAT3& cameraPos, const XMFLOAT3& crystalPos)
@@ -183,9 +195,9 @@ int OpticalPost::NearCrystalNum()
 	float length = 0.0f;
 	float minLength = 0.0f;
 	int minLengthCrystalNum = 0;
-	for (int i = 0; i < JsonLoader::crystalColliderObjects.size(); i++)
+	for (int i = 0; i < JsonLoader::crystalObjects.size(); i++)
 	{
-		crystalPos = JsonLoader::crystalColliderObjects[i].get()->GetPosition();
+		crystalPos = JsonLoader::crystalObjects[i].get()->GetPosition();
 
 		float X = (crystalPos.x - playerPos.x) * (crystalPos.x - playerPos.x);
 		float Y = (crystalPos.y - playerPos.y) * (crystalPos.y - playerPos.y);
@@ -237,7 +249,7 @@ void OpticalPost::SmallOpticalPostsMoveUpdate()
 		if (moveQuantityMax > moveQuantitys[i]) continue;
 
 		int crystalNum = i / 7;
-		pos = JsonLoader::crystalColliderObjects[crystalNum].get()->GetPosition();
+		pos = JsonLoader::crystalObjects[crystalNum].get()->GetPosition();
 		pos.x += 2.0f - (float)(rand() % 4);
 		pos.y += (float)(rand() % 10);
 		pos.z += 2.0f - (float)(rand() % 4);

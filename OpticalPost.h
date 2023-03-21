@@ -38,6 +38,7 @@ public:
 	//オブジェクト
 	static std::vector<std::unique_ptr<Object3d>> OpticalPosts;
 	static std::vector<std::unique_ptr<Object3d>> smallOpticalPosts;
+	static std::unique_ptr<Object3d> goalOpticalPostObject;
 	//モデル
 	static Model* modelOpticalPost;
 

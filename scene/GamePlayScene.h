@@ -98,8 +98,6 @@ public:
 	std::unique_ptr<Object3d> skydomeObject;
 	Model* skydomeModel = nullptr;
 
-	//モデルデータ
-	Model* modelFighter = nullptr;
 	//オブジェクトデータ
 	Player* objFighter = nullptr;
 
@@ -126,6 +124,10 @@ public:
 	FbxModel* fbxModel7 = nullptr;
 	FbxModel* fbxModel8 = nullptr;
 	FbxModel* fbxModel9 = nullptr;
+	FbxModel* fbxModel10 = nullptr;
+	FbxModel* fbxModel11 = nullptr;
+	FbxModel* fbxModel12 = nullptr;
+	FbxModel* fbxModel13 = nullptr;
 	InterpolationCamera interpolationCamera;
 
 	bool moveFlag = false;

@@ -15,8 +15,11 @@ std::vector<std::unique_ptr<ColliderObject>> JsonLoader::crystalColliderObjects;
 std::map< std::string, ColliderModel> JsonLoader::crystalColliderModels;
 
 std::vector<std::unique_ptr<Object3d>> JsonLoader::groundObjects;
+std::vector<std::unique_ptr<Object3d>> JsonLoader::terrainObjects;
+
 TouchableObject* JsonLoader::objGround;
 std::map< std::string, Model> JsonLoader::groundModels;
+std::map< std::string, Model> JsonLoader::terrainModels;
 std::vector<std::unique_ptr<ColliderObject>> JsonLoader::groundColliderObjects;
 std::map< std::string, ColliderModel> JsonLoader::groundColliderModels;
 
@@ -221,6 +224,10 @@ void JsonLoader::SetObject()
 		{
 			TypeSetGroundModel(objectData);
 		}
+		else if (objectData.typeName == "terrainBlock")
+		{
+			TypeSetTerrainModel(objectData);
+		}
 		else if (objectData.typeName == "monitoringEnemy")
 		{
 			TypeSetEnemyModel(objectData);
@@ -294,10 +301,10 @@ void JsonLoader::Update()
 		crystalObjects[i]->Update();
 	}
 
-	/*for (int i = 0; i < groundObjects.size(); i++)
+	for (int i = 0; i < terrainObjects.size(); i++)
 	{
-		groundObjects[i]->Update();
-	}*/
+		terrainObjects[i]->Update();
+	}
 
 	objGround->Update();
 
@@ -408,14 +415,16 @@ void JsonLoader::Draw()
 		crystalObjects[i]->Draw();
 	}
 
-	/*for (int i = 0; i < groundObjects.size(); i++)
-	{
-		groundObjects[i]->Draw();
-	}*/
+	
 	
 	if (hitTerrainDrawFlag == true)
 	{
 		objGround->Draw();
+
+		for (int i = 0; i < terrainObjects.size(); i++)
+		{
+			terrainObjects[i]->Draw();
+		}
 	}
 	
 	for (int i = 0; i < enemyObjects.size(); i++)
@@ -495,6 +504,8 @@ void JsonLoader::Finalize()
 
 	groundObjects.clear();
 	groundModels.clear();
+	terrainObjects.clear();
+	terrainModels.clear();
 	groundColliderObjects.clear();
 	groundColliderModels.clear();
 
@@ -512,9 +523,11 @@ void JsonLoader::Finalize()
 	climbWallModels.clear();
 	goalObjects.clear();
 	goalModels.clear();
-	
+	rockObjects.clear();
 	rockModels.clear();
+	sandGroundObjects.clear();
 	sandGroundModels.clear();
+
 }
 
 void JsonLoader::TypeSetModel( LevelData::ObjectData& objectData)
@@ -857,6 +870,38 @@ void JsonLoader::TypeSetNaviareaEnemyModel(LevelData::ObjectData& colliderObject
 
 	//配列の最後に登録
 	enemyNaviareaObjects.push_back(std::move(newColliderObject));
+}
+
+void JsonLoader::TypeSetTerrainModel(LevelData::ObjectData& objectData)
+{
+	//ファイル名から登録済みモデルを検索
+	Model* model = nullptr;
+	model = Model::LoadFromOBJ(objectData.fileName);
+	terrainModels[objectData.fileName] = *model;
+
+	//モデルを指定して3Dオブジェクトを生成
+	std::unique_ptr<Object3d> newObject;
+	newObject = Object3d::Create();
+	newObject->SetModel(model);
+
+	//座標
+	XMFLOAT3 pos;
+	DirectX::XMStoreFloat3(&pos, objectData.translation);
+	newObject->SetPosition(pos);
+
+	//回転角
+	XMFLOAT3 rot;
+	DirectX::XMStoreFloat3(&rot, objectData.rotation);
+	rot.y -= 90.0f;
+	newObject->SetRotation(rot);
+
+	//スケール
+	XMFLOAT3 scale;
+	DirectX::XMStoreFloat3(&scale, objectData.scaling);
+	newObject->SetScale(scale);
+
+	//配列の最後に登録
+	terrainObjects.push_back(std::move(newObject));
 }
 
 void JsonLoader::TypeSetRaidEnemyModel(LevelData::ObjectData& objectData)
