@@ -58,7 +58,7 @@ void GamePlayScene::Initialize()
 	skydomeObject->SetModel(skydomeModel);
 	skydomeObject->SetScale({ 5.0f, 5.0f, 5.0f });
 	//json
-	JsonLoader::LoadFile("Scene3_15"); //オブジェクトの当たり判定
+	JsonLoader::LoadFile("Scene4_7"); //オブジェクトの当たり判定
 	JsonLoader::SetObject();
 
 	////モデル名を指定してファイル読み込み
@@ -75,6 +75,9 @@ void GamePlayScene::Initialize()
 	fbxModel11 = FbxLoader::GetInstance()->LoadModelFromFile("model11");
 	fbxModel12 = FbxLoader::GetInstance()->LoadModelFromFile("model12");
 	fbxModel13 = FbxLoader::GetInstance()->LoadModelFromFile("model13");
+	fbxModel14 = FbxLoader::GetInstance()->LoadModelFromFile("model14");
+	fbxModel15 = FbxLoader::GetInstance()->LoadModelFromFile("model15");
+
 	collisionManager = CollisionManager::GetInstance();
 	objFighter = Player::Create(fbxModel);
 	objFighter->SetModel1(fbxModel);
@@ -90,9 +93,13 @@ void GamePlayScene::Initialize()
 	objFighter->SetModel11(fbxModel11);
 	objFighter->SetModel12(fbxModel12);
 	objFighter->SetModel13(fbxModel13);
+	objFighter->SetModel14(fbxModel14);
+	objFighter->SetModel15(fbxModel15);
 	////敵初期化
 	//Enemy::Initialize();
-	//Effect::Initialize();
+	
+	Effect::Initialize();
+	
 	//modelEnemyCollider = MathModel::LoadFromOBJ("sphere2");
 	//
 	//
@@ -107,7 +114,7 @@ void GamePlayScene::Initialize()
 	//	enemyColliderObjects.push_back(std::move(objectEnemyCollider));
 	//}
 
-	//UI::Initialize();
+	UI::Initialize();
 
 	OpticalPost::Initialize();
 }
@@ -119,7 +126,7 @@ void GamePlayScene::Finalize()
 	safe_delete(lightGroup);
 	JsonLoader::Finalize();
 	OpticalPost::Finalize();
-	//Effect::Finalize();
+	Effect::Finalize();
 	//Enemy::Finalize();
 }
 
@@ -135,7 +142,7 @@ void GamePlayScene::Update()
 	lightGroup->SetCircleShadowFactorAngle(0, XMFLOAT2(circleShadowFactorAngle));
 
 	lightGroup->SetCircleShadowDir(1, XMVECTOR({ circleShadowDir[0], circleShadowDir[1], circleShadowDir[2], 0 }));
-	lightGroup->SetCircleShadowCasterPos(1, XMFLOAT3(JsonLoader::raidEnemyObjects[0].get()->GetPosition()));
+	//lightGroup->SetCircleShadowCasterPos(1, XMFLOAT3(JsonLoader::raidEnemyObjects[0].get()->GetPosition()));
 	lightGroup->SetCircleShadowAtten(1, XMFLOAT3(circleShadowAtten));
 	lightGroup->SetCircleShadowFactorAngle(1, XMFLOAT2(circleShadowFactorAngle2));
 
@@ -199,9 +206,6 @@ void GamePlayScene::Draw()
 	skydomeObject->Draw();
 	//json
 	JsonLoader::Draw();
-	
-
-	
 	objFighter->Draw(cmdList);
 	//for (int i = 0; i < enemyColliderObjects.size(); i++)
 	//{
@@ -222,11 +226,12 @@ void GamePlayScene::Draw()
 	Sprite::PreDraw(cmdList);
 	Effect2d::PreDraw(cmdList);
 
-	//if (moveFlag != true)
-	//{
-	//	UI::Draw();
-	//}
-	//Effect::Draw();
+	if (moveFlag != true)
+	{
+		UI::Draw();
+	}
+	
+	Effect::Draw();
 
 	// デバッグテキストの描画
 	//DebugText::GetInstance()->DrawAll(cmdList);
@@ -239,17 +244,24 @@ void GamePlayScene::Draw()
 	ImGui::NewFrame();
 	ImGui::Begin("config1");//ウィンドウの名前
 	ImGui::SetWindowSize(ImVec2(400, 500), ImGuiCond_::ImGuiCond_FirstUseEver);
-	ImGui::Text("Time: %d", (int)ClockTime::GetSec());
 	ImGui::Text("AnimeNum: %d", objFighter->GetAnimeNum());
 	ImGui::Text("PlayerPos X: %f", objFighter->GetPos().x);
 	ImGui::Text("PlayerPos Y: %f", objFighter->GetPos().y);
 	ImGui::Text("PlayerPos Z: %f", objFighter->GetPos().z);
-	ImGui::Text("TimeLimit: %.4f", objFighter->GetTimeLimit());
+	ImGui::Text("PlayerRot Y: %f", objFighter->GetRotation().y);
+	ImGui::Text("Camera    Y: %f",  camera->GetEye().y);
+	ImGui::Text("CrystalNum: %d", JsonLoader::crystalObjects.size());
 	ImGui::Text("crystal :%d", objFighter->GetCrystal());
+	ImGui::Text("moveBoxMax_X :%f", objFighter->moveBoxMax1.x);
+	ImGui::Text("moveBoxMax_Z :%f", objFighter->moveBoxMax1.z);
 	ImGui::Checkbox("Terrain", &JsonLoader::hitTerrainDrawFlag);
-	ImGui::Checkbox("GoalFlag", &objFighter->GetGoalFlag());
-	ImGui::Checkbox("Wall", &objFighter->GetWallHitFlag());
-	ImGui::Checkbox("slope", &objFighter->GetSlopeFlag());
+	ImGui::Checkbox("teleport", &objFighter->teleportFlag);
+	ImGui::Checkbox("ClimbingCliffFlag", &objFighter->GetClimbingCliffFlag());
+	ImGui::Checkbox("Landing", &objFighter->GetLandingFlag());
+	ImGui::Checkbox("slop", &objFighter->GetSlopeFlag());
+	ImGui::Checkbox("jumpWallHittingFlag", &objFighter->GetJumpWallHitFlag());
+	ImGui::Checkbox("wallHittingFlag", &objFighter->GetWallHitFlag());
+	ImGui::Checkbox("wallKic", &objFighter->testFlag);
 	imguiManager::PosDraw();
 }
 
@@ -306,9 +318,10 @@ void GamePlayScene::GameStatus()
 	//collisionManager->CheckAllCollisions();
 	OpticalPost::Update(camera->GetEye());
 	OpticalPost::SetDrawFlag(true);
-	//UI::Update();
 	
-	//Effect::Update(camera->GetEye());
+	UI::Update();
+	
+	Effect::Update(camera->GetEye());
 	
 	//DebugText::GetInstance()->Print(1000, 20, 3, "TIME : %d", (int)objFighter->GetTimeLimit());
 	//DebugText::GetInstance()->Print(910, 80, 3, "CRYSTAL : %d/7", objFighter->GetCrystal());
@@ -316,7 +329,7 @@ void GamePlayScene::GameStatus()
 
 void GamePlayScene::GameOverStatus()
 {
-	if (Enemy::GetGameOver() == true)
+	if (objFighter->GetTimeLimit() <= 0.0f)
 	{
 		//if (ClockTime::GetAddSecFlag() == true)
 		//{

@@ -129,6 +129,7 @@ public:
 	/// <returns>Å¬’l</returns>
 	static float minElement(const float* array, int size);
 	
+	static DirectX::XMFLOAT3 addVector(XMFLOAT3 float3, XMVECTOR vec);
 
 private:
 	static const float k;					//’ïR—Í

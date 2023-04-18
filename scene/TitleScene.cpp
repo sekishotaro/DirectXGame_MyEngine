@@ -9,8 +9,12 @@ void TitleScene::Initialize()
 {
 	// テクスチャ読み込み
 	Sprite::LoadTexture(1, L"Resources/TitleBackground.png");
+	Sprite::LoadTexture(2, L"Resources/UI_StartKey.png");
 	// 背景スプライト生成
 	spriteBG = Sprite::Create(1, { 0.0f,0.0f });
+	spriteUI = Sprite::Create(2, { (float)WinApp::window_width / 2.0f,(float)WinApp::window_height * 2.5f / 3.0f });
+	spriteUI->SetAnchorPoint({ 0.5f, 0.5f });
+	spriteUI->SetPosition({ (float)WinApp::window_width / 2.0f,(float)WinApp::window_height * 2.5f / 3.0f });
 }
 
 void TitleScene::Finalize()
@@ -28,8 +32,6 @@ void TitleScene::Update()
 		//シーン切り替え
 		SceneManager::GetInstance()->ChangeScene("GAMEPLAY");
 	}
-
-	DebugText::GetInstance()->Print(50, 20, 3, "Push_Key [ENTER] or Push_Pad [A]");
 }
 
 void TitleScene::Draw()
@@ -43,7 +45,7 @@ void TitleScene::Draw()
 	Sprite::PreDraw(cmdList);
 	// 背景スプライト描画
 	spriteBG->Draw();
-
+	spriteUI->Draw();
 	/// <summary>
 	/// ここに背景スプライトの描画処理を追加できる
 	/// </summary>

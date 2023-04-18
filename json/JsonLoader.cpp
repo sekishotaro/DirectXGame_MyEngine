@@ -41,6 +41,9 @@ std::map<std::string, Model> JsonLoader::goalModels;
 std::vector<std::unique_ptr<Object3d>> JsonLoader::moveBoxObjects;
 std::map<std::string, Model> JsonLoader::moveBoxModels;
 
+std::vector<std::unique_ptr<Object3d>> JsonLoader::cliffClimbingObjects;
+std::map<std::string, Model> JsonLoader::cliffClimbingModels;
+
 std::vector<std::unique_ptr<Object3d>> JsonLoader::rockObjects;
 std::map<std::string, Model> JsonLoader::rockModels;
 
@@ -256,6 +259,10 @@ void JsonLoader::SetObject()
 		{
 			TypeMoveBoxModel(objectData);
 		}
+		else if (objectData.typeName == "cliffClimbingBox")
+		{
+			TypeCliffClimbingModel(objectData);
+		}
 	}
 
 	//レベルデータからコライダーオブジェクトを生成,配置
@@ -390,6 +397,12 @@ void JsonLoader::Update()
 		moveBoxObjects[i]->Update();
 	}
 
+	for (int i = 0; i < cliffClimbingObjects.size(); i++)
+	{
+		cliffClimbingObjects[i]->Update();
+	}
+	
+
 	//以下完全描画用
 	for (int i = 0; i < rockObjects.size(); i++)
 	{
@@ -417,13 +430,13 @@ void JsonLoader::Draw()
 
 	
 	
-	if (hitTerrainDrawFlag == true)
+	if (hitTerrainDrawFlag == false)
 	{
 		objGround->Draw();
 
-		for (int i = 0; i < terrainObjects.size(); i++)
+		for (int i = 0; i < cliffClimbingObjects.size(); i++)
 		{
-			terrainObjects[i]->Draw();
+			cliffClimbingObjects[i]->Draw();
 		}
 	}
 	
@@ -470,7 +483,7 @@ void JsonLoader::Draw()
 		moveBoxObjects[i]->Draw();
 	}
 
-	if (hitTerrainDrawFlag == false)
+	if (hitTerrainDrawFlag == true)
 	{
 		for (int i = 0; i < rockObjects.size(); i++)
 		{
@@ -480,6 +493,11 @@ void JsonLoader::Draw()
 		for (int i = 0; i < sandGroundObjects.size(); i++)
 		{
 			sandGroundObjects[i]->Draw();
+		}
+
+		for (int i = 0; i < terrainObjects.size(); i++)
+		{
+			terrainObjects[i]->Draw();
 		}
 	}
 
@@ -527,6 +545,11 @@ void JsonLoader::Finalize()
 	rockModels.clear();
 	sandGroundObjects.clear();
 	sandGroundModels.clear();
+	moveBoxObjects.clear();
+	moveBoxModels.clear();
+	cliffClimbingObjects.clear();
+	cliffClimbingModels.clear();
+	
 
 }
 
@@ -688,9 +711,9 @@ void JsonLoader::TypeSetGroundModel(LevelData::ObjectData& objectData)
 
 	newObject = Object3d::Create();
 	newObject->SetModel(model);
-
+	newObject->OnTitleFlag();
 	objGround = TouchableObject::Create(model);
-
+	objGround->OnTitleFlag();
 	//座標
 	XMFLOAT3 pos;
 	DirectX::XMStoreFloat3(&pos, objectData.translation);
@@ -712,7 +735,7 @@ void JsonLoader::TypeSetGroundModel(LevelData::ObjectData& objectData)
 	newObject->SetScale(scale);
 
 	objGround->SetScale(scale);
-
+	
 	//配列の最後に登録
 	groundObjects.push_back(std::move(newObject));
 }
@@ -1100,5 +1123,37 @@ void JsonLoader::TypeSandGroundModel(LevelData::ObjectData& objectData)
 	newObject->OnTitleFlag();
 	//配列の最後に登録
 	sandGroundObjects.push_back(std::move(newObject));
+}
+
+void JsonLoader::TypeCliffClimbingModel(LevelData::ObjectData& objectData)
+{
+	//ファイル名から登録済みモデルを検索
+	Model* model = nullptr;
+	model = Model::LoadFromOBJ(objectData.fileName);
+	cliffClimbingModels[objectData.fileName] = *model;
+
+	//モデルを指定して3Dオブジェクトを生成
+	std::unique_ptr<Object3d> newObject;
+	newObject = Object3d::Create();
+	newObject->SetModel(model);
+
+	//座標
+	XMFLOAT3 pos;
+	DirectX::XMStoreFloat3(&pos, objectData.translation);
+	newObject->SetPosition(pos);
+
+	//回転角
+	XMFLOAT3 rot;
+	DirectX::XMStoreFloat3(&rot, objectData.rotation);
+	rot.y += 90.0f;
+	newObject->SetRotation(rot);
+
+	//スケール
+	XMFLOAT3 scale;
+	DirectX::XMStoreFloat3(&scale, objectData.scaling);
+	newObject->SetScale(scale);
+	newObject->OnTitleFlag();
+	//配列の最後に登録
+	cliffClimbingObjects.push_back(std::move(newObject));
 }
 

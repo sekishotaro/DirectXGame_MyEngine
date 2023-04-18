@@ -46,4 +46,5 @@ public:
 	/// ゲームシーン用
 	/// </summary>
 	Sprite *spriteBG = nullptr;
+	Sprite* spriteUI = nullptr;
 };

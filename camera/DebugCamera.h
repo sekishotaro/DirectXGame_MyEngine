@@ -35,8 +35,14 @@ public: // ÉÅÉìÉoä÷êî
 
 	void RaidCameraCount();
 
-	static float GetRotaY() { return rotaY; }
+	void ViewpointSwitch(float endRota);
 
+	float leap(float rotaA, float rotaB, float timeRatio);
+
+	bool PlayerJumpUp();
+
+	static float GetRotaY() { return rotaY; }
+	static float GetRotaX() { return rotaX; }
 public:
 	static XMFLOAT3 eye;
 	static XMFLOAT3 target;
@@ -50,11 +56,17 @@ public:
 	static bool hitFlag;
 
 	static std::unique_ptr<Object3d> Object;
+	float oldPosY = 0.0f;
 	static Model* Model;
 	BaseCollider* collider = nullptr;
 
 	bool RaidTargetCameraFlag = false;
 	bool oldRaidFlag = false;
 	int count = 0;
+
+	bool viewpointSwitchFlag = false;
+	float viewpointSwitchposParRotX = 0.0f;
+	float viewpointSwitchposParRotY = 0.0f;
+	float viewpointSwitchposParDis = 0.0f;
 };
 

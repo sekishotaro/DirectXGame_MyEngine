@@ -128,7 +128,13 @@ struct LineSegment
 };
 
 
-
+struct Quadrangle
+{
+	DirectX::XMFLOAT2 centerPos = { 0,0 };
+	DirectX::XMFLOAT2 size = { 1.0f, 1.0f };
+	DirectX::XMFLOAT2 MaxPos = { centerPos.x + size.x, centerPos.y + size.y };
+	DirectX::XMFLOAT2 LeastPos = { centerPos.x - size.x, centerPos.y - size.y };
+};
 
 /// <summary>
 /// ’·•ûŒ`

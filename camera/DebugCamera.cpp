@@ -34,6 +34,7 @@ DebugCamera::DebugCamera(int window_width, int window_height) : Camera(window_wi
 	collider = Object->GetBaseCollider();
 	collider->SetAttribute(COLLISION_ATTR_ALLIES);
 	Object->SetBaseCollider(collider);
+	rotaX = 180.0f;
 }
 
 void DebugCamera::Update()
@@ -55,6 +56,7 @@ void DebugCamera::Update()
 		targetPos = Enemy::GetPos();
 	}
 	
+
 	targetPos.y += 6.0f;
 	oldRaidFlag = Enemy::GetRaidFlag();
 	Camera::SetTarget(targetPos);
@@ -63,12 +65,23 @@ void DebugCamera::Update()
 
 DebugCamera::XMFLOAT3 DebugCamera::SphereCoordinateSystem()
 {
-	XMFLOAT3 cameraPos = Player::GetPos();
 	float radiusX = rotaX * 3.14f / 180.0f;
 	float radiusY = rotaY * 3.14f / 180.0f;
+	XMFLOAT3 cameraPos = {};
+	cameraPos.x = Player::GetPos().x;
+	cameraPos.z = Player::GetPos().z;
+	if (PlayerJumpUp() == true)
+	{
+		cameraPos.y = oldPosY;
+	}
+	else
+	{
+		cameraPos.y = Player::GetPos().y;
+		cameraPos.y += dis * cos(radiusY);
+	}
 
 	//球面座標系
-	cameraPos.y += dis * cos(radiusY);
+	
 	cameraPos.x += dis * sin(radiusY) * cos(radiusX);
 	cameraPos.z += dis * sin(radiusY) * sin(radiusX);
 
@@ -77,40 +90,80 @@ DebugCamera::XMFLOAT3 DebugCamera::SphereCoordinateSystem()
 
 DebugCamera::XMFLOAT3 DebugCamera::MoveUpdate()
 {
-	XMFLOAT3 cameraPos = Player::GetPos();
+	XMFLOAT3 cameraPos = {};
 
-	if (Input::GetInstance()->PushKey(DIK_UP)) { rotaY -= 1.0f; }
-	else if (Input::GetInstance()->PushKey(DIK_DOWN)) { rotaY += 1.0f; }
-	if (Input::GetInstance()->PushKey(DIK_RIGHT)) { rotaX += 1.0f; }
-	else if (Input::GetInstance()->PushKey(DIK_LEFT)) { rotaX -= 1.0f; }
-	if (Input::GetInstance()->PushKey(DIK_E) && dis >= 5.0f) { dis -= 1.0f; }
-	else if (Input::GetInstance()->PushKey(DIK_Z) && dis <= 20.0f) { dis += 1.0f; }
+	if (PlayerJumpUp() != true)
+	{
+		if (Input::GetInstance()->PushKey(DIK_UP)) { rotaY -= 1.0f; }
+		else if (Input::GetInstance()->PushKey(DIK_DOWN)) { rotaY += 1.0f; }
+		if (Input::GetInstance()->PushKey(DIK_RIGHT)) { rotaX += 1.0f; }
+		else if (Input::GetInstance()->PushKey(DIK_LEFT)) { rotaX -= 1.0f; }
+		if (Input::GetInstance()->PushKey(DIK_E) && dis >= 5.0f) { dis -= 1.0f; }
+		else if (Input::GetInstance()->PushKey(DIK_Z) && dis <= 20.0f) { dis += 1.0f; }
 
-	if (Input::GetInstance()->RightStickIn(UP) && rotaY < 175) 
-	{ 
-		rotaY += 1.0f; 
-		if (dis <= 20.0f && hitFlag == false) { dis += 0.5f;}
+		if (Input::GetInstance()->RightStickIn(UP) && rotaY < 175)
+		{
+			rotaY += 1.0f;
+			if (dis <= 20.0f && hitFlag == false) { dis += 0.5f; }
+		}
+		else if (Input::GetInstance()->RightStickIn(DOWN) && rotaY > 5)
+		{
+			rotaY -= 1.0f;
+			if (dis <= 20.0f && hitFlag == false) { dis += 0.5f; }
+		}
+		if (Input::GetInstance()->RightStickIn(RIGHT))
+		{
+			rotaX -= 1.0f;
+			if (dis <= 20.0f && hitFlag == false) { dis += 0.5f; }
+		}
+		else if (Input::GetInstance()->RightStickIn(LEFT))
+		{
+			rotaX += 1.0f;
+			if (dis <= 20.0f && hitFlag == false) { dis += 0.5f; }
+		}
 	}
-	else if (Input::GetInstance()->RightStickIn(DOWN) && rotaY > 5) 
-	{ 
-		rotaY -= 1.0f; 
-		if (dis <= 20.0f && hitFlag == false) { dis += 0.5f; }
+	
+	static float endRota = 0;
+	if (Input::GetInstance()->PushPadbutton(GAMEPAD_RIGHT_SHOULDER) && viewpointSwitchFlag == false)
+	{
+		endRota = 0;
+		endRota -= Player::GetRot().y + 90.0f;
+		if (endRota >= 360.0f)
+		{
+			endRota -= 360.0f;
+		}
+		if (endRota <= 0.0f)
+		{
+			endRota += 360.0f;
+		}
+		viewpointSwitchFlag = true;
+		viewpointSwitchposParRotX = rotaX;
+		viewpointSwitchposParRotY = rotaY;
 	}
-	if (Input::GetInstance()->RightStickIn(RIGHT)) 
-	{ 
-		rotaX -= 1.0f; 
-		if (dis <= 20.0f && hitFlag == false) { dis += 0.5f; }
+
+	if (rotaX >= 360.0f)
+	{
+		rotaX -= 360.0f;
 	}
-	else if (Input::GetInstance()->RightStickIn(LEFT)) 
-	{ 
-		rotaX += 1.0f; 
-		if (dis <= 20.0f && hitFlag == false) { dis += 0.5f; }
+	if (rotaX <= 0.0f)
+	{
+		rotaX += 360.0f;
 	}
-	//if (Input::GetInstance()->PushPadbutton(GAMEPAD_LEFT_TRIGGER) && dis >= 5.0f) { dis -= 1.0f; }
-	//else if (Input::GetInstance()->PushPadbutton(GAMEPAD_RIGHT_TRIGGER) && dis <= 20.0f) { dis += 1.0f; }
+
+	if (rotaY >= 360.0f)
+	{
+		rotaY -= 360.0f;
+	}
+	if (rotaY <= 0.0f)
+	{
+		rotaY += 360.0f;
+	}
+
+	ViewpointSwitch(endRota);
 
 	cameraPos = SphereCoordinateSystem();
 
+	oldPosY = cameraPos.y;
 	return cameraPos;
 }
 
@@ -229,4 +282,65 @@ void DebugCamera::RaidCameraCount()
 		return;
 	}
 	count++;
+}
+
+void DebugCamera::ViewpointSwitch(float endRota)
+{
+	static float MoveTime = 0.0f;
+	if (viewpointSwitchFlag == false)
+	{
+		MoveTime = 0.0f;
+		return;
+	}
+
+	if (endRota >= 360.0f)
+	{
+		endRota -= 360.0f;
+	}
+	if (endRota <= 0.0f)
+	{
+		endRota += 360.0f;
+	}
+
+	const float MoveMaxTime = 0.3f; //移動にかかる時間
+	float timeRatio = MoveTime / MoveMaxTime;
+	if (MoveTime <= MoveMaxTime)
+	{
+		//エフェクトの時間を進める
+		MoveTime += 1.0f / 60.0f;
+	}
+	else
+	{
+		viewpointSwitchFlag = false;
+		return;
+	}
+
+	if (dis <= 20.0f && hitFlag == false) { dis += 1.0f; }
+	rotaX = leap(viewpointSwitchposParRotX, endRota, timeRatio);
+	rotaY = leap(viewpointSwitchposParRotY, 60.0f, timeRatio);
+}
+
+float DebugCamera::leap(float rotaA, float rotaB, float timeRatio)
+{
+	float result = 0.0f;
+	result = rotaA * (1.0f - timeRatio) + rotaB * timeRatio;
+	return result;
+}
+
+bool DebugCamera::PlayerJumpUp()
+{
+	if (Player::GetAnimeNum() == 3)
+	{
+		return true;
+	}
+	else if (Player::GetAnimeNum() == 13)
+	{
+		return true;
+	}
+	else if (Player::GetAnimeNum() == 14)
+	{
+		return true;
+	}
+	
+	return false;
 }

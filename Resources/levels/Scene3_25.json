@@ -45,36 +45,13 @@
         },
         {
             "type": "MESH",
-            "type_name": "ground",
-            "name": "平面.001",
-            "transform": {
-                "translation": [
-                    0.0,
-                    0.0,
-                    0.0
-                ],
-                "rotation": [
-                    0.0,
-                    -0.0,
-                    0.0
-                ],
-                "scaling": [
-                    1.0,
-                    1.0,
-                    1.0
-                ]
-            },
-            "file_name": "terrain2"
-        },
-        {
-            "type": "MESH",
             "type_name": "goal",
             "name": "円柱",
             "transform": {
                 "translation": [
                     0.0,
                     0.0,
-                    0.21489743888378143
+                    0.0
                 ],
                 "rotation": [
                     0.0,
@@ -95,9 +72,9 @@
             "name": "Cube.001",
             "transform": {
                 "translation": [
-                    11.9951171875,
-                    -164.5389862060547,
-                    57.23080062866211
+                    0.0,
+                    18.14412498474121,
+                    1.9144583940505981
                 ],
                 "rotation": [
                     0.0,
@@ -127,13 +104,105 @@
         },
         {
             "type": "MESH",
+            "type_name": "ground",
+            "name": "平面.003",
+            "transform": {
+                "translation": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "file_name": "terrain"
+        },
+        {
+            "type": "MESH",
+            "type_name": "Appearance",
+            "name": "平面.001",
+            "transform": {
+                "translation": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "rotation": [
+                    -0.0,
+                    -179.99998474121094,
+                    -0.0
+                ],
+                "scaling": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "file_name": "terrainGroundView"
+        },
+        {
+            "type": "MESH",
+            "type_name": "Appearance",
+            "name": "平面.004",
+            "transform": {
+                "translation": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "rotation": [
+                    -0.0,
+                    -179.99998474121094,
+                    -0.0
+                ],
+                "scaling": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "file_name": "terrainOutWallView"
+        },
+        {
+            "type": "MESH",
+            "type_name": "Appearance",
+            "name": "平面.006",
+            "transform": {
+                "translation": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "rotation": [
+                    -0.0,
+                    -179.99998474121094,
+                    -0.0
+                ],
+                "scaling": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "file_name": "terrainInWallView"
+        },
+        {
+            "type": "MESH",
             "type_name": "crystal",
             "name": "Cube.002",
             "transform": {
                 "translation": [
-                    -20.497947692871094,
-                    -160.81654357910156,
-                    47.84208679199219
+                    -119.74922943115234,
+                    146.5528564453125,
+                    41.563682556152344
                 ],
                 "rotation": [
                     0.0,
@@ -167,9 +236,9 @@
             "name": "Cube.003",
             "transform": {
                 "translation": [
-                    -250.1507568359375,
-                    67.49220275878906,
-                    47.20384979248047
+                    -161.81948852539062,
+                    211.59710693359375,
+                    81.05453491210938
                 ],
                 "rotation": [
                     0.0,
@@ -203,9 +272,9 @@
             "name": "Cube.004",
             "transform": {
                 "translation": [
-                    26.76264190673828,
-                    231.22793579101562,
-                    104.27406311035156
+                    -78.75839233398438,
+                    251.23524475097656,
+                    90.51424407958984
                 ],
                 "rotation": [
                     0.0,
@@ -239,9 +308,9 @@
             "name": "Cube.005",
             "transform": {
                 "translation": [
-                    -52.987125396728516,
-                    133.33143615722656,
-                    39.324275970458984
+                    -161.19044494628906,
+                    283.457275390625,
+                    117.40601348876953
                 ],
                 "rotation": [
                     0.0,
@@ -275,9 +344,9 @@
             "name": "Cube.006",
             "transform": {
                 "translation": [
-                    173.0252227783203,
-                    -5.6859588623046875,
-                    2.631903648376465
+                    -135.0,
+                    386.06640625,
+                    166.53756713867188
                 ],
                 "rotation": [
                     0.0,
@@ -311,9 +380,9 @@
             "name": "Cube.007",
             "transform": {
                 "translation": [
-                    -250.1507568359375,
-                    -61.12208557128906,
-                    3.076416015625
+                    85.97314453125,
+                    370.9191589355469,
+                    155.88619995117188
                 ],
                 "rotation": [
                     0.0,
@@ -347,9 +416,9 @@
             "name": "Cube.008",
             "transform": {
                 "translation": [
-                    43.67935562133789,
-                    -3.038069248199463,
-                    3.076416015625
+                    85.97314453125,
+                    210.76551818847656,
+                    78.97908782958984
                 ],
                 "rotation": [
                     0.0,
@@ -379,59 +448,13 @@
         },
         {
             "type": "MESH",
-            "type_name": "climbWall",
-            "name": "平面.002",
+            "type_name": "crystal",
+            "name": "Cube.009",
             "transform": {
                 "translation": [
-                    -256.9749755859375,
-                    -40.48307418823242,
-                    25.894163131713867
-                ],
-                "rotation": [
-                    0.0,
-                    -0.0,
-                    0.0
-                ],
-                "scaling": [
-                    1.0,
-                    4.036459445953369,
-                    25.779022216796875
-                ]
-            },
-            "file_name": "climbWall"
-        },
-        {
-            "type": "MESH",
-            "type_name": "climbWall",
-            "name": "平面.003",
-            "transform": {
-                "translation": [
-                    -256.9749755859375,
-                    16.937145233154297,
-                    57.99823760986328
-                ],
-                "rotation": [
-                    0.0,
-                    -0.0,
-                    0.0
-                ],
-                "scaling": [
-                    1.0,
-                    53.83787536621094,
-                    13.274105072021484
-                ]
-            },
-            "file_name": "climbWall"
-        },
-        {
-            "type": "MESH",
-            "type_name": "monitoringEnemy",
-            "name": "球",
-            "transform": {
-                "translation": [
-                    157.7157440185547,
-                    11.092204093933105,
-                    2.897351026535034
+                    129.89260864257812,
+                    197.8706512451172,
+                    71.38973999023438
                 ],
                 "rotation": [
                     0.0,
@@ -444,17 +467,30 @@
                     1.0
                 ]
             },
-            "file_name": "Enemy1"
+            "file_name": "crystal",
+            "collider": {
+                "type": "BOX",
+                "center": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "size": [
+                    5.0,
+                    5.0,
+                    5.0
+                ]
+            }
         },
         {
             "type": "MESH",
-            "type_name": "monitoringEnemy",
-            "name": "球.001",
+            "type_name": "crystal",
+            "name": "Cube.010",
             "transform": {
                 "translation": [
-                    157.7157440185547,
-                    -21.625160217285156,
-                    2.897351026535034
+                    33.353477478027344,
+                    197.8706512451172,
+                    71.38973999023438
                 ],
                 "rotation": [
                     0.0,
@@ -467,17 +503,30 @@
                     1.0
                 ]
             },
-            "file_name": "Enemy1"
+            "file_name": "crystal",
+            "collider": {
+                "type": "BOX",
+                "center": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "size": [
+                    5.0,
+                    5.0,
+                    5.0
+                ]
+            }
         },
         {
             "type": "MESH",
-            "type_name": "monitoringEnemy",
-            "name": "球.003",
+            "type_name": "crystal",
+            "name": "Cube.011",
             "transform": {
                 "translation": [
-                    183.98269653320312,
-                    11.092204093933105,
-                    2.897351026535034
+                    85.97314453125,
+                    317.94207763671875,
+                    129.47804260253906
                 ],
                 "rotation": [
                     0.0,
@@ -490,17 +539,30 @@
                     1.0
                 ]
             },
-            "file_name": "Enemy1"
+            "file_name": "crystal",
+            "collider": {
+                "type": "BOX",
+                "center": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "size": [
+                    5.0,
+                    5.0,
+                    5.0
+                ]
+            }
         },
         {
             "type": "MESH",
-            "type_name": "monitoringEnemy",
-            "name": "球.002",
+            "type_name": "crystal",
+            "name": "Cube.012",
             "transform": {
                 "translation": [
-                    183.98269653320312,
-                    -21.625160217285156,
-                    2.897351026535034
+                    -97.78894805908203,
+                    74.47826385498047,
+                    1.9144583940505981
                 ],
                 "rotation": [
                     0.0,
@@ -513,17 +575,30 @@
                     1.0
                 ]
             },
-            "file_name": "Enemy1"
+            "file_name": "crystal",
+            "collider": {
+                "type": "BOX",
+                "center": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "size": [
+                    5.0,
+                    5.0,
+                    5.0
+                ]
+            }
         },
         {
             "type": "MESH",
-            "type_name": "raidEnemy",
-            "name": "Cube_Cube.001",
+            "type_name": "crystal",
+            "name": "Cube.013",
             "transform": {
                 "translation": [
-                    -10.99081039428711,
-                    0.0,
-                    0.0
+                    -53.76563262939453,
+                    316.1101379394531,
+                    127.86830139160156
                 ],
                 "rotation": [
                     0.0,
@@ -536,7 +611,151 @@
                     1.0
                 ]
             },
-            "file_name": "Enemy2"
+            "file_name": "crystal",
+            "collider": {
+                "type": "BOX",
+                "center": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "size": [
+                    5.0,
+                    5.0,
+                    5.0
+                ]
+            }
+        },
+        {
+            "type": "MESH",
+            "type_name": "moveBox",
+            "name": "Cube",
+            "transform": {
+                "translation": [
+                    -95.0,
+                    386.4149475097656,
+                    156.25765991210938
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    2.5,
+                    2.5,
+                    2.5
+                ]
+            },
+            "file_name": "block"
+        },
+        {
+            "type": "MESH",
+            "type_name": "crystal",
+            "name": "Cube.014",
+            "transform": {
+                "translation": [
+                    -54.88311767578125,
+                    146.5528564453125,
+                    28.728382110595703
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "file_name": "crystal",
+            "collider": {
+                "type": "BOX",
+                "center": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "size": [
+                    5.0,
+                    5.0,
+                    5.0
+                ]
+            }
+        },
+        {
+            "type": "MESH",
+            "type_name": "crystal",
+            "name": "Cube.015",
+            "transform": {
+                "translation": [
+                    -54.88311767578125,
+                    208.87757873535156,
+                    69.51554107666016
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "file_name": "crystal",
+            "collider": {
+                "type": "BOX",
+                "center": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "size": [
+                    5.0,
+                    5.0,
+                    5.0
+                ]
+            }
+        },
+        {
+            "type": "MESH",
+            "type_name": "crystal",
+            "name": "Cube.016",
+            "transform": {
+                "translation": [
+                    -54.19732666015625,
+                    263.2759094238281,
+                    99.36176300048828
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "file_name": "crystal",
+            "collider": {
+                "type": "BOX",
+                "center": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "size": [
+                    5.0,
+                    5.0,
+                    5.0
+                ]
+            }
         }
     ]
 }

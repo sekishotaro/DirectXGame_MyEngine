@@ -56,5 +56,7 @@ public:
 	static float moveQuantityMax;
 	//サイズ値
 	static float sizeNum;
+	//小さい光の柱の数
+	static const int smallOpticalPostNum;
 };
 

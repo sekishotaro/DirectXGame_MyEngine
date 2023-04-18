@@ -19,6 +19,7 @@ float Player::moveAdjustmentNum = 1.0f;
 bool Player::nowMove = false;
 bool Player::slopeFlag = false;
 bool Player::jumpFlag = false;
+bool Player::wallKickUpFlag = false;
 bool Player::fallFlag = false;
 bool Player::landingFlag = false;
 bool Player::onGround = false;
@@ -36,6 +37,12 @@ int Player::inputY = 0;
 float Player::testRota = 0;
 bool Player::crystalGetFlag = false;
 bool Player::moveBoxFlag = false;
+bool Player::moveBoxHitFlag = false;
+bool Player::wallHittingFlag = false;
+bool Player::oldWallHittingFlag = false;
+bool Player::jumpWallHittingFlag = false;
+bool Player::climbingCliffFlag = false;
+bool Player::climbingCliffUpFlag = false;
 int Player::animeNum = 0;
 int Player::oldAnimeNum = 0;
 bool Player::animeFlag = false;
@@ -52,6 +59,8 @@ FbxModel* Player::fbxModel10 = nullptr;
 FbxModel* Player::fbxModel11 = nullptr;
 FbxModel* Player::fbxModel12 = nullptr;
 FbxModel* Player::fbxModel13 = nullptr;
+FbxModel* Player::fbxModel14 = nullptr;
+FbxModel* Player::fbxModel15 = nullptr;
 
 Player* Player::Create(FbxModel* model)
 {
@@ -85,20 +94,15 @@ void Player::Initialize()
 	FbxObject3d::Initialize();
 
 	position = JsonLoader::goalObjects[0].get()->GetPosition();
-	//position.x = -59;
-	//position.y = 30;
-	//position.z = 43;
-
+	rotation.y = 90.0f;
 	pos = position;
 
-	scale.x = 0.01f;
-	scale.y = 0.01f;
-	scale.z = 0.01f;
+	scale = { 0.01f ,0.01f ,0.01f };
 
 	//コライダーの追加
 	float radius = 0.6f;
 	//半径分だけ足元から浮いた座標を球中心にする
-	SetCollider(new SphereCollider(XMVECTOR({ 0, radius, 0, 0 }), radius));
+	SetCollider(new SphereCollider(XMVECTOR({ 0, radius * 1.8f, 0, 0 }), radius));
 
 	collider->SetAttribute(COLLISION_ATTR_ALLIES);
 
@@ -109,11 +113,18 @@ void Player::Initialize()
 
 void Player::Update()
 {
+	//デバック用初期位置テレポート
+	if (teleportFlag == true)
+	{
+		position = {274.0f, 106.0f, 107.0f};
+		position.y += 1.0f;
+	}
+
 	//移動量初期化
-	XMVECTOR move = { 0,0,0.0f,0 };
+	XMVECTOR move = { 0.0f, 0.0f, 0.0f, 0.0f};
 	//スタミナによる速度変数
 	float power = 1.0f;
-
+	movingFlag = false;
 	//移動処理
 	MoveOperation(move, power);
 
@@ -124,12 +135,7 @@ void Player::Update()
 	SlopeDownhill(move, power);
 
 	//移動確定
-	if (nowMove == true)
-	{
-		position.x += move.m128_f32[0] * power;
-		position.y += move.m128_f32[1] * power;
-		position.z += move.m128_f32[2] * power;
-	}
+	MoveAddDetermination(move, power);
 
 	//箱移動処理
 	MoveBoxProcess(move, power);
@@ -146,24 +152,42 @@ void Player::Update()
 	//地形との当たり判定(メッシュコライダー)
 	TerrainConfirmationProcess();
 
+	//崖上がり
+	climbingCliff();
+
 	pos = position;
 	rot = rotation;
 
-	if (jumpFlag == true)
+	if (climbingCliffFlag == true && climbingCliffUpFlag == false)
 	{
 		animeFlag = true;
-		animeNum = 3;
+		animeNum = hangingCliff;
+	}
+	else if (climbingCliffFlag == false && climbingCliffUpFlag == true)
+	{
+		animeFlag = true;
+		animeNum = hangingCliffUp;
+	}
+	else if (jumpFlag == true)
+	{
+		animeFlag = true;
+		animeNum = jump;
+	}
+	else if (wallKickUpFlag == true)
+	{
+		animeFlag = true;
+		animeNum = wallKickUp;
 	}
 	else if (fallFlag == true)
 	{
 		animeFlag = true;
-		animeNum = 4;
+		animeNum = fall;
 	}
-
-	if (landingFlag == true)
+	
+	if (landingFlag == true && movingFlag == false)
 	{
 		animeFlag = true;
-		animeNum = 6;
+		animeNum = landing;
 	}
 
 	//アニメーション処理
@@ -328,7 +352,7 @@ void Player::MoveOperation(XMVECTOR& move, float& power)
 	inputY = Input::GetInstance()->LeftStickInYNum();
 	
 	//移動量初期化
-	move = { 0,0,0.1f,0 };
+	move = { 0.0f,0.0f,0.0f,0 };
 
 	//スタミナ切れ確認
 	if (staminaCut == true)
@@ -340,14 +364,56 @@ void Player::MoveOperation(XMVECTOR& move, float& power)
 		moveAdjustmentNum = 1.0f;
 	}
 
-	if (climbOperation == false) //通常移動
+	if (climbingCliffFlag == true)
 	{
+		MoveClimbingCliff(move, power);
+	}
+	else if (climbOperation == false && climbingCliffUpFlag == false) //通常移動
+	{
+		if (climbingCliffFlag == true) return;
+
+		move = { 0.0f,0.0f,0.1f,0 };
 		MoveNormal(move, power);
 	}
 	else if (climbOperation == true) //壁のぼり移動
 	{
+		//move = { 0.0f,0.0f,0.0f,0 };
 		MoveClimb(move, power);
 	}
+}
+
+void Player::MoveClimbingCliff(DirectX::XMVECTOR& move, float& power)
+{
+	if (climbingCliffUpFlag == true) return;
+
+	//static int count = 0;
+	//const int MAX = 24918;
+	//if (inputX == 0 && inputY == 0)
+	//{
+	//	count = 0;
+	//	return;
+	//}
+	//else
+	//{
+	//	count += 1;
+	//}
+
+	if (Input::GetInstance()->TriggerPadbutton(Button_Y))
+	{
+		BoxInMove();
+		climbingCliffUpFlag = true;
+		climbingCliffFlag = false;
+	}
+	else if (Input::GetInstance()->TriggerPadbutton(Button_A))
+	{
+		move.m128_f32[1] -= 3.0f;
+		climbingCliffFlag = false;
+	}
+
+	//if (count <= 60) return;
+	//climbingCliffUpFlag = true;
+	//climbingCliffFlag = false;
+	//count = 0;
 }
 
 void Player::MoveNormal(DirectX::XMVECTOR& move, float& power)
@@ -395,6 +461,16 @@ void Player::MoveNormal(DirectX::XMVECTOR& move, float& power)
 			rot2 = (360.0f - rot2);
 		}
 		rotation.y = rot1 + rot2;
+
+		if (rotation.y >= 360.0f)
+		{
+			rotation.y -= 360.0f;
+		}
+		if (rotation.y <= 0.0f)
+		{
+			rotation.y += 360.0f;
+		}
+
 	}
 
 	//移動ベクトルをY軸回りの角度で回転
@@ -426,35 +502,35 @@ void Player::MoveNormal(DirectX::XMVECTOR& move, float& power)
 	if (Input::GetInstance()->LeftStickIn(LEFT) || Input::GetInstance()->LeftStickIn(RIGHT))
 	{
 		nowMove = true;
-
+		movingFlag = true;
 		animeFlag = true;
 		if (staminaBoostFlag == false)
 		{
-			animeNum = 1;
+			animeNum = walking;
 		}
-		else				//ダッシュ
+		else
 		{
-			animeNum = 2;
+			animeNum = running;
 		}
 	}
 	else if (Input::GetInstance()->LeftStickIn(UP) || Input::GetInstance()->LeftStickIn(DOWN))
 	{
 		nowMove = true;
-
+		movingFlag = true;
 		animeFlag = true;
 		if (staminaBoostFlag == false)
 		{
-			animeNum = 1;
+			animeNum = walking;
 		}
-		else				//ダッシュ
+		else
 		{
-			animeNum = 2;
+			animeNum = running;
 		}
 	}
 	else
 	{
 		animeFlag = true;
-		animeNum = 0;
+		animeNum = idling;
 		nowMove = false;
 	}
 }
@@ -464,6 +540,14 @@ void Player::MoveClimb(DirectX::XMVECTOR& move, float& power)
 	moveV = { 0,0,0 };
 
 	float moveAdjustment = 0.2f;
+
+	if (StaminaUnusable() != false)
+	{
+		climbOperation = false;
+		position.x += climbNormal.m128_f32[0];
+		position.z += climbNormal.m128_f32[2];
+	}
+
 
 	//コントローラー
 	if (Input::GetInstance()->LeftStickIn(LEFT))
@@ -491,11 +575,11 @@ void Player::MoveClimb(DirectX::XMVECTOR& move, float& power)
 		animeFlag = true;
 		if (staminaBoostFlag == true)
 		{
-			animeNum = 5;
+			animeNum = climbing;
 		}
 		else				//ダッシュ
 		{
-			animeNum = 5;
+			animeNum = climbing;
 		}
 	}
 	else if (Input::GetInstance()->LeftStickIn(RIGHT))
@@ -523,11 +607,11 @@ void Player::MoveClimb(DirectX::XMVECTOR& move, float& power)
 		animeFlag = true;
 		if (staminaBoostFlag == true)
 		{
-			animeNum = 5;
+			animeNum = climbing;
 		}
 		else				//ダッシュ
 		{
-			animeNum = 5;
+			animeNum = climbing;
 		}
 	}
 	else if (Input::GetInstance()->LeftStickIn(DOWN))
@@ -538,11 +622,11 @@ void Player::MoveClimb(DirectX::XMVECTOR& move, float& power)
 		animeFlag = true;
 		if (staminaBoostFlag == true)
 		{
-			animeNum = 5;
+			animeNum = climbing;
 		}
 		else				//ダッシュ
 		{
-			animeNum = 5;
+			animeNum = climbing;
 		}
 	}
 	else if (Input::GetInstance()->LeftStickIn(UP))
@@ -553,17 +637,17 @@ void Player::MoveClimb(DirectX::XMVECTOR& move, float& power)
 		animeFlag = true;
 		if (staminaBoostFlag == true)
 		{
-			animeNum = 5;
+			animeNum = climbing;
 		}
 		else				//ダッシュ
 		{
-			animeNum = 5;
+			animeNum = climbing;
 		}
 	}
 	else
 	{
 		animeFlag = false;
-		animeNum = 5;
+		animeNum = climbing;
 		nowMove = false;
 	}
 
@@ -622,6 +706,14 @@ void Player::CrystalConfirmationProcess()
 			timeLimit = timeLimitMax;
 		}
 	}
+
+	//デバック用
+	if (Input::GetInstance()->TriggerKey(DIK_9))
+	{
+		JsonLoader::crystalObjects.erase(JsonLoader::crystalObjects.begin());
+
+		OpticalPost::Erase(0);
+	}
 }
 
 void Player::GoalConfirmationProcess()
@@ -657,7 +749,7 @@ void Player::ObstacleConfirmationProcess(const XMVECTOR &move)
 	//プレイヤーの下方向レイ
 	Ray ray;
 	ray.start = sphereCollider->center;
-	ray.dir = { 0, -1, 0, 0 };
+	ray.dir = { 0, -1.3f, 0, 0 };
 	RaycastHit raycastHit;
 	//動かせる箱
 	Box box;
@@ -665,6 +757,48 @@ void Player::ObstacleConfirmationProcess(const XMVECTOR &move)
 	{
 		box.centerPos = JsonLoader::moveBoxObjects[i].get()->GetPosition();
 		box.size = JsonLoader::moveBoxObjects[i].get()->GetScale();
+		box.LeastPos = XMFLOAT3{ box.centerPos.x - box.size.x, box.centerPos.y - box.size.y, box.centerPos.z - box.size.z };
+		box.MaxPos = XMFLOAT3{ box.centerPos.x + box.size.x, box.centerPos.y + box.size.y, box.centerPos.z + box.size.z };
+
+		//移動箱の上部による当たり判定と排斥
+		if (fallV.m128_f32[1] >= 0.0f) return;
+		if (onGround == true && onObject == true)
+		{
+			//スムーズに坂を下る為の吸着距離u
+			const float adsDistance = 0.6f;
+
+			//接地を維持
+			if (Collision::CheckRayBox(ray, box) == true)
+			{
+				onGround = true;
+				fallFlag = false;
+				position.y = box.MaxPos.y;
+				onObject = true;
+				return;
+			}
+		}									//↓坂でダッシュジャンプした時の当たり判定用に追加|| jumpFlag == true
+		else if (fallV.m128_f32[1] <= 0.0f)//落下状態
+		{
+			nowMove = true;
+			if (Collision::CheckRayBox(ray, box) == true)
+			{
+				//着地
+				onGround = true;
+				onObject = true;
+				landingFlag = true;
+				jumpFlag = false;
+				fallFlag = false;
+				wallKickUpFlag = false;
+				position.y = box.MaxPos.y;
+				return;
+			}
+		}
+	}
+
+	for (int i = 0; i < JsonLoader::terrainObjects.size(); i++)
+	{
+		box.centerPos = JsonLoader::terrainObjects[i].get()->GetPosition();
+		box.size = JsonLoader::terrainObjects[i].get()->GetScale();
 		box.LeastPos = XMFLOAT3{ box.centerPos.x - box.size.x, box.centerPos.y - box.size.y, box.centerPos.z - box.size.z };
 		box.MaxPos = XMFLOAT3{ box.centerPos.x + box.size.x, box.centerPos.y + box.size.y, box.centerPos.z + box.size.z };
 
@@ -701,52 +835,7 @@ void Player::ObstacleConfirmationProcess(const XMVECTOR &move)
 				landingFlag = true;
 				jumpFlag = false;
 				fallFlag = false;
-				position.y = box.MaxPos.y;
-				return;
-			}
-		}
-	}
-
-	for (int i = 0; i < JsonLoader::terrainObjects.size(); i++)
-	{
-		box.centerPos = JsonLoader::terrainObjects[i].get()->GetPosition();
-		box.size = JsonLoader::terrainObjects[i].get()->GetScale();
-		box.LeastPos = XMFLOAT3{ box.centerPos.x - box.size.x, box.centerPos.y - box.size.y, box.centerPos.z - box.size.z };
-		box.MaxPos = XMFLOAT3{ box.centerPos.x + box.size.x, box.centerPos.y + box.size.y, box.centerPos.z + box.size.z };
-
-		//移動箱の上部による当たり判定と排斥
-		//if (fallV.m128_f32[1] >= 0.0f) return;
-		if (onGround == true && onObject == true)
-		{
-			//スムーズに坂を下る為の吸着距離
-			const float adsDistance = 0.6f;
-
-			//接地を維持
-			if (Collision::CheckRayBox(ray, box) == true)
-			{
-				onGround = true;
-				fallFlag = false;
-				position.y = box.MaxPos.y;
-				onObject = true;
-				return;
-			}
-			else
-			{
-				onGround = false;
-				onObject = false;
-			}
-		}									//↓坂でダッシュジャンプした時の当たり判定用に追加|| jumpFlag == true
-		else if (fallV.m128_f32[1] <= 0.0f)//落下状態
-		{
-			nowMove = true;
-			if (Collision::CheckRayBox(ray, box) == true)
-			{
-				//着地
-				onGround = true;
-				onObject = true;
-				landingFlag = true;
-				jumpFlag = false;
-				fallFlag = false;
+				wallKickUpFlag = false;
 				position.y = box.MaxPos.y;
 				return;
 			}
@@ -757,9 +846,13 @@ void Player::ObstacleConfirmationProcess(const XMVECTOR &move)
 void Player::GravityConfirmationProcess()
 {
 	//落下処理
-	if (onGround == false && climbOperation == false)
+	if(climbingCliffFlag == true || climbingCliffUpFlag == true)
 	{
-		if (jumpFlag != true)
+		fallV = { 0, 0.0f, 0,0 };
+	}
+	else if (onGround == false && climbOperation == false)
+	{
+		if (jumpFlag != true || wallKickUpFlag != true)
 		{
 			fallFlag = true;
 		}
@@ -771,9 +864,10 @@ void Player::GravityConfirmationProcess()
 		fallV.m128_f32[1] = max(fallV.m128_f32[1] + fallAcc, fallVYMin);
 
 		//移動
-		position.x += fallV.m128_f32[0];
+		position = MyMath::addVector(position, fallV);
+		/*position.x += fallV.m128_f32[0];
 		position.y += fallV.m128_f32[1];
-		position.z += fallV.m128_f32[2];
+		position.z += fallV.m128_f32[2];*/
 	}
 	else if (Input::GetInstance()->PushKey(DIK_SPACE) && climbOperation == false)//ジャンプ
 	{
@@ -787,10 +881,20 @@ void Player::GravityConfirmationProcess()
 		jumpFlag = true;
 		onGround = false;
 		onObject = false;
+		//nowMove = true;
+		const float jumpVYFist = 0.2f; //ジャンプ時上向き初速
+		fallV = { 0.0f, jumpVYFist, 0.0f };
+	}
+	else if (climbingKickJump()) //壁蹴り上り
+	{
+		wallKickUpFlag = true;
+		onGround = false;
+		onObject = false;
 		nowMove = true;
 		const float jumpVYFist = 0.35f; //ジャンプ時上向き初速
-		fallV = { 0, jumpVYFist, 0,0 };
+		fallV = { 0.0f, jumpVYFist, 0.0f };
 	}
+	
 	// ワールド行列更新
 	UpdateWorldMatrix();
 	collider->UpdateF();
@@ -801,6 +905,7 @@ void Player::TerrainConfirmationProcess()
 	//球コライダーを取得
 	SphereCollider* sphereCollider = dynamic_cast<SphereCollider*>(collider);
 	assert(sphereCollider);
+	sphereCollider->center.m128_f32[0] += 1.0f;
 	slopeFlag = false;
 	//クエリ―コールバッククラス
 	class PlayerQueryCallback :public QueryCallback
@@ -819,24 +924,53 @@ void Player::TerrainConfirmationProcess()
 			float cos = XMVector3Dot(rejectDir, up).m128_f32[0];
 
 			//地面判定しきい値角度
-			const float threshold = cosf(XMConvertToRadians(15.0f));
-			const float threshold2 = cosf(XMConvertToRadians(50.0f));
-			//角度差によって天井または地面と判定されるものを除いて
-			if (-threshold < cos && cos < threshold)
+			const float threshold = cosf(XMConvertToRadians(70.0f));
+			float ccos = acosf(cos);
+			ccos = ccos * 180.0f / 3.1415f;
+
+			if (10.0f <= ccos && ccos < 60.0f)
 			{
-				//球を排斥 (押し出す)
 				slopeFlag = true;
 			}
-			
-			
-			if (-threshold2 < cos && cos < threshold2)
+
+			if (-threshold < cos && cos < threshold)
 			{
 				//球を排斥 (押し出す)
 				sphere->center += info.reject;
 				move += info.reject;
-				slopeFlag = false;
 			}
+			return true;
+		}
 
+		//クエリ―に使用する球
+		Sphere* sphere = nullptr;
+		//排斥による移動量(累積値)
+		DirectX::XMVECTOR move = {};
+	};
+
+	class PlayerQueryCallbackSlop :public QueryCallback
+	{
+	public:
+		PlayerQueryCallbackSlop(Sphere* sphere) : sphere(sphere) {};
+
+		//衝突時コールバック関数
+		bool OnQueryHit(const QueryHit& info)
+		{
+			//ワールドの上方向
+			const XMVECTOR up = { 0,1,0,0 };
+			//排斥方向
+			XMVECTOR rejectDir = XMVector3Normalize(info.reject);
+			//上方向と排斥方向の角度差のcos値
+			float cos = XMVector3Dot(rejectDir, up).m128_f32[0];
+
+			float ccos = acosf(cos);
+			ccos = ccos * 180.0f / 3.1415f;
+			
+			if (10.0f <= ccos && ccos < 60.0f)
+			{
+				testRota = ccos;
+				slopeFlag = true;
+			}
 			return true;
 		}
 
@@ -847,18 +981,70 @@ void Player::TerrainConfirmationProcess()
 	};
 
 	//クエリ―コールバックの関数オブジェクト
+	PlayerQueryCallbackSlop callbackSlop(sphereCollider);
+	//球と地形の交差を全検索
+	CollisionManager::GetInstance()->QuerySphere(*sphereCollider, &callbackSlop, COLLISION_ATTR_LANDSHAPE);
+	
+	sphereCollider->center.m128_f32[0] -= 1.0f;
+	//クエリ―コールバックの関数オブジェクト
 	PlayerQueryCallback callback(sphereCollider);
-
 	//球と地形の交差を全検索
 	CollisionManager::GetInstance()->QuerySphere(*sphereCollider, &callback, COLLISION_ATTR_LANDSHAPE);
 	//交差による排斥分動かす
 	position.x += callback.move.m128_f32[0];
 	position.y += callback.move.m128_f32[1];
 	position.z += callback.move.m128_f32[2];
+	oldWallHittingFlag = wallHittingFlag;
+	if (callback.move.m128_f32[0] != 0.0f)
+	{
+		wallHittingFlag = true;
+	}
+	else if (callback.move.m128_f32[2] != 0.0f)
+	{
+		wallHittingFlag = true;
+	}
+	else
+	{
+		wallHittingFlag = false;
+	}
+
+	//ジャンプした上が壁に当たるかチェック
+	SphereCollider* sphereColliderJ = dynamic_cast<SphereCollider*>(collider);
+	sphereColliderJ->center.m128_f32[1] += 5.0f;
+	assert(sphereColliderJ);
+	PlayerQueryCallback callbackJ(sphereColliderJ);
+	
+	//球と地形の交差を全検索
+	CollisionManager::GetInstance()->QuerySphere(*sphereColliderJ, &callbackJ, COLLISION_ATTR_LANDSHAPE);
+	bool oldJumpWallHittingFlag = jumpWallHittingFlag;
+	if (callbackJ.move.m128_f32[0] != 0.0f)
+	{
+		jumpWallHittingFlag = true;
+	}
+	else if (callbackJ.move.m128_f32[0] != 0.0f)
+	{
+		jumpWallHittingFlag = true;
+	}
+	else if (callbackJ.move.m128_f32[0] != 0.0f)
+	{
+		jumpWallHittingFlag = true;
+	}
+	else
+	{
+		jumpWallHittingFlag = false;
+	}
+
+	if (wallHittingFlag == true && jumpWallHittingFlag == false)
+	{
+		if (oldJumpWallHittingFlag == true)
+		{
+			jumpHeightPosY = sphereColliderJ->center.m128_f32[1];
+		}
+	}
+
 	//コライダー更新
 	UpdateWorldMatrix();
 	collider->UpdateF();
-
 
 	//壁のぼり判定
 	if (fallFlag != true)
@@ -900,6 +1086,22 @@ void Player::TerrainConfirmationProcess()
 			fallV = {};
 		}
 	}
+	else if (onObject == false && slopeFlag == true)//落下状態
+	{
+		nowMove = true;
+		fallFlag = true;
+		if (CollisionManager::GetInstance()->Raycast(ray, COLLISION_ATTR_LANDSHAPE,
+			&raycastHit, sphereCollider->GetRadius() * 2.0f) == true)
+		{
+			//着地
+			onGround = true;
+			landingFlag = true;
+			jumpFlag = false;
+			wallKickUpFlag = false;
+			fallFlag = false;
+			position.y -= (raycastHit.distance - sphereCollider->GetRadius() * 2.0f);
+		}
+	}
 	else if (onObject == false && fallV.m128_f32[1] <= 0.0f )//落下状態
 	{
 		nowMove = true;
@@ -911,6 +1113,7 @@ void Player::TerrainConfirmationProcess()
 			onGround = true;
 			landingFlag = true;
 			jumpFlag = false;
+			wallKickUpFlag = false;
 			fallFlag = false;
 			position.y -= (raycastHit.distance - sphereCollider->GetRadius() * 2.0f);
 		}
@@ -931,8 +1134,8 @@ void Player::StaminaManagement()
 			return;
 		}
 
-		//	スタミナが使われていない または 今移動していない場合
-		if (staminaBoostFlag != true || nowMove != true)
+		//回復
+		if (StaminaConsumptionFlag() == true)
 		{
 			if (staminaRecoveryTime >= 0.0f)
 			{
@@ -943,9 +1146,13 @@ void Player::StaminaManagement()
 			if (staminaQuantity >= staminaQuantityMax) return;
 			staminaQuantity += staminaQuantityMax * (1.0f / 300.0f);
 		}
+		else if (climbingCliffFlag == true || climbingCliffUpFlag == true)
+		{
+			staminaRecoveryTime = 2.0f;
+		}
 		else //スタミナを消費している場合
 		{
-			staminaRecoveryTime = 3.0f;
+			staminaRecoveryTime = 2.0f;
 
 			if (staminaQuantity <= 0.0f) return;
 			staminaQuantity -= staminaQuantityMax * (1.0f/ 300.0f);
@@ -967,11 +1174,11 @@ void Player::StaminaManagement()
 		staminaQuantity += staminaQuantityMax * (2.0f / 300.0f);
 		if (nowMove == true)
 		{
-			animeNum = 11;
+			animeNum = tiredWalking;
 		}
 		else
 		{
-			animeNum = 12;
+			animeNum = tiredIdling;
 		}
 		
 	}
@@ -979,8 +1186,13 @@ void Player::StaminaManagement()
 
 void Player::MoveBoxProcess(DirectX::XMVECTOR& move, float& power)
 {
+	if (climbingCliffFlag == true || climbingCliffUpFlag == true) return;
+	
+	//※前提条件移動後
+	
 	//初期化
 	moveBoxFlag = false;
+	moveBoxHitFlag = false;
 	//そもそも押せる箱がないなら返す
 	if (JsonLoader::moveBoxObjects.size() == 0) return;
 
@@ -996,33 +1208,149 @@ void Player::MoveBoxProcess(DirectX::XMVECTOR& move, float& power)
 		box.LeastPos = XMFLOAT3(box.centerPos.x - box.size.x, box.centerPos.y - box.size.y, box.centerPos.z - box.size.z);
 		box.MaxPos = XMFLOAT3(box.centerPos.x + box.size.x, box.centerPos.y + box.size.y, box.centerPos.z + box.size.z);
 		if (Collision::CheckBoxDot(box, position) == false) return;
+		moveBoxHitFlag = true;
+		moveBoxHitNum = i;
+		//方向を検索する
+		int xyz = 0;
+		float moveValue = 0.0f;
+		float moveValueP = 0.0f;
+		moveValue = move.m128_f32[0];
+		//移動は箱の上の場合はしない
+		if (box.centerPos.y < parPos.y) return;
+
+		//侵入面検索
+		float xmin = position.x - box.LeastPos.x;
+		float xmax = box.MaxPos.x - position.x;
+		float zmin = position.z - box.LeastPos.z;
+		float zmax = box.MaxPos.z - position.z;
+		bool direction = false;
+		if (xmin < 0.0f)
+		{
+			xmin *= -1.0f;
+		}
+		if (xmax < 0.0f)
+		{
+			xmax *= -1.0f;
+		}
+		if (zmin < 0.0f)
+		{
+			zmin *= -1.0f;
+		}
+		if (zmax < 0.0f)
+		{
+			zmax *= -1.0f;
+		}
+
+		if (xmin < xmax)
+		{
+			if (zmin < zmax)
+			{
+				if (xmin < zmin)
+				{
+					xyz = 0;
+					direction = true;
+				}
+				else
+				{
+					xyz = 2;
+					direction = true;
+				}
+			}
+			else
+			{
+				if (xmin < zmax)
+				{
+					xyz = 0;
+					direction = true;
+				}
+				else
+				{
+					xyz = 2;
+					direction = false;
+				}
+			}
+
+		}
+		else
+		{
+			if (zmin < zmax)
+			{
+				if (xmax < zmin)
+				{
+					xyz = 0;
+					direction = false;
+				}
+				else
+				{
+					xyz = 2;
+					direction = true;
+				}
+			}
+			else
+			{
+				if (xmax < zmax)
+				{
+					xyz = 0;
+					direction = false;
+				}
+				else
+				{
+					xyz = 2;
+					direction = false;
+				}
+			}
+		}
+
 		
-		//めり込んでいたら押せる方向からか確認する
-		if (parPos.y >= box.MaxPos.y)
+		XMVECTOR moveBoxValue = {};
+		if (Input::GetInstance()->PushPadbutton(Button_A) && StaminaUnusable() == false)
 		{
-			return;
-		}
-		if (move.m128_f32[2] >= 0.0 || move.m128_f32[2] >= move.m128_f32[0])
-		{
+
+			//移動箱の移動確定
+			moveBoxValue.m128_f32[xyz] = move.m128_f32[xyz] / 2.0f;
+			moveBoxMax1 = MyMath::addVector(moveBoxMax1, moveBoxValue);
+			box.centerPos = MyMath::addVector(box.centerPos, moveBoxValue);
+			//プレイヤー押し戻し
+			moveBoxValue.m128_f32[xyz] = (-1.0f) * (move.m128_f32[xyz] / 2.0f);
+			if (xyz == 0)
+			{
+				moveBoxValue.m128_f32[2] = (-1.0f) * move.m128_f32[2];
+			}
+			else
+			{
+				moveBoxValue.m128_f32[0] = (-1.0f) * move.m128_f32[0];
+			}
+			
+			//自機の角度による修正
+			if (xyz == 0 && direction == true)
+			{
+				rotation.y = 90.0f;
+			}
+			else if (xyz == 0 && direction == false)
+			{
+				rotation.y = 270.0f;
+			}
+			else if (xyz == 2 && direction == true)
+			{
+				rotation.y = 0.0f;
+			}
+			else if (xyz == 2 && direction == false)
+			{
+				rotation.y = 180.0f;
+			}
+			//プレイヤーの押し出しアニメーションに変える
+			animeNum = pushingWalking;
 			moveBoxFlag = true;
-			position.x -= move.m128_f32[0];
-			position.z -= move.m128_f32[2];
-			return;
 		}
-		if (parPos.z < box.MaxPos.z)
+		else
 		{
-			moveBoxFlag = true;
-			position.x -= move.m128_f32[0];
-			position.z -= move.m128_f32[2];
-			return;
+			//プレイヤー押し戻し
+			moveBoxValue.m128_f32[xyz] = (-1.0f) * (move.m128_f32[xyz]);
 		}
-		//押せる方向の場合は箱をすこし動かし動かした後の位置に合うように時機を押し戻す
-		position.z -= move.m128_f32[2] / 2.0f;
-		box.centerPos.z += move.m128_f32[2] / 2.0f;
+		
 		JsonLoader::moveBoxObjects[i].get()->SetPosition(box.centerPos);
-		//プレイヤーの押し出しアニメーションに変える
-		animeNum = 10;
-		moveBoxFlag = true;
+		position = MyMath::addVector(position, moveBoxValue);
+		
 		return;
 	}
 	
@@ -1045,18 +1373,6 @@ void Player::AnimetionProcess()
 	//アニメーションの初期化
 	AnimationFlag = false;
 
-
-	if (Input::GetInstance()->PushKey(DIK_1))
-	{
-		animeFlag = true;
-		animeNum = 8;
-	}
-	else if (Input::GetInstance()->PushKey(DIK_2))
-	{
-		animeFlag = true;
-		animeNum = 7;
-	}
-
 	//アニメーションをしないなら返す
 	if (animeFlag == false)
 	{
@@ -1064,17 +1380,6 @@ void Player::AnimetionProcess()
 		oldAnimeNum = animeNum;
 		return;
 	}
-	
-	if (oldAnimeNum == 5 && animeNum == 4)
-	{
-		animeNum = 8;
-	}
-	else if (oldAnimeNum == 5 && animeNum == 0)
-	{
-		animeNum = 8;
-	}
-
-
 
 	//前フレームと違うアニメーションの場合モデルを入れ替える
 	if (oldAnimeNum != animeNum)
@@ -1109,7 +1414,7 @@ void Player::AnimetionProcess()
 			SetModel(fbxModel7);
 			loopPlayFlag = false;
 			break;
-		case 7:					//ダンス
+		case 7:					//崖ぶら下がりアイドリング
 			SetModel(fbxModel8);
 			loopPlayFlag = true;
 			break;
@@ -1133,21 +1438,46 @@ void Player::AnimetionProcess()
 			SetModel(fbxModel13);
 			loopPlayFlag = true;
 			break;
+		case 13:					//壁蹴り
+			SetModel(fbxModel14);
+			loopPlayFlag = true;
+			break;
+		case 14:					//崖上がり
+			SetModel(fbxModel15);
+			loopPlayFlag = false;
+			break;
 		}
 	}
 	
 	//アニメーション再生
-	if(animeNum != 9) AnimationFlag = true;
+	if(animeNum != sliding) AnimationFlag = true;
 	//モデルの更新
 	FbxObject3d::Update();
 	
 	//着地アニメーションが終わった場合着地フラグの解消
-	if (animeNum == 6)
+	if (animeNum == landing)
 	{
 		if (AnimetionFinFlag == true)
 		{
 			landingFlag = false;
 		}
+	}
+	else
+	{
+		landingFlag = false;
+	}
+
+	//着地アニメーションが終わった場合着地フラグの解消
+	if (animeNum == hangingCliffUp)
+	{
+		if (AnimetionFinFlag == true)
+		{
+			climbingCliffUpFlag = false;
+		}
+	}
+	else
+	{
+		climbingCliffUpFlag = false;
 	}
 
 	//全フレームの保存
@@ -1156,12 +1486,13 @@ void Player::AnimetionProcess()
 
 void Player::SlopeDownhill(DirectX::XMVECTOR& move, float& power)
 {
+	rotation.x = 0.0f;
 	//坂にいるかどうか
 
 	if (slopeFlag == false) return;
 	//ダッシュしているかどうか
 	if (staminaBoostFlag == true) return;
-
+	if (climbOperation == true) return;
 	nowMove = true;
 
 	// 坂が二つしかないため簡易処置 (Todo : 坂の角度を求める)
@@ -1186,11 +1517,143 @@ void Player::SlopeDownhill(DirectX::XMVECTOR& move, float& power)
 	//animeNum = 9;
 
 	//自機モデルの角度変更
+	rotation.x = 45.0f;
+	rotation.y = 270.0f;
+}
 
+bool Player::climbingKickJump()
+{
+	//壁に走りながら接触したか
+	if (wallHittingFlag != true) return false;
+	if (oldWallHittingFlag != false) return false;
+	if (staminaBoostFlag != true) return false;
+	return true;
+}
+
+void Player::climbingCliff()
+{
+	if (moveBoxHitFlag == true)
+	{
+		if (climbingCliffUpFlag == true) return;
+
+		if (JsonLoader::moveBoxObjects[moveBoxHitNum].get()->GetPosition().y <= position.y) return;
+
+		if(Input::GetInstance()->TriggerPadbutton(Button_Y))
+		{
+			climbingCliffFlag = true;
+			position.y = JsonLoader::moveBoxObjects[moveBoxHitNum].get()->GetPosition().y + JsonLoader::moveBoxObjects[moveBoxHitNum].get()->GetScale().y;
+		}
+	}
+
+	//climbingCliffFlag = false;
+	if (jumpWallHittingFlag != false) return;					//ジャンプした時に壁にぶつかっている
+	if (wallHittingFlag != true) return;						//壁にぶつかっていない
+	if (jumpFlag != true && wallKickUpFlag != true) return;
+	bool climbingCliffBoxHitFlag = false;
+	int number = 0;
+	for (int i = 0; i < JsonLoader::cliffClimbingObjects.size(); i++)
+	{
+		Box box;
+		box.centerPos = JsonLoader::cliffClimbingObjects[i].get()->GetPosition();
+		box.size = JsonLoader::cliffClimbingObjects[i].get()->GetScale();
+		box.LeastPos = XMFLOAT3(box.centerPos.x - box.size.x, box.centerPos.y - box.size.y, box.centerPos.z - box.size.z);
+		box.MaxPos = XMFLOAT3(box.centerPos.x + box.size.x, box.centerPos.y + box.size.y, box.centerPos.z + box.size.z);
+
+		if (Collision::CheckBoxDot(box, position) == true)
+		{
+			
+			climbingCliffBoxHitFlag = true;
+			number = i;
+			climbingCliffBoxNum = i;
+			break;
+		}
+	}
+	
+	if (climbingCliffBoxHitFlag != true) return;
+	wallKickUpFlag = false;
+	climbingCliffFlag = true;
+	position.y = JsonLoader::cliffClimbingObjects[number].get()->GetPosition().y + JsonLoader::cliffClimbingObjects[number].get()->GetScale().y;
+
+	return;
 }
 
 bool Player::StaminaUnusable()
 {
 	if (staminaCut == false && moveBoxFlag == false) return false;
 	return true;
+}
+
+void Player::MoveAddDetermination(DirectX::XMVECTOR& move, float& power)
+{
+	if (nowMove == false) return;
+	if (slopeFlag == true && staminaBoostFlag == false)
+	{
+		move.m128_f32[0] = move.m128_f32[0];
+		move.m128_f32[2] = move.m128_f32[2];
+	}
+	else
+	{
+		move.m128_f32[0] = move.m128_f32[0] * power;
+		move.m128_f32[2] = move.m128_f32[2] * power;
+	}
+
+	position = MyMath::addVector(position, move);
+}
+
+void Player::BoxInMove()
+{
+	Box box;
+	box.centerPos = JsonLoader::cliffClimbingObjects[climbingCliffBoxNum].get()->GetPosition();
+	box.size = JsonLoader::cliffClimbingObjects[climbingCliffBoxNum].get()->GetScale();
+	box.LeastPos = XMFLOAT3(box.centerPos.x - box.size.z, box.centerPos.y - box.size.y, box.centerPos.z - box.size.x);
+	box.MaxPos = XMFLOAT3(box.centerPos.x + box.size.z, box.centerPos.y + box.size.y, box.centerPos.z + box.size.x);
+	if (moveBoxHitFlag == true)
+	{
+		box.centerPos = JsonLoader::moveBoxObjects[moveBoxHitNum].get()->GetPosition();
+		box.size = JsonLoader::moveBoxObjects[moveBoxHitNum].get()->GetScale();
+		box.LeastPos = XMFLOAT3(box.centerPos.x - box.size.z, box.centerPos.y - box.size.y, box.centerPos.z - box.size.x);
+		box.MaxPos = XMFLOAT3(box.centerPos.x + box.size.z, box.centerPos.y + box.size.y, box.centerPos.z + box.size.x);
+	}
+	
+	bool Xflag = false;
+	bool Zflag = false;
+	
+	//X方向で自機位置が箱の右か左か
+	if (box.centerPos.x < position.x)
+	{
+		Xflag = true;
+	}
+	//Z方向で自機位置が箱の奥か手前か
+	if (box.centerPos.z < position.z)
+	{
+		Zflag = true;
+	}
+
+	if (Xflag == true)
+	{
+		position.x -= 1.5f;
+	}
+	else
+	{
+		position.x += 1.5f;
+	}
+
+	if (Zflag == true)
+	{
+		position.z -= 1.5f;
+	}
+	else
+	{
+		position.z += 1.5f;
+	}
+
+
+}
+
+bool Player::StaminaConsumptionFlag()
+{
+	if (nowMove == false) return true;
+	if (moveBoxFlag == true) return false;
+	if (staminaBoostFlag == false && climbOperation == false) return true;
+	return false;
 }

@@ -21,6 +21,26 @@ private: // エイリアス
 	using XMFLOAT4 = DirectX::XMFLOAT4;
 	using XMMATRIX = DirectX::XMMATRIX;
 
+
+	enum PlayerStatus
+	{
+		idling,				// 0：アイドリング
+		walking,			// 1：ウォーキング
+		running,			// 2：ランニング
+		jump,				// 3：ジャンプ
+		fall,				// 4：落下
+		climbing,			// 5：壁のぼり
+		landing,			// 6：着地
+		hangingCliff,		// 7：崖ぶら下がりアイドリング
+		kick,				// 8：キック
+		sliding,			// 9：スライディング
+		pushingWalking,		// 10：押し歩き
+		tiredWalking,		// 11：スタミナ切れ歩き
+		tiredIdling,		// 12：スタミナ切れアイドリング
+		wallKickUp,			// 13：壁蹴りジャンプ
+		hangingCliffUp		// 14：崖上がり
+	};
+
 public:
 
 	/// <summary>
@@ -63,6 +83,11 @@ private:
 	/// </summary>
 	/// <param name="move"></param>
 	void MoveOperation(DirectX::XMVECTOR& move, float &power);
+	
+	/// <summary>
+	/// 崖上がり
+	/// </summary>
+	void MoveClimbingCliff(DirectX::XMVECTOR& move, float& power);
 
 	/// <summary>
 	/// 通常移動処理
@@ -116,8 +141,22 @@ private:
 	//坂下り当たり判定
 	void SlopeDownhill(DirectX::XMVECTOR& move, float& power);
 
+	//壁キックジャンプ
+	bool climbingKickJump();
+
+	//崖上がり
+	void climbingCliff();
+
+	//スタミナ使用不可確認
 	bool StaminaUnusable();
 
+	//移動値加算決定
+	void MoveAddDetermination(DirectX::XMVECTOR& move, float& power);
+
+	//崖上がり時の内側に移動処理
+	void BoxInMove();
+
+	bool StaminaConsumptionFlag();
 public:
 	//デバック用ゲッター
 	static XMFLOAT3 GetPos() { return pos; }
@@ -134,7 +173,7 @@ public:
 
 	static bool &GetGoalFlag() { return goalFlag; }
 
-	static bool &GetWallHitFlag() { return climbOperation; }
+	static bool &GetClimbWallHitFlag() { return climbOperation; }
 
 	static float GetTimeLimit() { return timeLimit; }
 
@@ -158,7 +197,10 @@ public:
 	static int& GetAnimeNum() { return animeNum; }
 
 	static bool &GetSlopeFlag() { return slopeFlag; }
-
+	static bool& GetWallHitFlag() { return wallHittingFlag; }
+	static bool& GetJumpWallHitFlag() { return jumpWallHittingFlag; }
+	static bool& GetClimbingCliffFlag() { return climbingCliffFlag; }
+	static bool& GetLandingFlag() { return landingFlag; }
 	static float GetTimeMax() { return timeLimitMax; }
 
 	void SetModel1(FbxModel* fbxModel) { this->fbxModel1 = fbxModel; };
@@ -174,7 +216,11 @@ public:
 	void SetModel11(FbxModel* fbxModel) { this->fbxModel11 = fbxModel; };
 	void SetModel12(FbxModel* fbxModel) { this->fbxModel12 = fbxModel; };
 	void SetModel13(FbxModel* fbxModel) { this->fbxModel13 = fbxModel; };
+	void SetModel14(FbxModel* fbxModel) { this->fbxModel14 = fbxModel; };
+	void SetModel15(FbxModel* fbxModel) { this->fbxModel15 = fbxModel; };
+
 private:
+	
 	//全フレームの位置
 	XMFLOAT3 parPos;
 	//接地フラグ
@@ -193,6 +239,7 @@ private:
 
 	//ジャンプ確認フラグ
 	static bool jumpFlag;
+	static bool wallKickUpFlag;
 	static bool fallFlag;
 	static bool landingFlag;
 
@@ -256,7 +303,18 @@ private:
 	static bool crystalGetFlag;
 	//箱移動してた確認フラグ
 	static bool moveBoxFlag;
-
+	static bool moveBoxHitFlag;
+	int moveBoxHitNum = 0;
+	//壁と接触確認フラグ
+	static bool wallHittingFlag;
+	static bool oldWallHittingFlag;
+	static bool jumpWallHittingFlag;
+	//ジャンプした時に壁と接触しない高さ
+	float jumpHeightPosY = 0.0f;
+	//崖上がり
+	static bool climbingCliffFlag;
+	static bool climbingCliffUpFlag;
+	int climbingCliffBoxNum = 0;
 	//アニメーション
 	static int animeNum;
 	static int oldAnimeNum;
@@ -269,12 +327,21 @@ private:
 	static FbxModel* fbxModel4; //ジャンプ
 	static FbxModel* fbxModel5;	//走りジャンプ
 	static FbxModel* fbxModel6;	//クライミング
-	static FbxModel* fbxModel7; //崖上がり
-	static FbxModel* fbxModel8; //ダンス
+	static FbxModel* fbxModel7; //着地
+	static FbxModel* fbxModel8; //崖ぶら下がりアイドリング
 	static FbxModel* fbxModel9; //キック
 	static FbxModel* fbxModel10; //スライディング
 	static FbxModel* fbxModel11; //押し歩き
-	static FbxModel* fbxModel12; //疲れ歩き
-	static FbxModel* fbxModel13; //疲れ歩き
+	static FbxModel* fbxModel12; //スタミナ切れ歩き
+	static FbxModel* fbxModel13; //スタミナ切れアイドリング
+	static FbxModel* fbxModel14; //壁蹴りジャンプ
+	static FbxModel* fbxModel15; //崖上がり
+
+public:
+	XMFLOAT3 moveBoxMax1 = { 0.0f, 0.0f, 0.0f };
+	bool movingFlag = false;
+	//debug
+	bool teleportFlag = false;
+	bool testFlag = false;
 };
 

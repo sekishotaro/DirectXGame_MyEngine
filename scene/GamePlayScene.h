@@ -128,6 +128,8 @@ public:
 	FbxModel* fbxModel11 = nullptr;
 	FbxModel* fbxModel12 = nullptr;
 	FbxModel* fbxModel13 = nullptr;
+	FbxModel* fbxModel14 = nullptr;
+	FbxModel* fbxModel15 = nullptr;
 	InterpolationCamera interpolationCamera;
 
 	bool moveFlag = false;

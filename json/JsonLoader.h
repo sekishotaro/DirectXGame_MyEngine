@@ -131,6 +131,9 @@ public:// íËêî
 	static std::vector<std::unique_ptr<Object3d>> moveBoxObjects;
 	static std::map<std::string, Model> moveBoxModels;
 
+	static std::vector<std::unique_ptr<Object3d>> cliffClimbingObjects;
+	static std::map<std::string, Model> cliffClimbingModels;
+
 	//à»â∫å©ÇΩñ⁄óp
 	static std::vector<std::unique_ptr<Object3d>> rockObjects;
 	static std::map<std::string, Model> rockModels;
@@ -183,6 +186,9 @@ private:
 
 	//î†
 	static void TypeMoveBoxModel(LevelData::ObjectData& objectData);
+
+	static void TypeCliffClimbingModel(LevelData::ObjectData& objectData);
+
 
 	static void TypeRockModel(LevelData::ObjectData& objectData);
 

@@ -17,14 +17,13 @@ float OpticalPost::num = 0.0f;
 int OpticalPost::effectNum = 7;
 float OpticalPost::sizeNum = 3.0f;
 float OpticalPost::moveQuantityMax = 3.0f;
-
+const int OpticalPost::smallOpticalPostNum = 20;
 void OpticalPost::Initialize()
 {
 	modelOpticalPost = Model::LoadFromOBJ("opticalPost");
 	modelCrystalEffect = Model::LoadFromOBJ("CrystalSurroundingEffect");
 	XMFLOAT3 pos;
 	//光の柱1本に対する小さな光の柱の個数
-	int smallOpticalPostNum = 7;
 
 	for (int i = 0; i < JsonLoader::crystalObjects.size(); i++)
 	{
@@ -32,7 +31,7 @@ void OpticalPost::Initialize()
 		objectOpticalPost = Object3d::Create();
 		objectOpticalPost->SetModel(modelOpticalPost);
 		pos = JsonLoader::crystalObjects[i].get()->GetPosition();
-	
+		
 		pos.y += 100.0f;
 		objectOpticalPost->SetPosition(pos);
 		objectOpticalPost->SetScale({ 2.0f, 100.0f, 2.0f });
@@ -46,9 +45,9 @@ void OpticalPost::Initialize()
 			smallObjectOpticalPost = Object3d::Create();
 			smallObjectOpticalPost->SetModel(modelOpticalPost);
 			posA = pos;
-			posA.x += 5.0f - (float)(rand() % 10);
-			posA.y += (float)(rand() % 10);
-			posA.z += 5.0f - (float)(rand() % 10);
+			posA.x += 2.0f - (float)(rand() % 4);
+			posA.y += (float)(rand() % 100);
+			posA.z += 2.0f - (float)(rand() % 4);
 			smallObjectOpticalPost->SetPosition(pos);
 			smallObjectOpticalPost->SetScale({ 0.05f, 2.0f, 0.05f });
 			smallOpticalPosts.push_back(std::move(smallObjectOpticalPost));
@@ -64,7 +63,6 @@ void OpticalPost::Initialize()
 	CrystalEffectObject = Object3d::Create();
 	CrystalEffectObject->SetModel(modelCrystalEffect);
 	CrystalEffectObject->SetScale({ 3.0f, 3.0f, 3.0f });
-
 }
 
 void OpticalPost::Update(const XMFLOAT3& cameraPos)
@@ -111,6 +109,12 @@ void OpticalPost::Update(const XMFLOAT3& cameraPos)
 	CrystalEfectSizeNumUpdate();
 	CrystalEffectObject->SetScale({ sizeNum, sizeNum, sizeNum });
 	CrystalEffectObject->Update();
+
+	//ゴールの処理
+	if (JsonLoader::crystalObjects.size() != 0) return;
+	sita = RotaUpdate(cameraPos, goalOpticalPostObject.get()->GetPosition());
+	goalOpticalPostObject.get()->SetRotation({ 0, sita,0 });
+	goalOpticalPostObject.get()->Update();
 }
 
 void OpticalPost::Draw()
@@ -147,9 +151,9 @@ void OpticalPost::Erase(int num)
 {
 	OpticalPosts.erase(OpticalPosts.begin() + num);
 
-	for (int i = 0; i < 7; i++)
+	for (int i = 0; i < smallOpticalPostNum; i++)
 	{
-		smallOpticalPosts.erase(smallOpticalPosts.begin() + ((num * 7)));
+		smallOpticalPosts.erase(smallOpticalPosts.begin() + ((num * smallOpticalPostNum)));
 	}
 }
 
@@ -238,23 +242,27 @@ void OpticalPost::CrystalEfectSizeNumUpdate()
 void OpticalPost::SmallOpticalPostsMoveUpdate()
 {
 	XMFLOAT3 pos = {};
-	for (int i = 0; i < smallOpticalPosts.size(); i++)
-	{
-		//上昇処理
-		pos = smallOpticalPosts[i].get()->GetPosition();
-		pos.y += 0.05f;
-		moveQuantitys[i] += 0.05f;
-		smallOpticalPosts[i].get()->SetPosition(pos);
-		//上昇終了しきった時の位置を戻す
-		if (moveQuantityMax > moveQuantitys[i]) continue;
 
-		int crystalNum = i / 7;
-		pos = JsonLoader::crystalObjects[crystalNum].get()->GetPosition();
-		pos.x += 2.0f - (float)(rand() % 4);
-		pos.y += (float)(rand() % 10);
-		pos.z += 2.0f - (float)(rand() % 4);
-		moveQuantitys[i] = 0.0f;
-		smallOpticalPosts[i].get()->SetPosition(pos);
+	for (int i = 0; i < JsonLoader::crystalObjects.size(); i++)
+	{
+		for (int j = 0; j < smallOpticalPostNum; j++)
+		{
+			//上昇処理
+			int crystalNumA = (i * smallOpticalPostNum) + j;
+			pos = smallOpticalPosts[crystalNumA].get()->GetPosition();
+			pos.y += 0.05f;
+			moveQuantitys[crystalNumA] += 0.05f;
+			smallOpticalPosts[crystalNumA].get()->SetPosition(pos);
+			//上昇終了しきった時の位置を戻す
+			if (moveQuantityMax > moveQuantitys[crystalNumA]) continue;
+
+			pos = JsonLoader::crystalObjects[i].get()->GetPosition();
+			pos.x += 2.0f - (float)(rand() % 4);
+			pos.y += (float)(float)(rand() % 100);;
+			pos.z += 2.0f - (float)(rand() % 4);
+			moveQuantitys[crystalNumA] = 0.0f;
+			smallOpticalPosts[crystalNumA].get()->SetPosition(pos);
+		}
 	}
 
 }

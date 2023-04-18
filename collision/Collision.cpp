@@ -432,6 +432,29 @@ bool Collision::CheckBoxDot(const Box& box, const XMFLOAT3& dot)
 	return true;
 }
 
+bool Collision::CheckQuadrangleDot(const Quadrangle& quadrangle, const XMFLOAT2& dot)
+{
+	if (dot.x < quadrangle.LeastPos.x)
+	{
+		return false;
+	}
+	if (quadrangle.MaxPos.x < dot.x)
+	{
+		return false;
+	}
+
+	if (dot.y < quadrangle.LeastPos.y)
+	{
+		return false;
+	}
+	if (quadrangle.MaxPos.y < dot.y)
+	{
+		return false;
+	}
+
+	return true;
+}
+
 bool Collision::Check2LineSegment(const LineSegment& line1, const LineSegment& line2)
 {
 

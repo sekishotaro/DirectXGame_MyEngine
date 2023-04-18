@@ -164,3 +164,13 @@ float MyMath::minElement(const float* array, int size)
 
 	return min;
 }
+
+DirectX::XMFLOAT3 MyMath::addVector(XMFLOAT3 float3, XMVECTOR vec)
+{
+	XMFLOAT3 result;
+	result.x = float3.x + vec.m128_f32[0];
+	result.y = float3.y + vec.m128_f32[1];
+	result.z = float3.z + vec.m128_f32[2];
+
+	return result;
+}
