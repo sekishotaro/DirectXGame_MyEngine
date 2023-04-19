@@ -73,6 +73,8 @@ public:
 	/// </summary>
 	void ObjectUpdate();
 
+	void Finalize();
+
 private:
 	void PushBack(const DirectX::XMVECTOR& normal, const XMFLOAT3& distance);
 
@@ -156,7 +158,9 @@ private:
 	//崖上がり時の内側に移動処理
 	void BoxInMove();
 
+private:
 	bool StaminaConsumptionFlag();
+	bool moveBoxConditionFlag();
 public:
 	//デバック用ゲッター
 	static XMFLOAT3 GetPos() { return pos; }
@@ -193,7 +197,7 @@ public:
 	static bool GetCrystalGetFlag() { return crystalGetFlag; }
 
 	static bool GetJumpFlag() { return jumpFlag; }
-
+	static bool GetFallFlag() { return fallFlag; }
 	static int& GetAnimeNum() { return animeNum; }
 
 	static bool &GetSlopeFlag() { return slopeFlag; }

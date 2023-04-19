@@ -214,6 +214,11 @@ void Player::ObjectUpdate()
 	FbxObject3d::Update();
 }
 
+void Player::Finalize()
+{
+
+}
+
 void Player::PushBack(const DirectX::XMVECTOR& normal, const XMFLOAT3& distance)
 {
 	if (normal.m128_f32[0] != 0)
@@ -386,18 +391,6 @@ void Player::MoveClimbingCliff(DirectX::XMVECTOR& move, float& power)
 {
 	if (climbingCliffUpFlag == true) return;
 
-	//static int count = 0;
-	//const int MAX = 24918;
-	//if (inputX == 0 && inputY == 0)
-	//{
-	//	count = 0;
-	//	return;
-	//}
-	//else
-	//{
-	//	count += 1;
-	//}
-
 	if (Input::GetInstance()->TriggerPadbutton(Button_Y))
 	{
 		BoxInMove();
@@ -409,11 +402,6 @@ void Player::MoveClimbingCliff(DirectX::XMVECTOR& move, float& power)
 		move.m128_f32[1] -= 3.0f;
 		climbingCliffFlag = false;
 	}
-
-	//if (count <= 60) return;
-	//climbingCliffUpFlag = true;
-	//climbingCliffFlag = false;
-	//count = 0;
 }
 
 void Player::MoveNormal(DirectX::XMVECTOR& move, float& power)
@@ -667,9 +655,13 @@ void Player::MoveClimb(DirectX::XMVECTOR& move, float& power)
 
 void Player::CrystalConfirmationProcess()
 {
+	if (climbingCliffFlag == true || climbingCliffUpFlag == true) return;
+
+
 	//クリスタルとの接触
 	Box playerBox;
 	playerBox.centerPos = position;
+	playerBox.centerPos.y += 2.0f;
 	playerBox.size = { 0.5f, 1.0f, 0.5f };
 	playerBox.LeastPos = XMFLOAT3(playerBox.centerPos.x - playerBox.size.x, playerBox.centerPos.y - playerBox.size.y, playerBox.centerPos.z - playerBox.size.z);
 	playerBox.MaxPos = XMFLOAT3(playerBox.centerPos.x + playerBox.size.x, playerBox.centerPos.y + playerBox.size.y, playerBox.centerPos.z + playerBox.size.z);
@@ -1125,6 +1117,23 @@ void Player::StaminaManagement()
 {
 	const float staminaQuantityMax = 100.0f;
 
+	//スタミナ消費量
+	float staminaDecreaseAmount = 0.0f;
+	if (climbOperation == true)
+	{
+		staminaDecreaseAmount = staminaQuantityMax * (1.0f / 400.0f);
+	}
+
+	else if (moveBoxFlag == true)
+	{
+		staminaDecreaseAmount = staminaQuantityMax * (1.0f / 400.0f);
+	}
+	else
+	{
+		staminaDecreaseAmount = staminaQuantityMax * (1.0f / 300.0f);
+	}
+
+
 	if (staminaCut == false)	//スタミナがある状態
 	{
 		//スタミナ残量がないかの確認
@@ -1155,7 +1164,7 @@ void Player::StaminaManagement()
 			staminaRecoveryTime = 2.0f;
 
 			if (staminaQuantity <= 0.0f) return;
-			staminaQuantity -= staminaQuantityMax * (1.0f/ 300.0f);
+			staminaQuantity -= staminaDecreaseAmount;
 		}
 	}
 	else						//スタミナがない場合
@@ -1303,9 +1312,8 @@ void Player::MoveBoxProcess(DirectX::XMVECTOR& move, float& power)
 
 		
 		XMVECTOR moveBoxValue = {};
-		if (Input::GetInstance()->PushPadbutton(Button_A) && StaminaUnusable() == false)
+		if (Input::GetInstance()->PushPadbutton(Button_A) && moveBoxConditionFlag() == true)
 		{
-
 			//移動箱の移動確定
 			moveBoxValue.m128_f32[xyz] = move.m128_f32[xyz] / 2.0f;
 			moveBoxMax1 = MyMath::addVector(moveBoxMax1, moveBoxValue);
@@ -1350,7 +1358,6 @@ void Player::MoveBoxProcess(DirectX::XMVECTOR& move, float& power)
 		
 		JsonLoader::moveBoxObjects[i].get()->SetPosition(box.centerPos);
 		position = MyMath::addVector(position, moveBoxValue);
-		
 		return;
 	}
 	
@@ -1538,7 +1545,7 @@ void Player::climbingCliff()
 
 		if (JsonLoader::moveBoxObjects[moveBoxHitNum].get()->GetPosition().y <= position.y) return;
 
-		if(Input::GetInstance()->TriggerPadbutton(Button_Y))
+		if(Input::GetInstance()->TriggerPadbutton(Button_Y) && StaminaUnusable() == false)
 		{
 			climbingCliffFlag = true;
 			position.y = JsonLoader::moveBoxObjects[moveBoxHitNum].get()->GetPosition().y + JsonLoader::moveBoxObjects[moveBoxHitNum].get()->GetScale().y;
@@ -1632,19 +1639,23 @@ void Player::BoxInMove()
 	if (Xflag == true)
 	{
 		position.x -= 1.5f;
+		return;
 	}
 	else
 	{
 		position.x += 1.5f;
+		return;
 	}
 
 	if (Zflag == true)
 	{
 		position.z -= 1.5f;
+		return;
 	}
 	else
 	{
 		position.z += 1.5f;
+		return;
 	}
 
 
@@ -1656,4 +1667,12 @@ bool Player::StaminaConsumptionFlag()
 	if (moveBoxFlag == true) return false;
 	if (staminaBoostFlag == false && climbOperation == false) return true;
 	return false;
+}
+
+bool Player::moveBoxConditionFlag()
+{
+	if (StaminaUnusable() != false) return false;
+	if (jumpFlag == true) return false;
+	if (fallFlag == true) return false;
+	return true;
 }

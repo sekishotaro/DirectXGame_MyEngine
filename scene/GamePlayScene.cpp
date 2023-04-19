@@ -99,21 +99,6 @@ void GamePlayScene::Initialize()
 	//Enemy::Initialize();
 	
 	Effect::Initialize();
-	
-	//modelEnemyCollider = MathModel::LoadFromOBJ("sphere2");
-	//
-	//
-	//for (int i = 0; i < JsonLoader::enemyObjects.size(); i++)
-	//{
-	//	std::unique_ptr<MathObject> objectEnemyCollider;
-	//	objectEnemyCollider = MathObject::Create();
-	//	objectEnemyCollider->SetModel(modelEnemyCollider);
-	//	objectEnemyCollider->SetPosition(JsonLoader::enemyObjects[i].get()->GetPosition());
-	//	objectEnemyCollider->SetScale({ 2.0f, 2.0f, 2.0f });
-	//	objectEnemyCollider->SetColor({ 1.0f, 1.0f, 1.0f, 0.5f });
-	//	enemyColliderObjects.push_back(std::move(objectEnemyCollider));
-	//}
-
 	UI::Initialize();
 
 	OpticalPost::Initialize();
@@ -127,7 +112,6 @@ void GamePlayScene::Finalize()
 	JsonLoader::Finalize();
 	OpticalPost::Finalize();
 	Effect::Finalize();
-	//Enemy::Finalize();
 }
 
 void GamePlayScene::Update()
@@ -308,39 +292,18 @@ void GamePlayScene::GameStatus()
 	skydomeObject->Update();
 	JsonLoader::Update();
 	objFighter->Update();
-	//Enemy::Update((int)objFighter->GetTimeLimit(), (int)objFighter->GetTimeMax(), objFighter->GetPos());
-	////test追加探索敵コライダー
-	//for (int i = 0; i < enemyColliderObjects.size(); i++)
-	//{
-	//	enemyColliderObjects[i].get()->SetScale(Enemy::MonitoringCollisionScale());
-	//	enemyColliderObjects[i].get()->Update();
-	//}
-	//collisionManager->CheckAllCollisions();
 	OpticalPost::Update(camera->GetEye());
 	OpticalPost::SetDrawFlag(true);
 	
 	UI::Update();
 	
 	Effect::Update(camera->GetEye());
-	
-	//DebugText::GetInstance()->Print(1000, 20, 3, "TIME : %d", (int)objFighter->GetTimeLimit());
-	//DebugText::GetInstance()->Print(910, 80, 3, "CRYSTAL : %d/7", objFighter->GetCrystal());
 }
 
 void GamePlayScene::GameOverStatus()
 {
 	if (objFighter->GetTimeLimit() <= 0.0f)
 	{
-		//if (ClockTime::GetAddSecFlag() == true)
-		//{
-		//	count++;
-		//}
-		//moveFlag = true;
-		//interpolationCamera.EndInterpolationCamera(camera);
-		//ObjectsUpdate();
-		//if (count >= 115)
-		//{
-		//}
 		SceneManager::GetInstance()->ChangeScene("GAMEOVER");
 	}
 }
@@ -348,19 +311,8 @@ void GamePlayScene::GameOverStatus()
 void GamePlayScene::ClearStatus()
 {
 	//ゲーム終了処理
-	//static int count = 0;
 	if (objFighter->GetCrystal() == 0 && objFighter->GetGoalFlag() == true)
 	{
-		/*if (ClockTime::GetAddSecFlag() == true)
-		{
-			count++;
-		}
-		moveFlag = true;
-		interpolationCamera.EndInterpolationCamera(camera);
-		ObjectsUpdate();*/
-		//if (count >= 115)
-		//{
-		//}
 		SceneManager::GetInstance()->ChangeScene("TITLE");
 		return;
 	}
