@@ -393,9 +393,14 @@ void Player::MoveClimbingCliff(DirectX::XMVECTOR& move, float& power)
 
 	if (Input::GetInstance()->TriggerPadbutton(Button_Y))
 	{
-		BoxInMove();
+		move = { 0.0f,0.0f,0.1f,0 };
+		XMMATRIX matRot = XMMatrixRotationY(XMConvertToRadians(rotation.y));
+		move = XMVector3TransformNormal(move, matRot);
+		move.m128_f32[0] = move.m128_f32[0] * 15.0f;
+		move.m128_f32[2] = move.m128_f32[2] * 15.0f;
 		climbingCliffUpFlag = true;
 		climbingCliffFlag = false;
+		nowMove = true;
 	}
 	else if (Input::GetInstance()->TriggerPadbutton(Button_A))
 	{
@@ -477,14 +482,14 @@ void Player::MoveNormal(DirectX::XMVECTOR& move, float& power)
 		else
 		{
 			staminaBoostFlag = true;
-			power = 3.0f * moveAdjustmentNum;
+			power = 2.7f * moveAdjustmentNum;
 		}
 
 	}
 	else
 	{
 		staminaBoostFlag = false;
-		power = 1.0f * moveAdjustmentNum;
+		power = 0.8f * moveAdjustmentNum;
 	}
 
 	if (Input::GetInstance()->LeftStickIn(LEFT) || Input::GetInstance()->LeftStickIn(RIGHT))
@@ -527,7 +532,7 @@ void Player::MoveClimb(DirectX::XMVECTOR& move, float& power)
 {
 	moveV = { 0,0,0 };
 
-	float moveAdjustment = 0.2f;
+	float moveAdjustment = 0.07f;
 
 	if (StaminaUnusable() != false)
 	{
@@ -857,9 +862,6 @@ void Player::GravityConfirmationProcess()
 
 		//ˆÚ“®
 		position = MyMath::addVector(position, fallV);
-		/*position.x += fallV.m128_f32[0];
-		position.y += fallV.m128_f32[1];
-		position.z += fallV.m128_f32[2];*/
 	}
 	else if (Input::GetInstance()->PushKey(DIK_SPACE) && climbOperation == false)//ƒWƒƒƒ“ƒv
 	{
@@ -1121,7 +1123,7 @@ void Player::StaminaManagement()
 	float staminaDecreaseAmount = 0.0f;
 	if (climbOperation == true)
 	{
-		staminaDecreaseAmount = staminaQuantityMax * (1.0f / 400.0f);
+		staminaDecreaseAmount = staminaQuantityMax * (1.0f / 500.0f);
 	}
 
 	else if (moveBoxFlag == true)
@@ -1365,6 +1367,12 @@ void Player::MoveBoxProcess(DirectX::XMVECTOR& move, float& power)
 
 void Player::TimeManagement()
 {
+	if (timeLimitcancel == true)
+	{
+		timeLimit = timeLimitMax;
+		return;
+	}
+
 	if (timeLimit <= 0)return;
 	
 	flame += 1.0f;

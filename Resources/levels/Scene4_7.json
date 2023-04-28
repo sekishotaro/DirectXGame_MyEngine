@@ -223,42 +223,6 @@
         {
             "type": "MESH",
             "type_name": "crystal",
-            "name": "Cube.005",
-            "transform": {
-                "translation": [
-                    -74.81153869628906,
-                    283.457275390625,
-                    117.40601348876953
-                ],
-                "rotation": [
-                    0.0,
-                    -0.0,
-                    0.0
-                ],
-                "scaling": [
-                    1.0,
-                    1.0,
-                    1.0
-                ]
-            },
-            "file_name": "crystal",
-            "collider": {
-                "type": "BOX",
-                "center": [
-                    0.0,
-                    0.0,
-                    0.0
-                ],
-                "size": [
-                    5.0,
-                    5.0,
-                    5.0
-                ]
-            }
-        },
-        {
-            "type": "MESH",
-            "type_name": "crystal",
             "name": "Cube.006",
             "transform": {
                 "translation": [
@@ -1256,7 +1220,7 @@
             "transform": {
                 "translation": [
                     83.42118072509766,
-                    270.0708923339844,
+                    299.0748291015625,
                     103.7245864868164
                 ],
                 "rotation": [
@@ -1265,8 +1229,8 @@
                     0.0
                 ],
                 "scaling": [
-                    45.230369567871094,
-                    17.6643009185791,
+                    45.23040008544922,
+                    45.23040008544922,
                     12.5
                 ]
             },
@@ -1438,6 +1402,535 @@
                     5.0
                 ]
             }
+        },
+        {
+            "type": "MESH",
+            "type_name": "Appearance",
+            "name": "allGrass_001.002",
+            "transform": {
+                "translation": [
+                    62.592124938964844,
+                    45.97344970703125,
+                    -0.006220340728759766
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "file_name": "grass"
+        },
+        {
+            "type": "MESH",
+            "type_name": "Appearance",
+            "name": "allGrass_001.001",
+            "transform": {
+                "translation": [
+                    -74.30858612060547,
+                    24.579683303833008,
+                    -0.006220340728759766
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "file_name": "grass"
+        },
+        {
+            "type": "MESH",
+            "type_name": "Appearance",
+            "name": "allGrass_001.003",
+            "transform": {
+                "translation": [
+                    -74.30858612060547,
+                    33.60845947265625,
+                    -0.006220340728759766
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "file_name": "grass"
+        },
+        {
+            "type": "MESH",
+            "type_name": "Appearance",
+            "name": "allGrass_001.004",
+            "transform": {
+                "translation": [
+                    -74.30858612060547,
+                    41.26253128051758,
+                    -0.006220340728759766
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "file_name": "grass"
+        },
+        {
+            "type": "MESH",
+            "type_name": "Appearance",
+            "name": "allGrass_001.005",
+            "transform": {
+                "translation": [
+                    -35.28116226196289,
+                    53.03083038330078,
+                    -0.006220340728759766
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "file_name": "grass"
+        },
+        {
+            "type": "MESH",
+            "type_name": "Appearance",
+            "name": "allGrass_001.006",
+            "transform": {
+                "translation": [
+                    -130.2111053466797,
+                    30.658334732055664,
+                    -0.006220340728759766
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "file_name": "grass"
+        },
+        {
+            "type": "MESH",
+            "type_name": "Appearance",
+            "name": "allGrass_001.007",
+            "transform": {
+                "translation": [
+                    -108.85537719726562,
+                    68.39224243164062,
+                    -0.006220340728759766
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "file_name": "grass"
+        },
+        {
+            "type": "MESH",
+            "type_name": "Appearance",
+            "name": "allGrass_001.008",
+            "transform": {
+                "translation": [
+                    -108.85537719726562,
+                    -3.6028900146484375,
+                    -0.006220340728759766
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "file_name": "grass"
+        },
+        {
+            "type": "MESH",
+            "type_name": "Appearance",
+            "name": "allGrass_001.009",
+            "transform": {
+                "translation": [
+                    -43.0203857421875,
+                    28.079601287841797,
+                    -0.006220340728759766
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "file_name": "grass"
+        },
+        {
+            "type": "MESH",
+            "type_name": "Appearance",
+            "name": "allGrass_001.010",
+            "transform": {
+                "translation": [
+                    13.138656616210938,
+                    28.079601287841797,
+                    -0.006220340728759766
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "file_name": "grass"
+        },
+        {
+            "type": "MESH",
+            "type_name": "Appearance",
+            "name": "allGrass_001.011",
+            "transform": {
+                "translation": [
+                    6.342857837677002,
+                    72.80409240722656,
+                    -0.006220340728759766
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "file_name": "grass"
+        },
+        {
+            "type": "MESH",
+            "type_name": "Appearance",
+            "name": "allGrass_001.012",
+            "transform": {
+                "translation": [
+                    -4.487947940826416,
+                    72.80409240722656,
+                    -0.006220340728759766
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "file_name": "grass"
+        },
+        {
+            "type": "MESH",
+            "type_name": "Appearance",
+            "name": "allGrass_001.013",
+            "transform": {
+                "translation": [
+                    -92.29853820800781,
+                    156.05706787109375,
+                    38.02012634277344
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "file_name": "grass"
+        },
+        {
+            "type": "MESH",
+            "type_name": "Appearance",
+            "name": "allGrass_001.014",
+            "transform": {
+                "translation": [
+                    -135.24267578125,
+                    139.95944213867188,
+                    38.02012634277344
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "file_name": "grass"
+        },
+        {
+            "type": "MESH",
+            "type_name": "Appearance",
+            "name": "allGrass_001.015",
+            "transform": {
+                "translation": [
+                    -153.2318572998047,
+                    209.72683715820312,
+                    76.90318298339844
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "file_name": "grass"
+        },
+        {
+            "type": "MESH",
+            "type_name": "Appearance",
+            "name": "allGrass_001.016",
+            "transform": {
+                "translation": [
+                    -153.2318572998047,
+                    268.56475830078125,
+                    114.74028015136719
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "file_name": "grass"
+        },
+        {
+            "type": "MESH",
+            "type_name": "Appearance",
+            "name": "allGrass_001.017",
+            "transform": {
+                "translation": [
+                    -63.76210403442383,
+                    288.40704345703125,
+                    114.74028015136719
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "file_name": "grass"
+        },
+        {
+            "type": "MESH",
+            "type_name": "Appearance",
+            "name": "allGrass_001.018",
+            "transform": {
+                "translation": [
+                    -163.9326934814453,
+                    275.1855163574219,
+                    114.74028015136719
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "file_name": "grass"
+        },
+        {
+            "type": "MESH",
+            "type_name": "Appearance",
+            "name": "allGrass_001.019",
+            "transform": {
+                "translation": [
+                    -163.9326934814453,
+                    373.061279296875,
+                    154.03199768066406
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "file_name": "grass"
+        },
+        {
+            "type": "MESH",
+            "type_name": "Appearance",
+            "name": "allGrass_001.020",
+            "transform": {
+                "translation": [
+                    -100.83052825927734,
+                    373.061279296875,
+                    154.03199768066406
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "file_name": "grass"
+        },
+        {
+            "type": "MESH",
+            "type_name": "Appearance",
+            "name": "allGrass_001.021",
+            "transform": {
+                "translation": [
+                    23.060413360595703,
+                    373.061279296875,
+                    154.03199768066406
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "file_name": "grass"
+        },
+        {
+            "type": "MESH",
+            "type_name": "Appearance",
+            "name": "allGrass_001.022",
+            "transform": {
+                "translation": [
+                    -8.741294860839844,
+                    387.8006896972656,
+                    154.03199768066406
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "file_name": "grass"
+        },
+        {
+            "type": "MESH",
+            "type_name": "Appearance",
+            "name": "allGrass_001.023",
+            "transform": {
+                "translation": [
+                    58.72797393798828,
+                    387.8006896972656,
+                    154.03199768066406
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "file_name": "grass"
         }
     ]
 }

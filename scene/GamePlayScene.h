@@ -80,6 +80,7 @@ private:
 	/// </summary>
 	void ClearStatus();
 
+	void SmokeUpdate();
 public:
 
 	/// <summary>
@@ -89,7 +90,7 @@ public:
 	DebugCamera* camera = nullptr;
 	//Camera *camera = nullptr;
 	Sprite *spriteBG = nullptr;
-	
+	Sprite* smoke = nullptr;
 	//オブジェクト
 	std::vector<std::unique_ptr<MathObject>> enemyColliderObjects;
 	//モデル
@@ -133,6 +134,7 @@ public:
 	InterpolationCamera interpolationCamera;
 
 	bool moveFlag = false;
+	bool smokeFlag = true;
 	int count = 0;
 };
 

@@ -16,6 +16,24 @@ Sprite* UI::crystalUI5 = nullptr;
 Sprite* UI::crystalUI6 = nullptr;
 Sprite* UI::crystalUI7 = nullptr;
 Sprite* UI::crystalUI8 = nullptr;
+Sprite* UI::crystalUI9 = nullptr;
+Sprite* UI::crystalUI10 = nullptr;
+Sprite* UI::crystalUI11 = nullptr;
+Sprite* UI::crystalUI12 = nullptr;
+Sprite* UI::crystalUI13 = nullptr;
+Sprite* UI::crystalUI14 = nullptr;
+Sprite* UI::crystalUI15 = nullptr;
+Sprite* UI::crystalUI16 = nullptr;
+Sprite* UI::crystalUI17 = nullptr;
+Sprite* UI::crystalUI18 = nullptr;
+Sprite* UI::crystalUI19 = nullptr;
+Sprite* UI::crystalUI20 = nullptr;
+Sprite* UI::crystalUI21 = nullptr;
+Sprite* UI::crystalUI22 = nullptr;
+Sprite* UI::crystalUI23 = nullptr;
+Sprite* UI::crystalUI24 = nullptr;
+Sprite* UI::crystalUI25 = nullptr;
+
 
 Sprite* UI::timerCenter = nullptr;
 Sprite* UI::timerPetal0 = nullptr;
@@ -46,6 +64,23 @@ void UI::Initialize()
 	Sprite::LoadTexture(26, L"Resources/UI/CrystalUI/Crystal_6.png");
 	Sprite::LoadTexture(27, L"Resources/UI/CrystalUI/Crystal_7.png");
 	Sprite::LoadTexture(28, L"Resources/UI/CrystalUI/Crystal_8.png");
+	Sprite::LoadTexture(29, L"Resources/UI/CrystalUI/Crystal_9.png");
+	Sprite::LoadTexture(40, L"Resources/UI/CrystalUI/Crystal_10.png");
+	Sprite::LoadTexture(41, L"Resources/UI/CrystalUI/Crystal_11.png");
+	Sprite::LoadTexture(42, L"Resources/UI/CrystalUI/Crystal_12.png");
+	Sprite::LoadTexture(43, L"Resources/UI/CrystalUI/Crystal_13.png");
+	Sprite::LoadTexture(44, L"Resources/UI/CrystalUI/Crystal_14.png");
+	Sprite::LoadTexture(45, L"Resources/UI/CrystalUI/Crystal_15.png");
+	Sprite::LoadTexture(46, L"Resources/UI/CrystalUI/Crystal_16.png");
+	Sprite::LoadTexture(47, L"Resources/UI/CrystalUI/Crystal_17.png");
+	Sprite::LoadTexture(48, L"Resources/UI/CrystalUI/Crystal_18.png");
+	Sprite::LoadTexture(49, L"Resources/UI/CrystalUI/Crystal_19.png");
+	Sprite::LoadTexture(50, L"Resources/UI/CrystalUI/Crystal_20.png");
+	Sprite::LoadTexture(51, L"Resources/UI/CrystalUI/Crystal_21.png");
+	Sprite::LoadTexture(52, L"Resources/UI/CrystalUI/Crystal_22.png");
+	Sprite::LoadTexture(53, L"Resources/UI/CrystalUI/Crystal_23.png");
+	Sprite::LoadTexture(54, L"Resources/UI/CrystalUI/Crystal_24.png");
+	Sprite::LoadTexture(55, L"Resources/UI/CrystalUI/Crystal_25.png");
 
 	Sprite::LoadTexture(30, L"Resources/UI/timer/timerCenter.png");
 	Sprite::LoadTexture(31, L"Resources/UI/timer/timerPetal0.png");
@@ -55,8 +90,10 @@ void UI::Initialize()
 	Sprite::LoadTexture(35, L"Resources/UI/timer/timerPetal4.png");
 	Sprite::LoadTexture(36, L"Resources/UI/timer/timerPetal5.png");
 
-	Sprite::LoadTexture(40, L"Resources/UI/controller/controllerUI.png");
-	Sprite::LoadTexture(41, L"Resources/UI/controller/controllerUI3.png");
+	Sprite::LoadTexture(60, L"Resources/UI/controller/controllerUI.png");
+	Sprite::LoadTexture(61, L"Resources/UI/controller/controllerUI2.png");
+	Sprite::LoadTexture(62, L"Resources/UI/controller/controllerUI3.png");
+	Sprite::LoadTexture(63, L"Resources/UI/controller/controllerUI4.png");
 
 	stamina0 = Sprite::Create(2, { 800.0f,350.0f });
 	stamina0->SetAnchorPoint({ 1.0f, 1.0f });
@@ -86,6 +123,40 @@ void UI::Initialize()
 	crystalUI7->SetSize({ 200, 500 });
 	crystalUI8 = Sprite::Create(28, { 1080.0f , 90.0f });
 	crystalUI8->SetSize({ 200, 500 });
+	crystalUI9 = Sprite::Create(29, { 1080.0f , 90.0f });
+	crystalUI9->SetSize({ 200, 500 });
+	crystalUI10 = Sprite::Create(40, { 1080.0f , 90.0f });
+	crystalUI10->SetSize({ 200, 500 });
+	crystalUI11 = Sprite::Create(41, { 1080.0f , 90.0f });
+	crystalUI11->SetSize({ 200, 500 });
+	crystalUI12 = Sprite::Create(42, { 1080.0f , 90.0f });
+	crystalUI12->SetSize({ 200, 500 });
+	crystalUI13 = Sprite::Create(43, { 1080.0f , 90.0f });
+	crystalUI13->SetSize({ 200, 500 });
+	crystalUI14 = Sprite::Create(44, { 1080.0f , 90.0f });
+	crystalUI14->SetSize({ 200, 500 });
+	crystalUI15 = Sprite::Create(45, { 1080.0f , 90.0f });
+	crystalUI15->SetSize({ 200, 500 });
+	crystalUI16 = Sprite::Create(46, { 1080.0f , 90.0f });
+	crystalUI16->SetSize({ 200, 500 });
+	crystalUI17 = Sprite::Create(47, { 1080.0f , 90.0f });
+	crystalUI17->SetSize({ 200, 500 });
+	crystalUI18 = Sprite::Create(48, { 1080.0f , 90.0f });
+	crystalUI18->SetSize({ 200, 500 });
+	crystalUI19 = Sprite::Create(49, { 1080.0f , 90.0f });
+	crystalUI19->SetSize({ 200, 500 });
+	crystalUI20 = Sprite::Create(50, { 1080.0f , 90.0f });
+	crystalUI20->SetSize({ 200, 500 });
+	crystalUI21 = Sprite::Create(51, { 1080.0f , 90.0f });
+	crystalUI21->SetSize({ 200, 500 });
+	crystalUI22 = Sprite::Create(52, { 1080.0f , 90.0f });
+	crystalUI22->SetSize({ 200, 500 });
+	crystalUI23 = Sprite::Create(53, { 1080.0f , 90.0f });
+	crystalUI23->SetSize({ 200, 500 });
+	crystalUI24 = Sprite::Create(54, { 1080.0f , 90.0f });
+	crystalUI24->SetSize({ 200, 500 });
+	crystalUI25 = Sprite::Create(55, { 1080.0f , 90.0f });
+	crystalUI25->SetSize({ 200, 500 });
 
 	timerCenter = Sprite::Create(30, { 1174 , 83.0f });
 	timerCenter->SetSize({ 32, 32 });
@@ -118,7 +189,8 @@ void UI::Initialize()
 	timerPetal8->SetSize({ 32, 64 });
 	timerPetal8->SetRotation(320.0f);
 
-	controllerUI = Sprite::Create(40, { 70.0f , 500.0f });
+	controllerUI = Sprite::Create(40, { 0.0f , 400.0f });
+	controllerUI->SetSize({ 400.0f, 400.0f });
 }
 
 void UI::Update()
@@ -144,13 +216,21 @@ void UI::Update()
 
 	timeUpdata();
 	
-	if (Player::GetWallHitFlag() == true)
+	if (Player::GetClimbWallHitFlag() == true)
 	{
-		controllerUI->SetTexNum(41);
+		controllerUI->SetTexNum(62);
+	}
+	else if (Player::GetMoveBoxHitFlag())
+	{
+		controllerUI->SetTexNum(63);
+	}
+	else if (Player::GetClimbingCliffFlag())
+	{
+		controllerUI->SetTexNum(61);
 	}
 	else
 	{
-		controllerUI->SetTexNum(40);
+		controllerUI->SetTexNum(60);
 	}
 }
 
@@ -166,41 +246,109 @@ void UI::Draw()
 
 	if (Player::GetCrystal() == 0)
 	{
-		crystalUI8->Draw();
+		crystalUI25->Draw();
 	}
 	else if (Player::GetCrystal() == 1)
 	{
-		crystalUI7->Draw();
+		crystalUI24->Draw();
 	}
 	else if (Player::GetCrystal() == 2)
 	{
-		crystalUI6->Draw();
+		crystalUI23->Draw();
 	}
 	else if (Player::GetCrystal() == 3)
 	{
-		crystalUI5->Draw();
+		crystalUI22->Draw();
 	}
 	else if (Player::GetCrystal() == 4)
 	{
-		crystalUI4->Draw();
+		crystalUI21->Draw();
 	}
 	else if (Player::GetCrystal() == 5)
 	{
-		crystalUI3->Draw();
+		crystalUI20->Draw();
 	}
 	else if (Player::GetCrystal() == 6)
 	{
-		crystalUI2->Draw();
+		crystalUI19->Draw();
 	}
 	else if (Player::GetCrystal() == 7)
 	{
-		crystalUI1->Draw();
+		crystalUI18->Draw();
 	}
 	else if (Player::GetCrystal() == 8)
 	{
+		crystalUI17->Draw();
+	}
+	else if (Player::GetCrystal() == 9)
+	{
+		crystalUI16->Draw();
+	}
+	else if (Player::GetCrystal() == 10)
+	{
+		crystalUI15->Draw();
+	}
+	else if (Player::GetCrystal() == 11)
+	{
+		crystalUI14->Draw();
+	}
+	else if (Player::GetCrystal() == 12)
+	{
+		crystalUI13->Draw();
+	}
+	else if (Player::GetCrystal() == 13)
+	{
+		crystalUI12->Draw();
+	}
+	else if (Player::GetCrystal() == 14)
+	{
+		crystalUI11->Draw();
+	}
+	else if (Player::GetCrystal() == 15)
+	{
+		crystalUI10->Draw();
+	}
+	else if (Player::GetCrystal() == 16)
+	{
+		crystalUI9->Draw();
+	}
+	else if (Player::GetCrystal() == 17)
+	{
+		crystalUI8->Draw();
+	}
+	else if (Player::GetCrystal() == 18)
+	{
+		crystalUI7->Draw();
+	}
+	else if (Player::GetCrystal() == 19)
+	{
+		crystalUI6->Draw();
+	}
+	else if (Player::GetCrystal() == 20)
+	{
+		crystalUI5->Draw();
+	}
+	else if (Player::GetCrystal() == 21)
+	{
+		crystalUI4->Draw();
+	}
+	else if (Player::GetCrystal() == 22)
+	{
+		crystalUI3->Draw();
+	}
+	else if (Player::GetCrystal() == 23)
+	{
+		crystalUI2->Draw();
+	}
+	else if (Player::GetCrystal() == 24)
+	{
+		crystalUI1->Draw();
+	}
+	else if (Player::GetCrystal() == 25)
+	{
 		crystalUI0->Draw();
 	}
-
+	
 
 	
 	timerPetal0->Draw();

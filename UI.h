@@ -38,6 +38,24 @@ private:
 	static Sprite* crystalUI6;
 	static Sprite* crystalUI7;
 	static Sprite* crystalUI8;
+	static Sprite* crystalUI9;
+	static Sprite* crystalUI10;
+	static Sprite* crystalUI11;
+	static Sprite* crystalUI12;
+	static Sprite* crystalUI13;
+	static Sprite* crystalUI14;
+	static Sprite* crystalUI15;
+	static Sprite* crystalUI16;
+	static Sprite* crystalUI17;
+	static Sprite* crystalUI18;
+	static Sprite* crystalUI19;
+	static Sprite* crystalUI20;
+	static Sprite* crystalUI21;
+	static Sprite* crystalUI22;
+	static Sprite* crystalUI23;
+	static Sprite* crystalUI24;
+	static Sprite* crystalUI25;
+
 
 	static Sprite* timerCenter;
 	static Sprite* timerPetal0;

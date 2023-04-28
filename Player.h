@@ -195,7 +195,7 @@ public:
 	static float& GEtTestFloatNum() { return testRota; }
 
 	static bool GetCrystalGetFlag() { return crystalGetFlag; }
-
+	static bool GetMoveBoxHitFlag() { return moveBoxHitFlag;}
 	static bool GetJumpFlag() { return jumpFlag; }
 	static bool GetFallFlag() { return fallFlag; }
 	static int& GetAnimeNum() { return animeNum; }
@@ -347,5 +347,6 @@ public:
 	//debug
 	bool teleportFlag = false;
 	bool testFlag = false;
+	bool timeLimitcancel = false;
 };
 

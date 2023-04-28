@@ -51,8 +51,11 @@ void GamePlayScene::Initialize()
 
 	// テクスチャ読み込み
 	Sprite::LoadTexture(1, L"Resources/background2.png");
+	Sprite::LoadTexture(99, L"Resources/smoke.png");
 	// 背景スプライト生成
 	spriteBG = Sprite::Create(1, { 0.0f,0.0f });
+	smoke = Sprite::Create(99, { 0.0f,0.0f });
+	smoke->SetColor({ 1.0f,1.0f,1.0f, 0.0f });
 	skydomeModel = Model::LoadFromOBJ("skydome");
 	skydomeObject = Object3d::Create();
 	skydomeObject->SetModel(skydomeModel);
@@ -130,29 +133,14 @@ void GamePlayScene::Update()
 	lightGroup->SetCircleShadowAtten(1, XMFLOAT3(circleShadowAtten));
 	lightGroup->SetCircleShadowFactorAngle(1, XMFLOAT2(circleShadowFactorAngle2));
 
-	//int state = 2;
-	//switch(state)
-	//{
-	//	 case 1:
-	//		 StartStatus();
-	//		 return;
-	//	 case 2:
-	//		 GameStatus();
-	//		 return;
-	//	 case 3:
-	//		 GameOverStatus();
-	//		 return;
-	//	 case 4:
-	//		 ClearStatus();
-	//		 return;
-	//}
-
 	if (input->TriggerKey(DIK_RETURN))
 	{
 		//シーン切り替え
 		SceneManager::GetInstance()->ChangeScene("GAMEOVER");
 	}
 
+	SmokeUpdate();
+	
 	GameStatus();
 	GameOverStatus();
 	ClearStatus();
@@ -191,10 +179,6 @@ void GamePlayScene::Draw()
 	//json
 	JsonLoader::Draw();
 	objFighter->Draw(cmdList);
-	//for (int i = 0; i < enemyColliderObjects.size(); i++)
-	//{
-	//	enemyColliderObjects[i].get()->Draw();
-	//}
 	
 	OpticalPost::Draw();
 
@@ -209,14 +193,14 @@ void GamePlayScene::Draw()
 	// 前景スプライト描画前処理
 	Sprite::PreDraw(cmdList);
 	Effect2d::PreDraw(cmdList);
-
+	smoke->Draw();
 	if (moveFlag != true)
 	{
 		UI::Draw();
 	}
 	
 	Effect::Draw();
-
+	
 	// デバッグテキストの描画
 	//DebugText::GetInstance()->DrawAll(cmdList);
 
@@ -228,24 +212,26 @@ void GamePlayScene::Draw()
 	ImGui::NewFrame();
 	ImGui::Begin("config1");//ウィンドウの名前
 	ImGui::SetWindowSize(ImVec2(400, 500), ImGuiCond_::ImGuiCond_FirstUseEver);
-	ImGui::Text("AnimeNum: %d", objFighter->GetAnimeNum());
-	ImGui::Text("PlayerPos X: %f", objFighter->GetPos().x);
-	ImGui::Text("PlayerPos Y: %f", objFighter->GetPos().y);
-	ImGui::Text("PlayerPos Z: %f", objFighter->GetPos().z);
-	ImGui::Text("PlayerRot Y: %f", objFighter->GetRotation().y);
-	ImGui::Text("Camera    Y: %f",  camera->GetEye().y);
-	ImGui::Text("CrystalNum: %d", JsonLoader::crystalObjects.size());
-	ImGui::Text("crystal :%d", objFighter->GetCrystal());
-	ImGui::Text("moveBoxMax_X :%f", objFighter->moveBoxMax1.x);
-	ImGui::Text("moveBoxMax_Z :%f", objFighter->moveBoxMax1.z);
-	ImGui::Checkbox("Terrain", &JsonLoader::hitTerrainDrawFlag);
+	//ImGui::Text("AnimeNum: %d", objFighter->GetAnimeNum());
+	//ImGui::Text("PlayerPos X: %f", objFighter->GetPos().x);
+	//ImGui::Text("PlayerPos Y: %f", objFighter->GetPos().y);
+	//ImGui::Text("PlayerPos Z: %f", objFighter->GetPos().z);
+	//ImGui::Text("PlayerRot Y: %f", objFighter->GetRotation().y);
+	//ImGui::Text("Camera    Y: %f",  camera->GetEye().y);
+	//ImGui::Text("CrystalNum: %d", JsonLoader::crystalObjects.size());
+	//ImGui::Text("crystal :%d", objFighter->GetCrystal());
+	//ImGui::Text("moveBoxMax_X :%f", objFighter->moveBoxMax1.x);
+	//ImGui::Text("moveBoxMax_Z :%f", objFighter->moveBoxMax1.z);
+	//ImGui::Checkbox("Terrain", &JsonLoader::hitTerrainDrawFlag);
 	ImGui::Checkbox("teleport", &objFighter->teleportFlag);
-	ImGui::Checkbox("ClimbingCliffFlag", &objFighter->GetClimbingCliffFlag());
-	ImGui::Checkbox("Landing", &objFighter->GetLandingFlag());
-	ImGui::Checkbox("slop", &objFighter->GetSlopeFlag());
-	ImGui::Checkbox("jumpWallHittingFlag", &objFighter->GetJumpWallHitFlag());
-	ImGui::Checkbox("wallHittingFlag", &objFighter->GetWallHitFlag());
-	ImGui::Checkbox("wallKic", &objFighter->testFlag);
+	ImGui::Checkbox("TimeLimitCancel", &objFighter->timeLimitcancel);
+	//ImGui::Checkbox("ClimbingCliffFlag", &objFighter->GetClimbingCliffFlag());
+	//ImGui::Checkbox("Landing", &objFighter->GetLandingFlag());
+	//ImGui::Checkbox("slop", &objFighter->GetSlopeFlag());
+	//ImGui::Checkbox("jumpWallHittingFlag", &objFighter->GetJumpWallHitFlag());
+	//ImGui::Checkbox("wallHittingFlag", &objFighter->GetWallHitFlag());
+	//ImGui::Checkbox("wallKic", &objFighter->testFlag);
+	ImGui::Checkbox("smokeFlag", &smokeFlag);
 	imguiManager::PosDraw();
 }
 
@@ -315,5 +301,23 @@ void GamePlayScene::ClearStatus()
 	{
 		SceneManager::GetInstance()->ChangeScene("TITLE");
 		return;
+	}
+}
+
+void GamePlayScene::SmokeUpdate()
+{
+	if (smokeFlag == false)
+	{
+		smoke->SetColor({ 1.0f,1.0f,1.0f,0.0f });
+		return;
+	}
+	float smokeNum = ((objFighter->GetTimeMax() / 2) - objFighter->GetTimeLimit()) / objFighter->GetTimeMax();
+	if (objFighter->GetTimeLimit() <= (objFighter->GetTimeMax() / 2))
+	{
+		smoke->SetColor({ 1.0f,1.0f,1.0f,smokeNum });
+	}
+	else
+	{
+		smoke->SetColor({ 1.0f,1.0f,1.0f,0.0f });
 	}
 }
