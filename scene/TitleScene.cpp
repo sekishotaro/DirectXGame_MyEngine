@@ -41,10 +41,20 @@ void TitleScene::Initialize()
 	skydomeObject->SetModel(skydomeModel);
 	skydomeObject->SetScale({ 5.0f, 5.0f, 5.0f });
 
-	terrainModel = Model::LoadFromOBJ("terrain");
-	terrainObject = Object3d::Create();
-	terrainObject->SetModel(terrainModel);
-	terrainObject->SetScale({ 1.0f, 1.0f, 1.0f });
+	terrainModelA = Model::LoadFromOBJ("terrainGroundView");
+	terrainObjectA = Object3d::Create();
+	terrainObjectA->SetModel(terrainModelA);
+	terrainObjectA->SetScale({ 1.0f, 1.0f, 1.0f });
+
+	terrainModelB = Model::LoadFromOBJ("terrainInWallView");
+	terrainObjectB = Object3d::Create();
+	terrainObjectB->SetModel(terrainModelB);
+	terrainObjectB->SetScale({ 1.0f, 1.0f, 1.0f });
+
+	terrainModelC = Model::LoadFromOBJ("terrainOutWallView");
+	terrainObjectC = Object3d::Create();
+	terrainObjectC->SetModel(terrainModelC);
+	terrainObjectC->SetScale({ 1.0f, 1.0f, 1.0f });
 
 
 	fbxModel = FbxLoader::GetInstance()->LoadModelFromFile("model");
@@ -75,7 +85,9 @@ void TitleScene::Update()
 	lightGroup->SetCircleShadowFactorAngle(1, XMFLOAT2(circleShadowFactorAngle2));
 
 	skydomeObject->Update();
-	terrainObject->Update();
+	terrainObjectA->Update();
+	terrainObjectB->Update();
+	terrainObjectC->Update();
 
 	camera->rotaX += 1.0f;
 	camera->Update();
@@ -98,7 +110,7 @@ void TitleScene::Draw()
 	// 背景スプライト描画前処理
 	Sprite::PreDraw(cmdList);
 	// 背景スプライト描画
-	spriteUI->Draw();
+	
 	/// <summary>
 	/// ここに背景スプライトの描画処理を追加できる
 	/// </summary>
@@ -116,7 +128,9 @@ void TitleScene::Draw()
 	/// </summary>
 
 	skydomeObject->Draw();
-	terrainObject->Draw();
+	terrainObjectA->Draw();
+	terrainObjectB->Draw();
+	terrainObjectC->Draw();
 
 	fbxObject->Draw(cmdList);
 
@@ -127,6 +141,7 @@ void TitleScene::Draw()
 	Sprite::PreDraw(cmdList);
 
 	spriteBG->Draw();
+	spriteUI->Draw();
 	// デバッグテキストの描画
 	DebugText::GetInstance()->DrawAll(cmdList);
 

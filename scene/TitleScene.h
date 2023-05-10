@@ -64,8 +64,12 @@ public:
 	std::unique_ptr<Object3d> skydomeObject;
 	Model* skydomeModel = nullptr;
 
-	std::unique_ptr<Object3d> terrainObject;
-	Model* terrainModel = nullptr;
+	std::unique_ptr<Object3d> terrainObjectA;
+	Model* terrainModelA = nullptr;
+	std::unique_ptr<Object3d> terrainObjectB;
+	Model* terrainModelB = nullptr;
+	std::unique_ptr<Object3d> terrainObjectC;
+	Model* terrainModelC = nullptr;
 
 	FbxModel* fbxModel = nullptr;
 	FbxObject3d* fbxObject = nullptr;

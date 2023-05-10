@@ -372,6 +372,7 @@ void Player::MoveOperation(XMVECTOR& move, float& power)
 	if (climbingCliffFlag == true)
 	{
 		MoveClimbingCliff(move, power);
+		slopeRising = false;
 	}
 	else if (climbOperation == false && climbingCliffUpFlag == false) //’ÊíˆÚ“®
 	{
@@ -1676,16 +1677,11 @@ bool Player::SlopeRisingFlag()
 {
 	static float countTime = 2.0f;
 
-
-	
 	//â‚©‚ç•½’n‚É•Ï‚í‚Á‚½
 	if (oldSlopeFlag == true && slopeFlag == false)
 	{
 		slopeRising = true;
 	}
-
-	if (wallHittingFlag == true) return false;
-
 
 	if (slopeRising != true) return false;
 
