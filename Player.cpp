@@ -376,7 +376,7 @@ void Player::MoveOperation(XMVECTOR& move, float& power)
 	else if (climbOperation == false && climbingCliffUpFlag == false) //通常移動
 	{
 		if (climbingCliffFlag == true) return;
-
+		if (SlopeRisingFlag() == true) return;
 		move = { 0.0f,0.0f,0.1f,0 };
 		MoveNormal(move, power);
 	}
@@ -900,7 +900,9 @@ void Player::TerrainConfirmationProcess()
 	SphereCollider* sphereCollider = dynamic_cast<SphereCollider*>(collider);
 	assert(sphereCollider);
 	sphereCollider->center.m128_f32[0] += 1.0f;
+	oldSlopeFlag = slopeFlag;
 	slopeFlag = false;
+
 	//クエリ―コールバッククラス
 	class PlayerQueryCallback :public QueryCallback
 	{
@@ -1035,6 +1037,7 @@ void Player::TerrainConfirmationProcess()
 			jumpHeightPosY = sphereColliderJ->center.m128_f32[1];
 		}
 	}
+
 
 	//コライダー更新
 	UpdateWorldMatrix();
@@ -1669,6 +1672,34 @@ void Player::BoxInMove()
 
 }
 
+bool Player::SlopeRisingFlag()
+{
+	static float countTime = 2.0f;
+
+
+	
+	//坂から平地に変わった
+	if (oldSlopeFlag == true && slopeFlag == false)
+	{
+		slopeRising = true;
+	}
+
+	if (wallHittingFlag == true) return false;
+
+
+	if (slopeRising != true) return false;
+
+	//起き上がるまでの時間
+	if (TimeCheck(countTime) == true)
+	{
+		slopeRising = false;
+		countTime = 2.0f;
+		return false;
+	}
+
+	return true;
+}
+
 bool Player::StaminaConsumptionFlag()
 {
 	if (nowMove == false) return true;
@@ -1683,4 +1714,13 @@ bool Player::moveBoxConditionFlag()
 	if (jumpFlag == true) return false;
 	if (fallFlag == true) return false;
 	return true;
+}
+
+bool Player::TimeCheck(float& time)
+{
+	float flame = 60.0f;
+	time -= 1.0f / flame;
+
+	if (time <= 0.0f) return true;
+	return false;
 }

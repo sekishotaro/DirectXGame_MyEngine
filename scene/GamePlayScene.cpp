@@ -37,7 +37,7 @@ void GamePlayScene::Initialize()
 	ColliderObject::SetCamera(camera);
 	MathObject::SetCamera(camera);
 	//dCamera->SetEye({ 0, 0, 100 });			//prinding時
-	camera->SetEye({ 0, 0, -30 });		//prin時
+	camera->SetEye({ 0, 0, -30 });
 	FbxObject3d::SetCamera(camera);
 	//グラフィックスパイプライン生成
 	FbxObject3d::CreateGraphicsPipeline();
@@ -225,6 +225,7 @@ void GamePlayScene::Draw()
 	//ImGui::Checkbox("Terrain", &JsonLoader::hitTerrainDrawFlag);
 	ImGui::Checkbox("teleport", &objFighter->teleportFlag);
 	ImGui::Checkbox("TimeLimitCancel", &objFighter->timeLimitcancel);
+	ImGui::Checkbox("OldSlopeFlag", &objFighter->GetOldSlopeFlag());
 	//ImGui::Checkbox("ClimbingCliffFlag", &objFighter->GetClimbingCliffFlag());
 	//ImGui::Checkbox("Landing", &objFighter->GetLandingFlag());
 	//ImGui::Checkbox("slop", &objFighter->GetSlopeFlag());

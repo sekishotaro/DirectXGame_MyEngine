@@ -21,6 +21,13 @@ private: // エイリアス
 	using XMFLOAT4 = DirectX::XMFLOAT4;
 	using XMMATRIX = DirectX::XMMATRIX;
 
+	enum StaminaStatus
+	{
+		sutaminaMax,		//満タン時
+		sutaminaUse,		//消費時
+		sutaminaRecovery,	//通常回復
+		sutaminaBurst		//スタミナバースト,回復
+	};
 
 	enum PlayerStatus
 	{
@@ -157,6 +164,10 @@ private:
 
 	//崖上がり時の内側に移動処理
 	void BoxInMove();
+	//坂から立ち上がり確認
+	bool SlopeRisingFlag();
+
+	bool TimeCheck(float& time);
 
 private:
 	bool StaminaConsumptionFlag();
@@ -201,6 +212,7 @@ public:
 	static int& GetAnimeNum() { return animeNum; }
 
 	static bool &GetSlopeFlag() { return slopeFlag; }
+	bool& GetOldSlopeFlag() { return oldSlopeFlag; }
 	static bool& GetWallHitFlag() { return wallHittingFlag; }
 	static bool& GetJumpWallHitFlag() { return jumpWallHittingFlag; }
 	static bool& GetClimbingCliffFlag() { return climbingCliffFlag; }
@@ -240,7 +252,8 @@ private:
 	static bool nowMove;
 	//坂確認フラグ
 	static bool slopeFlag;
-
+	bool oldSlopeFlag = false;
+	bool slopeRising = false;
 	//ジャンプ確認フラグ
 	static bool jumpFlag;
 	static bool wallKickUpFlag;
@@ -341,6 +354,7 @@ private:
 	static FbxModel* fbxModel14; //壁蹴りジャンプ
 	static FbxModel* fbxModel15; //崖上がり
 
+	PlayerStatus PlayerState = idling;
 public:
 	XMFLOAT3 moveBoxMax1 = { 0.0f, 0.0f, 0.0f };
 	bool movingFlag = false;
