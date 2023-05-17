@@ -40,6 +40,17 @@ public: // メンバ関数
 	float leap(float rotaA, float rotaB, float timeRatio);
 
 	bool PlayerJumpUp();
+	/// <summary>
+	/// カメラターゲット座標の
+	/// </summary>
+	XMFLOAT3 TargetProcess();
+	/// <summary>
+	/// 崖つかみした瞬間から補間
+	/// </summary>
+	/// <returns></returns>
+	float CliffMoveTargetState();
+
+	void CliffFlagUpdate();
 
 	static float GetRotaY() { return rotaY; }
 	static float GetRotaX() { return rotaX; }
@@ -68,5 +79,13 @@ public:
 	float viewpointSwitchposParRotX = 0.0f;
 	float viewpointSwitchposParRotY = 0.0f;
 	float viewpointSwitchposParDis = 0.0f;
+
+	XMFLOAT3 oldTargetPos = {};
+
+	bool cliffTargetFlag = false;
+
+	float cliffTargetCount = 2.0f;
+	float movePreviousPosY = 0.0f;
+	float moveAftaerPosY = 0.0f;
 };
 

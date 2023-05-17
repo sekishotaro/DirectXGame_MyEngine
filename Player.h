@@ -29,7 +29,7 @@ private: // エイリアス
 		sutaminaBurst		//スタミナバースト,回復
 	};
 
-	enum PlayerStatus
+	enum PlayerAnimeState
 	{
 		idling,				// 0：アイドリング
 		walking,			// 1：ウォーキング
@@ -47,6 +47,30 @@ private: // エイリアス
 		wallKickUp,			// 13：壁蹴りジャンプ
 		hangingCliffUp		// 14：崖上がり
 	};
+
+	/// <summary>
+	/// 5/17作成改訂版
+	/// </summary>
+	enum PlayerStatus
+	{
+		STATE_IDLING,				//00:アイドル状態
+		STATE_WALKING,				//01:歩き
+		STATE_RUNNING,				//02:走り
+		STATE_JUMP_UP,				//03:ジャンプ上昇
+		STATE_JUMP_DOWN,			//04:ジャンプ下降
+		STATE_FALL,					//05:落下
+		STATE_CLIMBING,				//06:壁のぼり
+		STATE_LANDING,				//07:着地
+		STATE_CLIFF_IDLING,			//08:崖つかみアイドル状態
+		STATE_SLOPE_SLIDING,		//09:坂滑り落ち
+		STATE_PUSHBOX,				//10:箱押し状態
+		STATE_TIRED_IDLING,			//11:スタミナ切れ
+		STATE_TIRED_WALKING,		//12:スタミナ切れ歩き
+		STATE_WALLKICKUP,			//13:壁蹴り上昇
+		STATE_CLIFFUP,				//14:崖起き上がり
+	};
+
+
 
 public:
 
@@ -219,6 +243,8 @@ public:
 	static bool& GetLandingFlag() { return landingFlag; }
 	static float GetTimeMax() { return timeLimitMax; }
 
+	static PlayerStatus& GetStatus() { return playerStatus; }
+
 	void SetModel1(FbxModel* fbxModel) { this->fbxModel1 = fbxModel; };
 	void SetModel2(FbxModel* fbxModel) { this->fbxModel2 = fbxModel; };
 	void SetModel3(FbxModel* fbxModel) { this->fbxModel3 = fbxModel; };
@@ -354,7 +380,10 @@ private:
 	static FbxModel* fbxModel14; //壁蹴りジャンプ
 	static FbxModel* fbxModel15; //崖上がり
 
-	PlayerStatus PlayerState = idling;
+	PlayerAnimeState PlayerState = idling;
+
+	static PlayerStatus playerStatus;
+
 public:
 	XMFLOAT3 moveBoxMax1 = { 0.0f, 0.0f, 0.0f };
 	bool movingFlag = false;

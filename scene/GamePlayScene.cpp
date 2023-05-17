@@ -221,7 +221,7 @@ void GamePlayScene::Draw()
 	//ImGui::Text("CrystalNum: %d", JsonLoader::crystalObjects.size());
 	//ImGui::Text("crystal :%d", objFighter->GetCrystal());
 	//ImGui::Text("moveBoxMax_X :%f", objFighter->moveBoxMax1.x);
-	//ImGui::Text("moveBoxMax_Z :%f", objFighter->moveBoxMax1.z);
+	ImGui::Text("target :%f", camera->GetTarget().y);
 	ImGui::Checkbox("slope", &objFighter->GetSlopeFlag());
 	ImGui::Checkbox("teleport", &objFighter->teleportFlag);
 	ImGui::Checkbox("TimeLimitCancel", &objFighter->timeLimitcancel);

@@ -221,6 +221,7 @@
     <ClCompile Include="Framework.cpp" />
     <ClCompile Include="camera\InterpolationCamera.cpp" />
     <ClCompile Include="LightGroup.cpp" />
+    <ClCompile Include="Operator.cpp" />
     <ClCompile Include="PointLight.cpp" />
     <ClCompile Include="scene\GameOver.cpp" />
     <ClCompile Include="imgui\imguiManager.cpp" />
@@ -277,6 +278,7 @@
     <ClInclude Include="Enemy.h" />
     <ClInclude Include="camera\InterpolationCamera.h" />
     <ClInclude Include="LightGroup.h" />
+    <ClInclude Include="Operator.h" />
     <ClInclude Include="PointLight.h" />
     <ClInclude Include="scene\GameOver.h" />
     <ClInclude Include="imgui\imguiManager.h" />

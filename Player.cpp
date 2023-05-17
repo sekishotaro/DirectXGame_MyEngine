@@ -61,6 +61,7 @@ FbxModel* Player::fbxModel12 = nullptr;
 FbxModel* Player::fbxModel13 = nullptr;
 FbxModel* Player::fbxModel14 = nullptr;
 FbxModel* Player::fbxModel15 = nullptr;
+Player::PlayerStatus Player::playerStatus = STATE_IDLING;
 
 Player* Player::Create(FbxModel* model)
 {

@@ -5,6 +5,7 @@
 #include "SphereCollider.h"
 #include "QueryCallback.h"
 #include "CollisionManager.h"
+#include "MyMath.h"
 
 using namespace DirectX;
 float DebugCamera::dx = 0;
@@ -50,7 +51,11 @@ void DebugCamera::Update()
 	collider->Update();
 
 	SetEye(cameraPos);
-	XMFLOAT3 targetPos = Player::GetPos();
+	
+	//常時自機にターゲット
+	XMFLOAT3 targetPos = TargetProcess();
+	
+	//襲撃タイミングで視線を外す
 	if (RaidTargetCameraFlag == true)
 	{
 		targetPos = Enemy::GetPos();
@@ -343,4 +348,78 @@ bool DebugCamera::PlayerJumpUp()
 	}
 	
 	return false;
+}
+
+DebugCamera::XMFLOAT3 DebugCamera::TargetProcess()
+{
+	XMFLOAT3 result = {};
+	//平面移動
+	result = { Player::GetPos().x, 0.0f,Player::GetPos().z };
+
+	//Y座標移動
+	//自機のY座標能動的移動時は移動上限まで移動した時に移動させる
+	CliffFlagUpdate();
+	if (cliffTargetFlag == true) //崖つかみした瞬間から移動補間ができるまで
+	{
+		//崖上がりY座標から崖つかみしたY座標に移動補間
+		result.y = CliffMoveTargetState();
+	}
+	else if (Player::GetAnimeNum() == 3) //通常ジャンプ上昇中※△
+	{
+		//ジャンプ前座標
+		result.y = oldTargetPos.y;
+	}
+	else if (Player::GetAnimeNum() == 3) //通常ジャンプ下降中※△
+	{
+		//ジャンプ前座標
+		result.y = oldTargetPos.y;
+	}
+	else if (Player::GetAnimeNum() == 14) // 崖上がり上昇中※〇
+	{
+		//崖上がり前座標
+		result.y = oldTargetPos.y;
+	}
+	else //その他移動は自機の位置にマーク
+	{
+		result.y = Player::GetPos().y;
+	}
+
+	oldTargetPos = result;
+	return result;
+}
+
+void DebugCamera::CliffFlagUpdate()
+{
+	if (cliffTargetFlag == false && Player::GetAnimeNum() == 7)
+	{
+		cliffTargetFlag = true;
+		movePreviousPosY = oldTargetPos.y;
+		moveAftaerPosY = Player::GetPos().y;
+	}
+}
+
+float DebugCamera::CliffMoveTargetState()
+{
+	//崖つかみした瞬間
+	
+	const float timeMax = 2.0f;
+	float time = timeMax - cliffTargetCount;			//加算時間に変化
+	float timeRate = min(time / timeMax, 1.0f);	//タイムレート 0.0f->1.0f
+
+	if (Player::GetAnimeNum() != 7)
+	{
+		cliffTargetFlag = false;
+		cliffTargetCount = timeMax;
+	}
+
+	if (cliffTargetCount <= 0.0f)
+	{
+		return oldTargetPos.y;
+	}
+
+	XMFLOAT3 pos = MyMath::lerp({0.0f, moveAftaerPosY, 0.0f }, { 0.0f, movePreviousPosY, 0.0f }, cliffTargetCount);
+
+	cliffTargetCount -= 1.0f / 60.0f;
+
+	return pos.y;
 }
