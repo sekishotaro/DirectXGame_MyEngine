@@ -66,8 +66,9 @@ private: // エイリアス
 		STATE_PUSHBOX,				//10:箱押し状態
 		STATE_TIRED_IDLING,			//11:スタミナ切れ
 		STATE_TIRED_WALKING,		//12:スタミナ切れ歩き
-		STATE_WALLKICKUP,			//13:壁蹴り上昇
-		STATE_CLIFFUP,				//14:崖起き上がり
+		STATE_WALLKICK_UP,			//13:壁蹴りジャンプ上昇
+		STATE_WALLKICK_DOWN,		//14:壁蹴りジャンプ下降
+		STATE_CLIFFUP,				//15:崖上がり
 	};
 
 
@@ -105,6 +106,8 @@ public:
 	void ObjectUpdate();
 
 	void Finalize();
+
+	void ReStart();
 
 private:
 	void PushBack(const DirectX::XMVECTOR& normal, const XMFLOAT3& distance);
@@ -193,6 +196,8 @@ private:
 
 	bool TimeCheck(float& time);
 
+	void StatusProsecc();
+
 private:
 	bool StaminaConsumptionFlag();
 	bool moveBoxConditionFlag();
@@ -244,6 +249,7 @@ public:
 	static float GetTimeMax() { return timeLimitMax; }
 
 	static PlayerStatus& GetStatus() { return playerStatus; }
+	static PlayerStatus& GetOldStatus() { return oldPlayerStatus; }
 
 	void SetModel1(FbxModel* fbxModel) { this->fbxModel1 = fbxModel; };
 	void SetModel2(FbxModel* fbxModel) { this->fbxModel2 = fbxModel; };
@@ -383,6 +389,7 @@ private:
 	PlayerAnimeState PlayerState = idling;
 
 	static PlayerStatus playerStatus;
+	static PlayerStatus oldPlayerStatus;
 
 public:
 	XMFLOAT3 moveBoxMax1 = { 0.0f, 0.0f, 0.0f };

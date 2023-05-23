@@ -61,7 +61,9 @@ FbxModel* Player::fbxModel12 = nullptr;
 FbxModel* Player::fbxModel13 = nullptr;
 FbxModel* Player::fbxModel14 = nullptr;
 FbxModel* Player::fbxModel15 = nullptr;
+
 Player::PlayerStatus Player::playerStatus = STATE_IDLING;
+Player::PlayerStatus Player::oldPlayerStatus = STATE_IDLING;
 
 Player* Player::Create(FbxModel* model)
 {
@@ -114,6 +116,9 @@ void Player::Initialize()
 
 void Player::Update()
 {
+	//過去ステータスを保存
+	oldPlayerStatus = playerStatus;
+
 	//デバック用初期位置テレポート
 	if (teleportFlag == true)
 	{
@@ -159,6 +164,19 @@ void Player::Update()
 	pos = position;
 	rot = rotation;
 
+	if (jumpFlag == true)
+	{
+		if (move.m128_f32[1] >= 0.0f)
+		{
+			playerStatus = STATE_JUMP_UP;
+		}
+		else
+		{
+			playerStatus = STATE_JUMP_DOWN;
+		}
+	}
+
+
 	if (climbingCliffFlag == true && climbingCliffUpFlag == false)
 	{
 		animeFlag = true;
@@ -167,6 +185,7 @@ void Player::Update()
 	else if (climbingCliffFlag == false && climbingCliffUpFlag == true)
 	{
 		animeFlag = true;
+		playerStatus = STATE_CLIFFUP;
 		animeNum = hangingCliffUp;
 	}
 	else if (jumpFlag == true)
@@ -190,6 +209,9 @@ void Player::Update()
 		animeFlag = true;
 		animeNum = landing;
 	}
+
+	StatusProsecc();
+	
 
 	//アニメーション処理
 	AnimetionProcess();
@@ -218,6 +240,22 @@ void Player::ObjectUpdate()
 void Player::Finalize()
 {
 
+}
+
+void Player::ReStart()
+{
+	goalFlag = false;
+	timeLimit = timeLimitMax;
+	staminaQuantity = 100.0f;
+	staminaCut = false;
+
+	crystalNum = (int)JsonLoader::crystalObjects.size();
+
+	FbxObject3d::Initialize();
+
+	position = JsonLoader::goalObjects[0].get()->GetPosition();
+	rotation.y = 90.0f;
+	pos = position;
 }
 
 void Player::PushBack(const DirectX::XMVECTOR& normal, const XMFLOAT3& distance)
@@ -501,10 +539,12 @@ void Player::MoveNormal(DirectX::XMVECTOR& move, float& power)
 		animeFlag = true;
 		if (staminaBoostFlag == false)
 		{
+			playerStatus = STATE_WALKING;
 			animeNum = walking;
 		}
 		else
 		{
+			playerStatus = STATE_RUNNING;
 			animeNum = running;
 		}
 	}
@@ -515,15 +555,18 @@ void Player::MoveNormal(DirectX::XMVECTOR& move, float& power)
 		animeFlag = true;
 		if (staminaBoostFlag == false)
 		{
+			playerStatus = STATE_WALKING;
 			animeNum = walking;
 		}
 		else
 		{
+			playerStatus = STATE_RUNNING;
 			animeNum = running;
 		}
 	}
 	else
 	{
+		playerStatus = STATE_IDLING;
 		animeFlag = true;
 		animeNum = idling;
 		nowMove = false;
@@ -855,7 +898,6 @@ void Player::GravityConfirmationProcess()
 		{
 			fallFlag = true;
 		}
-
 		//下向き加速度
 		const float fallAcc = -0.01f;
 		const float fallVYMin = -0.5f;
@@ -867,6 +909,7 @@ void Player::GravityConfirmationProcess()
 	}
 	else if (Input::GetInstance()->PushKey(DIK_SPACE) && climbOperation == false)//ジャンプ
 	{
+		playerStatus = STATE_JUMP_UP;
 		onGround = false;
 		nowMove = true;
 		const float jumpVYFist = 0.3f; //ジャンプ時上向き初速
@@ -874,6 +917,7 @@ void Player::GravityConfirmationProcess()
 	}
 	else if (Input::GetInstance()->TriggerPadbutton(Button_Y) && climbOperation == false)
 	{
+		playerStatus = STATE_JUMP_UP;
 		jumpFlag = true;
 		onGround = false;
 		onObject = false;
@@ -883,6 +927,8 @@ void Player::GravityConfirmationProcess()
 	}
 	else if (climbingKickJump()) //壁蹴り上り
 	{
+		playerStatus = STATE_WALLKICK_UP;
+		
 		wallKickUpFlag = true;
 		onGround = false;
 		onObject = false;
@@ -890,7 +936,7 @@ void Player::GravityConfirmationProcess()
 		const float jumpVYFist = 0.35f; //ジャンプ時上向き初速
 		fallV = { 0.0f, jumpVYFist, 0.0f };
 	}
-	
+
 	// ワールド行列更新
 	UpdateWorldMatrix();
 	collider->UpdateF();
@@ -1190,10 +1236,12 @@ void Player::StaminaManagement()
 		staminaQuantity += staminaQuantityMax * (2.0f / 300.0f);
 		if (nowMove == true)
 		{
+			playerStatus = STATE_TIRED_WALKING;
 			animeNum = tiredWalking;
 		}
 		else
 		{
+			playerStatus = STATE_TIRED_IDLING;
 			animeNum = tiredIdling;
 		}
 		
@@ -1560,6 +1608,8 @@ void Player::climbingCliff()
 
 		if(Input::GetInstance()->TriggerPadbutton(Button_Y) && StaminaUnusable() == false)
 		{
+			playerStatus = STATE_CLIFFUP;
+
 			climbingCliffFlag = true;
 			position.y = JsonLoader::moveBoxObjects[moveBoxHitNum].get()->GetPosition().y + JsonLoader::moveBoxObjects[moveBoxHitNum].get()->GetScale().y;
 		}
@@ -1720,4 +1770,30 @@ bool Player::TimeCheck(float& time)
 
 	if (time <= 0.0f) return true;
 	return false;
+}
+
+void Player::StatusProsecc()
+{
+	//早期リターンステータス組
+	if (playerStatus == STATE_CLIFFUP) return;
+
+	if (oldPlayerStatus == STATE_WALLKICK_UP || oldPlayerStatus == STATE_WALLKICK_DOWN)
+	{
+		//着地判定
+		if (onGround == true)
+		{
+			playerStatus = STATE_LANDING;
+			return;
+		}
+
+		//壁蹴り上昇中なら壁蹴りステータスに変更
+		if (fallV.m128_f32[1] > 0.0f)
+		{
+			playerStatus = STATE_WALLKICK_UP;
+		}
+		else
+		{
+			playerStatus = STATE_WALLKICK_DOWN;
+		}
+	}
 }

@@ -59,7 +59,6 @@ const std::string JsonLoader::JsonExtension = ".json";
 
 void JsonLoader::LoadFile(const std::string& fileName)
 {
-
 	// 連結してフルパスを得る
 	const std::string fullpath = DefaultDirectory + fileName + JsonExtension;
 
@@ -206,6 +205,32 @@ void JsonLoader::LoadFile(const std::string& fileName)
 				}
 				objectData.colliderName = naviareaObjectData.fileName;
 			}
+		}
+	}
+}
+
+void JsonLoader::ClystalSetObject()
+{
+	crystalObjects.clear();
+	crystalModels.clear();
+	crystalColliderObjects.clear();
+	crystalColliderModels.clear();
+
+	//レベルデータからオブジェクトを生成,配置
+	for (auto& objectData : levelData->objects)
+	{
+		if (objectData.typeName == "crystal")
+		{
+			TypeSetCrystalModel(objectData);
+		}
+	}
+
+	//レベルデータからコライダーオブジェクトを生成,配置
+	for (auto& colliderObjectData : levelData->colliderObjects)
+	{
+		if (colliderObjectData.typeName == "crystal")
+		{
+			TypeSetColliderCrystalModel(colliderObjectData);
 		}
 	}
 }
@@ -515,10 +540,10 @@ void JsonLoader::Finalize()
 	colliderObjects.clear();
 	colliderModels.clear();
 
-	crystalObjects.clear();;
-	crystalModels.clear();;
-	crystalColliderObjects.clear();;
-	crystalColliderModels.clear();;
+	crystalObjects.clear();
+	crystalModels.clear();
+	crystalColliderObjects.clear();
+	crystalColliderModels.clear();
 
 	groundObjects.clear();
 	groundModels.clear();
@@ -549,8 +574,6 @@ void JsonLoader::Finalize()
 	moveBoxModels.clear();
 	cliffClimbingObjects.clear();
 	cliffClimbingModels.clear();
-	
-
 }
 
 void JsonLoader::TypeSetModel( LevelData::ObjectData& objectData)

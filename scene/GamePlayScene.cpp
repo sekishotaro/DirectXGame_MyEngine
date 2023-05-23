@@ -212,26 +212,13 @@ void GamePlayScene::Draw()
 	ImGui::NewFrame();
 	ImGui::Begin("config1");//ウィンドウの名前
 	ImGui::SetWindowSize(ImVec2(400, 500), ImGuiCond_::ImGuiCond_FirstUseEver);
-	//ImGui::Text("AnimeNum: %d", objFighter->GetAnimeNum());
-	//ImGui::Text("PlayerPos X: %f", objFighter->GetPos().x);
-	//ImGui::Text("PlayerPos Y: %f", objFighter->GetPos().y);
-	//ImGui::Text("PlayerPos Z: %f", objFighter->GetPos().z);
-	//ImGui::Text("PlayerRot Y: %f", objFighter->GetRotation().y);
-	//ImGui::Text("Camera    Y: %f",  camera->GetEye().y);
-	//ImGui::Text("CrystalNum: %d", JsonLoader::crystalObjects.size());
-	//ImGui::Text("crystal :%d", objFighter->GetCrystal());
-	//ImGui::Text("moveBoxMax_X :%f", objFighter->moveBoxMax1.x);
+	ImGui::Text("playerState :%d", static_cast<int>(objFighter->GetStatus()));
+	ImGui::Text("AnimeNum    :%d", static_cast<int>(objFighter->GetAnimeNum()));
 	ImGui::Text("target :%f", camera->GetTarget().y);
 	ImGui::Checkbox("slope", &objFighter->GetSlopeFlag());
 	ImGui::Checkbox("teleport", &objFighter->teleportFlag);
 	ImGui::Checkbox("TimeLimitCancel", &objFighter->timeLimitcancel);
 	ImGui::Checkbox("OldSlopeFlag", &objFighter->GetOldSlopeFlag());
-	//ImGui::Checkbox("ClimbingCliffFlag", &objFighter->GetClimbingCliffFlag());
-	//ImGui::Checkbox("Landing", &objFighter->GetLandingFlag());
-	//ImGui::Checkbox("slop", &objFighter->GetSlopeFlag());
-	//ImGui::Checkbox("jumpWallHittingFlag", &objFighter->GetJumpWallHitFlag());
-	//ImGui::Checkbox("wallHittingFlag", &objFighter->GetWallHitFlag());
-	//ImGui::Checkbox("wallKic", &objFighter->testFlag);
 	ImGui::Checkbox("smokeFlag", &smokeFlag);
 	imguiManager::PosDraw();
 }
@@ -274,11 +261,12 @@ void GamePlayScene::StartStatus()
 void GamePlayScene::GameStatus()
 {
 	//アップデート
+	objFighter->Update();
 	camera->Update();
 	lightGroup->Update();
 	skydomeObject->Update();
 	JsonLoader::Update();
-	objFighter->Update();
+	
 	OpticalPost::Update(camera->GetEye());
 	OpticalPost::SetDrawFlag(true);
 	
@@ -291,7 +279,15 @@ void GamePlayScene::GameOverStatus()
 {
 	if (objFighter->GetTimeLimit() <= 0.0f)
 	{
-		SceneManager::GetInstance()->ChangeScene("GAMEOVER");
+		//画面霧
+
+		//ステージの復旧
+		JsonLoader::ClystalSetObject();
+		OpticalPost::Restart();
+		
+		//自機の初期化
+		objFighter->ReStart();
+		//SceneManager::GetInstance()->ChangeScene("GAMEOVER");
 	}
 }
 

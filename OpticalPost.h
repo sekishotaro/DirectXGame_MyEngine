@@ -34,6 +34,8 @@ public:
 	static void CrystalEfectSizeNumUpdate();
 
 	static void SmallOpticalPostsMoveUpdate();
+
+	static void Restart();
 public:
 	//オブジェクト
 	static std::vector<std::unique_ptr<Object3d>> OpticalPosts;

@@ -147,6 +147,8 @@ public:
 	//ì«Ç›çûÇ›
 	static void LoadFile(const std::string& fileName);
 
+	static void ClystalSetObject();
+
 	//îzíu
 	static void SetObject();
 

@@ -266,3 +266,44 @@ void OpticalPost::SmallOpticalPostsMoveUpdate()
 	}
 
 }
+
+void OpticalPost::Restart()
+{
+	OpticalPosts.clear();
+	smallOpticalPosts.clear();
+
+
+	XMFLOAT3 pos;
+	//åıÇÃíå1ñ{Ç…ëŒÇ∑ÇÈè¨Ç≥Ç»åıÇÃíåÇÃå¬êî
+
+	for (int i = 0; i < JsonLoader::crystalObjects.size(); i++)
+	{
+		std::unique_ptr<Object3d> objectOpticalPost;
+		objectOpticalPost = Object3d::Create();
+		objectOpticalPost->SetModel(modelOpticalPost);
+		pos = JsonLoader::crystalObjects[i].get()->GetPosition();
+
+		pos.y += 100.0f;
+		objectOpticalPost->SetPosition(pos);
+		objectOpticalPost->SetScale({ 2.0f, 100.0f, 2.0f });
+		OpticalPosts.push_back(std::move(objectOpticalPost));
+
+		pos.y -= 90.0f;
+		XMFLOAT3 posA = {};
+		for (int i = 0; i < smallOpticalPostNum; i++)
+		{
+			std::unique_ptr<Object3d> smallObjectOpticalPost;
+			smallObjectOpticalPost = Object3d::Create();
+			smallObjectOpticalPost->SetModel(modelOpticalPost);
+			posA = pos;
+			posA.x += 2.0f - (float)(rand() % 4);
+			posA.y += (float)(rand() % 100);
+			posA.z += 2.0f - (float)(rand() % 4);
+			smallObjectOpticalPost->SetPosition(pos);
+			smallObjectOpticalPost->SetScale({ 0.05f, 2.0f, 0.05f });
+			smallOpticalPosts.push_back(std::move(smallObjectOpticalPost));
+
+			moveQuantitys.push_back(moveQuantityMax);
+		}
+	}
+}

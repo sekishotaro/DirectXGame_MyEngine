@@ -73,20 +73,15 @@ DebugCamera::XMFLOAT3 DebugCamera::SphereCoordinateSystem()
 	float radiusX = rotaX * 3.14f / 180.0f;
 	float radiusY = rotaY * 3.14f / 180.0f;
 	XMFLOAT3 cameraPos = {};
-	cameraPos.x = Player::GetPos().x;
-	cameraPos.z = Player::GetPos().z;
-	if (PlayerJumpUp() == true)
-	{
-		cameraPos.y = oldPosY;
-	}
-	else
-	{
-		cameraPos.y = Player::GetPos().y;
-		cameraPos.y += dis * cos(radiusY);
-	}
+
+	cameraPos = TargetProcess();
+	//cameraPos.x = Player::GetPos().x;
+	//cameraPos.y = Player::GetPos().y;
+	//cameraPos.z = Player::GetPos().z;
+	
 
 	//球面座標系
-	
+	cameraPos.y += dis * cos(radiusY);
 	cameraPos.x += dis * sin(radiusY) * cos(radiusX);
 	cameraPos.z += dis * sin(radiusY) * sin(radiusX);
 
@@ -356,28 +351,32 @@ DebugCamera::XMFLOAT3 DebugCamera::TargetProcess()
 	//平面移動
 	result = { Player::GetPos().x, 0.0f,Player::GetPos().z };
 
-	//Y座標移動
-	//自機のY座標能動的移動時は移動上限まで移動した時に移動させる
 	CliffFlagUpdate();
-	if (cliffTargetFlag == true) //崖つかみした瞬間から移動補間ができるまで
-	{
-		//崖上がりY座標から崖つかみしたY座標に移動補間
-		result.y = CliffMoveTargetState();
-	}
-	else if (Player::GetAnimeNum() == 3) //通常ジャンプ上昇中※△
+
+	//Y座標移動
+	if (static_cast<int>(Player::GetStatus()) == 3)			//通常ジャンプ上昇中※△
 	{
 		//ジャンプ前座標
 		result.y = oldTargetPos.y;
 	}
-	else if (Player::GetAnimeNum() == 3) //通常ジャンプ下降中※△
+	else if (static_cast<int>(Player::GetStatus()) == 4)	//通常ジャンプ下降中※△
 	{
 		//ジャンプ前座標
 		result.y = oldTargetPos.y;
 	}
-	else if (Player::GetAnimeNum() == 14) // 崖上がり上昇中※〇
+	else if (static_cast<int>(Player::GetStatus()) == 13)	// 壁蹴りジャンプ上昇中※〇
 	{
 		//崖上がり前座標
 		result.y = oldTargetPos.y;
+	}
+	else if (static_cast<int>(Player::GetStatus()) == 14)	// 壁蹴りジャンプ下降中※〇
+	{
+		//崖上がり前座標
+		result.y = oldTargetPos.y;
+	}
+	else if (cliffTargetFlag == true)	// 崖上がりタイミングからのカメラ移動
+	{
+		result.y = CliffMoveTargetState();
 	}
 	else //その他移動は自機の位置にマーク
 	{
@@ -390,34 +389,32 @@ DebugCamera::XMFLOAT3 DebugCamera::TargetProcess()
 
 void DebugCamera::CliffFlagUpdate()
 {
-	if (cliffTargetFlag == false && Player::GetAnimeNum() == 7)
+	//崖上りフラグが立っていたら早期リターン
+	if (cliffTargetFlag == true) return;
+
+	if (static_cast<int>(Player::GetStatus()) == 15 && static_cast<int>(Player::GetOldStatus()) != 15)
 	{
 		cliffTargetFlag = true;
-		movePreviousPosY = oldTargetPos.y;
-		moveAftaerPosY = Player::GetPos().y;
+		movePreviousPosY = Player::GetPos().y;
+		moveAftaerPosY = oldTargetPos.y;
 	}
 }
 
 float DebugCamera::CliffMoveTargetState()
 {
-	//崖つかみした瞬間
-	
-	const float timeMax = 2.0f;
+	const float timeMax = 1.0f;							//最大時間
 	float time = timeMax - cliffTargetCount;			//加算時間に変化
-	float timeRate = min(time / timeMax, 1.0f);	//タイムレート 0.0f->1.0f
+	float timeRate = min(time / timeMax, 1.0f);			//タイムレート 0.0f->1.0f
 
-	if (Player::GetAnimeNum() != 7)
+	//移動完了時間の初期化
+	if (cliffTargetCount <= 0.0f)
 	{
 		cliffTargetFlag = false;
 		cliffTargetCount = timeMax;
-	}
-
-	if (cliffTargetCount <= 0.0f)
-	{
 		return oldTargetPos.y;
 	}
 
-	XMFLOAT3 pos = MyMath::lerp({0.0f, moveAftaerPosY, 0.0f }, { 0.0f, movePreviousPosY, 0.0f }, cliffTargetCount);
+	XMFLOAT3 pos = MyMath::lerp({0.0f, moveAftaerPosY, 0.0f }, { 0.0f, movePreviousPosY, 0.0f }, timeRate);
 
 	cliffTargetCount -= 1.0f / 60.0f;
 
