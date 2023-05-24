@@ -92,39 +92,64 @@ DebugCamera::XMFLOAT3 DebugCamera::MoveUpdate()
 {
 	XMFLOAT3 cameraPos = {};
 
+	float disMax = 20.0f;
+
+	//if (static_cast<int>(Player::GetStatus()) == 8 || static_cast<int>(Player::GetOldStatus()) == 15)
+	//{
+	//	disMax = 30.0f;
+	//}
+
+
 	if (PlayerJumpUp() != true)
 	{
 		if (Input::GetInstance()->PushKey(DIK_UP)) { rotaY -= 1.0f; }
 		else if (Input::GetInstance()->PushKey(DIK_DOWN)) { rotaY += 1.0f; }
 		if (Input::GetInstance()->PushKey(DIK_RIGHT)) { rotaX += 1.0f; }
 		else if (Input::GetInstance()->PushKey(DIK_LEFT)) { rotaX -= 1.0f; }
-		if (Input::GetInstance()->PushKey(DIK_E) && dis >= 5.0f) { dis -= 1.0f; }
-		else if (Input::GetInstance()->PushKey(DIK_Z) && dis <= 20.0f) { dis += 1.0f; }
+		//if (Input::GetInstance()->PushKey(DIK_E) && dis >= 5.0f) { dis -= 1.0f; }
+		//else if (Input::GetInstance()->PushKey(DIK_Z) && dis <= 20.0f) { dis += 1.0f; }
 
 		if (Input::GetInstance()->RightStickIn(UP) && rotaY < 175)
 		{
 			rotaY += 1.0f;
-			if (dis <= 20.0f && hitFlag == false) { dis += 0.5f; }
+			if (dis <= disMax && hitFlag == false) { dis += 0.5f; }
 		}
 		else if (Input::GetInstance()->RightStickIn(DOWN) && rotaY > 5)
 		{
 			rotaY -= 1.0f;
-			if (dis <= 20.0f && hitFlag == false) { dis += 0.5f; }
+			if (dis <= disMax && hitFlag == false) { dis += 0.5f; }
 		}
 		if (Input::GetInstance()->RightStickIn(RIGHT))
 		{
 			rotaX -= 1.0f;
-			if (dis <= 20.0f && hitFlag == false) { dis += 0.5f; }
+			if (dis <= disMax && hitFlag == false) { dis += 0.5f; }
 		}
 		else if (Input::GetInstance()->RightStickIn(LEFT))
 		{
 			rotaX += 1.0f;
-			if (dis <= 20.0f && hitFlag == false) { dis += 0.5f; }
+			if (dis <= disMax && hitFlag == false) { dis += 0.5f; }
 		}
 	}
 	
 	static float endRota = 0;
 	if (Input::GetInstance()->PushPadbutton(GAMEPAD_RIGHT_SHOULDER) && viewpointSwitchFlag == false)
+	{
+		endRota = 0;
+		endRota -= Player::GetRot().y + 90.0f;
+		if (endRota >= 360.0f)
+		{
+			endRota -= 360.0f;
+		}
+		if (endRota <= 0.0f)
+		{
+			endRota += 360.0f;
+		}
+		viewpointSwitchFlag = true;
+		viewpointSwitchposParRotX = rotaX;
+		viewpointSwitchposParRotY = rotaY;
+	}
+
+	if (static_cast<int>(Player::GetStatus()) == 8 && static_cast<int>(Player::GetOldStatus()) != 15)
 	{
 		endRota = 0;
 		endRota -= Player::GetRot().y + 90.0f;
@@ -370,6 +395,11 @@ DebugCamera::XMFLOAT3 DebugCamera::TargetProcess()
 		result.y = oldTargetPos.y;
 	}
 	else if (static_cast<int>(Player::GetStatus()) == 14)	// •ÇR‚èƒWƒƒƒ“ƒv‰º~’†¦Z
+	{
+		//ŠRã‚ª‚è‘OÀ•W
+		result.y = oldTargetPos.y;
+	}
+	else if (static_cast<int>(Player::GetStatus()) == 8)	// ŠR‚Â‚©‚İ’†
 	{
 		//ŠRã‚ª‚è‘OÀ•W
 		result.y = oldTargetPos.y;

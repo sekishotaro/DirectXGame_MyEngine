@@ -28,7 +28,7 @@ int Player::crystalNum = 0;
 bool Player::goalFlag = false;
 bool Player::climbOperation = false;
 float Player::timeLimit = 30.0f;
-const float Player::timeLimitMax = 30.0f;
+const float Player::timeLimitMax = 20.0f;
 bool Player::staminaBoostFlag = false;
 float Player::staminaQuantity = 100.0f;
 bool Player::staminaCut = false;
@@ -181,6 +181,7 @@ void Player::Update()
 	{
 		animeFlag = true;
 		animeNum = hangingCliff;
+		playerStatus = STATE_CLIFF_IDLING;
 	}
 	else if (climbingCliffFlag == false && climbingCliffUpFlag == true)
 	{
@@ -1420,6 +1421,8 @@ void Player::MoveBoxProcess(DirectX::XMVECTOR& move, float& power)
 
 void Player::TimeManagement()
 {
+	if (goalFlag == true) return;
+
 	if (timeLimitcancel == true)
 	{
 		timeLimit = timeLimitMax;
@@ -1726,9 +1729,11 @@ void Player::BoxInMove()
 
 bool Player::SlopeRisingFlag()
 {
-	static float countTime = 2.0f;
+	const float timeMax = 1.0f;
+	static float countTime = timeMax;
 
 	//坂から平地に変わった
+	if (playerStatus == STATE_RUNNING) return false;
 	if (oldSlopeFlag == true && slopeFlag == false)
 	{
 		slopeRising = true;
@@ -1740,7 +1745,7 @@ bool Player::SlopeRisingFlag()
 	if (TimeCheck(countTime) == true)
 	{
 		slopeRising = false;
-		countTime = 2.0f;
+		countTime = timeMax;
 		return false;
 	}
 
@@ -1776,6 +1781,7 @@ void Player::StatusProsecc()
 {
 	//早期リターンステータス組
 	if (playerStatus == STATE_CLIFFUP) return;
+	if (playerStatus == STATE_CLIFF_IDLING) return;
 
 	if (oldPlayerStatus == STATE_WALLKICK_UP || oldPlayerStatus == STATE_WALLKICK_DOWN)
 	{

@@ -277,16 +277,26 @@ void GamePlayScene::GameStatus()
 
 void GamePlayScene::GameOverStatus()
 {
+	const float timeMax = 5.0f;
+	static float time = timeMax;
+
 	if (objFighter->GetTimeLimit() <= 0.0f)
 	{
-		//画面霧
+		if (time >= 0.0f)
+		{
+			time -= 1.0f / 60.0f;
+			return;
+		}
 
+		state = reStart;
 		//ステージの復旧
 		JsonLoader::ClystalSetObject();
 		OpticalPost::Restart();
 		
 		//自機の初期化
 		objFighter->ReStart();
+		camera->rotaX = 180.0f;
+		time = timeMax;
 		//SceneManager::GetInstance()->ChangeScene("GAMEOVER");
 	}
 }
@@ -308,6 +318,33 @@ void GamePlayScene::SmokeUpdate()
 		smoke->SetColor({ 1.0f,1.0f,1.0f,0.0f });
 		return;
 	}
+	
+	static float reStartNum = 1.0f;
+	if (state == reStart)
+	{
+		if (reStartNum <= 0.0f)
+		{
+			state = play;
+			reStartNum = 1.0f;
+			return;
+		}
+
+		reStartNum -= 1.0f / 180.0f;
+
+		smoke->SetColor({ 1.0f,1.0f,1.0f, reStartNum });
+		return;
+	}
+
+
+	//制限時間が半分を切ったら煙が出てくる
+	/*float halfTime = objFighter->GetTimeMax() / 2;
+	if (objFighter->GetTimeLimit() > halfTime)
+	{
+		smoke->SetColor({ 1.0f,1.0f,1.0f,0.0f });
+	}*/
+
+	//煙は制限時間半分から0になるまで
+
 	float smokeNum = ((objFighter->GetTimeMax() / 2) - objFighter->GetTimeLimit()) / objFighter->GetTimeMax();
 	if (objFighter->GetTimeLimit() <= (objFighter->GetTimeMax() / 2))
 	{

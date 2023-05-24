@@ -31,6 +31,14 @@ private: // エイリアス
 	using XMMATRIX = DirectX::XMMATRIX;
 	using XMVECTOR = DirectX::XMVECTOR;
 
+	enum State
+	{
+		play,
+		timeOver,
+		clear,
+		reStart,
+	};
+
 public:
 
 	/// <summary>
@@ -135,5 +143,7 @@ public:
 	bool moveFlag = false;
 	bool smokeFlag = true;
 	int count = 0;
+
+	State state = play;
 };
 
