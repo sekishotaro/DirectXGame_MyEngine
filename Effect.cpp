@@ -1,7 +1,6 @@
 #include "Effect.h"
 #include "SafeDelete.h"
 #include "WinApp.h"
-
 #include "Enemy.h"
 #include "Player.h"
 #include "DebugCamera.h"
@@ -23,22 +22,20 @@ void Effect::Initialize()
 {
 	Sprite::LoadTexture(12, L"Resources/EnemyAccessEffect.png");
 	Effect2d::LoadTexture(13, L"Resources/particle.png");
-	float width = (float)WinApp::window_width / 2.0f;
-	float height = (float)WinApp::window_height / 2.0f;
+	float width = 3000.0f;		//‰æ–ÊŠO
+	float height = 3000.0f;		//‰æ–ÊŠO
 	EnemyAccessEffect = Sprite::Create(12, { width, height });
 	EnemyAccessEffect->SetSize({ EnemyAccessEffectSize, EnemyAccessEffectSize });
 	EnemyAccessEffect->SetAnchorPoint({ 0.5f, 0.5f });
 	
-	
-	//crystalEffect = Effect2d::Create(13, { width, height });
-	//crystalEffect->SetAnchorPoint({ 0.5f, 0.5f });
-	//crystalEffect->SetSize({ 50.0f, 50.0f });
-
-	//for (int i = 0; i < 10; i++)
-	//{
-	//	crystalEffects.push_back(std::move(crystalEffect));
-	//	crystalEffects[i]->SetPosition({ width + 10.0f * i, height });
-	//}
+	crystalEffect = Effect2d::Create(13, { width, height });
+	crystalEffect->SetAnchorPoint({ 0.5f, 0.5f });
+	crystalEffect->SetSize({ 20.0f, 20.0f });
+	for (int i = 0; i < 10; i++)
+	{
+		crystalEffects.push_back(std::move(crystalEffect));
+		crystalEffects[i]->SetPosition({ width + 10.0f * i, height });
+	}
 }
 
 void Effect::Finalize()
@@ -59,8 +56,6 @@ void Effect::Draw()
 	{
 		EnemyAccessEffect->Draw();
 	}
-
-	/*crystalEffect->Draw();*/
 
 	for (int i = 1; i < crystalEffects.size(); i++)
 	{
@@ -173,7 +168,7 @@ void Effect::ClystalEffectUpdate()
 
 	crystalNum -= Player::GetCrystal();
 
-	XMFLOAT2 endPos = crystalUIPos[crystalNum];
+	XMFLOAT2 endPos = { 1190.0f, 50.0f };
 
 	XMFLOAT2 nowPos = Effect::leap(startPos, endPos, timeRatio);
 

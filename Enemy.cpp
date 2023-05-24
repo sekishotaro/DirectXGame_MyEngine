@@ -187,17 +187,17 @@ Enemy::XMFLOAT3 Enemy::MonitoringCollisionScale()
 	return { monitoringEnemyColliderScale , monitoringEnemyColliderScale ,monitoringEnemyColliderScale };
 }
 
-void Enemy::Update(int time, const XMFLOAT3& playerPos)
+void Enemy::Update(int playertime, int playerTimeMax, const XMFLOAT3& playerPos)
 {
-	if (time <= 0 && raidMode == false)
+	if (playertime <= 0 && raidMode == false)
 	{
 		raidMode = true;
 	}
-	else if (raidMode == true && time != 60)
+	else if (raidMode == true && playertime != playerTimeMax)
 	{
 		raidMode = true;
 	}
-	else if (time == 60.0f)
+	else if (playertime == playerTimeMax)
 	{
 		raidMode = false;
 	}

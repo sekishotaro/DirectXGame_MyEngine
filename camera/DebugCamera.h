@@ -33,8 +33,27 @@ public: // メンバ関数
 
 	void UpdateOnly();
 
-	static float GetRotaY() { return rotaY; }
+	void RaidCameraCount();
 
+	void ViewpointSwitch(float endRota);
+
+	float leap(float rotaA, float rotaB, float timeRatio);
+
+	bool PlayerJumpUp();
+	/// <summary>
+	/// カメラターゲット座標の
+	/// </summary>
+	XMFLOAT3 TargetProcess();
+	/// <summary>
+	/// 崖つかみした瞬間から補間
+	/// </summary>
+	/// <returns></returns>
+	float CliffMoveTargetState();
+
+	void CliffFlagUpdate();
+
+	static float GetRotaY() { return rotaY; }
+	static float GetRotaX() { return rotaX; }
 public:
 	static XMFLOAT3 eye;
 	static XMFLOAT3 target;
@@ -48,7 +67,25 @@ public:
 	static bool hitFlag;
 
 	static std::unique_ptr<Object3d> Object;
+	float oldPosY = 0.0f;
 	static Model* Model;
 	BaseCollider* collider = nullptr;
+
+	bool RaidTargetCameraFlag = false;
+	bool oldRaidFlag = false;
+	int count = 0;
+
+	bool viewpointSwitchFlag = false;
+	float viewpointSwitchposParRotX = 0.0f;
+	float viewpointSwitchposParRotY = 0.0f;
+	float viewpointSwitchposParDis = 0.0f;
+
+	XMFLOAT3 oldTargetPos = {};
+
+	bool cliffTargetFlag = false;
+
+	float cliffTargetCount = 2.0f;
+	float movePreviousPosY = 0.0f;
+	float moveAftaerPosY = 0.0f;
 };
 

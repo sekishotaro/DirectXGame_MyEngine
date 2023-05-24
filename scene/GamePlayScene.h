@@ -31,6 +31,14 @@ private: // エイリアス
 	using XMMATRIX = DirectX::XMMATRIX;
 	using XMVECTOR = DirectX::XMVECTOR;
 
+	enum State
+	{
+		play,
+		timeOver,
+		clear,
+		reStart,
+	};
+
 public:
 
 	/// <summary>
@@ -80,6 +88,7 @@ private:
 	/// </summary>
 	void ClearStatus();
 
+	void SmokeUpdate();
 public:
 
 	/// <summary>
@@ -89,7 +98,7 @@ public:
 	DebugCamera* camera = nullptr;
 	//Camera *camera = nullptr;
 	Sprite *spriteBG = nullptr;
-	
+	Sprite* smoke = nullptr;
 	//オブジェクト
 	std::vector<std::unique_ptr<MathObject>> enemyColliderObjects;
 	//モデル
@@ -98,11 +107,8 @@ public:
 	std::unique_ptr<Object3d> skydomeObject;
 	Model* skydomeModel = nullptr;
 
-	//モデルデータ
-	Model* modelFighter = nullptr;
 	//オブジェクトデータ
 	Player* objFighter = nullptr;
-
 
 	//衝突マネージャー
 	CollisionManager* collisionManager = nullptr;
@@ -124,9 +130,20 @@ public:
 	FbxModel* fbxModel5 = nullptr;
 	FbxModel* fbxModel6 = nullptr;
 	FbxModel* fbxModel7 = nullptr;
+	FbxModel* fbxModel8 = nullptr;
+	FbxModel* fbxModel9 = nullptr;
+	FbxModel* fbxModel10 = nullptr;
+	FbxModel* fbxModel11 = nullptr;
+	FbxModel* fbxModel12 = nullptr;
+	FbxModel* fbxModel13 = nullptr;
+	FbxModel* fbxModel14 = nullptr;
+	FbxModel* fbxModel15 = nullptr;
 	InterpolationCamera interpolationCamera;
 
 	bool moveFlag = false;
+	bool smokeFlag = true;
 	int count = 0;
+
+	State state = play;
 };
 

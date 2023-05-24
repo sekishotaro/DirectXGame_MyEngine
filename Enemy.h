@@ -53,7 +53,7 @@ public:
 
 	static void PushBack(const Box& wall);
 
-	static void Update(int time, const XMFLOAT3& playerPos);
+	static void Update(int playertime, int playerTimeMax, const XMFLOAT3& playerPos);
 
 	static void Finalize();
 

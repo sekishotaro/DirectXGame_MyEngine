@@ -292,39 +292,13 @@ bool Collision::CheckLineSegmentBox(const LineSegment& line, const Box& box)
 
 bool Collision::CheckRayBox(const Ray& ray, const Box& box)
 {
-	int sign = 0;
-	XMFLOAT3 pos[4] = {};
-	pos[0] = { box.LeastPos.x, box.LeastPos.y, box.LeastPos.z };
-	pos[1] = { box.LeastPos.x, box.LeastPos.y,   box.MaxPos.z };
-	pos[2] = { box.MaxPos.x, box.LeastPos.y,   box.MaxPos.z };
-	pos[3] = { box.MaxPos.x, box.LeastPos.y, box.LeastPos.z };
-
-	for (int i = 0; i < 4; i++)
-	{
-		XMFLOAT3 v1 = { ray.start.m128_f32[0], ray.start.m128_f32[1], ray.start.m128_f32[2] };
-
-		XMFLOAT3 v2 = { v1.x - pos[i].x, v1.y - pos[i].y, v1.z - pos[i].z };
-
-		float dd = ray.dir.m128_f32[0] * v2.z - ray.dir.m128_f32[2] * v2.x;
-
-		if (dd == 0)
-		{
-			return true;
-		}
-
-		if (i == 0)
-		{
-			sign = (int)MyMath::Sign(dd);
-		}
-		else
-		{
-			if (sign != (int)MyMath::Sign(dd))
-			{
-				return true;
-			}
-		}
-	}
-	return false;
+	XMFLOAT3 pos = { ray.start.m128_f32[0], ray.start.m128_f32[1], ray.start.m128_f32[2] };
+	if (CheckBoxDot(box, pos) == true) return false;
+	pos.x += ray.dir.m128_f32[0];
+	pos.y += ray.dir.m128_f32[1];
+	pos.z += ray.dir.m128_f32[2];
+	if (CheckBoxDot(box, pos) == false) return false;
+	return true;
 }
 
 Collision::XMVECTOR Collision::CheckRayBoxforPlane(const Ray& ray, const Box& box)
@@ -451,6 +425,29 @@ bool Collision::CheckBoxDot(const Box& box, const XMFLOAT3& dot)
 		return false;
 	}
 	if (box.MaxPos.z < dot.z)
+	{
+		return false;
+	}
+
+	return true;
+}
+
+bool Collision::CheckQuadrangleDot(const Quadrangle& quadrangle, const XMFLOAT2& dot)
+{
+	if (dot.x < quadrangle.LeastPos.x)
+	{
+		return false;
+	}
+	if (quadrangle.MaxPos.x < dot.x)
+	{
+		return false;
+	}
+
+	if (dot.y < quadrangle.LeastPos.y)
+	{
+		return false;
+	}
+	if (quadrangle.MaxPos.y < dot.y)
 	{
 		return false;
 	}

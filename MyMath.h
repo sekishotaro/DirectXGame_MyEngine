@@ -4,6 +4,7 @@
 #include <d3d12.h>
 #include <DirectXMath.h>
 #include <d3dx12.h>
+#include "Operator.h"
 
 class MyMath
 {
@@ -129,6 +130,12 @@ public:
 	/// <returns>ç≈è¨íl</returns>
 	static float minElement(const float* array, int size);
 	
+	static DirectX::XMFLOAT3 addVector(XMFLOAT3 float3, XMVECTOR vec);
+
+	static XMFLOAT3 lerp(const XMFLOAT3& start, const XMFLOAT3& end, const float time);
+	static XMFLOAT3 easeIn(const XMFLOAT3& start, const XMFLOAT3& end, const float time);
+	static XMFLOAT3 easeOut(const XMFLOAT3& start, const XMFLOAT3& end, const float time);
+	static DirectX::XMFLOAT3 easeInOut(const XMFLOAT3& start, const XMFLOAT3& end, const float time);
 
 private:
 	static const float k;					//íÔçRóÕ

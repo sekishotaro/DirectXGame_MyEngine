@@ -1,9 +1,11 @@
 #include "DebugCamera.h"
 #include "Input.h"
 #include "Player.h"
+#include "Enemy.h"
 #include "SphereCollider.h"
 #include "QueryCallback.h"
 #include "CollisionManager.h"
+#include "MyMath.h"
 
 using namespace DirectX;
 float DebugCamera::dx = 0;
@@ -33,6 +35,7 @@ DebugCamera::DebugCamera(int window_width, int window_height) : Camera(window_wi
 	collider = Object->GetBaseCollider();
 	collider->SetAttribute(COLLISION_ATTR_ALLIES);
 	Object->SetBaseCollider(collider);
+	rotaX = 180.0f;
 }
 
 void DebugCamera::Update()
@@ -42,25 +45,40 @@ void DebugCamera::Update()
 	XMFLOAT3 cameraPos = MoveUpdate();
 
 	UpdateProcess(cameraPos);
-
+	RaidCameraCount();
 	//コライダー更新
 	Object->UpdateWorldMatrix();
 	collider->Update();
 
 	SetEye(cameraPos);
+	
+	//常時自機にターゲット
+	XMFLOAT3 targetPos = TargetProcess();
+	
+	//襲撃タイミングで視線を外す
+	if (RaidTargetCameraFlag == true)
+	{
+		targetPos = Enemy::GetPos();
+	}
+	
 
-	XMFLOAT3 targetPos = Player::GetPos();
 	targetPos.y += 6.0f;
-
+	oldRaidFlag = Enemy::GetRaidFlag();
 	Camera::SetTarget(targetPos);
 	Camera::Update();
 }
 
 DebugCamera::XMFLOAT3 DebugCamera::SphereCoordinateSystem()
 {
-	XMFLOAT3 cameraPos = Player::GetPos();
 	float radiusX = rotaX * 3.14f / 180.0f;
 	float radiusY = rotaY * 3.14f / 180.0f;
+	XMFLOAT3 cameraPos = {};
+
+	cameraPos = TargetProcess();
+	//cameraPos.x = Player::GetPos().x;
+	//cameraPos.y = Player::GetPos().y;
+	//cameraPos.z = Player::GetPos().z;
+	
 
 	//球面座標系
 	cameraPos.y += dis * cos(radiusY);
@@ -72,40 +90,105 @@ DebugCamera::XMFLOAT3 DebugCamera::SphereCoordinateSystem()
 
 DebugCamera::XMFLOAT3 DebugCamera::MoveUpdate()
 {
-	XMFLOAT3 cameraPos = Player::GetPos();
+	XMFLOAT3 cameraPos = {};
 
-	if (Input::GetInstance()->PushKey(DIK_UP)) { rotaY -= 1.0f; }
-	else if (Input::GetInstance()->PushKey(DIK_DOWN)) { rotaY += 1.0f; }
-	if (Input::GetInstance()->PushKey(DIK_RIGHT)) { rotaX += 1.0f; }
-	else if (Input::GetInstance()->PushKey(DIK_LEFT)) { rotaX -= 1.0f; }
-	if (Input::GetInstance()->PushKey(DIK_E) && dis >= 5.0f) { dis -= 1.0f; }
-	else if (Input::GetInstance()->PushKey(DIK_Z) && dis <= 20.0f) { dis += 1.0f; }
+	float disMax = 20.0f;
 
-	if (Input::GetInstance()->RightStickIn(UP) && rotaY < 175) 
-	{ 
-		rotaY += 1.0f; 
-		if (dis <= 20.0f && hitFlag == false) { dis += 0.5f;}
+	//if (static_cast<int>(Player::GetStatus()) == 8 || static_cast<int>(Player::GetOldStatus()) == 15)
+	//{
+	//	disMax = 30.0f;
+	//}
+
+
+	if (PlayerJumpUp() != true)
+	{
+		if (Input::GetInstance()->PushKey(DIK_UP)) { rotaY -= 1.0f; }
+		else if (Input::GetInstance()->PushKey(DIK_DOWN)) { rotaY += 1.0f; }
+		if (Input::GetInstance()->PushKey(DIK_RIGHT)) { rotaX += 1.0f; }
+		else if (Input::GetInstance()->PushKey(DIK_LEFT)) { rotaX -= 1.0f; }
+		//if (Input::GetInstance()->PushKey(DIK_E) && dis >= 5.0f) { dis -= 1.0f; }
+		//else if (Input::GetInstance()->PushKey(DIK_Z) && dis <= 20.0f) { dis += 1.0f; }
+
+		if (Input::GetInstance()->RightStickIn(UP) && rotaY < 175)
+		{
+			rotaY += 1.0f;
+			if (dis <= disMax && hitFlag == false) { dis += 0.5f; }
+		}
+		else if (Input::GetInstance()->RightStickIn(DOWN) && rotaY > 5)
+		{
+			rotaY -= 1.0f;
+			if (dis <= disMax && hitFlag == false) { dis += 0.5f; }
+		}
+		if (Input::GetInstance()->RightStickIn(RIGHT))
+		{
+			rotaX -= 1.0f;
+			if (dis <= disMax && hitFlag == false) { dis += 0.5f; }
+		}
+		else if (Input::GetInstance()->RightStickIn(LEFT))
+		{
+			rotaX += 1.0f;
+			if (dis <= disMax && hitFlag == false) { dis += 0.5f; }
+		}
 	}
-	else if (Input::GetInstance()->RightStickIn(DOWN) && rotaY > 5) 
-	{ 
-		rotaY -= 1.0f; 
-		if (dis <= 20.0f && hitFlag == false) { dis += 0.5f; }
+	
+	static float endRota = 0;
+	if (Input::GetInstance()->PushPadbutton(GAMEPAD_RIGHT_SHOULDER) && viewpointSwitchFlag == false)
+	{
+		endRota = 0;
+		endRota -= Player::GetRot().y + 90.0f;
+		if (endRota >= 360.0f)
+		{
+			endRota -= 360.0f;
+		}
+		if (endRota <= 0.0f)
+		{
+			endRota += 360.0f;
+		}
+		viewpointSwitchFlag = true;
+		viewpointSwitchposParRotX = rotaX;
+		viewpointSwitchposParRotY = rotaY;
 	}
-	if (Input::GetInstance()->RightStickIn(RIGHT)) 
-	{ 
-		rotaX -= 1.0f; 
-		if (dis <= 20.0f && hitFlag == false) { dis += 0.5f; }
+
+	if (static_cast<int>(Player::GetStatus()) == 8 && static_cast<int>(Player::GetOldStatus()) != 15)
+	{
+		endRota = 0;
+		endRota -= Player::GetRot().y + 90.0f;
+		if (endRota >= 360.0f)
+		{
+			endRota -= 360.0f;
+		}
+		if (endRota <= 0.0f)
+		{
+			endRota += 360.0f;
+		}
+		viewpointSwitchFlag = true;
+		viewpointSwitchposParRotX = rotaX;
+		viewpointSwitchposParRotY = rotaY;
 	}
-	else if (Input::GetInstance()->RightStickIn(LEFT)) 
-	{ 
-		rotaX += 1.0f; 
-		if (dis <= 20.0f && hitFlag == false) { dis += 0.5f; }
+
+	if (rotaX >= 360.0f)
+	{
+		rotaX -= 360.0f;
 	}
-	//if (Input::GetInstance()->PushPadbutton(GAMEPAD_LEFT_TRIGGER) && dis >= 5.0f) { dis -= 1.0f; }
-	//else if (Input::GetInstance()->PushPadbutton(GAMEPAD_RIGHT_TRIGGER) && dis <= 20.0f) { dis += 1.0f; }
+	if (rotaX <= 0.0f)
+	{
+		rotaX += 360.0f;
+	}
+
+	if (rotaY >= 360.0f)
+	{
+		rotaY -= 360.0f;
+	}
+	if (rotaY <= 0.0f)
+	{
+		rotaY += 360.0f;
+	}
+
+	ViewpointSwitch(endRota);
 
 	cameraPos = SphereCoordinateSystem();
 
+	oldPosY = cameraPos.y;
 	return cameraPos;
 }
 
@@ -206,4 +289,164 @@ void DebugCamera::UpdateProcess( XMFLOAT3& cameraPos)
 void DebugCamera::UpdateOnly()
 {
 	Camera::Update();
+}
+
+void DebugCamera::RaidCameraCount()
+{
+	if (oldRaidFlag == false && Enemy::GetRaidFlag() == true)
+	{
+		RaidTargetCameraFlag = true;
+	}
+
+	if (RaidTargetCameraFlag == false) return;
+
+	if (count >= 300)
+	{
+		RaidTargetCameraFlag = false;
+		count = 0;
+		return;
+	}
+	count++;
+}
+
+void DebugCamera::ViewpointSwitch(float endRota)
+{
+	static float MoveTime = 0.0f;
+	if (viewpointSwitchFlag == false)
+	{
+		MoveTime = 0.0f;
+		return;
+	}
+
+	if (endRota >= 360.0f)
+	{
+		endRota -= 360.0f;
+	}
+	if (endRota <= 0.0f)
+	{
+		endRota += 360.0f;
+	}
+
+	const float MoveMaxTime = 0.3f; //移動にかかる時間
+	float timeRatio = MoveTime / MoveMaxTime;
+	if (MoveTime <= MoveMaxTime)
+	{
+		//エフェクトの時間を進める
+		MoveTime += 1.0f / 60.0f;
+	}
+	else
+	{
+		viewpointSwitchFlag = false;
+		return;
+	}
+
+	if (dis <= 20.0f && hitFlag == false) { dis += 1.0f; }
+	rotaX = leap(viewpointSwitchposParRotX, endRota, timeRatio);
+	rotaY = leap(viewpointSwitchposParRotY, 60.0f, timeRatio);
+}
+
+float DebugCamera::leap(float rotaA, float rotaB, float timeRatio)
+{
+	float result = 0.0f;
+	result = rotaA * (1.0f - timeRatio) + rotaB * timeRatio;
+	return result;
+}
+
+bool DebugCamera::PlayerJumpUp()
+{
+	if (Player::GetJumpFlag() == true && Player::GetFallFlag() == false)
+	{
+		return true;
+	}
+	else if (Player::GetAnimeNum() == 13)
+	{
+		return true;
+	}
+	else if (Player::GetAnimeNum() == 14)
+	{
+		return true;
+	}
+	
+	return false;
+}
+
+DebugCamera::XMFLOAT3 DebugCamera::TargetProcess()
+{
+	XMFLOAT3 result = {};
+	//平面移動
+	result = { Player::GetPos().x, 0.0f,Player::GetPos().z };
+
+	CliffFlagUpdate();
+
+	//Y座標移動
+	if (static_cast<int>(Player::GetStatus()) == 3)			//通常ジャンプ上昇中※△
+	{
+		//ジャンプ前座標
+		result.y = oldTargetPos.y;
+	}
+	else if (static_cast<int>(Player::GetStatus()) == 4)	//通常ジャンプ下降中※△
+	{
+		//ジャンプ前座標
+		result.y = oldTargetPos.y;
+	}
+	else if (static_cast<int>(Player::GetStatus()) == 13)	// 壁蹴りジャンプ上昇中※〇
+	{
+		//崖上がり前座標
+		result.y = oldTargetPos.y;
+	}
+	else if (static_cast<int>(Player::GetStatus()) == 14)	// 壁蹴りジャンプ下降中※〇
+	{
+		//崖上がり前座標
+		result.y = oldTargetPos.y;
+	}
+	else if (static_cast<int>(Player::GetStatus()) == 8)	// 崖つかみ中
+	{
+		//崖上がり前座標
+		result.y = oldTargetPos.y;
+	}
+	else if (cliffTargetFlag == true)	// 崖上がりタイミングからのカメラ移動
+	{
+		result.y = CliffMoveTargetState();
+	}
+	else //その他移動は自機の位置にマーク
+	{
+		result.y = Player::GetPos().y;
+	}
+
+	oldTargetPos = result;
+	return result;
+}
+
+void DebugCamera::CliffFlagUpdate()
+{
+	//崖上りフラグが立っていたら早期リターン
+	if (cliffTargetFlag == true) return;
+
+	if (static_cast<int>(Player::GetStatus()) == 15 && static_cast<int>(Player::GetOldStatus()) != 15)
+	{
+		cliffTargetFlag = true;
+		movePreviousPosY = Player::GetPos().y;
+		moveAftaerPosY = oldTargetPos.y;
+	}
+}
+
+float DebugCamera::CliffMoveTargetState()
+{
+	const float timeMax = 1.0f;							//最大時間
+	float time = timeMax - cliffTargetCount;			//加算時間に変化
+	float timeRate = min(time / timeMax, 1.0f);			//タイムレート 0.0f->1.0f
+
+	//移動完了時間の初期化
+	if (cliffTargetCount <= 0.0f)
+	{
+		cliffTargetFlag = false;
+		cliffTargetCount = timeMax;
+		return oldTargetPos.y;
+	}
+
+	XMFLOAT3 pos = MyMath::lerp({0.0f, moveAftaerPosY, 0.0f }, { 0.0f, movePreviousPosY, 0.0f }, timeRate);
+
+	cliffTargetCount -= 1.0f / 60.0f;
+
+	return pos.y;
 }

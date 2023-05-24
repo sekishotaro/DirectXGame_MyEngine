@@ -14,8 +14,18 @@ float4 main(VSOutput input) : SV_TARGET
 	//return float4(texcolor.rgb * shade_color, texcolor.a * m_alpha);
 	//return float4(1, 1, 1, 1);
 
-		// テクスチャマッピング
-	float4 texcolor = tex.Sample(smp, input.uv);
+	// テクスチャマッピング
+	float2 tiling;
+	if (tilingFlag == false)
+	{
+		tiling = float2(1, 1);
+	}
+	else
+	{
+		tiling = float2(10, 10);
+	}
+	
+	float4 texcolor = tex.Sample(smp, input.uv * tiling);
 
 	texcolor = texcolor * color;
 

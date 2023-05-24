@@ -23,11 +23,11 @@ void GameOver::Update()
 
 	Input* input = Input::GetInstance();
 
-	if (input->TriggerKey(DIK_RETURN) || input->PushPadbutton(Button_A))
-	{
-		//シーン切り替え
-		SceneManager::GetInstance()->ChangeScene("GAMEPLAY");
-	}
+	//if (input->TriggerKey(DIK_RETURN) || input->PushPadbutton(Button_A))
+	//{
+	//	//シーン切り替え
+	//	SceneManager::GetInstance()->ChangeScene("GAMEPLAY");
+	//}
 
 	if (input->TriggerKey(DIK_SPACE) || input->PushPadbutton(Button_Y))
 	{
@@ -35,8 +35,8 @@ void GameOver::Update()
 		SceneManager::GetInstance()->ChangeScene("TITLE");
 	}
 
-	DebugText::GetInstance()->Print(50, 20, 2, "Push_Key [ENTER] or Push_Pad [Y] for TITLE_SCENE");
-	DebugText::GetInstance()->Print(50, 60, 2, "Push_Key [SPACE] or Push_Pad [A] for GAMEPLAY_SCENE");
+	//DebugText::GetInstance()->Print(50, 20, 2, "Push_Key [ENTER] or Push_Pad [Y] for TITLE_SCENE");
+	//DebugText::GetInstance()->Print(50, 60, 2, "Push_Key [SPACE] or Push_Pad [A] for GAMEPLAY_SCENE");
 }
 
 void GameOver::Draw()

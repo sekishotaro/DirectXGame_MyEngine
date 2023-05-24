@@ -164,3 +164,36 @@ float MyMath::minElement(const float* array, int size)
 
 	return min;
 }
+
+DirectX::XMFLOAT3 MyMath::addVector(XMFLOAT3 float3, XMVECTOR vec)
+{
+	XMFLOAT3 result;
+	result.x = float3.x + vec.m128_f32[0];
+	result.y = float3.y + vec.m128_f32[1];
+	result.z = float3.z + vec.m128_f32[2];
+
+	return result;
+}
+
+DirectX::XMFLOAT3 MyMath::lerp(const XMFLOAT3& start, const XMFLOAT3& end, const float time)
+{
+	return start * (1.0f - time) + end * time;
+}
+
+DirectX::XMFLOAT3 MyMath::easeIn(const XMFLOAT3& start, const XMFLOAT3& end, const float time)
+{
+	float t = time * time * time * time * time;
+	return start * (1.0f - t) + end * t;
+}
+
+DirectX::XMFLOAT3 MyMath::easeOut(const XMFLOAT3& start, const XMFLOAT3& end, const float time)
+{
+	float t = time * (2 - time);
+	return start * (1.0f - t) + end * t;
+}
+
+DirectX::XMFLOAT3 MyMath::easeInOut(const XMFLOAT3& start, const XMFLOAT3& end, const float time)
+{
+	float t = time * time * (3 - 2 * time);
+	return start * (1.0f - t) + end * t;
+}

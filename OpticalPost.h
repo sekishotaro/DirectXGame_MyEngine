@@ -27,9 +27,20 @@ public:
 
 	static float& GetNum() { return num; }
 
+	static float RotaUpdate(const XMFLOAT3& cameraPos, const XMFLOAT3 &crystalPos);
+
+	static int NearCrystalNum();
+
+	static void CrystalEfectSizeNumUpdate();
+
+	static void SmallOpticalPostsMoveUpdate();
+
+	static void Restart();
 public:
 	//オブジェクト
 	static std::vector<std::unique_ptr<Object3d>> OpticalPosts;
+	static std::vector<std::unique_ptr<Object3d>> smallOpticalPosts;
+	static std::unique_ptr<Object3d> goalOpticalPostObject;
 	//モデル
 	static Model* modelOpticalPost;
 
@@ -39,5 +50,15 @@ public:
 	static float num;
 	//エフェクト用の数
 	static int effectNum;
+
+	static Model* modelCrystalEffect;
+	static std::unique_ptr<Object3d> CrystalEffectObject;
+	//移動量
+	static std::vector<float> moveQuantitys;
+	static float moveQuantityMax;
+	//サイズ値
+	static float sizeNum;
+	//小さい光の柱の数
+	static const int smallOpticalPostNum;
 };
 

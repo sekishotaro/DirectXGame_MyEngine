@@ -82,14 +82,16 @@ public:// 定数
 	//モデル
 	static std::map<std::string, ColliderModel> crystalColliderModels;
 
-	//床用
+	//地形当たり判定用
 	//オブジェクト
 	static std::vector<std::unique_ptr<Object3d>> groundObjects;
-	
 	static TouchableObject* objGround;
 	//モデル
 	static std::map<std::string, Model> groundModels;
-	
+	//別途地形用突起
+	static std::vector<std::unique_ptr<Object3d>> terrainObjects;
+	//モデル
+	static std::map<std::string, Model> terrainModels;
 	//コライダー用
 	//オブジェクト
 	static std::vector<std::unique_ptr<ColliderObject>> groundColliderObjects;
@@ -118,9 +120,6 @@ public:// 定数
 	//モデル
 	static std::map<std::string, Model> raidEnemyModels;
 
-
-
-
 	//壁のぼり用
 	static std::vector<std::unique_ptr<Object3d>> climbWallObjects;
 	static std::map<std::string, Model> climbWallModels;
@@ -129,10 +128,26 @@ public:// 定数
 	static std::vector<std::unique_ptr<Object3d>> goalObjects;
 	static std::map<std::string, Model> goalModels;
 
+	static std::vector<std::unique_ptr<Object3d>> moveBoxObjects;
+	static std::map<std::string, Model> moveBoxModels;
+
+	static std::vector<std::unique_ptr<Object3d>> cliffClimbingObjects;
+	static std::map<std::string, Model> cliffClimbingModels;
+
+	//以下見た目用
+	static std::vector<std::unique_ptr<Object3d>> rockObjects;
+	static std::map<std::string, Model> rockModels;
+
+	static std::vector<std::unique_ptr<Object3d>> sandGroundObjects;
+	static std::map<std::string, Model> sandGroundModels;
+
+	static bool hitTerrainDrawFlag;
 public:
 
 	//読み込み
 	static void LoadFile(const std::string& fileName);
+
+	static void ClystalSetObject();
 
 	//配置
 	static void SetObject();
@@ -156,6 +171,8 @@ private:
 	//地面
 	static void TypeSetGroundModel(LevelData::ObjectData& objectData);
 	static void TypeSetColliderGroundModel(LevelData::ObjectData& colliderObjectData);
+	//地形用突起
+	static void TypeSetTerrainModel(LevelData::ObjectData& objectData);
 	//探索敵
 	static void TypeSetEnemyModel(LevelData::ObjectData& objectData);
 	static void TypeSetColliderEnemyModel(LevelData::ObjectData& colliderObjectData);
@@ -168,5 +185,15 @@ private:
 
 	//ゴール
 	static void TypeGoalModel(LevelData::ObjectData& objectData);
+
+	//箱
+	static void TypeMoveBoxModel(LevelData::ObjectData& objectData);
+
+	static void TypeCliffClimbingModel(LevelData::ObjectData& objectData);
+
+
+	static void TypeRockModel(LevelData::ObjectData& objectData);
+
+	static void TypeSandGroundModel(LevelData::ObjectData& objectData);
 };
 

@@ -32,10 +32,10 @@ public: // サブクラス
 	struct ConstBufferDataB0
 	{
 		XMFLOAT4 color;	// 色 (RGBA)
-		//XMMATRIX mat;	// ３Ｄ変換行列
 		XMMATRIX viewproj;
 		XMMATRIX world;
 		XMFLOAT3 cameraPos;
+		bool tilingFlag;
 	};
 
 private: // 定数
@@ -222,6 +222,8 @@ public: // メンバ関数
 	void SetBaseCollider(BaseCollider* collider) { Object3d::collider = collider; }
 	BaseCollider* GetBaseCollider() { return collider; }
 
+	void OnTitleFlag() { tilingFlag = true; }
+
 protected: // メンバ変数
 	ComPtr<ID3D12Resource> constBuffB0; // 定数バッファ
 	// 色
@@ -248,6 +250,8 @@ protected: // メンバ変数
 	static LightGroup* light;
 	//カメラいち
 	XMFLOAT2 cameraPos2d = {};
+	//タイリングフラグ
+	bool tilingFlag = false;
 
 	//シェーダー
 	static std::wstring VSshaderName;
