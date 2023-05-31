@@ -203,7 +203,6 @@
     <ClCompile Include="3d\MathObject.cpp" />
     <ClCompile Include="Audio\Audio.cpp" />
     <ClCompile Include="CircleShadow.cpp" />
-    <ClCompile Include="ClockTime.cpp" />
     <ClCompile Include="collision\BaseCollider.cpp" />
     <ClCompile Include="camera\Camera.cpp" />
     <ClCompile Include="3d\ColliderModel.cpp" />
@@ -260,7 +259,6 @@
     <ClInclude Include="3d\FbxModel.h" />
     <ClInclude Include="3d\FbxObject3d.h" />
     <ClInclude Include="CircleShadow.h" />
-    <ClInclude Include="ClockTime.h" />
     <ClInclude Include="collision\CollisionAttribute.h" />
     <ClInclude Include="collision\CollisionInfo.h" />
     <ClInclude Include="collision\CollisionTypes.h" />

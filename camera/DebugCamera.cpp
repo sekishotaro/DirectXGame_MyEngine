@@ -40,8 +40,7 @@ DebugCamera::DebugCamera(int window_width, int window_height) : Camera(window_wi
 
 void DebugCamera::Update()
 {
-	Input::MousePos mpos = Input::GetInstance()->MousePosLoad();
-
+	//カメラの位置移動処理(球面上の角度移動)
 	XMFLOAT3 cameraPos = MoveUpdate();
 
 	UpdateProcess(cameraPos);
@@ -75,11 +74,7 @@ DebugCamera::XMFLOAT3 DebugCamera::SphereCoordinateSystem()
 	XMFLOAT3 cameraPos = {};
 
 	cameraPos = TargetProcess();
-	//cameraPos.x = Player::GetPos().x;
-	//cameraPos.y = Player::GetPos().y;
-	//cameraPos.z = Player::GetPos().z;
 	
-
 	//球面座標系
 	cameraPos.y += dis * cos(radiusY);
 	cameraPos.x += dis * sin(radiusY) * cos(radiusX);
@@ -91,24 +86,17 @@ DebugCamera::XMFLOAT3 DebugCamera::SphereCoordinateSystem()
 DebugCamera::XMFLOAT3 DebugCamera::MoveUpdate()
 {
 	XMFLOAT3 cameraPos = {};
-
+	//半径
 	float disMax = 20.0f;
 
-	//if (static_cast<int>(Player::GetStatus()) == 8 || static_cast<int>(Player::GetOldStatus()) == 15)
-	//{
-	//	disMax = 30.0f;
-	//}
-
-
-	if (PlayerJumpUp() != true)
+	if (PlayerJumpUp() != true)		//移動制限
 	{
+		//キーボード
 		if (Input::GetInstance()->PushKey(DIK_UP)) { rotaY -= 1.0f; }
 		else if (Input::GetInstance()->PushKey(DIK_DOWN)) { rotaY += 1.0f; }
 		if (Input::GetInstance()->PushKey(DIK_RIGHT)) { rotaX += 1.0f; }
 		else if (Input::GetInstance()->PushKey(DIK_LEFT)) { rotaX -= 1.0f; }
-		//if (Input::GetInstance()->PushKey(DIK_E) && dis >= 5.0f) { dis -= 1.0f; }
-		//else if (Input::GetInstance()->PushKey(DIK_Z) && dis <= 20.0f) { dis += 1.0f; }
-
+		//コントローラー
 		if (Input::GetInstance()->RightStickIn(UP) && rotaY < 175)
 		{
 			rotaY += 1.0f;
@@ -131,6 +119,7 @@ DebugCamera::XMFLOAT3 DebugCamera::MoveUpdate()
 		}
 	}
 	
+	//視点正面移動
 	static float endRota = 0;
 	if (Input::GetInstance()->PushPadbutton(GAMEPAD_RIGHT_SHOULDER) && viewpointSwitchFlag == false)
 	{
@@ -149,6 +138,7 @@ DebugCamera::XMFLOAT3 DebugCamera::MoveUpdate()
 		viewpointSwitchposParRotY = rotaY;
 	}
 
+	//崖上がり時視点正面移動
 	if (static_cast<int>(Player::GetStatus()) == 8 && static_cast<int>(Player::GetOldStatus()) != 15)
 	{
 		endRota = 0;
@@ -422,11 +412,12 @@ void DebugCamera::CliffFlagUpdate()
 	//崖上りフラグが立っていたら早期リターン
 	if (cliffTargetFlag == true) return;
 
+	//崖上がりをした瞬間
 	if (static_cast<int>(Player::GetStatus()) == 15 && static_cast<int>(Player::GetOldStatus()) != 15)
 	{
 		cliffTargetFlag = true;
-		movePreviousPosY = Player::GetPos().y;
-		moveAftaerPosY = oldTargetPos.y;
+		moveAftaerPosY = Player::GetPos().y;
+		movePreviousPosY = oldTargetPos.y;
 	}
 }
 
@@ -444,7 +435,7 @@ float DebugCamera::CliffMoveTargetState()
 		return oldTargetPos.y;
 	}
 
-	XMFLOAT3 pos = MyMath::lerp({0.0f, moveAftaerPosY, 0.0f }, { 0.0f, movePreviousPosY, 0.0f }, timeRate);
+	XMFLOAT3 pos = MyMath::lerp({0.0f, movePreviousPosY, 0.0f }, { 0.0f, moveAftaerPosY, 0.0f }, timeRate);
 
 	cliffTargetCount -= 1.0f / 60.0f;
 

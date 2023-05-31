@@ -83,6 +83,7 @@ void UI::Initialize()
 	Sprite::LoadTexture(55, L"Resources/UI/CrystalUI/Crystal_25.png");
 
 	Sprite::LoadTexture(30, L"Resources/UI/timer/timerCenter.png");
+	
 	Sprite::LoadTexture(31, L"Resources/UI/timer/timerPetal0.png");
 	Sprite::LoadTexture(32, L"Resources/UI/timer/timerPetal1.png");
 	Sprite::LoadTexture(33, L"Resources/UI/timer/timerPetal2.png");
@@ -378,7 +379,7 @@ void UI::timeUpdata()
 
 	const int seconds_between = 2;
 
-	if (time == timeMax)
+	if (Player::GetCrystalGetFlag())
 	{
 		timerPetal0->SetTexNum(31);
 		timerPetal1->SetTexNum(31);
@@ -392,224 +393,229 @@ void UI::timeUpdata()
 	}
 
 	
-	if (time <= timeMax * (0))
-	{
-		timerPetal8->SetTexNum(36);
-	}
-	else if (time <= (int)((float)timeMax * (1.0f / 54.0f)))
-	{
-		timerPetal8->SetTexNum(36);
-	}
-	else if (time <= (int)((float)timeMax * (2.0f / 54.0f)))
-	{
-		timerPetal8->SetTexNum(35);
-	}
-	else if (time <= (int)((float)timeMax * (3.0f / 54.0f)))
-	{
-		timerPetal8->SetTexNum(34);
-	}
-	else if (time <= (int)((float)timeMax * (4.0f / 54.0f)))
-	{
-		timerPetal8->SetTexNum(33);
-	}
-	else if (time <= (int)((float)timeMax * (5.0f / 54.0f)))
-	{
-		timerPetal8->SetTexNum(32);
-	}
-	else if (time <= (int)((float)timeMax * (6.0f / 54.0f)))
-	{
-		timerPetal8->SetTexNum(31);
-	}
-	else if (time <= (int)((float)timeMax * (7.0f / 54.0f)))
-	{
-		timerPetal7->SetTexNum(36);
-	}
-	else if (time <= (int)((float)timeMax * (8.0f / 54.0f)))
-	{
-		timerPetal7->SetTexNum(35);
-	}
-	else if (time <= (int)((float)timeMax * (9.0f / 54.0f)))
-	{
-		timerPetal7->SetTexNum(34);
-	}
-	else if (time <= (int)((float)timeMax * (10.0f / 54.0f)))
-	{
-		timerPetal7->SetTexNum(33);
-	}
-	else if (time <= (int)((float)timeMax * (11.0f / 54.0f)))
-	{
-		timerPetal7->SetTexNum(32);
-	}
-	else if (time <= (int)((float)timeMax * (12.0f / 54.0f)))
-	{
-		timerPetal7->SetTexNum(31);
-	}
-	else if (time <= (int)((float)timeMax * (13.0f / 54.0f)))
-	{
-		timerPetal6->SetTexNum(36);
-	}
-	else if (time <= (int)((float)timeMax * (14.0f / 54.0f)))
-	{
-		timerPetal6->SetTexNum(35);
-	}
-	else if (time <= (int)((float)timeMax * (15.0f / 54.0f)))
-	{
-		timerPetal6->SetTexNum(34);
-	}
-	else if (time <= (int)((float)timeMax * (16.0f / 54.0f)))
-	{
-		timerPetal6->SetTexNum(33);
-	}
-	else if (time <= (int)((float)timeMax * (17.0f / 54.0f)))
-	{
-		timerPetal6->SetTexNum(32);
-	}
-	else if (time <= (int)((float)timeMax * (18.0f / 54.0f)))
-	{
-		timerPetal6->SetTexNum(31);
-	}
-	else if (time <= (int)((float)timeMax * (19.0f / 54.0f)))
-	{
-		timerPetal5->SetTexNum(36);
-	}
-	else if (time <= (int)((float)timeMax * (20.0f / 54.0f)))
-	{
-		timerPetal5->SetTexNum(35);
-	}
-	else if (time <= (int)((float)timeMax * (21.0f / 54.0f)))
-	{
-		timerPetal5->SetTexNum(34);
-	}
-	else if (time <= (int)((float)timeMax * (22.0f / 54.0f)))
-	{
-		timerPetal5->SetTexNum(33);
-	}
-	else if (time <= (int)((float)timeMax * (23.0f / 54.0f)))
-	{
-		timerPetal5->SetTexNum(32);
-	}
-	else if (time <= (int)((float)timeMax * (24.0f / 54.0f)))
-	{
-		timerPetal5->SetTexNum(31);
-	}
-	else if (time <= (int)((float)timeMax * (25.0f / 54.0f)))
-	{
-		timerPetal4->SetTexNum(36);
-	}
-	else if (time <= (int)((float)timeMax * (26.0f / 54.0f)))
-	{
-		timerPetal4->SetTexNum(35);
-	}
-	else if (time <= (int)((float)timeMax * (27.0f / 54.0f)))
-	{
-		timerPetal4->SetTexNum(34);
-	}
-	else if (time <= (int)((float)timeMax * (28.0f / 54.0f)))
-	{
-		timerPetal4->SetTexNum(33);
-	}
-	else if (time <= (int)((float)timeMax * (29.0f / 54.0f)))
-	{
-		timerPetal4->SetTexNum(32);
-	}
-	else if (time <= (int)((float)timeMax * (30.0f / 54.0f)))
-	{
-		timerPetal4->SetTexNum(31);
-	}
-	else if (time <= (int)((float)timeMax * (31.0f / 54.0f)))
-	{
-		timerPetal3->SetTexNum(36);
-	}
-	else if (time <= (int)((float)timeMax * (32.0f / 54.0f)))
-	{
-		timerPetal3->SetTexNum(35);
-	}
-	else if (time <= (int)((float)timeMax * (33.0f / 54.0f)))
-	{
-		timerPetal3->SetTexNum(34);
-	}
-	else if (time <= (int)((float)timeMax * (34.0f / 54.0f)))
-	{
-		timerPetal3->SetTexNum(33);
-	}
-	else if (time <= (int)((float)timeMax * (35.0f / 54.0f)))
-	{
-		timerPetal3->SetTexNum(32);
-	}
-	else if (time <= (int)((float)timeMax * (36.0f / 54.0f)))
-	{
-		timerPetal3->SetTexNum(31);
-	}
-	else if (time <= (int)((float)timeMax * (37.0f / 54.0f)))
-	{
-		timerPetal2->SetTexNum(36);
-	}
-	else if (time <= (int)((float)timeMax * (38.0f / 54.0f)))
-	{
-		timerPetal2->SetTexNum(35);
-	}
-	else if (time <= (int)((float)timeMax * (39.0f / 54.0f)))
-	{
-		timerPetal2->SetTexNum(34);
-	}
-	else if (time <= (int)((float)timeMax * (40.0f / 54.0f)))
-	{
-		timerPetal2->SetTexNum(33);
-	}
-	else if (time <= (int)((float)timeMax * (41.0f / 54.0f)))
-	{
-		timerPetal2->SetTexNum(32);
-	}
-	else if (time <= (int)((float)timeMax * (42.0f / 54.0f)))
-	{
-		timerPetal2->SetTexNum(31);
-	}
-	else if (time <= (int)((float)timeMax * (43.0f / 54.0f)))
-	{
-		timerPetal1->SetTexNum(36);
-	}
-	else if (time <= (int)((float)timeMax * (44.0f / 54.0f)))
-	{
-		timerPetal1->SetTexNum(35);
-	}
-	else if (time <= (int)((float)timeMax * (45.0f / 54.0f)))
-	{
-		timerPetal1->SetTexNum(34);
-	}
-	else if (time <= (int)((float)timeMax * (46.0f / 54.0f)))
-	{
-		timerPetal1->SetTexNum(33);
-	}
-	else if (time <= (int)((float)timeMax * (47.0f / 54.0f)))
-	{
-		timerPetal1->SetTexNum(32);
-	}
-	else if (time <= (int)((float)timeMax * (48.0f / 54.0f)))
-	{
-		timerPetal1->SetTexNum(31);
-	}
-	else if (time <= (int)((float)timeMax * (49.0f / 54.0f)))
-	{
-		timerPetal0->SetTexNum(36);
-	}
-	else if (time <= (int)((float)timeMax * (50.0f / 54.0f)))
-	{
-		timerPetal0->SetTexNum(35);
-	}
-	else if (time <= (int)((float)timeMax * (51.0f / 54.0f)))
-	{
-		timerPetal0->SetTexNum(34);
-	}
-	else if (time <= (int)((float)timeMax * (52.0f / 54.0f)))
-	{
-		timerPetal0->SetTexNum(33);
-	}
-	else if (time <= (int)((float)timeMax * (53.0f / 54.0f)))
-	{
-		timerPetal0->SetTexNum(32);
-	}
-	else if (time <= (int)((float)timeMax * (54.0f / 54.0f)))
+	if (time <= timeMax * (53.0f / 53.0f))
 	{
 		timerPetal0->SetTexNum(31);
 	}
+	if (time <= timeMax * (52.0f / 53.0f))
+	{
+		timerPetal0->SetTexNum(32);
+	}
+	if (time <= timeMax * (51.0f / 53.0f))
+	{
+		timerPetal0->SetTexNum(33);
+	}
+	if (time <= timeMax * (50.0f / 53.0f))
+	{
+		timerPetal0->SetTexNum(34);
+	}
+	if (time <= timeMax * (49.0f / 53.0f))
+	{
+		timerPetal0->SetTexNum(35);
+	}
+	if (time <= timeMax * (48.0f / 53.0f))
+	{
+		timerPetal0->SetTexNum(36);
+	}
+	
+	if (time <= timeMax * (47.0f / 53.0f))
+	{
+		timerPetal1->SetTexNum(31);
+	}
+	if (time <= timeMax * (46.0f / 53.0f))
+	{
+		timerPetal1->SetTexNum(32);
+	}
+	if (time <= timeMax * (45.0f / 53.0f))
+	{
+		timerPetal1->SetTexNum(33);
+	}
+	if (time <= timeMax * (44.0f / 53.0f))
+	{
+		timerPetal1->SetTexNum(34);
+	}
+	if (time <= timeMax * (43.0f / 53.0f))
+	{
+		timerPetal1->SetTexNum(35);
+	}
+	if (time <= timeMax * (42.0f / 53.0f))
+	{
+		timerPetal1->SetTexNum(36);
+	}
+	
+	if (time <= timeMax * (41.0f / 53.0f))
+	{
+		timerPetal2->SetTexNum(31);
+	}
+	if (time <= timeMax * (40.0f / 53.0f))
+	{
+		timerPetal2->SetTexNum(32);
+	}
+	if (time <= timeMax * (39.0f / 53.0f))
+	{
+		timerPetal2->SetTexNum(33);
+	}
+	if (time <= timeMax * (38.0f / 53.0f))
+	{
+		timerPetal2->SetTexNum(34);
+	}
+	if (time <= timeMax * (37.0f / 53.0f))
+	{
+		timerPetal2->SetTexNum(35);
+	}
+	if (time <= timeMax * (36.0f / 53.0f))
+	{
+		timerPetal2->SetTexNum(36);
+	}
+	
+	if (time <= timeMax * (35.0f / 53.0f))
+	{
+		timerPetal3->SetTexNum(31);
+	}
+	if (time <= timeMax * (34.0f / 53.0f))
+	{
+		timerPetal3->SetTexNum(32);
+	}
+	if (time <= timeMax * (33.0f / 53.0f))
+	{
+		timerPetal3->SetTexNum(33);
+	}
+	if (time <= timeMax * (32.0f / 53.0f))
+	{
+		timerPetal3->SetTexNum(34);
+	}
+	if (time <= timeMax * (31.0f / 53.0f))
+	{
+		timerPetal3->SetTexNum(35);
+	}
+	if (time <= timeMax * (30.0f / 53.0f))
+	{
+		timerPetal3->SetTexNum(36);
+	}
+	
+	if (time <= timeMax * (29.0f / 53.0f))
+	{
+		timerPetal4->SetTexNum(31);
+	}
+	if (time <= timeMax * (28.0f / 53.0f))
+	{
+		timerPetal4->SetTexNum(32);
+	}
+	if (time <= timeMax * (27.0f / 53.0f))
+	{
+		timerPetal4->SetTexNum(33);
+	}
+	if (time <= timeMax * (26.0f / 53.0f))
+	{
+		timerPetal4->SetTexNum(34);
+	}
+	if (time <= timeMax * (25.0f / 53.0f))
+	{
+		timerPetal4->SetTexNum(35);
+	}
+	if (time <= timeMax * (24.0f / 53.0f))
+	{
+		timerPetal4->SetTexNum(36);
+	}
+	
+	if (time <= timeMax * (23.0f / 53.0f))
+	{
+		timerPetal5->SetTexNum(31);
+	}
+	if (time <= timeMax * (22.0f / 53.0f))
+	{
+		timerPetal5->SetTexNum(32);
+	}
+	if (time <= timeMax * (21.0f / 53.0f))
+	{
+		timerPetal5->SetTexNum(33);
+	}
+	if (time <= timeMax * (20.0f / 53.0f))
+	{
+		timerPetal5->SetTexNum(34);
+	}
+	if (time <= timeMax * (19.0f / 53.0f))
+	{
+		timerPetal5->SetTexNum(35);
+	}
+	if (time <= timeMax * (18.0f / 53.0f))
+	{
+		timerPetal5->SetTexNum(36);
+	}
+	
+	if (time <= timeMax * (17.0f / 53.0f))
+	{
+		timerPetal6->SetTexNum(31);
+	}
+	if (time <= timeMax * (16.0f / 53.0f))
+	{
+		timerPetal6->SetTexNum(32);
+	}
+	if (time <= timeMax * (15.0f / 53.0f))
+	{
+		timerPetal6->SetTexNum(33);
+	}
+	if (time <= timeMax * (14.0f / 53.0f))
+	{
+		timerPetal6->SetTexNum(34);
+	}
+	if (time <= timeMax * (13.0f / 53.0f))
+	{
+		timerPetal6->SetTexNum(35);
+	}
+	if (time <= timeMax * (12.0f / 53.0f))
+	{
+		timerPetal6->SetTexNum(36);
+	}
+	
+	if (time <= timeMax * (11.0f / 53.0f))
+	{
+		timerPetal7->SetTexNum(31);
+	}
+	if (time <= timeMax * (10.0f / 53.0f))
+	{
+		timerPetal7->SetTexNum(32);
+	}
+	if (time <= timeMax * (9.0f / 53.0f))
+	{
+		timerPetal7->SetTexNum(33);
+	}
+	if (time <= timeMax * (8.0f / 53.0f))
+	{
+		timerPetal7->SetTexNum(34);
+	}
+	if (time <= timeMax * (7.0f / 53.0f))
+	{
+		timerPetal7->SetTexNum(35);
+	}	
+	if (time <= timeMax * (6.0f / 53.0f))
+	{
+		timerPetal7->SetTexNum(36);
+	}
+
+	if (time <= timeMax * (5.0f / 53.0f))
+	{
+		timerPetal8->SetTexNum(31);
+	}
+	if (time <= timeMax * (4.0f / 53.0f))
+	{
+		timerPetal8->SetTexNum(32);
+	}
+	if (time <= timeMax * (3.0f / 53.0f))
+	{
+		timerPetal8->SetTexNum(33);
+	}
+	if (time <= timeMax * (2.0f / 53.0f))
+	{
+		timerPetal8->SetTexNum(34);
+	}
+	if (time <= timeMax * (1.0f / 53.0f))
+	{
+		timerPetal8->SetTexNum(35);
+	}
+	if (time <= timeMax * (0.0f / 53.0f))
+	{
+		timerPetal8->SetTexNum(36);
+	}
+	
 }

@@ -99,6 +99,7 @@ public:
 	//Camera *camera = nullptr;
 	Sprite *spriteBG = nullptr;
 	Sprite* smoke = nullptr;
+	Sprite* smoke2 = nullptr;
 	//オブジェクト
 	std::vector<std::unique_ptr<MathObject>> enemyColliderObjects;
 	//モデル

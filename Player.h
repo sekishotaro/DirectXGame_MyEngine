@@ -332,7 +332,6 @@ private:
 	//êßå¿éûä‘
 	static float timeLimit;
 	static const float timeLimitMax;
-	float flame = 0.0f;
 
 
 	/// <summary>
@@ -398,5 +397,6 @@ public:
 	bool teleportFlag = false;
 	bool testFlag = false;
 	bool timeLimitcancel = false;
+	bool moveLimitFlag = false;
 };
 
