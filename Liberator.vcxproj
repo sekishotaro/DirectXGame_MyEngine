@@ -61,7 +61,7 @@
       <PreprocessorDefinitions>_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>false</ConformanceMode>
       <AdditionalIncludeDirectories>$(projectDir)imgui;$(projectDir)scene;$(projectDir)collision;$(projectDir)Input;$(projectDir)base;$(projectDir)Audio;$(ProjectDir)3d;$(SolutionDir)DirectXTex;$(projectDir)2d;$(projectDir)</AdditionalIncludeDirectories>
-      <AdditionalIncludeDirectories>$(projectDir)camera;$(projectDir)imgui;$(projectDir)json;$(projectDir)json;$(projectDir)scene;$(projectDir)collision;$(projectDir)Input;$(projectDir)base;$(projectDir)Audio;$(ProjectDir)3d;$(SolutionDir)DirectXTex;$(projectDir)2d;$(projectDir);$(projectDir)camera</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(projectDir)camera;$(projectDir)imgui;$(projectDir)game;$(projectDir)json;$(projectDir)json;$(projectDir)scene;$(projectDir)collision;$(projectDir)Input;$(projectDir)base;$(projectDir)Audio;$(ProjectDir)3d;$(SolutionDir)DirectXTex;$(projectDir)2d;$(projectDir);$(projectDir)camera</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <TreatWarningAsError>true</TreatWarningAsError>
     </ClCompile>
@@ -83,7 +83,7 @@
       <PreprocessorDefinitions>NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>false</ConformanceMode>
       <AdditionalIncludeDirectories>$(projectDir)json;$(projectDir)scene;$(projectDir)collision;$(projectDir)Input;$(projectDir)base;$(projectDir)Audio;$(ProjectDir)3d;$(SolutionDir)DirectXTex;$(projectDir)2d;$(projectDir);$(projectDir)camera</AdditionalIncludeDirectories>
-      <AdditionalIncludeDirectories>$(projectDir)camera;$(projectDir)imgui;$(projectDir)json;$(projectDir)imgui;$(projectDir)scene;$(projectDir)collision;$(projectDir)Input;$(projectDir)base;$(projectDir)Audio;$(ProjectDir)3d;$(SolutionDir)DirectXTex;$(projectDir)2d;$(projectDir)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(projectDir)camera;$(projectDir)imgui;$(projectDir)game;$(projectDir)json;$(projectDir)imgui;$(projectDir)scene;$(projectDir)collision;$(projectDir)Input;$(projectDir)base;$(projectDir)Audio;$(ProjectDir)3d;$(SolutionDir)DirectXTex;$(projectDir)2d;$(projectDir)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <TreatWarningAsError>true</TreatWarningAsError>
@@ -214,9 +214,9 @@
     <ClCompile Include="base\DirectXCommon.cpp" />
     <ClCompile Include="camera\DebugCamera.cpp" />
     <ClCompile Include="collision\CollisionManager.cpp" />
-    <ClCompile Include="Effect.cpp" />
+    <ClCompile Include="game\Effect.cpp" />
     <ClCompile Include="2d\Effect2d.cpp" />
-    <ClCompile Include="Enemy.cpp" />
+    <ClCompile Include="game\Enemy.cpp" />
     <ClCompile Include="Framework.cpp" />
     <ClCompile Include="camera\InterpolationCamera.cpp" />
     <ClCompile Include="LightGroup.cpp" />
@@ -241,9 +241,9 @@
     <ClCompile Include="MyGame.cpp" />
     <ClCompile Include="3d\Object3d.cpp" />
     <ClCompile Include="2d\PostEffect.cpp" />
-    <ClCompile Include="OpticalPost.cpp" />
-    <ClCompile Include="Player.cpp" />
-    <ClCompile Include="QueryCallback.cpp" />
+    <ClCompile Include="game\OpticalPost.cpp" />
+    <ClCompile Include="game\Player.cpp" />
+    <ClCompile Include="collision\QueryCallback.cpp" />
     <ClCompile Include="scene\GamePlayScene.cpp" />
     <ClCompile Include="scene\SceneFactory.cpp" />
     <ClCompile Include="scene\SceneManager.cpp" />
@@ -251,8 +251,8 @@
     <ClCompile Include="scene\TitleScene.cpp" />
     <ClCompile Include="base\WinApp.cpp" />
     <ClCompile Include="collision\SphereCollider.cpp" />
-    <ClCompile Include="TouchableObject.cpp" />
-    <ClCompile Include="UI.cpp" />
+    <ClCompile Include="collision\TouchableObject.cpp" />
+    <ClCompile Include="game\UI.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="3d\FbxLoader.h" />
@@ -271,9 +271,9 @@
     <ClInclude Include="collision\CollisionManager.h" />
     <ClInclude Include="collision\RaycastHit.h" />
     <ClInclude Include="DirectionalLight.h" />
-    <ClInclude Include="Effect.h" />
+    <ClInclude Include="game\Effect.h" />
     <ClInclude Include="2d\Effect2d.h" />
-    <ClInclude Include="Enemy.h" />
+    <ClInclude Include="game\Enemy.h" />
     <ClInclude Include="camera\InterpolationCamera.h" />
     <ClInclude Include="LightGroup.h" />
     <ClInclude Include="Operator.h" />
@@ -295,10 +295,10 @@
     <ClInclude Include="3d\Mesh.h" />
     <ClInclude Include="collision\MeshCollider.h" />
     <ClInclude Include="3d\Material.h" />
-    <ClInclude Include="OpticalPost.h" />
-    <ClInclude Include="Player.h" />
+    <ClInclude Include="game\OpticalPost.h" />
+    <ClInclude Include="game\Player.h" />
     <ClInclude Include="MyMath.h" />
-    <ClInclude Include="QueryCallback.h" />
+    <ClInclude Include="collision\QueryCallback.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="scene\AbstractSceneFactory.h" />
     <ClInclude Include="Audio\Audio.h" />
@@ -321,8 +321,8 @@
     <ClInclude Include="base\WinApp.h" />
     <ClInclude Include="collision\SphereCollider.h" />
     <ClInclude Include="SpotLight.h" />
-    <ClInclude Include="TouchableObject.h" />
-    <ClInclude Include="UI.h" />
+    <ClInclude Include="collision\TouchableObject.h" />
+    <ClInclude Include="game\UI.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
