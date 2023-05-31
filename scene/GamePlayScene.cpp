@@ -23,8 +23,6 @@
 
 #include "SafeDelete.h"
 
-#include "ClockTime.h"
-
 void GamePlayScene::Initialize()
 {
 	// カメラ生成
@@ -52,10 +50,13 @@ void GamePlayScene::Initialize()
 	// テクスチャ読み込み
 	Sprite::LoadTexture(1, L"Resources/background2.png");
 	Sprite::LoadTexture(99, L"Resources/smoke.png");
+	Sprite::LoadTexture(98, L"Resources/smoke.png");
 	// 背景スプライト生成
 	spriteBG = Sprite::Create(1, { 0.0f,0.0f });
 	smoke = Sprite::Create(99, { 0.0f,0.0f });
 	smoke->SetColor({ 1.0f,1.0f,1.0f, 0.0f });
+	smoke2 = Sprite::Create(98, { 0.0f,0.0f });
+	smoke2->SetColor({ 1.0f,1.0f,1.0f, 0.0f });
 	skydomeModel = Model::LoadFromOBJ("skydome");
 	skydomeObject = Object3d::Create();
 	skydomeObject->SetModel(skydomeModel);
@@ -194,6 +195,7 @@ void GamePlayScene::Draw()
 	Sprite::PreDraw(cmdList);
 	Effect2d::PreDraw(cmdList);
 	smoke->Draw();
+	smoke2->Draw();
 	if (moveFlag != true)
 	{
 		UI::Draw();
@@ -213,8 +215,8 @@ void GamePlayScene::Draw()
 	ImGui::Begin("config1");//ウィンドウの名前
 	ImGui::SetWindowSize(ImVec2(400, 500), ImGuiCond_::ImGuiCond_FirstUseEver);
 	ImGui::Text("playerState :%d", static_cast<int>(objFighter->GetStatus()));
-	ImGui::Text("AnimeNum    :%d", static_cast<int>(objFighter->GetAnimeNum()));
-	ImGui::Text("target :%f", camera->GetTarget().y);
+	ImGui::Text("timeLimt    :%f", objFighter->GetTimeLimit());
+	ImGui::Text("oldCameraY :%f", camera->oldTargetPos.y);
 	ImGui::Checkbox("slope", &objFighter->GetSlopeFlag());
 	ImGui::Checkbox("teleport", &objFighter->teleportFlag);
 	ImGui::Checkbox("TimeLimitCancel", &objFighter->timeLimitcancel);
@@ -239,23 +241,6 @@ void GamePlayScene::ObjectsUpdate()
 
 void GamePlayScene::StartStatus()
 {
-	//開始処理
-	if(count <= 10)
-	{
-		moveFlag = true;
-		if (ClockTime::GetAddSecFlag() == true)
-		{
-			count++;
-		}
-		interpolationCamera.StartInterpolationCamera(camera);
-		ObjectsUpdate();
-		return;
-	}
-	else if(count >= 11 && count <= 109)
-	{
-		count = 110;
-		moveFlag = false;
-	}
 }
 
 void GamePlayScene::GameStatus()
@@ -277,13 +262,16 @@ void GamePlayScene::GameStatus()
 
 void GamePlayScene::GameOverStatus()
 {
-	const float timeMax = 5.0f;
+	const float timeMax = 3.0f;
 	static float time = timeMax;
 
 	if (objFighter->GetTimeLimit() <= 0.0f)
 	{
+		objFighter->moveLimitFlag = true;
 		if (time >= 0.0f)
 		{
+			float alpha = (timeMax - time) / timeMax;
+			smoke2->SetColor({ 1.0f,1.0f,1.0f, alpha });
 			time -= 1.0f / 60.0f;
 			return;
 		}
@@ -298,6 +286,10 @@ void GamePlayScene::GameOverStatus()
 		camera->rotaX = 180.0f;
 		time = timeMax;
 		//SceneManager::GetInstance()->ChangeScene("GAMEOVER");
+	}
+	else
+	{
+		smoke2->SetColor({ 1.0f,1.0f,1.0f,0.0f });
 	}
 }
 
@@ -326,6 +318,7 @@ void GamePlayScene::SmokeUpdate()
 		{
 			state = play;
 			reStartNum = 1.0f;
+			objFighter->moveLimitFlag = false;
 			return;
 		}
 
@@ -337,21 +330,17 @@ void GamePlayScene::SmokeUpdate()
 
 
 	//制限時間が半分を切ったら煙が出てくる
-	/*float halfTime = objFighter->GetTimeMax() / 2;
+	float halfTime = objFighter->GetTimeMax() / 2;
 	if (objFighter->GetTimeLimit() > halfTime)
 	{
 		smoke->SetColor({ 1.0f,1.0f,1.0f,0.0f });
-	}*/
+		return;
+	}
 
 	//煙は制限時間半分から0になるまで
+	float a = halfTime - objFighter->GetTimeLimit();
 
-	float smokeNum = ((objFighter->GetTimeMax() / 2) - objFighter->GetTimeLimit()) / objFighter->GetTimeMax();
-	if (objFighter->GetTimeLimit() <= (objFighter->GetTimeMax() / 2))
-	{
-		smoke->SetColor({ 1.0f,1.0f,1.0f,smokeNum });
-	}
-	else
-	{
-		smoke->SetColor({ 1.0f,1.0f,1.0f,0.0f });
-	}
+	float Rate = a / halfTime;
+
+	smoke->SetColor({ 1.0f,1.0f,1.0f, Rate });
 }

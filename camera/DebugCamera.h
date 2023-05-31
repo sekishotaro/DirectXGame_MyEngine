@@ -84,7 +84,7 @@ public:
 
 	bool cliffTargetFlag = false;
 
-	float cliffTargetCount = 2.0f;
+	float cliffTargetCount = 1.0f;
 	float movePreviousPosY = 0.0f;
 	float moveAftaerPosY = 0.0f;
 };

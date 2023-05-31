@@ -414,17 +414,18 @@ void Player::MoveOperation(XMVECTOR& move, float& power)
 		MoveClimbingCliff(move, power);
 		slopeRising = false;
 	}
-	else if (climbOperation == false && climbingCliffUpFlag == false) //通常移動
-	{
-		if (climbingCliffFlag == true) return;
-		if (SlopeRisingFlag() == true) return;
-		move = { 0.0f,0.0f,0.1f,0 };
-		MoveNormal(move, power);
-	}
 	else if (climbOperation == true) //壁のぼり移動
 	{
 		//move = { 0.0f,0.0f,0.0f,0 };
 		MoveClimb(move, power);
+	}
+	else if (climbOperation == false && climbingCliffUpFlag == false) //通常移動
+	{
+		if (climbingCliffFlag == true) return;
+		if (SlopeRisingFlag() == true) return;
+		if (moveLimitFlag == true) return;
+		move = { 0.0f,0.0f,0.1f,0 };
+		MoveNormal(move, power);
 	}
 }
 
@@ -1175,7 +1176,7 @@ void Player::StaminaManagement()
 	float staminaDecreaseAmount = 0.0f;
 	if (climbOperation == true)
 	{
-		staminaDecreaseAmount = staminaQuantityMax * (1.0f / 500.0f);
+		staminaDecreaseAmount = staminaQuantityMax * (1.0f / 700.0f);
 	}
 
 	else if (moveBoxFlag == true)
@@ -1421,22 +1422,20 @@ void Player::MoveBoxProcess(DirectX::XMVECTOR& move, float& power)
 
 void Player::TimeManagement()
 {
+	//ゴールに触っていたらカウントしない
 	if (goalFlag == true) return;
 
+	//デバッグ用
 	if (timeLimitcancel == true)
 	{
 		timeLimit = timeLimitMax;
 		return;
 	}
+	
 
-	if (timeLimit <= 0)return;
-	
-	flame += 1.0f;
-	
-	if (flame != 60.0) return;
-	
-	timeLimit -= 1.0f;
-	flame = 0.0f;
+	if (timeLimit < 0.0f) return;
+
+	timeLimit -= 1.0f / 60.0f;
 }
 
 void Player::AnimetionProcess()
