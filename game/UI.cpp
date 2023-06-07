@@ -379,7 +379,7 @@ void UI::timeUpdata()
 
 	const int seconds_between = 2;
 
-	if (Player::GetCrystalGetFlag())
+	if (Player::GetCrystalGetFlag() || time == timeMax)
 	{
 		timerPetal0->SetTexNum(31);
 		timerPetal1->SetTexNum(31);

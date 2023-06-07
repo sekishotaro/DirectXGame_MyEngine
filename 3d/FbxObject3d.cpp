@@ -239,7 +239,10 @@ void FbxObject3d::Update()
 	if (oldModel != nullptr && oldModel != fbxModel)
 	{
 		mSkeletalAnimations.clear();
-		LoadAnimation();
+		if (AnimationFlag == true)
+		{
+			LoadAnimation();
+		}
 		endTime = mSkeletalAnimations[AnimationNum].takeinfo->mLocalTimeSpan.GetStop();
 		currentTime = startTime;
 		AnimetionFinFlag = false;
