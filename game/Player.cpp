@@ -97,6 +97,9 @@ void Player::Initialize()
 	FbxObject3d::Initialize();
 
 	position = JsonLoader::goalObjects[0].get()->GetPosition();
+	position.x = 90.0f;
+	position.z = 70.0f;
+
 	rotation.y = 90.0f;
 	pos = position;
 
@@ -1584,7 +1587,7 @@ void Player::SlopeDownhill(DirectX::XMVECTOR& move, float& power)
 	}
 	
 	// 自機モデル変更
-	//animeNum = 9;
+	animeNum = 9;
 
 	//自機モデルの角度変更
 	rotation.x = 45.0f;
