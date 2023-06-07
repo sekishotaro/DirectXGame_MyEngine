@@ -97,8 +97,6 @@ void Player::Initialize()
 	FbxObject3d::Initialize();
 
 	position = JsonLoader::goalObjects[0].get()->GetPosition();
-	position.x = 90.0f;
-	position.z = 70.0f;
 
 	rotation.y = 90.0f;
 	pos = position;
@@ -131,9 +129,12 @@ void Player::Update()
 
 	//移動量初期化
 	XMVECTOR move = { 0.0f, 0.0f, 0.0f, 0.0f};
+	
 	//スタミナによる速度変数
 	float power = 1.0f;
+	
 	movingFlag = false;
+	
 	//移動処理
 	MoveOperation(move, power);
 
@@ -143,6 +144,9 @@ void Player::Update()
 	//坂処理
 	SlopeDownhill(move, power);
 
+	//落下処理
+	GravityConfirmationProcess();
+
 	//移動確定
 	MoveAddDetermination(move, power);
 
@@ -151,9 +155,6 @@ void Player::Update()
 
 	//OBJのアップデート
 	UpdateWorldMatrix();
-	
-	//落下処理
-	GravityConfirmationProcess();
 
 	////障害物(AABB)の衝突処理
 	ObstacleConfirmationProcess(move);
@@ -210,13 +211,15 @@ void Player::Update()
 	
 	if (landingFlag == true && movingFlag == false)
 	{
-		animeFlag = true;
-		animeNum = landing;
+		if (playerStatus != STATE_JUMP_UP)
+		{
+			animeFlag = true;
+			animeNum = landing;
+		}	
 	}
 
 	StatusProsecc();
 	
-
 	//アニメーション処理
 	AnimetionProcess();
 
@@ -411,6 +414,14 @@ void Player::MoveOperation(XMVECTOR& move, float& power)
 	{
 		moveAdjustmentNum = 1.0f;
 	}
+	//if (staminaStatus == sutaminaBurst)
+	//{
+	//	moveAdjustmentNum = 0.5f;
+	//}
+	//else
+	//{
+	//	moveAdjustmentNum = 1.0f;
+	//}
 
 	if (climbingCliffFlag == true)
 	{
@@ -419,7 +430,6 @@ void Player::MoveOperation(XMVECTOR& move, float& power)
 	}
 	else if (climbOperation == true) //壁のぼり移動
 	{
-		//move = { 0.0f,0.0f,0.0f,0 };
 		MoveClimb(move, power);
 	}
 	else if (climbOperation == false && climbingCliffUpFlag == false) //通常移動
@@ -911,14 +921,6 @@ void Player::GravityConfirmationProcess()
 
 		//移動
 		position = MyMath::addVector(position, fallV);
-	}
-	else if (Input::GetInstance()->PushKey(DIK_SPACE) && climbOperation == false)//ジャンプ
-	{
-		playerStatus = STATE_JUMP_UP;
-		onGround = false;
-		nowMove = true;
-		const float jumpVYFist = 0.3f; //ジャンプ時上向き初速
-		fallV = { 0, jumpVYFist, 0,0 };
 	}
 	else if (Input::GetInstance()->TriggerPadbutton(Button_Y) && climbOperation == false)
 	{
@@ -1540,7 +1542,7 @@ void Player::AnimetionProcess()
 		landingFlag = false;
 	}
 
-	//着地アニメーションが終わった場合着地フラグの解消
+	//崖上がりアニメーション終了
 	if (animeNum == hangingCliffUp)
 	{
 		if (AnimetionFinFlag == true)

@@ -385,8 +385,9 @@ private:
 	static FbxModel* fbxModel14; //•ÇR‚èƒWƒƒƒ“ƒv
 	static FbxModel* fbxModel15; //ŠRã‚ª‚è
 
-	PlayerAnimeState PlayerState = idling;
 
+	PlayerAnimeState PlayerState = idling;
+	StaminaStatus staminaStatus = sutaminaMax;
 	static PlayerStatus playerStatus;
 	static PlayerStatus oldPlayerStatus;
 

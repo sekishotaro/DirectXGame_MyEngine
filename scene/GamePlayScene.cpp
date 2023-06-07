@@ -134,14 +134,7 @@ void GamePlayScene::Update()
 	lightGroup->SetCircleShadowAtten(1, XMFLOAT3(circleShadowAtten));
 	lightGroup->SetCircleShadowFactorAngle(1, XMFLOAT2(circleShadowFactorAngle2));
 
-	if (input->TriggerKey(DIK_RETURN))
-	{
-		//シーン切り替え
-		SceneManager::GetInstance()->ChangeScene("GAMEOVER");
-	}
-
 	SmokeUpdate();
-	
 	GameStatus();
 	GameOverStatus();
 	ClearStatus();
@@ -149,7 +142,6 @@ void GamePlayScene::Update()
 
 void GamePlayScene::Draw()
 {
-
 	// ゲームシーンの描画
 
 	// コマンドリストの取得
@@ -288,7 +280,6 @@ void GamePlayScene::GameOverStatus()
 		objFighter->ReStart();
 		camera->rotaX = 180.0f;
 		time = timeMax;
-		//SceneManager::GetInstance()->ChangeScene("GAMEOVER");
 	}
 	else
 	{

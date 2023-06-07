@@ -117,6 +117,8 @@ DebugCamera::XMFLOAT3 DebugCamera::MoveUpdate()
 			rotaX += 1.0f;
 			if (dis <= disMax && hitFlag == false) { dis += 0.5f; }
 		}
+
+		if (dis <= disMax && hitFlag == false) { dis += 0.5f; }
 	}
 	
 	//Ž‹“_³–ÊˆÚ“®
