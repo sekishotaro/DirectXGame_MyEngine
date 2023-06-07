@@ -21,14 +21,6 @@ private: // エイリアス
 	using XMFLOAT4 = DirectX::XMFLOAT4;
 	using XMMATRIX = DirectX::XMMATRIX;
 
-	enum StaminaStatus
-	{
-		sutaminaMax,		//満タン時
-		sutaminaUse,		//消費時
-		sutaminaRecovery,	//通常回復
-		sutaminaBurst		//スタミナバースト,回復
-	};
-
 	enum PlayerAnimeState
 	{
 		idling,				// 0：アイドリング
@@ -48,9 +40,6 @@ private: // エイリアス
 		hangingCliffUp		// 14：崖上がり
 	};
 
-	/// <summary>
-	/// 5/17作成改訂版
-	/// </summary>
 	enum PlayerStatus
 	{
 		STATE_IDLING,				//00:アイドル状態
@@ -71,7 +60,29 @@ private: // エイリアス
 		STATE_CLIFFUP,				//15:崖上がり
 	};
 
+	enum StaminaStatus
+	{
+		sutaminaMax,		// 0：満タン時
+		sutaminaUse,		// 1：消費時
+		sutaminaRecovery,	// 2：通常回復
+		sutaminaBurst		// 3：スタミナバースト,回復
+	};
 
+	enum HitYStatus
+	{
+		onGround,		// 0：地形(平面)の上
+		onSlope,		// 1：地形(坂)の上
+		onObject,		// 2：オブジェクトの上
+		air				// 3：空中
+	};
+
+	enum HitXStatus
+	{
+		wall,			// 0：地形の壁
+		object,			// 1：オブジェクト
+		ivy,			// 2：上れる壁(蔦)※地形の壁にもあたっているが蔦を優先
+		goal			// 3：ゴール
+	};
 
 public:
 
@@ -210,8 +221,6 @@ public:
 	static XMFLOAT3 GetMove() { return moveV; };
 
 	static bool &GetNowMove() { return nowMove;}
-	
-	static bool &GetadhesionMesh() { return adhesionMesh;}
 
 	static int GetCrystal() { return crystalNum; }
 
@@ -269,17 +278,53 @@ public:
 
 private:
 	
-	//全フレームの位置
-	XMFLOAT3 parPos;
-	//接地フラグ
-	static bool onGround;
-	//接着フラグ
-	static bool adhesionMesh;
+	static XMFLOAT3 pos;				//プレイヤーの位置
+	XMFLOAT3 parPos;					//前フレームの位置
+	static XMFLOAT3 rot;				//プレイヤーの角度
+	static XMFLOAT3 moveV;				//プレイヤーの移動量
+	DirectX::XMVECTOR fallV = {};		//落下ベクトル
+	static float moveAdjustmentNum;		//移動量調整数
+	static int inputX;					//コントローラースティック入力X
+	static int inputY;					//コントローラースティック入力Y
+	int wallCount = 0;					//ツタに当たった時のめり込み時カウント
+	DirectX::XMVECTOR climbNormal = {};	//壁のぼり用保存めり込み法線
+	static float timeLimit;				//現在の時間
+	static const float timeLimitMax;	//制限時間
+	static float staminaQuantity;		// スタミナ残量
+	float forciblyRecoveryTime = 10.0f;	//スタミナがなくなった時の回復時間
+	float staminaRecoveryTime = 5.0f;	//スタミナ回復待機時間
+	float jumpHeightPosY = 0.0f;		//ジャンプした時に壁と接触しない高さ
+	/// <summary>
+	/// ステータス管理
+	/// </summary>
+	PlayerAnimeState PlayerState = idling;			//アニメーション
+	PlayerAnimeState oldPlayerState = idling;		//前フレームのアニメーション
+	static PlayerStatus playerStatus;				//プレイヤー
+	static PlayerStatus oldPlayerStatus;			//前フレームのプレイヤー
+	StaminaStatus staminaStatus = sutaminaMax;		//スタミナ
 
-	//障害物接着フラグ
-	bool adhesion = false;
-	//オブジェク接地フラグ
-	bool onObject = false;
+	//アニメーション
+	static int animeNum;
+	static int oldAnimeNum;
+	static bool animeFlag;
+	//モデル
+	static FbxModel* fbxModel1;		//基本
+	static FbxModel* fbxModel2;		//ウォーキング
+	static FbxModel* fbxModel3;		//ランニング
+	static FbxModel* fbxModel4;		//ジャンプ
+	static FbxModel* fbxModel5;		//走りジャンプ
+	static FbxModel* fbxModel6;		//クライミング
+	static FbxModel* fbxModel7;		//着地
+	static FbxModel* fbxModel8;		//崖ぶら下がりアイドリング
+	static FbxModel* fbxModel9;		//キック
+	static FbxModel* fbxModel10;	//スライディング
+	static FbxModel* fbxModel11;	//押し歩き
+	static FbxModel* fbxModel12;	//スタミナ切れ歩き
+	static FbxModel* fbxModel13;	//スタミナ切れアイドリング
+	static FbxModel* fbxModel14;	//壁蹴りジャンプ
+	static FbxModel* fbxModel15;	//崖上がり
+
+	//削除したいもの
 	//移動中確認フラグ
 	static bool nowMove;
 	//坂確認フラグ
@@ -291,105 +336,42 @@ private:
 	static bool wallKickUpFlag;
 	static bool fallFlag;
 	static bool landingFlag;
-
-	//自機とゴールの当たり判定
-	static bool goalFlag;
-
-	//落下ベクトル
-	DirectX::XMVECTOR fallV = {};
-	//プレイヤーの位置
-
-	static XMFLOAT3 pos;
-	static XMFLOAT3 rot;
-	static XMFLOAT3 moveV;
-
-	//移動量調整数
-	static float moveAdjustmentNum;
-
-
-	static int inputX;
-	static int inputY;
-
 	//確認用
 	static float testRota;
-
-	//クリスタルの数
-	static int crystalNum;
-
-	//ツタに当たった時のめり込み時カウント
-	int wallCount = 0;
-
 	//壁のぼり状態
 	static bool climbOperation;
 	static bool oldClimbOperation;
-	//壁のぼり用保存めり込み法線
-	DirectX::XMVECTOR climbNormal = {};
 	//のぼり用板ポリとの当たり判定
 	static bool climbWallHit;
 	//前フレームの当たり判定の結果
 	bool climbWallHitPar = false;
-	
-	//制限時間
-	static float timeLimit;
-	static const float timeLimitMax;
-
-
 	/// <summary>
 	/// スタミナ消費確認フラグ
 	/// </summary>
 	static bool staminaBoostFlag;
-	/// <summary>
-	/// スタミナ残量
-	/// </summary>
-	static float staminaQuantity;
-	//スタミナがなくなった時の回復時間
-	float forciblyRecoveryTime = 10.0f;
-	//スタミナ回復待機時間
-	float staminaRecoveryTime = 5.0f;
 	//スタミナが使えるかどうか(スタミナを使い切った場合になる状態)
 	static bool staminaCut;
 	static bool crystalGetFlag;
-	//箱移動してた確認フラグ
-	static bool moveBoxFlag;
-	static bool moveBoxHitFlag;
-	int moveBoxHitNum = 0;
 	//壁と接触確認フラグ
 	static bool wallHittingFlag;
 	static bool oldWallHittingFlag;
 	static bool jumpWallHittingFlag;
-	//ジャンプした時に壁と接触しない高さ
-	float jumpHeightPosY = 0.0f;
 	//崖上がり
 	static bool climbingCliffFlag;
 	static bool climbingCliffUpFlag;
 	int climbingCliffBoxNum = 0;
-	//アニメーション
-	static int animeNum;
-	static int oldAnimeNum;
-	static bool animeFlag;
-
-	//モデル
-	static FbxModel* fbxModel1;	//基本
-	static FbxModel* fbxModel2;	//ウォーキング
-	static FbxModel* fbxModel3;	//ランニング
-	static FbxModel* fbxModel4; //ジャンプ
-	static FbxModel* fbxModel5;	//走りジャンプ
-	static FbxModel* fbxModel6;	//クライミング
-	static FbxModel* fbxModel7; //着地
-	static FbxModel* fbxModel8; //崖ぶら下がりアイドリング
-	static FbxModel* fbxModel9; //キック
-	static FbxModel* fbxModel10; //スライディング
-	static FbxModel* fbxModel11; //押し歩き
-	static FbxModel* fbxModel12; //スタミナ切れ歩き
-	static FbxModel* fbxModel13; //スタミナ切れアイドリング
-	static FbxModel* fbxModel14; //壁蹴りジャンプ
-	static FbxModel* fbxModel15; //崖上がり
-
-
-	PlayerAnimeState PlayerState = idling;
-	StaminaStatus staminaStatus = sutaminaMax;
-	static PlayerStatus playerStatus;
-	static PlayerStatus oldPlayerStatus;
+	//箱移動してた確認フラグ
+	static bool moveBoxFlag;
+	static bool moveBoxHitFlag;
+	int moveBoxHitNum = 0;
+	//接地フラグ
+	static bool onGround;
+	//オブジェク接地フラグ
+	bool onObject = false;
+	//自機とゴールの当たり判定
+	static bool goalFlag;
+	//クリスタルの数
+	static int crystalNum;
 
 public:
 	XMFLOAT3 moveBoxMax1 = { 0.0f, 0.0f, 0.0f };

@@ -23,7 +23,6 @@ bool Player::wallKickUpFlag = false;
 bool Player::fallFlag = false;
 bool Player::landingFlag = false;
 bool Player::onGround = false;
-bool Player::adhesionMesh = false;
 int Player::crystalNum = 0;
 bool Player::goalFlag = false;
 bool Player::climbOperation = false;
