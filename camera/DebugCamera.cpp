@@ -346,7 +346,7 @@ float DebugCamera::leap(float rotaA, float rotaB, float timeRatio)
 
 bool DebugCamera::PlayerJumpUp()
 {
-	if (Player::GetJumpFlag() == true && Player::GetFallFlag() == false)
+	if (Player::GetStatus() == 3 && Player::GetStatus() == 4)
 	{
 		return true;
 	}

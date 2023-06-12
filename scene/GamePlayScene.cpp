@@ -212,10 +212,8 @@ void GamePlayScene::Draw()
 	ImGui::Text("playerState :%d", static_cast<int>(objFighter->GetStatus()));
 	ImGui::Text("timeLimt    :%f", objFighter->GetTimeLimit());
 	ImGui::Text("oldCameraY :%f", camera->oldTargetPos.y);
-	ImGui::Checkbox("slope", &objFighter->GetSlopeFlag());
 	ImGui::Checkbox("teleport", &objFighter->teleportFlag);
 	ImGui::Checkbox("TimeLimitCancel", &objFighter->timeLimitcancel);
-	ImGui::Checkbox("OldSlopeFlag", &objFighter->GetOldSlopeFlag());
 	ImGui::Checkbox("smokeFlag", &smokeFlag);
 	imguiManager::PosDraw();
 }

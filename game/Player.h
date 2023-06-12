@@ -70,9 +70,9 @@ private: // エイリアス
 
 	enum HitYStatus
 	{
-		onGround,		// 0：地形(平面)の上
+		onGrounds,		// 0：地形(平面)の上
 		onSlope,		// 1：地形(坂)の上
-		onObject,		// 2：オブジェクトの上
+		onObjects,		// 2：オブジェクトの上
 		air				// 3：空中
 	};
 
@@ -212,6 +212,7 @@ private:
 private:
 	bool StaminaConsumptionFlag();
 	bool moveBoxConditionFlag();
+	bool moveStickCheck();
 public:
 	//デバック用ゲッター
 	static XMFLOAT3 GetPos() { return pos; }
