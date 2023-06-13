@@ -211,51 +211,26 @@ private:
 
 private:
 	bool StaminaConsumptionFlag();
-	bool moveBoxConditionFlag();
-	bool moveStickCheck();
+	bool MoveBoxConditionFlag();
+	bool MoveStickCheck();
+	bool FallStateCheck();
 public:
 	//デバック用ゲッター
 	static XMFLOAT3 GetPos() { return pos; }
-
 	static XMFLOAT3 GetRot() { return rot; }
-
 	static XMFLOAT3 GetMove() { return moveV; };
-
-	static bool &GetNowMove() { return nowMove;}
-
 	static int GetCrystal() { return crystalNum; }
-
-	static bool &GetGoalFlag() { return goalFlag; }
-
-	static bool &GetClimbWallHitFlag() { return climbOperation; }
-
+	static bool GetGoalFlag() { return goalFlag; }
 	static float GetTimeLimit() { return timeLimit; }
-
-	static bool& GetStaminaFlag() { return staminaBoostFlag; }
-
-	static float& GetStaminaQuantity() { return staminaQuantity; }
-
-	static bool& GetStaminaCut() { return staminaCut; }
-
-	static bool& GetAnimeFlag() { return animeFlag; }
-
-	static int& GetInputNumX() { return inputX; }
-	static int& GetInputNumY() { return inputY; }
-
-	static float& GEtTestFloatNum() { return testRota; }
-
+	static bool GetStaminaFlag() { return staminaBoostFlag; }
+	static float GetStaminaQuantity() { return staminaQuantity; }
+	static bool GetStaminaCut() { return staminaCut; }
 	static bool GetCrystalGetFlag() { return crystalGetFlag; }
 	static bool GetMoveBoxHitFlag() { return moveBoxHitFlag;}
-	static bool GetJumpFlag() { return jumpFlag; }
-	static bool GetFallFlag() { return fallFlag; }
-	static int& GetAnimeNum() { return animeNum; }
-
+	static int GetAnimeNum() { return animeNum; }
 	static bool &GetSlopeFlag() { return slopeFlag; }
-	bool& GetOldSlopeFlag() { return oldSlopeFlag; }
-	static bool& GetWallHitFlag() { return wallHittingFlag; }
-	static bool& GetJumpWallHitFlag() { return jumpWallHittingFlag; }
-	static bool& GetClimbingCliffFlag() { return climbingCliffFlag; }
-	static bool& GetLandingFlag() { return landingFlag; }
+	static bool GetWallHitFlag() { return wallHittingFlag; }
+	static bool GetClimbingCliffFlag() { return climbingCliffFlag; }
 	static float GetTimeMax() { return timeLimitMax; }
 
 	static PlayerStatus& GetStatus() { return playerStatus; }
@@ -325,23 +300,10 @@ private:
 	static FbxModel* fbxModel14;	//壁蹴りジャンプ
 	static FbxModel* fbxModel15;	//崖上がり
 
-	//削除したいもの
-	//移動中確認フラグ
-	static bool nowMove;
 	//坂確認フラグ
 	static bool slopeFlag;
 	bool oldSlopeFlag = false;
 	bool slopeRising = false;
-	//ジャンプ確認フラグ
-	static bool jumpFlag;
-	static bool wallKickUpFlag;
-	static bool fallFlag;
-	static bool landingFlag;
-	//確認用
-	static float testRota;
-	//壁のぼり状態
-	static bool climbOperation;
-	static bool oldClimbOperation;
 	//のぼり用板ポリとの当たり判定
 	static bool climbWallHit;
 	//前フレームの当たり判定の結果

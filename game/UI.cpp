@@ -217,7 +217,7 @@ void UI::Update()
 
 	timeUpdata();
 	
-	if (Player::GetClimbWallHitFlag() == true)
+	if (Player::GetStatus() == 6)
 	{
 		controllerUI->SetTexNum(62);
 	}

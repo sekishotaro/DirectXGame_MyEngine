@@ -16,16 +16,10 @@ XMFLOAT3 Player::pos = { 0,0,0 };
 XMFLOAT3 Player::rot = { 0,0,0 };
 XMFLOAT3 Player::moveV = { 0,0,0 };
 float Player::moveAdjustmentNum = 1.0f;
-bool Player::nowMove = false;
 bool Player::slopeFlag = false;
-bool Player::jumpFlag = false;
-bool Player::wallKickUpFlag = false;
-bool Player::fallFlag = false;
-bool Player::landingFlag = false;
 bool Player::onGround = false;
 int Player::crystalNum = 0;
 bool Player::goalFlag = false;
-bool Player::climbOperation = false;
 float Player::timeLimit = 30.0f;
 const float Player::timeLimitMax = 20.0f;
 bool Player::staminaBoostFlag = false;
@@ -33,7 +27,6 @@ float Player::staminaQuantity = 100.0f;
 bool Player::staminaCut = false;
 int Player::inputX = 0;
 int Player::inputY = 0;
-float Player::testRota = 0;
 bool Player::crystalGetFlag = false;
 bool Player::moveBoxFlag = false;
 bool Player::moveBoxHitFlag = false;
@@ -176,23 +169,33 @@ void Player::Update()
 		playerStatus = STATE_CLIFFUP;
 		animeNum = hangingCliffUp;
 	}
-	else if (jumpFlag == true)
+	else if (playerStatus == STATE_JUMP_UP || playerStatus == STATE_JUMP_DOWN)
 	{
 		animeFlag = true;
 		animeNum = jump;
 	}
-	else if (wallKickUpFlag == true)
+	else if (playerStatus == STATE_WALLKICK_UP)
 	{
 		animeFlag = true;
 		animeNum = wallKickUp;
 	}
-	else if (fallFlag == true)
+	else if (playerStatus == STATE_FALL)
+	{
+		animeFlag = true;
+		animeNum = fall;
+	}
+	else if (playerStatus == STATE_JUMP_DOWN)
+	{
+		animeFlag = true;
+		animeNum = fall;
+	}
+	else if (playerStatus == STATE_WALLKICK_DOWN)
 	{
 		animeFlag = true;
 		animeNum = fall;
 	}
 	
-	if (landingFlag == true && movingFlag == false)
+	if (oldPlayerStatus == STATE_LANDING && movingFlag == false)
 	{
 		if (playerStatus != STATE_JUMP_UP)
 		{
@@ -378,7 +381,7 @@ void Player::ClimbWallJudge(XMVECTOR move)
 	if (wallCount == 60)
 	{
 		climbNormal =  pushvec;
-		climbOperation = true;
+		playerStatus = STATE_CLIMBING;
 		wallCount = 0;
 	}
 }
@@ -408,16 +411,15 @@ void Player::MoveOperation(XMVECTOR& move, float& power)
 		MoveClimbingCliff(move, power);
 		slopeRising = false;
 	}
-	else if (climbOperation == true)												//壁のぼり移動
+	else if (oldPlayerStatus == STATE_CLIMBING)												//壁のぼり移動
 	{
 		MoveClimb(move, power);
 	}
-	else if (climbOperation == false && climbingCliffUpFlag == false)				//通常移動
+	else if (oldPlayerStatus != STATE_CLIMBING && climbingCliffUpFlag == false)				//通常移動
 	{
 		if (climbingCliffFlag == true) return;
 		if (SlopeRisingFlag() == true) return;
 		if (moveLimitFlag == true) return;
-		move = { 0.0f,0.0f,0.1f,0 };
 		MoveNormal(move, power);
 	}
 }
@@ -435,7 +437,6 @@ void Player::MoveClimbingCliff(DirectX::XMVECTOR& move, float& power)
 		move.m128_f32[2] = move.m128_f32[2] * 15.0f;
 		climbingCliffUpFlag = true;
 		climbingCliffFlag = false;
-		nowMove = true;
 
 		playerStatus = STATE_CLIFFUP;
 	}
@@ -512,7 +513,7 @@ void Player::MoveNormal(DirectX::XMVECTOR& move, float& power)
 	//移動ベクトルをY軸回りの角度で回転
 
 	XMMATRIX matRot = XMMatrixRotationY(XMConvertToRadians(rotation.y));
-	testRota = rotation.y;
+	move = { 0.0f,0.0f,0.1f,0 };
 	move = XMVector3TransformNormal(move, matRot);
 
 	//スタミナ消費
@@ -535,9 +536,8 @@ void Player::MoveNormal(DirectX::XMVECTOR& move, float& power)
 		power = 0.8f * moveAdjustmentNum;
 	}
 
-	if (moveStickCheck())
+	if (MoveStickCheck())
 	{
-		nowMove = true;
 		movingFlag = true;
 		animeFlag = true;
 		if (staminaBoostFlag == false)
@@ -553,10 +553,10 @@ void Player::MoveNormal(DirectX::XMVECTOR& move, float& power)
 	}
 	else
 	{
+		move = { 0.0f,0.0f,0.0f,0 };
 		playerStatus = STATE_IDLING;
 		animeFlag = true;
 		animeNum = idling;
-		nowMove = false;
 	}
 }
 
@@ -568,7 +568,7 @@ void Player::MoveClimb(DirectX::XMVECTOR& move, float& power)
 
 	if (StaminaUnusable() != false)
 	{
-		climbOperation = false;
+		playerStatus = STATE_FALL;
 		position.x += climbNormal.m128_f32[0];
 		position.z += climbNormal.m128_f32[2];
 	}
@@ -594,8 +594,6 @@ void Player::MoveClimb(DirectX::XMVECTOR& move, float& power)
 		{
 			moveV.z += moveAdjustment * power;
 		}
-
-		nowMove = true;
 
 		animeFlag = true;
 		if (staminaBoostFlag == true)
@@ -627,8 +625,6 @@ void Player::MoveClimb(DirectX::XMVECTOR& move, float& power)
 			moveV.z -= moveAdjustment * power;
 		}
 
-		nowMove = true;
-
 		animeFlag = true;
 		if (staminaBoostFlag == true)
 		{
@@ -642,7 +638,6 @@ void Player::MoveClimb(DirectX::XMVECTOR& move, float& power)
 	else if (Input::GetInstance()->LeftStickIn(DOWN))
 	{
 		moveV.y -= moveAdjustment * power;
-		nowMove = true;
 
 		animeFlag = true;
 		if (staminaBoostFlag == true)
@@ -657,7 +652,6 @@ void Player::MoveClimb(DirectX::XMVECTOR& move, float& power)
 	else if (Input::GetInstance()->LeftStickIn(UP))
 	{
 		moveV.y += moveAdjustment * power;
-		nowMove = true;
 
 		animeFlag = true;
 		if (staminaBoostFlag == true)
@@ -673,7 +667,6 @@ void Player::MoveClimb(DirectX::XMVECTOR& move, float& power)
 	{
 		animeFlag = false;
 		animeNum = climbing;
-		nowMove = false;
 	}
 
 	playerStatus = STATE_CLIMBING;
@@ -681,10 +674,8 @@ void Player::MoveClimb(DirectX::XMVECTOR& move, float& power)
 	//落下
 	if (Input::GetInstance()->PushPadbutton(Button_A))
 	{
-		climbOperation = false;
 		position.x += climbNormal.m128_f32[0];
 		position.z += climbNormal.m128_f32[2];
-
 		playerStatus = STATE_FALL;
 	}
 
@@ -773,7 +764,7 @@ void Player::GoalConfirmationProcess()
 
 void Player::ObstacleConfirmationProcess(const XMVECTOR &move)
 {
-	if (climbOperation == true) return;
+	if (playerStatus == STATE_CLIMBING) return;
 
 	//球コライダーを取得
 	SphereCollider* sphereCollider = dynamic_cast<SphereCollider*>(collider);
@@ -804,24 +795,19 @@ void Player::ObstacleConfirmationProcess(const XMVECTOR &move)
 			if (Collision::CheckRayBox(ray, box) == true)
 			{
 				onGround = true;
-				fallFlag = false;
 				position.y = box.MaxPos.y;
 				onObject = true;
 				return;
 			}
-		}									//↓坂でダッシュジャンプした時の当たり判定用に追加|| jumpFlag == true
+		}									//↓坂でダッシュジャンプした時の当たり判定用に追加
 		else if (fallV.m128_f32[1] <= 0.0f)//落下状態
 		{
-			nowMove = true;
 			if (Collision::CheckRayBox(ray, box) == true)
 			{
 				//着地
 				onGround = true;
 				onObject = true;
-				landingFlag = true;
-				jumpFlag = false;
-				fallFlag = false;
-				wallKickUpFlag = false;
+				playerStatus = STATE_LANDING;
 				position.y = box.MaxPos.y;
 				return;
 			}
@@ -846,7 +832,6 @@ void Player::ObstacleConfirmationProcess(const XMVECTOR &move)
 			if (Collision::CheckRayBox(ray, box) == true)
 			{
 				onGround = true;
-				fallFlag = false;
 				position.y = box.MaxPos.y;
 				onObject = true;
 				return;
@@ -856,19 +841,15 @@ void Player::ObstacleConfirmationProcess(const XMVECTOR &move)
 				onGround = false;
 				onObject = false;
 			}
-		}									//↓坂でダッシュジャンプした時の当たり判定用に追加|| jumpFlag == true
+		}									//↓坂でダッシュジャンプした時の当たり判定用に追加
 		else if (fallV.m128_f32[1] <= 0.0f)//落下状態
 		{
-			nowMove = true;
 			if (Collision::CheckRayBox(ray, box) == true)
 			{
 				//着地
 				onGround = true;
 				onObject = true;
-				landingFlag = true;
-				jumpFlag = false;
-				fallFlag = false;
-				wallKickUpFlag = false;
+				playerStatus = STATE_LANDING;
 				position.y = box.MaxPos.y;
 				return;
 			}
@@ -882,12 +863,8 @@ void Player::GravityConfirmationProcess()
 	{
 		fallV = { 0, 0.0f, 0,0 };
 	}
-	else if (onGround == false && climbOperation == false)
+	else if (onGround == false && playerStatus != STATE_CLIMBING)
 	{
-		if (jumpFlag != true || wallKickUpFlag != true)
-		{
-			fallFlag = true;
-		}
 		//下向き加速度
 		const float fallAcc = -0.01f;
 		const float fallVYMin = -0.5f;
@@ -922,11 +899,9 @@ void Player::GravityConfirmationProcess()
 		}
 
 	}
-	else if (Input::GetInstance()->TriggerPadbutton(Button_Y) && climbOperation == false)
+	else if (Input::GetInstance()->TriggerPadbutton(Button_Y) && playerStatus != STATE_CLIMBING)
 	{
 		playerStatus = STATE_JUMP_UP;
-		
-		jumpFlag = true;
 		onGround = false;
 		onObject = false;
 		//nowMove = true;
@@ -936,11 +911,9 @@ void Player::GravityConfirmationProcess()
 	else if (climbingKickJump()) //壁蹴り上り
 	{
 		playerStatus = STATE_WALLKICK_UP;
-		
-		wallKickUpFlag = true;
+
 		onGround = false;
 		onObject = false;
-		nowMove = true;
 		const float jumpVYFist = 0.35f; //ジャンプ時上向き初速
 		fallV = { 0.0f, jumpVYFist, 0.0f };
 	}
@@ -1020,7 +993,6 @@ void Player::TerrainConfirmationProcess()
 			
 			if (10.0f <= ccos && ccos < 60.0f)
 			{
-				testRota = ccos;
 				slopeFlag = true;
 			}
 			return true;
@@ -1100,13 +1072,13 @@ void Player::TerrainConfirmationProcess()
 	collider->UpdateF();
 
 	//壁のぼり判定
-	if (fallFlag != true)
+	if (FallStateCheck() == false)
 	{
 		ClimbWallJudge(callback.move);
 	}
 
 	//壁のぼり状態なら床の判定を飛ばす(保留)
-	if (climbOperation == true)
+	if (playerStatus == STATE_CLIMBING)
 	{
 		return;
 	}
@@ -1130,7 +1102,6 @@ void Player::TerrainConfirmationProcess()
 			&raycastHit, sphereCollider->GetRadius() * 2.0f + adsDistance) == true)
 		{
 			onGround = true;
-			fallFlag = false;
 			position.y -= (raycastHit.distance - sphereCollider->GetRadius() * 2.0f);
 		}
 		else
@@ -1141,33 +1112,23 @@ void Player::TerrainConfirmationProcess()
 	}
 	else if (onObject == false && slopeFlag == true)//落下状態
 	{
-		nowMove = true;
-		fallFlag = true;
 		if (CollisionManager::GetInstance()->Raycast(ray, COLLISION_ATTR_LANDSHAPE,
 			&raycastHit, sphereCollider->GetRadius() * 2.0f) == true)
 		{
 			//着地
 			onGround = true;
-			landingFlag = true;
-			jumpFlag = false;
-			wallKickUpFlag = false;
-			fallFlag = false;
+			playerStatus = STATE_LANDING;
 			position.y -= (raycastHit.distance - sphereCollider->GetRadius() * 2.0f);
 		}
 	}
 	else if (onObject == false && fallV.m128_f32[1] <= 0.0f )//落下状態
 	{
-		nowMove = true;
-		fallFlag = true;
 		if (CollisionManager::GetInstance()->Raycast(ray, COLLISION_ATTR_LANDSHAPE,
 			&raycastHit, sphereCollider->GetRadius() * 2.0f) == true)
 		{
 			//着地
 			onGround = true;
-			landingFlag = true;
-			jumpFlag = false;
-			wallKickUpFlag = false;
-			fallFlag = false;
+			playerStatus = STATE_LANDING;
 			position.y -= (raycastHit.distance - sphereCollider->GetRadius() * 2.0f);
 		}
 	}
@@ -1180,7 +1141,7 @@ void Player::StaminaManagement()
 
 	//スタミナ消費量
 	float staminaDecreaseAmount = 0.0f;
-	if (climbOperation == true)
+	if (playerStatus == STATE_CLIMBING)
 	{
 		staminaDecreaseAmount = staminaQuantityMax * (1.0f / 700.0f);
 	}
@@ -1242,12 +1203,12 @@ void Player::StaminaManagement()
 		}
 
 		staminaQuantity += staminaQuantityMax * (2.0f / 300.0f);
-		if (nowMove == true)
+		if (playerStatus == STATE_WALKING || playerStatus == STATE_RUNNING)
 		{
 			playerStatus = STATE_TIRED_WALKING;
 			animeNum = tiredWalking;
 		}
-		else
+		else if(playerStatus == STATE_IDLING)
 		{
 			playerStatus = STATE_TIRED_IDLING;
 			animeNum = tiredIdling;
@@ -1375,7 +1336,7 @@ void Player::MoveBoxProcess(DirectX::XMVECTOR& move, float& power)
 
 		
 		XMVECTOR moveBoxValue = {};
-		if (Input::GetInstance()->PushPadbutton(Button_A) && moveBoxConditionFlag() == true)
+		if (Input::GetInstance()->PushPadbutton(Button_A) && MoveBoxConditionFlag() == true)
 		{
 			//移動箱の移動確定
 			moveBoxValue.m128_f32[xyz] = move.m128_f32[xyz] / 2.0f;
@@ -1536,12 +1497,8 @@ void Player::AnimetionProcess()
 	{
 		if (AnimetionFinFlag == true)
 		{
-			landingFlag = false;
+			playerStatus = STATE_IDLING;
 		}
-	}
-	else
-	{
-		landingFlag = false;
 	}
 
 	//崖上がりアニメーション終了
@@ -1569,8 +1526,7 @@ void Player::SlopeDownhill(DirectX::XMVECTOR& move, float& power)
 	if (slopeFlag == false) return;
 	//ダッシュしているかどうか
 	if (staminaBoostFlag == true) return;
-	if (climbOperation == true) return;
-	nowMove = true;
+	if (playerStatus == STATE_CLIMBING) return;
 
 	// 坂が二つしかないため簡易処置 (Todo : 坂の角度を求める)
 	if (position.x < 0.0f)			//小坂
@@ -1630,7 +1586,7 @@ void Player::climbingCliff()
 	//climbingCliffFlag = false;
 	if (jumpWallHittingFlag != false) return;					//ジャンプした時に壁にぶつかっている
 	if (wallHittingFlag != true) return;						//壁にぶつかっていない
-	if (jumpFlag != true && wallKickUpFlag != true) return;
+	if (playerStatus != STATE_JUMP_DOWN && playerStatus != STATE_WALLKICK_DOWN) return;
 	bool climbingCliffBoxHitFlag = false;
 	int number = 0;
 	for (int i = 0; i < JsonLoader::cliffClimbingObjects.size(); i++)
@@ -1652,7 +1608,6 @@ void Player::climbingCliff()
 	}
 	
 	if (climbingCliffBoxHitFlag != true) return;
-	wallKickUpFlag = false;
 	climbingCliffFlag = true;
 	position.y = JsonLoader::cliffClimbingObjects[number].get()->GetPosition().y + JsonLoader::cliffClimbingObjects[number].get()->GetScale().y;
 
@@ -1667,7 +1622,7 @@ bool Player::StaminaUnusable()
 
 void Player::MoveAddDetermination(DirectX::XMVECTOR& move, float& power)
 {
-	if (nowMove == false) return;
+	if (playerStatus == STATE_IDLING) return;
 	if (slopeFlag == true && staminaBoostFlag == false)
 	{
 		move.m128_f32[0] = move.m128_f32[0];
@@ -1763,26 +1718,34 @@ bool Player::SlopeRisingFlag()
 
 bool Player::StaminaConsumptionFlag()
 {
-	if (nowMove == false) return true;
+	if (playerStatus == STATE_IDLING) return true;
 	if (moveBoxFlag == true) return false;
-	if (staminaBoostFlag == false && climbOperation == false) return true;
+	if (staminaBoostFlag == false && playerStatus != STATE_CLIMBING) return true;
 	return false;
 }
 
-bool Player::moveBoxConditionFlag()
+bool Player::MoveBoxConditionFlag()
 {
 	if (StaminaUnusable() != false) return false;
-	if (jumpFlag == true) return false;
-	if (fallFlag == true) return false;
+	if (playerStatus == STATE_JUMP_UP || playerStatus == STATE_JUMP_DOWN) return false;
+	if (FallStateCheck() == true) return false;
 	return true;
 }
 
-bool Player::moveStickCheck()
+bool Player::MoveStickCheck()
 {
 	if (Input::GetInstance()->LeftStickIn(LEFT)) return true;
 	if (Input::GetInstance()->LeftStickIn(RIGHT)) return true;
 	if (Input::GetInstance()->LeftStickIn(UP)) return true;
 	if (Input::GetInstance()->LeftStickIn(DOWN)) return true;
+	return false;
+}
+
+bool Player::FallStateCheck()
+{
+	if (playerStatus == STATE_FALL) return true;
+	if (playerStatus == STATE_JUMP_DOWN) return true;
+	if (playerStatus == STATE_WALLKICK_DOWN) return true;
 	return false;
 }
 
