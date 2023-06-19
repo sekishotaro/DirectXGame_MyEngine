@@ -33,8 +33,6 @@ public: // ÉÅÉìÉoä÷êî
 
 	void UpdateOnly();
 
-	void RaidCameraCount();
-
 	void ViewpointSwitch(float endRota);
 
 	float leap(float rotaA, float rotaB, float timeRatio);
@@ -70,10 +68,6 @@ public:
 	float oldPosY = 0.0f;
 	static Model* Model;
 	BaseCollider* collider = nullptr;
-
-	bool RaidTargetCameraFlag = false;
-	bool oldRaidFlag = false;
-	int count = 0;
 
 	bool viewpointSwitchFlag = false;
 	float viewpointSwitchposParRotX = 0.0f;

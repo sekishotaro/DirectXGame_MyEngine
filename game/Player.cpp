@@ -16,46 +16,46 @@ XMFLOAT3 Player::pos = { 0,0,0 };
 XMFLOAT3 Player::rot = { 0,0,0 };
 XMFLOAT3 Player::moveV = { 0,0,0 };
 float Player::moveAdjustmentNum = 1.0f;
-bool Player::slopeFlag = false;
-bool Player::onGround = false;
-int Player::crystalNum = 0;
-bool Player::goalFlag = false;
 float Player::timeLimit = 30.0f;
 const float Player::timeLimitMax = 20.0f;
-bool Player::staminaBoostFlag = false;
 float Player::staminaQuantity = 100.0f;
+int Player::animeNum = 0;
+int Player::oldAnimeNum = 0;
+int Player::crystalNum = 0;
+bool Player::slopeFlag = false;
+bool Player::onGround = false;
+bool Player::goalFlag = false;
+bool Player::staminaBoostFlag = false;
 bool Player::staminaCut = false;
-int Player::inputX = 0;
-int Player::inputY = 0;
 bool Player::crystalGetFlag = false;
 bool Player::moveBoxFlag = false;
 bool Player::moveBoxHitFlag = false;
 bool Player::wallHittingFlag = false;
 bool Player::oldWallHittingFlag = false;
 bool Player::jumpWallHittingFlag = false;
-bool Player::climbingCliffFlag = false;
-bool Player::climbingCliffUpFlag = false;
-int Player::animeNum = 0;
-int Player::oldAnimeNum = 0;
 bool Player::animeFlag = false;
-FbxModel* Player::fbxModel1 = nullptr;
-FbxModel* Player::fbxModel2 = nullptr;
-FbxModel* Player::fbxModel3 = nullptr;
-FbxModel* Player::fbxModel4 = nullptr;
-FbxModel* Player::fbxModel5 = nullptr;
-FbxModel* Player::fbxModel6 = nullptr;
-FbxModel* Player::fbxModel7 = nullptr;
-FbxModel* Player::fbxModel8 = nullptr;
-FbxModel* Player::fbxModel9 = nullptr;
-FbxModel* Player::fbxModel10 = nullptr;
-FbxModel* Player::fbxModel11 = nullptr;
-FbxModel* Player::fbxModel12 = nullptr;
-FbxModel* Player::fbxModel13 = nullptr;
-FbxModel* Player::fbxModel14 = nullptr;
-FbxModel* Player::fbxModel15 = nullptr;
 
 Player::PlayerStatus Player::playerStatus = STATE_IDLING;
 Player::PlayerStatus Player::oldPlayerStatus = STATE_IDLING;
+
+//モデル
+//FbxModel* Player::fbxModel1 = nullptr;
+//FbxModel* Player::fbxModel2 = nullptr;
+//FbxModel* Player::fbxModel3 = nullptr;
+//FbxModel* Player::fbxModel4 = nullptr;
+//FbxModel* Player::fbxModel5 = nullptr;
+//FbxModel* Player::fbxModel6 = nullptr;
+//FbxModel* Player::fbxModel7 = nullptr;
+//FbxModel* Player::fbxModel8 = nullptr;
+//FbxModel* Player::fbxModel9 = nullptr;
+//FbxModel* Player::fbxModel10 = nullptr;
+//FbxModel* Player::fbxModel11 = nullptr;
+//FbxModel* Player::fbxModel12 = nullptr;
+//FbxModel* Player::fbxModel13 = nullptr;
+//FbxModel* Player::fbxModel14 = nullptr;
+//FbxModel* Player::fbxModel15 = nullptr;
+FbxModel* Player::fbxModels[] = {nullptr,nullptr, nullptr, nullptr, nullptr, 
+nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr};
 
 Player* Player::Create(FbxModel* model)
 {
@@ -109,6 +109,9 @@ void Player::Initialize()
 
 void Player::Update()
 {
+	//過去ステータスを保存
+	oldPlayerStatus = playerStatus;
+
 	//デバック用初期位置テレポート
 	if (teleportFlag == true)
 	{
@@ -121,8 +124,6 @@ void Player::Update()
 	
 	//スタミナによる速度変数
 	float power = 1.0f;
-	
-	movingFlag = false;
 	
 	//移動処理
 	MoveOperation(move, power);
@@ -157,13 +158,13 @@ void Player::Update()
 	pos = position;
 	rot = rotation;
 
-	if (climbingCliffFlag == true && climbingCliffUpFlag == false)
+	if (playerStatus == STATE_CLIFF_IDLING)
 	{
 		animeFlag = true;
 		animeNum = hangingCliff;
 		playerStatus = STATE_CLIFF_IDLING;
 	}
-	else if (climbingCliffFlag == false && climbingCliffUpFlag == true)
+	else if (playerStatus == STATE_CLIFFUP)
 	{
 		animeFlag = true;
 		playerStatus = STATE_CLIFFUP;
@@ -195,9 +196,9 @@ void Player::Update()
 		animeNum = fall;
 	}
 	
-	if (oldPlayerStatus == STATE_LANDING && movingFlag == false)
+	if (oldPlayerStatus == STATE_LANDING)
 	{
-		if (playerStatus != STATE_JUMP_UP)
+		if (playerStatus == STATE_IDLING)
 		{
 			playerStatus = STATE_LANDING;
 			animeFlag = true;
@@ -221,8 +222,7 @@ void Player::Update()
 
 	parPos = position;
 
-	//過去ステータスを保存
-	oldPlayerStatus = playerStatus;
+
 }
 
 void Player::OnCollision(const CollisionInfo& info)
@@ -275,6 +275,8 @@ void Player::PushBack(const DirectX::XMVECTOR& normal, const XMFLOAT3& distance)
 
 void Player::ClimbWallJudge(XMVECTOR move)
 {
+	if (playerStatus == STATE_FALL) return;
+
 	//移動してない場合return
 	if (move.m128_f32[0] == 0.0f && move.m128_f32[1] == 0.0f && move.m128_f32[2] == 0.0f) return;
 
@@ -406,7 +408,7 @@ void Player::MoveOperation(XMVECTOR& move, float& power)
 	}
 
 
-	if (climbingCliffFlag == true)													//崖上がり
+	if (oldPlayerStatus == STATE_CLIFF_IDLING)													//崖上がり
 	{
 		MoveClimbingCliff(move, power);
 		slopeRising = false;
@@ -415,9 +417,9 @@ void Player::MoveOperation(XMVECTOR& move, float& power)
 	{
 		MoveClimb(move, power);
 	}
-	else if (oldPlayerStatus != STATE_CLIMBING && climbingCliffUpFlag == false)				//通常移動
+	else if (oldPlayerStatus != STATE_CLIFFUP)				//通常移動
 	{
-		if (climbingCliffFlag == true) return;
+		if (oldPlayerState == STATE_CLIFF_IDLING) return;
 		if (SlopeRisingFlag() == true) return;
 		if (moveLimitFlag == true) return;
 		MoveNormal(move, power);
@@ -426,7 +428,7 @@ void Player::MoveOperation(XMVECTOR& move, float& power)
 
 void Player::MoveClimbingCliff(DirectX::XMVECTOR& move, float& power)
 {
-	if (climbingCliffUpFlag == true) return;
+	if (oldPlayerStatus == STATE_CLIFFUP) return;
 
 	if (Input::GetInstance()->TriggerPadbutton(Button_Y))
 	{
@@ -435,15 +437,12 @@ void Player::MoveClimbingCliff(DirectX::XMVECTOR& move, float& power)
 		move = XMVector3TransformNormal(move, matRot);
 		move.m128_f32[0] = move.m128_f32[0] * 15.0f;
 		move.m128_f32[2] = move.m128_f32[2] * 15.0f;
-		climbingCliffUpFlag = true;
-		climbingCliffFlag = false;
 
 		playerStatus = STATE_CLIFFUP;
 	}
 	else if (Input::GetInstance()->TriggerPadbutton(Button_A))
 	{
 		move.m128_f32[1] -= 3.0f;
-		climbingCliffFlag = false;
 
 		playerStatus = STATE_FALL;
 	}
@@ -538,7 +537,6 @@ void Player::MoveNormal(DirectX::XMVECTOR& move, float& power)
 
 	if (MoveStickCheck())
 	{
-		movingFlag = true;
 		animeFlag = true;
 		if (staminaBoostFlag == false)
 		{
@@ -566,11 +564,12 @@ void Player::MoveClimb(DirectX::XMVECTOR& move, float& power)
 
 	float moveAdjustment = 0.07f;
 
-	if (StaminaUnusable() != false)
+	if (staminaQuantity <= 0.0f)
 	{
 		playerStatus = STATE_FALL;
 		position.x += climbNormal.m128_f32[0];
 		position.z += climbNormal.m128_f32[2];
+		return;
 	}
 
 
@@ -679,7 +678,6 @@ void Player::MoveClimb(DirectX::XMVECTOR& move, float& power)
 		playerStatus = STATE_FALL;
 	}
 
-
 	position.x += moveV.x;
 	position.y += moveV.y;
 	position.z += moveV.z;
@@ -687,7 +685,7 @@ void Player::MoveClimb(DirectX::XMVECTOR& move, float& power)
 
 void Player::CrystalConfirmationProcess()
 {
-	if (climbingCliffFlag == true || climbingCliffUpFlag == true) return;
+	if (playerStatus == STATE_CLIFF_IDLING || playerStatus == STATE_CLIFFUP) return;
 
 
 	//クリスタルとの接触
@@ -859,7 +857,7 @@ void Player::ObstacleConfirmationProcess(const XMVECTOR &move)
 
 void Player::GravityConfirmationProcess()
 {
-	if(climbingCliffFlag == true || climbingCliffUpFlag == true)
+	if(playerStatus == STATE_CLIFF_IDLING || playerStatus == STATE_CLIFFUP)
 	{
 		fallV = { 0, 0.0f, 0,0 };
 	}
@@ -896,6 +894,10 @@ void Player::GravityConfirmationProcess()
 		else if (fallV.m128_f32[1] < 0.0f && oldPlayerStatus == STATE_WALLKICK_DOWN)
 		{
 			playerStatus = STATE_WALLKICK_DOWN;
+		}
+		else
+		{
+			playerStatus = STATE_FALL;
 		}
 
 	}
@@ -1077,7 +1079,7 @@ void Player::TerrainConfirmationProcess()
 		ClimbWallJudge(callback.move);
 	}
 
-	//壁のぼり状態なら床の判定を飛ばす(保留)
+	//壁のぼり状態なら床の判定を飛ばす
 	if (playerStatus == STATE_CLIMBING)
 	{
 		return;
@@ -1177,7 +1179,7 @@ void Player::StaminaManagement()
 			if (staminaQuantity >= staminaQuantityMax) return;
 			staminaQuantity += staminaQuantityMax * (1.0f / 300.0f);
 		}
-		else if (climbingCliffFlag == true || climbingCliffUpFlag == true)
+		else if (playerStatus == STATE_CLIFF_IDLING || playerStatus == STATE_CLIFFUP)
 		{
 			staminaRecoveryTime = 2.0f;
 		}
@@ -1219,7 +1221,7 @@ void Player::StaminaManagement()
 
 void Player::MoveBoxProcess(DirectX::XMVECTOR& move, float& power)
 {
-	if (climbingCliffFlag == true || climbingCliffUpFlag == true) return;
+	if (playerStatus == STATE_CLIFF_IDLING || playerStatus == STATE_CLIFFUP) return;
 	
 	//※前提条件移動後
 	
@@ -1425,63 +1427,63 @@ void Player::AnimetionProcess()
 		switch (animeNum)
 		{
 		case 0:					//アイドリング
-			SetModel(fbxModel1);
+			SetModel(fbxModels[0]);
 			loopPlayFlag = true;
 			break;
 		case 1:					//歩き
-			SetModel(fbxModel2);
+			SetModel(fbxModels[1]);
 			loopPlayFlag = true;
 			break;
 		case 2:					//走り
-			SetModel(fbxModel3);
+			SetModel(fbxModels[2]);
 			loopPlayFlag = true;
 			break;
 		case 3:					//ジャンプ
-			SetModel(fbxModel4);
+			SetModel(fbxModels[3]);
 			loopPlayFlag = false;
 			break;
 		case 4:					//落下
-			SetModel(fbxModel5);
+			SetModel(fbxModels[4]);
 			loopPlayFlag = false;
 			break;
 		case 5:					//壁のぼり
-			SetModel(fbxModel6);
+			SetModel(fbxModels[5]);
 			loopPlayFlag = true;
 			break;
 		case 6:					//着地
-			SetModel(fbxModel7);
+			SetModel(fbxModels[6]);
 			loopPlayFlag = false;
 			break;
 		case 7:					//崖ぶら下がりアイドリング
-			SetModel(fbxModel8);
+			SetModel(fbxModels[7]);
 			loopPlayFlag = true;
 			break;
 		case 8:					//キック
-			SetModel(fbxModel9);
+			SetModel(fbxModels[8]);
 			loopPlayFlag = true;
 			break;
 		case 9:					//スライディング
-			SetModel(fbxModel10);
+			SetModel(fbxModels[9]);
 			//loopPlayFlag = true;
 			break;
 		case 10:					//推し歩き
-			SetModel(fbxModel11);
+			SetModel(fbxModels[10]);
 			loopPlayFlag = true;
 			break;
 		case 11:					//疲れ歩き
-			SetModel(fbxModel12);
+			SetModel(fbxModels[11]);
 			loopPlayFlag = true;
 			break;
 		case 12:					//疲れアイドル
-			SetModel(fbxModel13);
+			SetModel(fbxModels[12]);
 			loopPlayFlag = true;
 			break;
 		case 13:					//壁蹴り
-			SetModel(fbxModel14);
+			SetModel(fbxModels[13]);
 			loopPlayFlag = true;
 			break;
 		case 14:					//崖上がり
-			SetModel(fbxModel15);
+			SetModel(fbxModels[14]);
 			loopPlayFlag = false;
 			break;
 		}
@@ -1506,12 +1508,8 @@ void Player::AnimetionProcess()
 	{
 		if (AnimetionFinFlag == true)
 		{
-			climbingCliffUpFlag = false;
+			playerStatus = STATE_IDLING;
 		}
-	}
-	else
-	{
-		climbingCliffUpFlag = false;
 	}
 
 	//全フレームの保存
@@ -1570,20 +1568,17 @@ void Player::climbingCliff()
 	//動く箱に対しての起き上がり
 	if (moveBoxHitFlag == true)
 	{
-		if (climbingCliffUpFlag == true) return;
+		if (playerStatus == STATE_CLIFFUP) return;
 
 		if (JsonLoader::moveBoxObjects[moveBoxHitNum].get()->GetPosition().y <= position.y) return;
 
 		if(Input::GetInstance()->TriggerPadbutton(Button_Y) && StaminaUnusable() == false)
 		{
 			playerStatus = STATE_CLIFFUP;
-
-			climbingCliffFlag = true;
 			position.y = JsonLoader::moveBoxObjects[moveBoxHitNum].get()->GetPosition().y + JsonLoader::moveBoxObjects[moveBoxHitNum].get()->GetScale().y;
 		}
 	}
 
-	//climbingCliffFlag = false;
 	if (jumpWallHittingFlag != false) return;					//ジャンプした時に壁にぶつかっている
 	if (wallHittingFlag != true) return;						//壁にぶつかっていない
 	if (playerStatus != STATE_JUMP_DOWN && playerStatus != STATE_WALLKICK_DOWN) return;
@@ -1608,7 +1603,7 @@ void Player::climbingCliff()
 	}
 	
 	if (climbingCliffBoxHitFlag != true) return;
-	climbingCliffFlag = true;
+	playerStatus = STATE_CLIFF_IDLING;
 	position.y = JsonLoader::cliffClimbingObjects[number].get()->GetPosition().y + JsonLoader::cliffClimbingObjects[number].get()->GetScale().y;
 
 	return;

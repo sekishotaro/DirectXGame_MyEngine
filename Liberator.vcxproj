@@ -216,7 +216,6 @@
     <ClCompile Include="collision\CollisionManager.cpp" />
     <ClCompile Include="game\Effect.cpp" />
     <ClCompile Include="2d\Effect2d.cpp" />
-    <ClCompile Include="game\Enemy.cpp" />
     <ClCompile Include="Framework.cpp" />
     <ClCompile Include="camera\InterpolationCamera.cpp" />
     <ClCompile Include="light\LightGroup.cpp" />
@@ -273,7 +272,6 @@
     <ClInclude Include="light\DirectionalLight.h" />
     <ClInclude Include="game\Effect.h" />
     <ClInclude Include="2d\Effect2d.h" />
-    <ClInclude Include="game\Enemy.h" />
     <ClInclude Include="camera\InterpolationCamera.h" />
     <ClInclude Include="light\LightGroup.h" />
     <ClInclude Include="math\Operator.h" />

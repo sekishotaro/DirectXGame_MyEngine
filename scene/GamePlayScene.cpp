@@ -11,7 +11,6 @@
 #include "imgui.h"
 #include "MyMath.h"
 #include "CollisionSet.h"
-#include "Enemy.h"
 #include "Effect2d.h"
 
 #include "SphereCollider.h"
@@ -66,41 +65,39 @@ void GamePlayScene::Initialize()
 	JsonLoader::SetObject();
 
 	////モデル名を指定してファイル読み込み
-	fbxModel = FbxLoader::GetInstance()->LoadModelFromFile("model");
-	fbxModel2 = FbxLoader::GetInstance()->LoadModelFromFile("model2");
-	fbxModel3 = FbxLoader::GetInstance()->LoadModelFromFile("model3");
-	fbxModel4 = FbxLoader::GetInstance()->LoadModelFromFile("model4");
-	fbxModel5 = FbxLoader::GetInstance()->LoadModelFromFile("model5");
-	fbxModel6 = FbxLoader::GetInstance()->LoadModelFromFile("model6");
-	fbxModel7 = FbxLoader::GetInstance()->LoadModelFromFile("model7");
-	fbxModel8 = FbxLoader::GetInstance()->LoadModelFromFile("model8");
-	fbxModel9 = FbxLoader::GetInstance()->LoadModelFromFile("model9");
-	fbxModel10 = FbxLoader::GetInstance()->LoadModelFromFile("model10");
-	fbxModel11 = FbxLoader::GetInstance()->LoadModelFromFile("model11");
-	fbxModel12 = FbxLoader::GetInstance()->LoadModelFromFile("model12");
-	fbxModel13 = FbxLoader::GetInstance()->LoadModelFromFile("model13");
-	fbxModel14 = FbxLoader::GetInstance()->LoadModelFromFile("model14");
-	fbxModel15 = FbxLoader::GetInstance()->LoadModelFromFile("model15");
+	fbxModels[0] = FbxLoader::GetInstance()->LoadModelFromFile("model");
+	fbxModels[1] = FbxLoader::GetInstance()->LoadModelFromFile("model2");
+	fbxModels[2] = FbxLoader::GetInstance()->LoadModelFromFile("model3");
+	fbxModels[3] = FbxLoader::GetInstance()->LoadModelFromFile("model4");
+	fbxModels[4] = FbxLoader::GetInstance()->LoadModelFromFile("model5");
+	fbxModels[5] = FbxLoader::GetInstance()->LoadModelFromFile("model6");
+	fbxModels[6] = FbxLoader::GetInstance()->LoadModelFromFile("model7");
+	fbxModels[7] = FbxLoader::GetInstance()->LoadModelFromFile("model8");
+	fbxModels[8] = FbxLoader::GetInstance()->LoadModelFromFile("model9");
+	fbxModels[9] = FbxLoader::GetInstance()->LoadModelFromFile("model10");
+	fbxModels[10] = FbxLoader::GetInstance()->LoadModelFromFile("model11");
+	fbxModels[11] = FbxLoader::GetInstance()->LoadModelFromFile("model12");
+	fbxModels[12] = FbxLoader::GetInstance()->LoadModelFromFile("model13");
+	fbxModels[13] = FbxLoader::GetInstance()->LoadModelFromFile("model14");
+	fbxModels[14] = FbxLoader::GetInstance()->LoadModelFromFile("model15");
 
 	collisionManager = CollisionManager::GetInstance();
-	objFighter = Player::Create(fbxModel);
-	objFighter->SetModel1(fbxModel);
-	objFighter->SetModel2(fbxModel2);
-	objFighter->SetModel3(fbxModel3);
-	objFighter->SetModel4(fbxModel4);
-	objFighter->SetModel5(fbxModel5);
-	objFighter->SetModel6(fbxModel6);
-	objFighter->SetModel7(fbxModel7);
-	objFighter->SetModel8(fbxModel8);
-	objFighter->SetModel9(fbxModel9);
-	objFighter->SetModel10(fbxModel10);
-	objFighter->SetModel11(fbxModel11);
-	objFighter->SetModel12(fbxModel12);
-	objFighter->SetModel13(fbxModel13);
-	objFighter->SetModel14(fbxModel14);
-	objFighter->SetModel15(fbxModel15);
-	////敵初期化
-	//Enemy::Initialize();
+	objFighter = Player::Create(fbxModels[0]);
+	objFighter->SetModel1(fbxModels[0]);
+	objFighter->SetModel2(fbxModels[1]);
+	objFighter->SetModel3(fbxModels[2]);
+	objFighter->SetModel4(fbxModels[3]);
+	objFighter->SetModel5(fbxModels[4]);
+	objFighter->SetModel6(fbxModels[5]);
+	objFighter->SetModel7(fbxModels[6]);
+	objFighter->SetModel8(fbxModels[7]);
+	objFighter->SetModel9(fbxModels[8]);
+	objFighter->SetModel10(fbxModels[9]);
+	objFighter->SetModel11(fbxModels[10]);
+	objFighter->SetModel12(fbxModels[11]);
+	objFighter->SetModel13(fbxModels[12]);
+	objFighter->SetModel14(fbxModels[13]);
+	objFighter->SetModel15(fbxModels[14]);
 	
 	Effect::Initialize();
 	UI::Initialize();
@@ -130,7 +127,6 @@ void GamePlayScene::Update()
 	lightGroup->SetCircleShadowFactorAngle(0, XMFLOAT2(circleShadowFactorAngle));
 
 	lightGroup->SetCircleShadowDir(1, XMVECTOR({ circleShadowDir[0], circleShadowDir[1], circleShadowDir[2], 0 }));
-	//lightGroup->SetCircleShadowCasterPos(1, XMFLOAT3(JsonLoader::raidEnemyObjects[0].get()->GetPosition()));
 	lightGroup->SetCircleShadowAtten(1, XMFLOAT3(circleShadowAtten));
 	lightGroup->SetCircleShadowFactorAngle(1, XMFLOAT2(circleShadowFactorAngle2));
 

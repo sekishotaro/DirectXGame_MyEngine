@@ -1,7 +1,6 @@
 #include "DebugCamera.h"
 #include "Input.h"
 #include "Player.h"
-#include "Enemy.h"
 #include "SphereCollider.h"
 #include "QueryCallback.h"
 #include "CollisionManager.h"
@@ -44,7 +43,6 @@ void DebugCamera::Update()
 	XMFLOAT3 cameraPos = MoveUpdate();
 
 	UpdateProcess(cameraPos);
-	RaidCameraCount();
 	//コライダー更新
 	Object->UpdateWorldMatrix();
 	collider->Update();
@@ -54,15 +52,8 @@ void DebugCamera::Update()
 	//常時自機にターゲット
 	XMFLOAT3 targetPos = TargetProcess();
 	
-	//襲撃タイミングで視線を外す
-	if (RaidTargetCameraFlag == true)
-	{
-		targetPos = Enemy::GetPos();
-	}
-	
-
 	targetPos.y += 6.0f;
-	oldRaidFlag = Enemy::GetRaidFlag();
+	
 	Camera::SetTarget(targetPos);
 	Camera::Update();
 }
@@ -283,24 +274,6 @@ void DebugCamera::UpdateOnly()
 	Camera::Update();
 }
 
-void DebugCamera::RaidCameraCount()
-{
-	if (oldRaidFlag == false && Enemy::GetRaidFlag() == true)
-	{
-		RaidTargetCameraFlag = true;
-	}
-
-	if (RaidTargetCameraFlag == false) return;
-
-	if (count >= 300)
-	{
-		RaidTargetCameraFlag = false;
-		count = 0;
-		return;
-	}
-	count++;
-}
-
 void DebugCamera::ViewpointSwitch(float endRota)
 {
 	static float MoveTime = 0.0f;
@@ -415,7 +388,7 @@ void DebugCamera::CliffFlagUpdate()
 	if (cliffTargetFlag == true) return;
 
 	//崖上がりをした瞬間
-	if (static_cast<int>(Player::GetStatus()) == 15 && static_cast<int>(Player::GetOldStatus()) != 15)
+	if (static_cast<int>(Player::GetStatus()) == 15 && static_cast<int>(Player::GetOldStatus()) == 8)
 	{
 		cliffTargetFlag = true;
 		moveAftaerPosY = Player::GetPos().y;

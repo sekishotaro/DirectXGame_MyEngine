@@ -100,10 +100,6 @@ public:
 	Sprite *spriteBG = nullptr;
 	Sprite* smoke = nullptr;
 	Sprite* smoke2 = nullptr;
-	//オブジェクト
-	std::vector<std::unique_ptr<MathObject>> enemyColliderObjects;
-	//モデル
-	MathModel* modelEnemyCollider = nullptr;
 
 	std::unique_ptr<Object3d> skydomeObject;
 	Model* skydomeModel = nullptr;
@@ -139,6 +135,9 @@ public:
 	FbxModel* fbxModel13 = nullptr;
 	FbxModel* fbxModel14 = nullptr;
 	FbxModel* fbxModel15 = nullptr;
+	FbxModel* fbxModels[15] = { nullptr, nullptr, nullptr, nullptr, nullptr,
+	nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, };
+	
 	InterpolationCamera interpolationCamera;
 
 	bool moveFlag = false;

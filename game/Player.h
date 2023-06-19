@@ -5,7 +5,6 @@
 #include <d3d12.h>
 #include <DirectXMath.h>
 #include <d3dx12.h>
-
 #include "Input.h"
 #include "FbxObject3d.h"
 #include "Object3d.h"
@@ -230,28 +229,26 @@ public:
 	static int GetAnimeNum() { return animeNum; }
 	static bool &GetSlopeFlag() { return slopeFlag; }
 	static bool GetWallHitFlag() { return wallHittingFlag; }
-	static bool GetClimbingCliffFlag() { return climbingCliffFlag; }
 	static float GetTimeMax() { return timeLimitMax; }
 
 	static PlayerStatus& GetStatus() { return playerStatus; }
 	static PlayerStatus& GetOldStatus() { return oldPlayerStatus; }
 
-	void SetModel1(FbxModel* fbxModel) { this->fbxModel1 = fbxModel; };
-	void SetModel2(FbxModel* fbxModel) { this->fbxModel2 = fbxModel; };
-	void SetModel3(FbxModel* fbxModel) { this->fbxModel3 = fbxModel; };
-	void SetModel4(FbxModel* fbxModel) { this->fbxModel4 = fbxModel; };
-	void SetModel5(FbxModel* fbxModel) { this->fbxModel5 = fbxModel; };
-	void SetModel6(FbxModel* fbxModel) { this->fbxModel6 = fbxModel; };
-	void SetModel7(FbxModel* fbxModel) { this->fbxModel7 = fbxModel; };
-	void SetModel8(FbxModel* fbxModel) { this->fbxModel8 = fbxModel; };
-	void SetModel9(FbxModel* fbxModel) { this->fbxModel9 = fbxModel; };
-	void SetModel10(FbxModel* fbxModel) { this->fbxModel10 = fbxModel; };
-	void SetModel11(FbxModel* fbxModel) { this->fbxModel11 = fbxModel; };
-	void SetModel12(FbxModel* fbxModel) { this->fbxModel12 = fbxModel; };
-	void SetModel13(FbxModel* fbxModel) { this->fbxModel13 = fbxModel; };
-	void SetModel14(FbxModel* fbxModel) { this->fbxModel14 = fbxModel; };
-	void SetModel15(FbxModel* fbxModel) { this->fbxModel15 = fbxModel; };
-
+	void SetModel1(FbxModel* fbxModel) { this->fbxModels[0] = fbxModel; };
+	void SetModel2(FbxModel* fbxModel) { this->fbxModels[1] = fbxModel; };
+	void SetModel3(FbxModel* fbxModel) { this->fbxModels[2] = fbxModel; };
+	void SetModel4(FbxModel* fbxModel) { this->fbxModels[3] = fbxModel; };
+	void SetModel5(FbxModel* fbxModel) { this->fbxModels[4] = fbxModel; };
+	void SetModel6(FbxModel* fbxModel) { this->fbxModels[5] = fbxModel; };
+	void SetModel7(FbxModel* fbxModel) { this->fbxModels[6] = fbxModel; };
+	void SetModel8(FbxModel* fbxModel) { this->fbxModels[7] = fbxModel; };
+	void SetModel9(FbxModel* fbxModel) { this->fbxModels[8] = fbxModel; };
+	void SetModel10(FbxModel* fbxModel) { this->fbxModels[9] = fbxModel; };
+	void SetModel11(FbxModel* fbxModel) { this->fbxModels[10] = fbxModel; };
+	void SetModel12(FbxModel* fbxModel) { this->fbxModels[11] = fbxModel; };
+	void SetModel13(FbxModel* fbxModel) { this->fbxModels[12] = fbxModel; };
+	void SetModel14(FbxModel* fbxModel) { this->fbxModels[13] = fbxModel; };
+	void SetModel15(FbxModel* fbxModel) { this->fbxModels[14] = fbxModel; };
 private:
 	
 	static XMFLOAT3 pos;				//プレイヤーの位置
@@ -260,8 +257,8 @@ private:
 	static XMFLOAT3 moveV;				//プレイヤーの移動量
 	DirectX::XMVECTOR fallV = {};		//落下ベクトル
 	static float moveAdjustmentNum;		//移動量調整数
-	static int inputX;					//コントローラースティック入力X
-	static int inputY;					//コントローラースティック入力Y
+	int inputX = 0;					//コントローラースティック入力X
+	int inputY = 0;					//コントローラースティック入力Y
 	int wallCount = 0;					//ツタに当たった時のめり込み時カウント
 	DirectX::XMVECTOR climbNormal = {};	//壁のぼり用保存めり込み法線
 	static float timeLimit;				//現在の時間
@@ -284,21 +281,22 @@ private:
 	static int oldAnimeNum;
 	static bool animeFlag;
 	//モデル
-	static FbxModel* fbxModel1;		//基本
-	static FbxModel* fbxModel2;		//ウォーキング
-	static FbxModel* fbxModel3;		//ランニング
-	static FbxModel* fbxModel4;		//ジャンプ
-	static FbxModel* fbxModel5;		//走りジャンプ
-	static FbxModel* fbxModel6;		//クライミング
-	static FbxModel* fbxModel7;		//着地
-	static FbxModel* fbxModel8;		//崖ぶら下がりアイドリング
-	static FbxModel* fbxModel9;		//キック
-	static FbxModel* fbxModel10;	//スライディング
-	static FbxModel* fbxModel11;	//押し歩き
-	static FbxModel* fbxModel12;	//スタミナ切れ歩き
-	static FbxModel* fbxModel13;	//スタミナ切れアイドリング
-	static FbxModel* fbxModel14;	//壁蹴りジャンプ
-	static FbxModel* fbxModel15;	//崖上がり
+	//static FbxModel* fbxModel1;		//基本
+	//static FbxModel* fbxModel2;		//ウォーキング
+	//static FbxModel* fbxModel3;		//ランニング
+	//static FbxModel* fbxModel4;		//ジャンプ
+	//static FbxModel* fbxModel5;		//走りジャンプ
+	//static FbxModel* fbxModel6;		//クライミング
+	//static FbxModel* fbxModel7;		//着地
+	//static FbxModel* fbxModel8;		//崖ぶら下がりアイドリング
+	//static FbxModel* fbxModel9;		//キック
+	//static FbxModel* fbxModel10;	//スライディング
+	//static FbxModel* fbxModel11;	//押し歩き
+	//static FbxModel* fbxModel12;	//スタミナ切れ歩き
+	//static FbxModel* fbxModel13;	//スタミナ切れアイドリング
+	//static FbxModel* fbxModel14;	//壁蹴りジャンプ
+	//static FbxModel* fbxModel15;	//崖上がり
+	static FbxModel* fbxModels[];
 
 	//坂確認フラグ
 	static bool slopeFlag;
@@ -320,8 +318,6 @@ private:
 	static bool oldWallHittingFlag;
 	static bool jumpWallHittingFlag;
 	//崖上がり
-	static bool climbingCliffFlag;
-	static bool climbingCliffUpFlag;
 	int climbingCliffBoxNum = 0;
 	//箱移動してた確認フラグ
 	static bool moveBoxFlag;
@@ -338,7 +334,6 @@ private:
 
 public:
 	XMFLOAT3 moveBoxMax1 = { 0.0f, 0.0f, 0.0f };
-	bool movingFlag = false;
 	//debug
 	bool teleportFlag = false;
 	bool testFlag = false;

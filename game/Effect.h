@@ -43,22 +43,14 @@ public:
 	static void Draw();
 
 private:
-	static void EnemyAccessEffectUpdate(XMFLOAT3 cameraPos);
-
 	static void ClystalEffectUpdate();
 
 	static XMFLOAT2 leap(XMFLOAT2 start, XMFLOAT2 end, float time);
 
 private:
-	static Sprite* EnemyAccessEffect;
 	static Effect2d* crystalEffect;
 	static std::vector<Effect2d*> crystalEffects;
-	static float EnemyAccessEffectSize;
-	static float EnemyAccessDisSpeed;
-	static bool oldRaidFlag;
-	static float EnemyPlayerDis;		//襲撃起動時の距離の保存
 	static float crystalMoveTime;
-
 
 	//各クリスタルのUI位置
 	static const XMFLOAT2 crystalUIPos[8];
