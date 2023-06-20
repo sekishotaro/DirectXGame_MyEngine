@@ -50,6 +50,9 @@ public: // ÉÅÉìÉoä÷êî
 
 	void CliffFlagUpdate();
 
+	void CorrectionProcess();
+	bool CorrectionCheck();
+
 	static float GetRotaY() { return rotaY; }
 	static float GetRotaX() { return rotaX; }
 public:
@@ -58,10 +61,11 @@ public:
 	static float dx;
 	static float dy;
 	static float dz;
-	static XMFLOAT3 distance;
 	static float rotaX;
 	static float rotaY;
 	static float dis;
+	float correctionDis = 0.0f;
+	XMFLOAT3 correctionVal = {};
 	static bool hitFlag;
 
 	static std::unique_ptr<Object3d> Object;

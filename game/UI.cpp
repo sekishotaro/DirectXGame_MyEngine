@@ -157,22 +157,22 @@ void UI::Initialize()
 void UI::Update()
 {
 	float staminaSizeY = staminabarSize.y * Player::GetStaminaQuantity() / 100.0f;
-	stamina[1]->SetSize({ staminabarSize.x, staminaSizeY });
+	stamina[2]->SetSize({ staminabarSize.x, staminaSizeY });
 
 	if (Player::GetStaminaCut() != true)
 	{
 		if (Player::GetStaminaQuantity() >= 30.0f)
 		{
-			stamina[1]->SetColor({ 1.0f, 1.0f, 1.0f, 1.0f });
+			stamina[2]->SetColor({ 1.0f, 1.0f, 1.0f, 1.0f });
 		}
 		else
 		{
-			stamina[1]->SetColor({ 1.0f, 0.1f, 0.1f, 1.0f });
+			stamina[2]->SetColor({ 1.0f, 0.1f, 0.1f, 1.0f });
 		}
 	}
 	else
 	{
-		stamina[1]->SetColor({ 1.0f, 0.1f, 0.1f, 1.0f });
+		stamina[2]->SetColor({ 1.0f, 0.1f, 0.1f, 1.0f });
 	}
 
 	timeUpdata();

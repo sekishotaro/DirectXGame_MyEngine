@@ -12,7 +12,6 @@ float DebugCamera::dy = 0;
 float DebugCamera::dz = 0;
 XMFLOAT3 DebugCamera::eye;
 XMFLOAT3 DebugCamera::target;
-XMFLOAT3 DebugCamera::distance = { 0, 5.0f, -10.0 };
 float DebugCamera::rotaX = 270.0f;
 float DebugCamera::rotaY = 70.0f;
 float DebugCamera::dis = 20.0f;
@@ -32,7 +31,7 @@ DebugCamera::DebugCamera(int window_width, int window_height) : Camera(window_wi
 	//半径分だけ足元から浮いた座標を球中心にする
 	Object->SetCollider(new SphereCollider(XMVECTOR({ 0, radius, 0,0 }), radius));
 	collider = Object->GetBaseCollider();
-	collider->SetAttribute(COLLISION_ATTR_ALLIES);
+	collider->SetAttribute(COLLISION_ATTR_ALLIES); 
 	Object->SetBaseCollider(collider);
 	rotaX = 180.0f;
 }
@@ -46,6 +45,8 @@ void DebugCamera::Update()
 	//コライダー更新
 	Object->UpdateWorldMatrix();
 	collider->Update();
+
+	CorrectionProcess();
 
 	SetEye(cameraPos);
 	
@@ -67,9 +68,9 @@ DebugCamera::XMFLOAT3 DebugCamera::SphereCoordinateSystem()
 	cameraPos = TargetProcess();
 	
 	//球面座標系
-	cameraPos.y += dis * cos(radiusY);
-	cameraPos.x += dis * sin(radiusY) * cos(radiusX);
-	cameraPos.z += dis * sin(radiusY) * sin(radiusX);
+	cameraPos.y += (dis + correctionDis) * cos(radiusY);
+	cameraPos.x += (dis + correctionDis) * sin(radiusY) * cos(radiusX);
+	cameraPos.z += (dis + correctionDis) * sin(radiusY) * sin(radiusX);
 
 	return cameraPos;
 }
@@ -394,6 +395,34 @@ void DebugCamera::CliffFlagUpdate()
 		moveAftaerPosY = Player::GetPos().y;
 		movePreviousPosY = oldTargetPos.y;
 	}
+}
+
+void DebugCamera::CorrectionProcess()
+{
+	if (CorrectionCheck() == true) //移動
+	{
+		if (correctionDis <= 2.0f)
+		{
+			correctionDis += 0.1f;
+		}
+	}
+	else
+	{
+		if (correctionDis >= 0.0f)
+		{
+			correctionDis -= 0.1f;
+		}
+	}
+
+}
+
+bool DebugCamera::CorrectionCheck()
+{
+	if (static_cast<int>(Player::GetStatus()) == 1) return true;
+	if (static_cast<int>(Player::GetStatus()) == 2) return true;
+	if (static_cast<int>(Player::GetStatus()) == 3) return true;
+	if (static_cast<int>(Player::GetStatus()) == 4) return true;
+	return false;
 }
 
 float DebugCamera::CliffMoveTargetState()
