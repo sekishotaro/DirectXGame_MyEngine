@@ -120,21 +120,6 @@ public:
 	float circleShadowAtten[3] = { 0.5f,0.6f,0.0f };
 	float circleShadowFactorAngle[2] = { 0.0f, 0.5f };
 	float circleShadowFactorAngle2[2] = { 0.0f, 2.0f };
-	FbxModel* fbxModel = nullptr;
-	FbxModel* fbxModel2 = nullptr;
-	FbxModel* fbxModel3 = nullptr;
-	FbxModel* fbxModel4 = nullptr;
-	FbxModel* fbxModel5 = nullptr;
-	FbxModel* fbxModel6 = nullptr;
-	FbxModel* fbxModel7 = nullptr;
-	FbxModel* fbxModel8 = nullptr;
-	FbxModel* fbxModel9 = nullptr;
-	FbxModel* fbxModel10 = nullptr;
-	FbxModel* fbxModel11 = nullptr;
-	FbxModel* fbxModel12 = nullptr;
-	FbxModel* fbxModel13 = nullptr;
-	FbxModel* fbxModel14 = nullptr;
-	FbxModel* fbxModel15 = nullptr;
 	FbxModel* fbxModels[15] = { nullptr, nullptr, nullptr, nullptr, nullptr,
 	nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, };
 	

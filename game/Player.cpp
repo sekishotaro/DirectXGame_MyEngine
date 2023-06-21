@@ -40,21 +40,6 @@ Player::PlayerStatus Player::playerStatus = STATE_IDLING;
 Player::PlayerStatus Player::oldPlayerStatus = STATE_IDLING;
 
 //ƒ‚ƒfƒ‹
-//FbxModel* Player::fbxModel1 = nullptr;
-//FbxModel* Player::fbxModel2 = nullptr;
-//FbxModel* Player::fbxModel3 = nullptr;
-//FbxModel* Player::fbxModel4 = nullptr;
-//FbxModel* Player::fbxModel5 = nullptr;
-//FbxModel* Player::fbxModel6 = nullptr;
-//FbxModel* Player::fbxModel7 = nullptr;
-//FbxModel* Player::fbxModel8 = nullptr;
-//FbxModel* Player::fbxModel9 = nullptr;
-//FbxModel* Player::fbxModel10 = nullptr;
-//FbxModel* Player::fbxModel11 = nullptr;
-//FbxModel* Player::fbxModel12 = nullptr;
-//FbxModel* Player::fbxModel13 = nullptr;
-//FbxModel* Player::fbxModel14 = nullptr;
-//FbxModel* Player::fbxModel15 = nullptr;
 FbxModel* Player::fbxModels[] = {nullptr,nullptr, nullptr, nullptr, nullptr, 
 nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr};
 
@@ -359,9 +344,7 @@ void Player::ClimbWallJudge(XMVECTOR move)
 
 	if (climbWallHit == false && climbWallHitPar == true)
 	{
-		position.x -= moveV.x;
-		position.y -= moveV.y;
-		position.z -= moveV.z;
+		position = position - moveV;
 		climbWallHit = true;
 	}
 
@@ -679,9 +662,7 @@ void Player::MoveClimb(DirectX::XMVECTOR& move, float& power)
 		playerStatus = STATE_FALL;
 	}
 
-	position.x += moveV.x;
-	position.y += moveV.y;
-	position.z += moveV.z;
+	position = position + moveV;
 }
 
 void Player::CrystalConfirmationProcess()
