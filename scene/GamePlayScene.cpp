@@ -202,8 +202,8 @@ void GamePlayScene::Draw()
 	ImGui::NewFrame();
 	ImGui::Begin("config1");//ウィンドウの名前
 	ImGui::SetWindowSize(ImVec2(400, 500), ImGuiCond_::ImGuiCond_FirstUseEver);
-	ImGui::Text("posX :%f", objFighter->GetPosition().x);
-	ImGui::Text("posY :%f", objFighter->GetPosition().y);
+	ImGui::Text("rotX :%f", camera->GetRotaX());
+	ImGui::Text("rotY :%f", objFighter->GetRotation().y);
 	ImGui::Text("posZ :%f", objFighter->GetPosition().z);
 	ImGui::Text("playerState :%d", static_cast<int>(objFighter->GetStatus()));
 	ImGui::Checkbox("teleport", &objFighter->teleportFlag);

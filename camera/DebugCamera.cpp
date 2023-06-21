@@ -47,7 +47,7 @@ void DebugCamera::Update()
 	collider->Update();
 
 	CorrectionProcess();
-
+	cameraPos = cameraPos + correctionVal;
 	SetEye(cameraPos);
 	
 	//常時自機にターゲット
@@ -92,11 +92,13 @@ DebugCamera::XMFLOAT3 DebugCamera::MoveUpdate()
 		if (Input::GetInstance()->RightStickIn(UP) && rotaY < 175)
 		{
 			rotaY += 1.0f;
+			slopeRotaFlag = false;
 			if (dis <= disMax && hitFlag == false) { dis += 0.5f; }
 		}
 		else if (Input::GetInstance()->RightStickIn(DOWN) && rotaY > 5)
 		{
 			rotaY -= 1.0f;
+			slopeRotaFlag = false;
 			if (dis <= disMax && hitFlag == false) { dis += 0.5f; }
 		}
 		if (Input::GetInstance()->RightStickIn(RIGHT))
@@ -113,6 +115,11 @@ DebugCamera::XMFLOAT3 DebugCamera::MoveUpdate()
 		if (dis <= disMax && hitFlag == false) { dis += 0.5f; }
 	}
 	
+	//坂
+	
+	SlopeRotaYProcess();
+
+
 	//視点正面移動
 	static float endRota = 0;
 	if (Input::GetInstance()->PushPadbutton(GAMEPAD_RIGHT_SHOULDER) && viewpointSwitchFlag == false)
@@ -399,21 +406,62 @@ void DebugCamera::CliffFlagUpdate()
 
 void DebugCamera::CorrectionProcess()
 {
+	static XMFLOAT3 moveVal = {};
+
 	if (CorrectionCheck() == true) //移動
 	{
-		if (correctionDis <= 2.0f)
+		if (moveVal.x < 1.0f && moveVal.x > -1.0f)
 		{
-			correctionDis += 0.1f;
+			moveVal.x += (-1.0f) * Player::GetMove().x;
 		}
+
+		if (moveVal.z < 1.0f && moveVal.z > -1.0f)
+		{
+			moveVal.z += (-1.0f) * Player::GetMove().z;
+		}
+
+
+		//if (correctionDis <= 2.0f)
+		//{
+		//	correctionDis += 0.1f;
+		//}
 	}
 	else
 	{
-		if (correctionDis >= 0.0f)
-		{
-			correctionDis -= 0.1f;
-		}
-	}
 
+		if (moveVal.x < 0.0f)
+		{
+			moveVal.x += 0.1f;
+		}
+		else if (moveVal.x > 0.0f)
+		{
+			moveVal.x -= 0.1f;
+		}
+
+		
+		if (moveVal.z < 0.0f)
+		{
+			moveVal.z += 0.1f;
+		}
+		else if (moveVal.z > 0.0f)
+		{
+			moveVal.z -= 0.1f;
+		}
+
+		if (0.1f >= moveVal.x && moveVal.x >= -0.1f)
+		{
+			moveVal.x = 0.0f;
+		}
+		if (0.1f >= moveVal.z && moveVal.z >= -0.1f)
+		{
+			moveVal.z = 0.0f;
+		}
+		//if (correctionDis >= 0.0f)
+		//{
+		//	correctionDis -= 0.1f;
+		//}
+	}
+	correctionVal = moveVal;
 }
 
 bool DebugCamera::CorrectionCheck()
@@ -423,6 +471,58 @@ bool DebugCamera::CorrectionCheck()
 	if (static_cast<int>(Player::GetStatus()) == 3) return true;
 	if (static_cast<int>(Player::GetStatus()) == 4) return true;
 	return false;
+}
+
+void DebugCamera::SlopeRotaYProcess()
+{
+	if (Player::GetSlopeFlag() == true)
+	{
+		if (slopeRotaFlag == false)
+		{
+			slopeRotaFlag = true;
+		}
+		
+		if (Player::GetRot().y >= 75.0f && Player::GetRot().y <= 105.0f)
+		{
+			if (rotaY < 100)
+			{
+				rotaY += 0.5f;
+			}
+		}
+		else if (Player::GetRot().y >= 255.0f && Player::GetRot().y <= 285.0f)
+		{
+			if (rotaY > 50)
+			{
+				rotaY -= 0.5f;
+			}
+
+			if (rotaX == 0)
+			{
+				rotaX = 0;
+			}
+			else if (rotaX <= 180 && rotaX > 0)
+			{
+				rotaX -= 1.0f;
+			}
+			else if (rotaX > 180 && rotaX <= 360)
+			{
+				rotaX += 1.0f;
+			}
+		}
+	}
+	else
+	{
+		if (slopeRotaFlag == false) return;
+		if (rotaY > 70)
+		{
+			rotaY -= 0.5f;
+		}
+
+		if (rotaY < 70)
+		{
+			rotaY += 0.5f;
+		}
+	}
 }
 
 float DebugCamera::CliffMoveTargetState()

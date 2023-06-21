@@ -15,6 +15,7 @@ using namespace DirectX;
 XMFLOAT3 Player::pos = { 0,0,0 };
 XMFLOAT3 Player::rot = { 0,0,0 };
 XMFLOAT3 Player::moveV = { 0,0,0 };
+XMFLOAT3 Player::moveVal = { 0,0,0 };
 float Player::moveAdjustmentNum = 1.0f;
 float Player::timeLimit = 30.0f;
 const float Player::timeLimitMax = 20.0f;
@@ -1628,7 +1629,8 @@ void Player::MoveAddDetermination(DirectX::XMVECTOR& move, float& power)
 		move.m128_f32[0] = move.m128_f32[0] * power;
 		move.m128_f32[2] = move.m128_f32[2] * power;
 	}
-
+	moveVal = {};
+	moveVal = MyMath::addVector(moveVal, move);
 	position = MyMath::addVector(position, move);
 }
 

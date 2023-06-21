@@ -53,6 +53,8 @@ public: // ÉÅÉìÉoä÷êî
 	void CorrectionProcess();
 	bool CorrectionCheck();
 
+	void SlopeRotaYProcess();
+
 	static float GetRotaY() { return rotaY; }
 	static float GetRotaX() { return rotaX; }
 public:
@@ -85,5 +87,7 @@ public:
 	float cliffTargetCount = 1.0f;
 	float movePreviousPosY = 0.0f;
 	float moveAftaerPosY = 0.0f;
+
+	bool slopeRotaFlag = true;
 };
 

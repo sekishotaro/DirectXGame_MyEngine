@@ -61,6 +61,7 @@ void UI::Initialize()
 	stamina[0]->SetAnchorPoint({ 1.0f, 1.0f });
 	stamina[1] = Sprite::Create(3, { 800.0f,350.0f });
 	stamina[1]->SetAnchorPoint({ 1.0f, 1.0f });
+	staminabarSize = stamina[1]->GetSize();
 	stamina[2] = Sprite::Create(4, { 800.0f,350.0f });
 	stamina[2]->SetAnchorPoint({ 1.0f, 1.0f });
 	stamina[3] = Sprite::Create(5, { 800.0f,350.0f });
@@ -157,22 +158,22 @@ void UI::Initialize()
 void UI::Update()
 {
 	float staminaSizeY = staminabarSize.y * Player::GetStaminaQuantity() / 100.0f;
-	stamina[2]->SetSize({ staminabarSize.x, staminaSizeY });
+	stamina[1]->SetSize({ staminabarSize.x, staminaSizeY });
 
 	if (Player::GetStaminaCut() != true)
 	{
 		if (Player::GetStaminaQuantity() >= 30.0f)
 		{
-			stamina[2]->SetColor({ 1.0f, 1.0f, 1.0f, 1.0f });
+			stamina[1]->SetColor({ 1.0f, 1.0f, 1.0f, 1.0f });
 		}
 		else
 		{
-			stamina[2]->SetColor({ 1.0f, 0.1f, 0.1f, 1.0f });
+			stamina[1]->SetColor({ 1.0f, 0.1f, 0.1f, 1.0f });
 		}
 	}
 	else
 	{
-		stamina[2]->SetColor({ 1.0f, 0.1f, 0.1f, 1.0f });
+		stamina[1]->SetColor({ 1.0f, 0.1f, 0.1f, 1.0f });
 	}
 
 	timeUpdata();

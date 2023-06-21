@@ -217,7 +217,7 @@ public:
 	//デバック用ゲッター
 	static XMFLOAT3 GetPos() { return pos; }
 	static XMFLOAT3 GetRot() { return rot; }
-	static XMFLOAT3 GetMove() { return moveV; };
+	static XMFLOAT3 GetMove() { return moveVal; };
 	static int GetCrystal() { return crystalNum; }
 	static bool GetGoalFlag() { return goalFlag; }
 	static float GetTimeLimit() { return timeLimit; }
@@ -254,7 +254,8 @@ private:
 	static XMFLOAT3 pos;				//プレイヤーの位置
 	XMFLOAT3 parPos;					//前フレームの位置
 	static XMFLOAT3 rot;				//プレイヤーの角度
-	static XMFLOAT3 moveV;				//プレイヤーの移動量
+	static XMFLOAT3 moveV;
+	static XMFLOAT3 moveVal;			//プレイヤーの移動量
 	DirectX::XMVECTOR fallV = {};		//落下ベクトル
 	static float moveAdjustmentNum;		//移動量調整数
 	int inputX = 0;					//コントローラースティック入力X
