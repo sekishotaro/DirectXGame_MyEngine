@@ -32,10 +32,10 @@ void Effect::Finalize()
 {
 }
 
-void Effect::Update(XMFLOAT3 cameraPos)
+void Effect::Update(XMFLOAT3 cameraPos, int crystalNum)
 {
 
-	ClystalEffectUpdate();
+	ClystalEffectUpdate(crystalNum);
 }
 
 void Effect::Draw()
@@ -46,7 +46,7 @@ void Effect::Draw()
 	}
 }
 
-void Effect::ClystalEffectUpdate()
+void Effect::ClystalEffectUpdate(int crystalNum)
 {
 	//Žæ“¾ƒAƒCƒeƒ€‚ðŽæ“¾‚µ‚½Žž‚©‚ç
 	if (Player::GetCrystalGetFlag() != true && crystalMoveTime == 0.0f) return;
@@ -72,9 +72,9 @@ void Effect::ClystalEffectUpdate()
 	float height = (float)WinApp::window_height / 2.0f;
 	XMFLOAT2 startPos = {width, height};
 
-	int crystalNum = 7;
+	int crystalNumS = 7;
 
-	crystalNum -= Player::GetCrystal();
+	crystalNumS -= crystalNum;
 
 	XMFLOAT2 endPos = { 1190.0f, 50.0f };
 

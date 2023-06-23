@@ -17,7 +17,7 @@ public:
 	//XV
 	static void Update();
 	//•`‰æ
-	static void Draw();
+	static void Draw(int crystalNum);
 
 private:
 	static void timeUpdata();

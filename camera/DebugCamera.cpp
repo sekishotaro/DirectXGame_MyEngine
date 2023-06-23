@@ -68,9 +68,9 @@ DebugCamera::XMFLOAT3 DebugCamera::SphereCoordinateSystem()
 	cameraPos = TargetProcess();
 	
 	//‹…–ÊÀ•WŒn
-	cameraPos.y += (dis + correctionDis) * cos(radiusY);
-	cameraPos.x += (dis + correctionDis) * sin(radiusY) * cos(radiusX);
-	cameraPos.z += (dis + correctionDis) * sin(radiusY) * sin(radiusX);
+	cameraPos.y += (dis) * cos(radiusY);
+	cameraPos.x += (dis) * sin(radiusY) * cos(radiusX);
+	cameraPos.z += (dis) * sin(radiusY) * sin(radiusX);
 
 	return cameraPos;
 }
@@ -273,6 +273,7 @@ void DebugCamera::UpdateProcess( XMFLOAT3& cameraPos)
 		if (dis > 5.0f) { dis -= 1.0f; }
 		hitFlag = true;
 		rotaY -= 1.0f;
+		slopeRotaFlag = false;
 		cameraPos = SphereCoordinateSystem();
 	}
 }
@@ -419,12 +420,6 @@ void DebugCamera::CorrectionProcess()
 		{
 			moveVal.z += (-1.0f) * Player::GetMove().z;
 		}
-
-
-		//if (correctionDis <= 2.0f)
-		//{
-		//	correctionDis += 0.1f;
-		//}
 	}
 	else
 	{
@@ -456,10 +451,6 @@ void DebugCamera::CorrectionProcess()
 		{
 			moveVal.z = 0.0f;
 		}
-		//if (correctionDis >= 0.0f)
-		//{
-		//	correctionDis -= 0.1f;
-		//}
 	}
 	correctionVal = moveVal;
 }
@@ -496,7 +487,7 @@ void DebugCamera::SlopeRotaYProcess()
 				rotaY -= 0.5f;
 			}
 
-			if (rotaX == 0)
+			if (rotaX < 1.0f || rotaX > 359.0f)
 			{
 				rotaX = 0;
 			}
@@ -504,7 +495,7 @@ void DebugCamera::SlopeRotaYProcess()
 			{
 				rotaX -= 1.0f;
 			}
-			else if (rotaX > 180 && rotaX <= 360)
+			else if (rotaX > 180 && rotaX < 360)
 			{
 				rotaX += 1.0f;
 			}

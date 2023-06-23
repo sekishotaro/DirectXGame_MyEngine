@@ -218,8 +218,8 @@ public:
 	static XMFLOAT3 GetPos() { return pos; }
 	static XMFLOAT3 GetRot() { return rot; }
 	static XMFLOAT3 GetMove() { return moveVal; };
-	static int GetCrystal() { return crystalNum; }
-	static bool GetGoalFlag() { return goalFlag; }
+	int GetCrystal() { return crystalNum; }
+	bool GetGoalFlag() { return goalFlag; }
 	static float GetTimeLimit() { return timeLimit; }
 	static bool GetStaminaFlag() { return staminaBoostFlag; }
 	static float GetStaminaQuantity() { return staminaQuantity; }
@@ -329,9 +329,9 @@ private:
 	//オブジェク接地フラグ
 	bool onObject = false;
 	//自機とゴールの当たり判定
-	static bool goalFlag;
+	bool goalFlag = true;
 	//クリスタルの数
-	static int crystalNum;
+	int crystalNum = 0;
 
 public:
 	XMFLOAT3 moveBoxMax1 = { 0.0f, 0.0f, 0.0f };

@@ -196,7 +196,7 @@ void UI::Update()
 	}
 }
 
-void UI::Draw()
+void UI::Draw(int crystalNum)
 {
 	if (Player::GetStaminaFlag() == true || Player::GetStaminaQuantity() != 100.0f)
 	{
@@ -206,107 +206,107 @@ void UI::Draw()
 		stamina[3]->Draw();
 	}
 
-	if (Player::GetCrystal() == 0)
+	if (crystalNum == 0)
 	{
 		crystalUI[25]->Draw();
 	}
-	else if (Player::GetCrystal() == 1)
+	else if (crystalNum == 1)
 	{
 		crystalUI[24]->Draw();
 	}
-	else if (Player::GetCrystal() == 2)
+	else if (crystalNum == 2)
 	{
 		crystalUI[23]->Draw();
 	}
-	else if (Player::GetCrystal() == 3)
+	else if (crystalNum == 3)
 	{
 		crystalUI[22]->Draw();
 	}
-	else if (Player::GetCrystal() == 4)
+	else if (crystalNum == 4)
 	{
 		crystalUI[21]->Draw();
 	}
-	else if (Player::GetCrystal() == 5)
+	else if (crystalNum == 5)
 	{
 		crystalUI[20]->Draw();
 	}
-	else if (Player::GetCrystal() == 6)
+	else if (crystalNum == 6)
 	{
 		crystalUI[19]->Draw();
 	}
-	else if (Player::GetCrystal() == 7)
+	else if (crystalNum == 7)
 	{
 		crystalUI[18]->Draw();
 	}
-	else if (Player::GetCrystal() == 8)
+	else if (crystalNum == 8)
 	{
 		crystalUI[17]->Draw();
 	}
-	else if (Player::GetCrystal() == 9)
+	else if (crystalNum == 9)
 	{
 		crystalUI[16]->Draw();
 	}
-	else if (Player::GetCrystal() == 10)
+	else if (crystalNum == 10)
 	{
 		crystalUI[15]->Draw();
 	}
-	else if (Player::GetCrystal() == 11)
+	else if (crystalNum == 11)
 	{
 		crystalUI[14]->Draw();
 	}
-	else if (Player::GetCrystal() == 12)
+	else if (crystalNum == 12)
 	{
 		crystalUI[13]->Draw();
 	}
-	else if (Player::GetCrystal() == 13)
+	else if (crystalNum == 13)
 	{
 		crystalUI[12]->Draw();
 	}
-	else if (Player::GetCrystal() == 14)
+	else if (crystalNum == 14)
 	{
 		crystalUI[11]->Draw();
 	}
-	else if (Player::GetCrystal() == 15)
+	else if (crystalNum == 15)
 	{
 		crystalUI[10]->Draw();
 	}
-	else if (Player::GetCrystal() == 16)
+	else if (crystalNum == 16)
 	{
 		crystalUI[9]->Draw();
 	}
-	else if (Player::GetCrystal() == 17)
+	else if (crystalNum == 17)
 	{
 		crystalUI[8]->Draw();
 	}
-	else if (Player::GetCrystal() == 18)
+	else if (crystalNum == 18)
 	{
 		crystalUI[7]->Draw();
 	}
-	else if (Player::GetCrystal() == 19)
+	else if (crystalNum == 19)
 	{
 		crystalUI[6]->Draw();
 	}
-	else if (Player::GetCrystal() == 20)
+	else if (crystalNum == 20)
 	{
 		crystalUI[5]->Draw();
 	}
-	else if (Player::GetCrystal() == 21)
+	else if (crystalNum == 21)
 	{
 		crystalUI[4]->Draw();
 	}
-	else if (Player::GetCrystal() == 22)
+	else if (crystalNum == 22)
 	{
 		crystalUI[3]->Draw();
 	}
-	else if (Player::GetCrystal() == 23)
+	else if (crystalNum == 23)
 	{
 		crystalUI[2]->Draw();
 	}
-	else if (Player::GetCrystal() == 24)
+	else if (crystalNum == 24)
 	{
 		crystalUI[1]->Draw();
 	}
-	else if (Player::GetCrystal() == 25)
+	else if (crystalNum == 25)
 	{
 		crystalUI[0]->Draw();
 	}

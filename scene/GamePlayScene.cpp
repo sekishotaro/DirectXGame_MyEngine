@@ -122,7 +122,7 @@ void GamePlayScene::Update()
 	Input::MousePos mpos = input->MousePosLoad();
 
 	lightGroup->SetCircleShadowDir(0, XMVECTOR({ circleShadowDir[0], circleShadowDir[1], circleShadowDir[2], 0 }));
-	lightGroup->SetCircleShadowCasterPos(0, XMFLOAT3(objFighter->GetPos()));
+	lightGroup->SetCircleShadowCasterPos(0, XMFLOAT3(objFighter->GetPosition()));
 	lightGroup->SetCircleShadowAtten(0, XMFLOAT3(circleShadowAtten));
 	lightGroup->SetCircleShadowFactorAngle(0, XMFLOAT2(circleShadowFactorAngle));
 
@@ -186,7 +186,7 @@ void GamePlayScene::Draw()
 	smoke2->Draw();
 	if (moveFlag != true)
 	{
-		UI::Draw();
+		UI::Draw(objFighter->GetCrystal());
 	}
 	
 	Effect::Draw();
@@ -243,7 +243,7 @@ void GamePlayScene::GameStatus()
 	
 	UI::Update();
 	
-	Effect::Update(camera->GetEye());
+	Effect::Update(camera->GetEye(), objFighter->GetCrystal());
 }
 
 void GamePlayScene::GameOverStatus()

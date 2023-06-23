@@ -35,7 +35,7 @@ public:
 	/// <summary>
 	/// アップデート
 	/// </summary>
-	static void Update(XMFLOAT3 cameraPos);
+	static void Update(XMFLOAT3 cameraPos, int crystalNum);
 
 	/// <summary>
 	/// 描画
@@ -43,7 +43,7 @@ public:
 	static void Draw();
 
 private:
-	static void ClystalEffectUpdate();
+	static void ClystalEffectUpdate(int crystalNum);
 
 	static XMFLOAT2 leap(XMFLOAT2 start, XMFLOAT2 end, float time);
 

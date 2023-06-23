@@ -22,10 +22,10 @@ const float Player::timeLimitMax = 20.0f;
 float Player::staminaQuantity = 100.0f;
 int Player::animeNum = 0;
 int Player::oldAnimeNum = 0;
-int Player::crystalNum = 0;
+//int Player::crystalNum = 0;
 bool Player::slopeFlag = false;
 bool Player::onGround = false;
-bool Player::goalFlag = false;
+//bool Player::goalFlag = false;
 bool Player::staminaBoostFlag = false;
 bool Player::staminaCut = false;
 bool Player::crystalGetFlag = false;
@@ -222,7 +222,6 @@ void Player::ObjectUpdate()
 
 void Player::Finalize()
 {
-
 }
 
 void Player::ReStart()
