@@ -17,9 +17,6 @@
 #include "CollisionManager.h"
 #include "Player.h"
 #include "UI.h"
-#include "OpticalPost.h"
-#include "Effect.h"
-
 #include "SafeDelete.h"
 
 void GamePlayScene::Initialize()
@@ -49,13 +46,13 @@ void GamePlayScene::Initialize()
 	// テクスチャ読み込み
 	Sprite::LoadTexture(1, L"Resources/background2.png");
 	Sprite::LoadTexture(99, L"Resources/smoke.png");
-	Sprite::LoadTexture(98, L"Resources/smoke.png");
+	Sprite::LoadTexture(98, L"Resources/smoke2.png");
 	// 背景スプライト生成
 	spriteBG = Sprite::Create(1, { 0.0f,0.0f });
-	smoke = Sprite::Create(99, { 0.0f,0.0f });
-	smoke->SetColor({ 1.0f,1.0f,1.0f, 0.0f });
-	smoke2 = Sprite::Create(98, { 0.0f,0.0f });
-	smoke2->SetColor({ 1.0f,1.0f,1.0f, 0.0f });
+	smokes[0] = Sprite::Create(99, { 0.0f,0.0f });
+	smokes[0]->SetColor({ 1.0f,1.0f,1.0f, 0.0f });
+	smokes[1] = Sprite::Create(98, { 0.0f,0.0f });
+	smokes[1]->SetColor({ 1.0f,1.0f,1.0f, 0.0f });
 	skydomeModel = Model::LoadFromOBJ("skydome");
 	skydomeObject = Object3d::Create();
 	skydomeObject->SetModel(skydomeModel);
@@ -99,10 +96,10 @@ void GamePlayScene::Initialize()
 	objFighter->SetModel14(fbxModels[13]);
 	objFighter->SetModel15(fbxModels[14]);
 	
-	Effect::Initialize();
+	effect.Initialize();
 	UI::Initialize();
 
-	OpticalPost::Initialize();
+	opticalPost.Initialize();
 }
 
 void GamePlayScene::Finalize()
@@ -111,8 +108,8 @@ void GamePlayScene::Finalize()
 	safe_delete(spriteBG);
 	safe_delete(lightGroup);
 	JsonLoader::Finalize();
-	OpticalPost::Finalize();
-	Effect::Finalize();
+	opticalPost.Finalize();
+	effect.Finalize();
 }
 
 void GamePlayScene::Update()
@@ -169,7 +166,7 @@ void GamePlayScene::Draw()
 	JsonLoader::Draw();
 	objFighter->Draw(cmdList);
 	
-	OpticalPost::Draw();
+	opticalPost.Draw();
 
 	/// <summary>
 	/// ここに3Dオブジェクトの描画処理を追加できる
@@ -182,14 +179,14 @@ void GamePlayScene::Draw()
 	// 前景スプライト描画前処理
 	Sprite::PreDraw(cmdList);
 	Effect2d::PreDraw(cmdList);
-	smoke->Draw();
-	smoke2->Draw();
+	smokes[0]->Draw();
+	smokes[1]->Draw();
 	if (moveFlag != true)
 	{
 		UI::Draw(objFighter->GetCrystal());
 	}
 	
-	Effect::Draw();
+	effect.Draw();
 	
 	// デバッグテキストの描画
 	//DebugText::GetInstance()->DrawAll(cmdList);
@@ -218,7 +215,7 @@ void GamePlayScene::ObjectsUpdate()
 	//Json読み込みのオブジェクトのアップデート
 	JsonLoader::Update();
 	//光の柱オブジェクトのアップデート
-	OpticalPost::Update(camera->GetEye());
+	opticalPost.Update(camera->GetEye());
 	//スカイドーム
 	skydomeObject->Update();
 	//カメラ
@@ -237,35 +234,35 @@ void GamePlayScene::GameStatus()
 	lightGroup->Update();
 	skydomeObject->Update();
 	JsonLoader::Update();
-	
-	OpticalPost::Update(camera->GetEye());
-	OpticalPost::SetDrawFlag(true);
+	opticalPost.Erase(objFighter->GetCrystalGetFlag(), objFighter->GetCrystalGetNum());
+	opticalPost.Update(camera->GetEye());
+	opticalPost.SetDrawFlag(true);
 	
 	UI::Update();
 	
-	Effect::Update(camera->GetEye(), objFighter->GetCrystal());
+	effect.Update(camera->GetEye(), objFighter->GetCrystal());
 }
 
 void GamePlayScene::GameOverStatus()
 {
 	const float timeMax = 3.0f;
 	static float time = timeMax;
-
+	float alpha = (timeMax - time) / timeMax;
 	if (objFighter->GetTimeLimit() <= 0.0f)
 	{
 		objFighter->moveLimitFlag = true;
 		if (time >= 0.0f)
 		{
-			float alpha = (timeMax - time) / timeMax;
-			smoke2->SetColor({ 1.0f,1.0f,1.0f, alpha });
-			time -= 1.0f / 60.0f;
+			
+			smokes[1]->SetColor({ 1.0f,1.0f,1.0f, alpha });
+			time -= 1.0f / 60.0f;		
 			return;
 		}
 
 		state = reStart;
 		//ステージの復旧
 		JsonLoader::ClystalSetObject();
-		OpticalPost::Restart();
+		opticalPost.Restart();
 		
 		//自機の初期化
 		objFighter->ReStart();
@@ -274,7 +271,7 @@ void GamePlayScene::GameOverStatus()
 	}
 	else
 	{
-		smoke2->SetColor({ 1.0f,1.0f,1.0f,0.0f });
+		//smokes[1]->SetColor({ 1.0f,1.0f,1.0f,alpha });
 	}
 }
 
@@ -292,7 +289,7 @@ void GamePlayScene::SmokeUpdate()
 {
 	if (smokeFlag == false)
 	{
-		smoke->SetColor({ 1.0f,1.0f,1.0f,0.0f });
+		smokes[0]->SetColor({1.0f,1.0f,1.0f,0.0f});
 		return;
 	}
 	
@@ -309,7 +306,8 @@ void GamePlayScene::SmokeUpdate()
 
 		reStartNum -= 1.0f / 180.0f;
 
-		smoke->SetColor({ 1.0f,1.0f,1.0f, reStartNum });
+		smokes[0]->SetColor({ 1.0f,1.0f,1.0f, reStartNum });
+		smokes[1]->SetColor({ 1.0f,1.0f,1.0f, reStartNum });
 		return;
 	}
 
@@ -318,7 +316,7 @@ void GamePlayScene::SmokeUpdate()
 	float halfTime = objFighter->GetTimeMax() / 2;
 	if (objFighter->GetTimeLimit() > halfTime)
 	{
-		smoke->SetColor({ 1.0f,1.0f,1.0f,0.0f });
+		smokes[0]->SetColor({ 1.0f,1.0f,1.0f,0.0f });
 		return;
 	}
 
@@ -327,5 +325,5 @@ void GamePlayScene::SmokeUpdate()
 
 	float Rate = a / halfTime;
 
-	smoke->SetColor({ 1.0f,1.0f,1.0f, Rate });
+	smokes[0]->SetColor({ 1.0f,1.0f,1.0f, Rate });
 }

@@ -13,52 +13,52 @@ private:
 
 public:
 
-	static void Initialize();
+	void Initialize();
 
-	static void Update(const XMFLOAT3 &cameraPos);
+	void Update(const XMFLOAT3 &cameraPos);
 
-	static void Draw();
+	void Draw();
 
-	static void Finalize();
+	void Finalize();
 
-	static void Erase(int num);
+	void Erase(bool getFlag, int num);
 
-	static void SetDrawFlag(bool flag) { drawFlag = flag; }
+	void SetDrawFlag(bool flag) { drawFlag = flag; }
 
-	static float& GetNum() { return num; }
+	float& GetNum() { return num; }
 
-	static float RotaUpdate(const XMFLOAT3& cameraPos, const XMFLOAT3 &crystalPos);
+	float RotaUpdate(const XMFLOAT3& cameraPos, const XMFLOAT3 &crystalPos);
 
-	static int NearCrystalNum();
+	int NearCrystalNum();
 
-	static void CrystalEfectSizeNumUpdate();
+	void CrystalEfectSizeNumUpdate();
 
-	static void SmallOpticalPostsMoveUpdate();
+	void SmallOpticalPostsMoveUpdate();
 
-	static void Restart();
+	void Restart();
 public:
 	//オブジェクト
-	static std::vector<std::unique_ptr<Object3d>> OpticalPosts;
-	static std::vector<std::unique_ptr<Object3d>> smallOpticalPosts;
-	static std::unique_ptr<Object3d> goalOpticalPostObject;
+	std::vector<std::unique_ptr<Object3d>> OpticalPosts;
+	std::vector<std::unique_ptr<Object3d>> smallOpticalPosts;
+	std::unique_ptr<Object3d> goalOpticalPostObject;
 	//モデル
-	static Model* modelOpticalPost;
+	Model* modelOpticalPost = nullptr;
 
-	static bool drawFlag;
+	bool drawFlag = false;
 
 	//デバック用数
-	static float num;
+	float num = 0.0f;
 	//エフェクト用の数
-	static int effectNum;
+	int effectNum = 7;
 
-	static Model* modelCrystalEffect;
-	static std::unique_ptr<Object3d> CrystalEffectObject;
+	Model* modelCrystalEffect = nullptr;
+	std::unique_ptr<Object3d> CrystalEffectObject;
 	//移動量
-	static std::vector<float> moveQuantitys;
-	static float moveQuantityMax;
+	std::vector<float> moveQuantitys;
+	float moveQuantityMax = 3.0f;
 	//サイズ値
-	static float sizeNum;
+	float sizeNum = 3.0f;
 	//小さい光の柱の数
-	static const int smallOpticalPostNum;
+	const int smallOpticalPostNum = 20;
 };
 

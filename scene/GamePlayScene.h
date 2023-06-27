@@ -14,6 +14,8 @@
 #include "Camera.h"
 #include "LightGroup.h"
 #include "InterpolationCamera.h"
+#include "Effect.h"
+#include "OpticalPost.h"
 
 class CollisionManager;
 class Player;
@@ -22,7 +24,7 @@ class TouchableObject;
 class GamePlayScene : public BaseScene
 {
 private: // エイリアス
-// Microsoft::WRL::を省略
+	// Microsoft::WRL::を省略
 	template <class T> using ComPtr = Microsoft::WRL::ComPtr<T>;
 	// DirectX::を省略
 	using XMFLOAT2 = DirectX::XMFLOAT2;
@@ -100,6 +102,7 @@ public:
 	Sprite *spriteBG = nullptr;
 	Sprite* smoke = nullptr;
 	Sprite* smoke2 = nullptr;
+	Sprite* smokes[2] = { nullptr, nullptr};
 
 	std::unique_ptr<Object3d> skydomeObject;
 	Model* skydomeModel = nullptr;
@@ -110,7 +113,8 @@ public:
 	//衝突マネージャー
 	CollisionManager* collisionManager = nullptr;
 	TouchableObject* objGround = nullptr;
-
+	Effect effect;
+	OpticalPost opticalPost;
 	//ライト
 	LightGroup* lightGroup = nullptr;
 	float ambientColor0[3] = { 1,1,1 };

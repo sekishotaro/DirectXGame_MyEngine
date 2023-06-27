@@ -25,34 +25,35 @@ public:
 	/// <summary>
 	/// 初期化
 	/// </summary>
-	static void Initialize();
+	void Initialize();
 
 	/// <summary>
 	/// 解放
 	/// </summary>
-	static void Finalize();
+	void Finalize();
 
 	/// <summary>
 	/// アップデート
 	/// </summary>
-	static void Update(XMFLOAT3 cameraPos, int crystalNum);
+	void Update(XMFLOAT3 cameraPos, int crystalNum);
 
 	/// <summary>
 	/// 描画
 	/// </summary>
-	static void Draw();
+	void Draw();
 
 private:
-	static void ClystalEffectUpdate(int crystalNum);
+	void ClystalEffectUpdate(int crystalNum);
 
-	static XMFLOAT2 leap(XMFLOAT2 start, XMFLOAT2 end, float time);
+	XMFLOAT2 leap(XMFLOAT2 start, XMFLOAT2 end, float time);
 
 private:
-	static Effect2d* crystalEffect;
-	static std::vector<Effect2d*> crystalEffects;
-	static float crystalMoveTime;
+	Effect2d* crystalEffect = nullptr;
+	std::vector<Effect2d*> crystalEffects;
+	float crystalMoveTime = 0.0f;
 
 	//各クリスタルのUI位置
-	static const XMFLOAT2 crystalUIPos[8];
+	const XMFLOAT2 crystalUIPos[8] = { { 1190.0f, 165.0f },{ 1250.0f, 180.0f },{ 1230.0f, 290.0f },{ 1200.0f, 300.0f },
+		{ 1130.0f, 300.0f },{ 1140.0f, 390.0f },{ 1145.0f, 440.0f },{ 1210.0f, 460.0f } };
 };
 

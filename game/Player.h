@@ -219,6 +219,7 @@ public:
 	static XMFLOAT3 GetRot() { return rot; }
 	static XMFLOAT3 GetMove() { return moveVal; };
 	int GetCrystal() { return crystalNum; }
+	int GetCrystalGetNum() { return crystalGetNum; }
 	bool GetGoalFlag() { return goalFlag; }
 	static float GetTimeLimit() { return timeLimit; }
 	static bool GetStaminaFlag() { return staminaBoostFlag; }
@@ -282,21 +283,6 @@ private:
 	static int oldAnimeNum;
 	static bool animeFlag;
 	//モデル
-	//static FbxModel* fbxModel1;		//基本
-	//static FbxModel* fbxModel2;		//ウォーキング
-	//static FbxModel* fbxModel3;		//ランニング
-	//static FbxModel* fbxModel4;		//ジャンプ
-	//static FbxModel* fbxModel5;		//走りジャンプ
-	//static FbxModel* fbxModel6;		//クライミング
-	//static FbxModel* fbxModel7;		//着地
-	//static FbxModel* fbxModel8;		//崖ぶら下がりアイドリング
-	//static FbxModel* fbxModel9;		//キック
-	//static FbxModel* fbxModel10;	//スライディング
-	//static FbxModel* fbxModel11;	//押し歩き
-	//static FbxModel* fbxModel12;	//スタミナ切れ歩き
-	//static FbxModel* fbxModel13;	//スタミナ切れアイドリング
-	//static FbxModel* fbxModel14;	//壁蹴りジャンプ
-	//static FbxModel* fbxModel15;	//崖上がり
 	static FbxModel* fbxModels[];
 
 	//坂確認フラグ
@@ -314,6 +300,7 @@ private:
 	//スタミナが使えるかどうか(スタミナを使い切った場合になる状態)
 	static bool staminaCut;
 	static bool crystalGetFlag;
+	int crystalGetNum = 0;
 	//壁と接触確認フラグ
 	static bool wallHittingFlag;
 	static bool oldWallHittingFlag;
@@ -332,7 +319,6 @@ private:
 	bool goalFlag = true;
 	//クリスタルの数
 	int crystalNum = 0;
-
 public:
 	XMFLOAT3 moveBoxMax1 = { 0.0f, 0.0f, 0.0f };
 	//debug

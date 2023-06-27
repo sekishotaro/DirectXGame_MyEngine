@@ -4,20 +4,21 @@
 #include "stdlib.h"
 #include "SafeDelete.h"
 
-std::vector<std::unique_ptr<Object3d>> OpticalPost::OpticalPosts;
-std::vector<std::unique_ptr<Object3d>> OpticalPost::smallOpticalPosts;
-std::unique_ptr<Object3d> OpticalPost::goalOpticalPostObject;
-Model* OpticalPost::modelOpticalPost = nullptr;
-Model* OpticalPost::modelCrystalEffect = nullptr;
-std::unique_ptr<Object3d> OpticalPost::CrystalEffectObject;
-std::vector<float> OpticalPost::moveQuantitys;
+//std::vector<std::unique_ptr<Object3d>> OpticalPost::OpticalPosts;
+//std::vector<std::unique_ptr<Object3d>> OpticalPost::smallOpticalPosts;
+//std::unique_ptr<Object3d> OpticalPost::goalOpticalPostObject;
+//Model* OpticalPost::modelOpticalPost = nullptr;
+//Model* OpticalPost::modelCrystalEffect = nullptr;
+//std::unique_ptr<Object3d> OpticalPost::CrystalEffectObject;
+//std::vector<float> OpticalPost::moveQuantitys;
+//
+//bool OpticalPost::drawFlag = false;
+//float OpticalPost::num = 0.0f;
+//int OpticalPost::effectNum = 7;
+//float OpticalPost::sizeNum = 3.0f;
+//float OpticalPost::moveQuantityMax = 3.0f;
+//const int OpticalPost::smallOpticalPostNum = 20;
 
-bool OpticalPost::drawFlag = false;
-float OpticalPost::num = 0.0f;
-int OpticalPost::effectNum = 7;
-float OpticalPost::sizeNum = 3.0f;
-float OpticalPost::moveQuantityMax = 3.0f;
-const int OpticalPost::smallOpticalPostNum = 20;
 void OpticalPost::Initialize()
 {
 	modelOpticalPost = Model::LoadFromOBJ("opticalPost");
@@ -147,8 +148,10 @@ void OpticalPost::Finalize()
 	drawFlag = false;
 }
 
-void OpticalPost::Erase(int num)
+void OpticalPost::Erase(bool getFlag, int num)
 {
+	if (getFlag == false) return;
+
 	OpticalPosts.erase(OpticalPosts.begin() + num);
 
 	for (int i = 0; i < smallOpticalPostNum; i++)

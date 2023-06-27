@@ -696,10 +696,11 @@ void Player::CrystalConfirmationProcess()
 		if (Collision::Check2Box(playerBox, crystal[i], distance) == true)
 		{
 			crystalGetFlag = true;
+			crystalGetNum = i;
 
 			JsonLoader::crystalObjects.erase(JsonLoader::crystalObjects.begin() + i);
 
-			OpticalPost::Erase(i);
+			//OpticalPost::Erase(i);
 
 			crystalNum--;
 
@@ -708,14 +709,6 @@ void Player::CrystalConfirmationProcess()
 			//制限時間の初期化
 			timeLimit = timeLimitMax;
 		}
-	}
-
-	//デバック用
-	if (Input::GetInstance()->TriggerKey(DIK_9))
-	{
-		JsonLoader::crystalObjects.erase(JsonLoader::crystalObjects.begin());
-
-		OpticalPost::Erase(0);
 	}
 }
 
