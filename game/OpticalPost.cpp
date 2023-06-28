@@ -18,7 +18,6 @@
 //float OpticalPost::sizeNum = 3.0f;
 //float OpticalPost::moveQuantityMax = 3.0f;
 //const int OpticalPost::smallOpticalPostNum = 20;
-
 void OpticalPost::Initialize()
 {
 	modelOpticalPost = Model::LoadFromOBJ("opticalPost");

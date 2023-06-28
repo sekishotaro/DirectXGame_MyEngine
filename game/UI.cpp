@@ -1,18 +1,6 @@
 #include "UI.h"
 #include "Player.h"
 
-UI::XMFLOAT2 UI::staminabarSize;
-Sprite* UI::stamina[] = { nullptr, nullptr, nullptr, nullptr };
-
-Sprite* UI::crystalUI[] = { nullptr, nullptr, nullptr, nullptr, nullptr,
-nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr,
-nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr };
-
-Sprite* UI::timerCenter = nullptr;
-Sprite* UI::timerPetal[] = { nullptr,nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, };
-
-Sprite* UI::controllerUI = nullptr;
-
 void UI::Initialize()
 {
 	Sprite::LoadTexture(2, L"Resources/staminaBar/staminaBar_0.png");

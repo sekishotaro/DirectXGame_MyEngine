@@ -16,7 +16,6 @@
 #include "SphereCollider.h"
 #include "CollisionManager.h"
 #include "Player.h"
-#include "UI.h"
 #include "SafeDelete.h"
 
 void GamePlayScene::Initialize()
@@ -96,10 +95,9 @@ void GamePlayScene::Initialize()
 	objFighter->SetModel14(fbxModels[13]);
 	objFighter->SetModel15(fbxModels[14]);
 	
-	effect.Initialize();
-	UI::Initialize();
-
-	opticalPost.Initialize();
+	effect->Effect::Initialize();
+	ui->UI::Initialize();
+	opticalPost->OpticalPost::Initialize();
 }
 
 void GamePlayScene::Finalize()
@@ -108,8 +106,11 @@ void GamePlayScene::Finalize()
 	safe_delete(spriteBG);
 	safe_delete(lightGroup);
 	JsonLoader::Finalize();
-	opticalPost.Finalize();
-	effect.Finalize();
+	opticalPost->Finalize();
+	safe_delete(opticalPost);
+	effect->Finalize();
+	safe_delete(effect);
+	safe_delete(ui);
 }
 
 void GamePlayScene::Update()
@@ -166,7 +167,7 @@ void GamePlayScene::Draw()
 	JsonLoader::Draw();
 	objFighter->Draw(cmdList);
 	
-	opticalPost.Draw();
+	opticalPost->Draw();
 
 	/// <summary>
 	/// ここに3Dオブジェクトの描画処理を追加できる
@@ -183,10 +184,10 @@ void GamePlayScene::Draw()
 	smokes[1]->Draw();
 	if (moveFlag != true)
 	{
-		UI::Draw(objFighter->GetCrystal());
+		ui->UI::Draw(objFighter->GetCrystal());
 	}
 	
-	effect.Draw();
+	effect->Draw();
 	
 	// デバッグテキストの描画
 	//DebugText::GetInstance()->DrawAll(cmdList);
@@ -215,7 +216,7 @@ void GamePlayScene::ObjectsUpdate()
 	//Json読み込みのオブジェクトのアップデート
 	JsonLoader::Update();
 	//光の柱オブジェクトのアップデート
-	opticalPost.Update(camera->GetEye());
+	opticalPost->Update(camera->GetEye());
 	//スカイドーム
 	skydomeObject->Update();
 	//カメラ
@@ -234,13 +235,13 @@ void GamePlayScene::GameStatus()
 	lightGroup->Update();
 	skydomeObject->Update();
 	JsonLoader::Update();
-	opticalPost.Erase(objFighter->GetCrystalGetFlag(), objFighter->GetCrystalGetNum());
-	opticalPost.Update(camera->GetEye());
-	opticalPost.SetDrawFlag(true);
+	opticalPost->Erase(objFighter->GetCrystalGetFlag(), objFighter->GetCrystalGetNum());
+	opticalPost->Update(camera->GetEye());
+	opticalPost->SetDrawFlag(true);
 	
-	UI::Update();
+	ui->UI::Update();
 	
-	effect.Update(camera->GetEye(), objFighter->GetCrystal());
+	effect->Update(camera->GetEye(), objFighter->GetCrystal());
 }
 
 void GamePlayScene::GameOverStatus()
@@ -262,7 +263,7 @@ void GamePlayScene::GameOverStatus()
 		state = reStart;
 		//ステージの復旧
 		JsonLoader::ClystalSetObject();
-		opticalPost.Restart();
+		opticalPost->Restart();
 		
 		//自機の初期化
 		objFighter->ReStart();

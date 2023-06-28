@@ -24,7 +24,7 @@ int Player::animeNum = 0;
 int Player::oldAnimeNum = 0;
 //int Player::crystalNum = 0;
 bool Player::slopeFlag = false;
-bool Player::onGround = false;
+//bool Player::onGround = false;
 //bool Player::goalFlag = false;
 bool Player::staminaBoostFlag = false;
 bool Player::staminaCut = false;
@@ -844,6 +844,12 @@ void Player::GravityConfirmationProcess()
 		fallV.m128_f32[1] = max(fallV.m128_f32[1] + fallAcc, fallVYMin);
 		//ˆÚ“®
 		position = MyMath::addVector(position, fallV);
+
+		if (fallV.m128_f32[1] < -0.2f)
+		{
+			playerStatus = STATE_FALL;
+			return;
+		}
 
 		if (fallV.m128_f32[1] >= 0.0f && oldPlayerStatus == STATE_JUMP_UP)
 		{

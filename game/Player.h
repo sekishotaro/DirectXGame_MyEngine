@@ -312,7 +312,7 @@ private:
 	static bool moveBoxHitFlag;
 	int moveBoxHitNum = 0;
 	//接地フラグ
-	static bool onGround;
+	bool onGround = false;
 	//オブジェク接地フラグ
 	bool onObject = false;
 	//自機とゴールの当たり判定

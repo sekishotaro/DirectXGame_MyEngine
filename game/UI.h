@@ -13,24 +13,23 @@ public:
 
 public:
 	//èâä˙âª
-	static void Initialize();
+	void Initialize();
 	//çXêV
-	static void Update();
+	void Update();
 	//ï`âÊ
-	static void Draw(int crystalNum);
+	void Draw(int crystalNum);
 
 private:
-	static void timeUpdata();
+	void timeUpdata();
 
 private:
-	static Sprite* stamina[4];
-	static XMFLOAT2 staminabarSize;
-
-	static Sprite* crystalUI[26];
-
-	static Sprite* timerCenter;
-	static Sprite* timerPetal[9];
-
-	static Sprite* controllerUI;
+	Sprite* stamina[4] = { nullptr, nullptr, nullptr, nullptr };
+	XMFLOAT2 staminabarSize;
+	Sprite* crystalUI[26] = { nullptr, nullptr, nullptr, nullptr, nullptr,
+nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr,
+nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr };
+	Sprite* timerCenter = nullptr;
+	Sprite* timerPetal[9] = { nullptr,nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr};
+	Sprite* controllerUI = nullptr;
 };
 

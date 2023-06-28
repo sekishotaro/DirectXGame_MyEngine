@@ -11,6 +11,7 @@ void TitleScene::Initialize()
 	// テクスチャ読み込み
 	Sprite::LoadTexture(1, L"Resources/TitleBackground.png");
 	Sprite::LoadTexture(2, L"Resources/UI_StartKey.png");
+	Sprite::LoadTexture(3, L"Resources/UI_StartKey2.png");
 	// 背景スプライト生成
 	spriteBG = Sprite::Create(1, { 0.0f,0.0f });
 	spriteUI = Sprite::Create(2, { (float)WinApp::window_width / 2.0f,(float)WinApp::window_height * 2.5f / 3.0f });
@@ -45,17 +46,18 @@ void TitleScene::Initialize()
 	terrainObjectA = Object3d::Create();
 	terrainObjectA->SetModel(terrainModelA);
 	terrainObjectA->SetScale({ 1.0f, 1.0f, 1.0f });
+	terrainObjectA->OnTitleFlag();
 
 	terrainModelB = Model::LoadFromOBJ("terrainInWallView");
 	terrainObjectB = Object3d::Create();
 	terrainObjectB->SetModel(terrainModelB);
 	terrainObjectB->SetScale({ 1.0f, 1.0f, 1.0f });
-
+	terrainObjectB->OnTitleFlag();
 	terrainModelC = Model::LoadFromOBJ("terrainOutWallView");
 	terrainObjectC = Object3d::Create();
 	terrainObjectC->SetModel(terrainModelC);
 	terrainObjectC->SetScale({ 1.0f, 1.0f, 1.0f });
-
+	terrainObjectC->OnTitleFlag();
 
 	fbxModel = FbxLoader::GetInstance()->LoadModelFromFile("model");
 	fbxObject = new FbxObject3d();
@@ -96,6 +98,7 @@ void TitleScene::Update()
 	if (input->TriggerKey(DIK_RETURN) || input->PushPadbutton(Button_A))
 	{
 		//シーン切り替え
+		spriteUI->SetTexNum(3);
 		SceneManager::GetInstance()->ChangeScene("GAMEPLAY");
 	}
 }

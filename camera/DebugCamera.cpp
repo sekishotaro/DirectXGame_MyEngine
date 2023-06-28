@@ -116,9 +116,7 @@ DebugCamera::XMFLOAT3 DebugCamera::MoveUpdate()
 	}
 	
 	//â
-	
 	SlopeRotaYProcess();
-
 
 	//‹“_³–ÊˆÚ“®
 	static float endRota = 0;

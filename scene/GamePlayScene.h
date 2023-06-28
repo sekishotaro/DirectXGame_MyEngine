@@ -15,6 +15,7 @@
 #include "LightGroup.h"
 #include "InterpolationCamera.h"
 #include "Effect.h"
+#include "UI.h"
 #include "OpticalPost.h"
 
 class CollisionManager;
@@ -113,8 +114,9 @@ public:
 	//衝突マネージャー
 	CollisionManager* collisionManager = nullptr;
 	TouchableObject* objGround = nullptr;
-	Effect effect;
-	OpticalPost opticalPost;
+	Effect *effect = new Effect;
+	OpticalPost *opticalPost = new OpticalPost;
+	UI* ui = new UI;
 	//ライト
 	LightGroup* lightGroup = nullptr;
 	float ambientColor0[3] = { 1,1,1 };
