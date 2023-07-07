@@ -212,12 +212,11 @@
     <ClCompile Include="collision\CollisionPrimitive.cpp" />
     <ClCompile Include="2d\DebugText.cpp" />
     <ClCompile Include="base\DirectXCommon.cpp" />
-    <ClCompile Include="camera\DebugCamera.cpp" />
+    <ClCompile Include="camera\GameCamera.cpp" />
     <ClCompile Include="collision\CollisionManager.cpp" />
     <ClCompile Include="game\Effect.cpp" />
     <ClCompile Include="2d\Effect2d.cpp" />
     <ClCompile Include="Framework.cpp" />
-    <ClCompile Include="camera\InterpolationCamera.cpp" />
     <ClCompile Include="light\LightGroup.cpp" />
     <ClCompile Include="math\Operator.cpp" />
     <ClCompile Include="light\PointLight.cpp" />
@@ -272,7 +271,6 @@
     <ClInclude Include="light\DirectionalLight.h" />
     <ClInclude Include="game\Effect.h" />
     <ClInclude Include="2d\Effect2d.h" />
-    <ClInclude Include="camera\InterpolationCamera.h" />
     <ClInclude Include="light\LightGroup.h" />
     <ClInclude Include="math\Operator.h" />
     <ClInclude Include="light\PointLight.h" />
@@ -286,7 +284,7 @@
     <ClInclude Include="imgui\imstb_rectpack.h" />
     <ClInclude Include="imgui\imstb_textedit.h" />
     <ClInclude Include="imgui\imstb_truetype.h" />
-    <ClInclude Include="camera\DebugCamera.h" />
+    <ClInclude Include="camera\GameCamera.h" />
     <ClInclude Include="3d\ColliderModel.h" />
     <ClInclude Include="3d\ColliderObject.h" />
     <ClInclude Include="json\JsonLoader.h" />

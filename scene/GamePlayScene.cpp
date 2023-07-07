@@ -21,7 +21,7 @@
 void GamePlayScene::Initialize()
 {
 	// カメラ生成
-	camera = new DebugCamera(WinApp::window_width, WinApp::window_height);
+	camera = new GameCamera(WinApp::window_width, WinApp::window_height);
 	//camera = new Camera(WinApp::window_width, WinApp::window_height);
 	//デバイスのセット
 	FbxObject3d::SetDevice(DirectXCommon::GetInstance()->GetDev());
@@ -57,7 +57,7 @@ void GamePlayScene::Initialize()
 	skydomeObject->SetModel(skydomeModel);
 	skydomeObject->SetScale({ 5.0f, 5.0f, 5.0f });
 	//json
-	JsonLoader::LoadFile("Scene4_7"); //オブジェクトの当たり判定
+	JsonLoader::LoadFile("Scene7_6"); //オブジェクトの当たり判定
 	JsonLoader::SetObject();
 
 	////モデル名を指定してファイル読み込み
@@ -196,17 +196,16 @@ void GamePlayScene::Draw()
 	Sprite::PostDraw();
 	Effect2d::PostDraw();
 	//imguiの描画
-	imguiManager::PraDraw();
-	ImGui::NewFrame();
-	ImGui::Begin("config1");//ウィンドウの名前
-	ImGui::SetWindowSize(ImVec2(400, 500), ImGuiCond_::ImGuiCond_FirstUseEver);
-	ImGui::Text("rotX :%f", camera->GetRotaX());
-	ImGui::Text("rotY :%f", objFighter->GetRotation().y);
-	ImGui::Text("posZ :%f", objFighter->GetPosition().z);
-	ImGui::Text("playerState :%d", static_cast<int>(objFighter->GetStatus()));
-	ImGui::Checkbox("teleport", &objFighter->teleportFlag);
-	ImGui::Checkbox("TimeLimitCancel", &objFighter->timeLimitcancel);
-	imguiManager::PosDraw();
+	//imguiManager::PraDraw();
+	//ImGui::NewFrame();
+	//ImGui::Begin("config1");//ウィンドウの名前
+	//ImGui::SetWindowSize(ImVec2(400, 500), ImGuiCond_::ImGuiCond_FirstUseEver);
+	//ImGui::Text("rotY :%f", objFighter->GetRotation().y);
+	//ImGui::Text("posZ :%f", objFighter->GetPosition().z);
+	//ImGui::Text("playerState :%d", static_cast<int>(objFighter->GetStatus()));
+	//ImGui::Checkbox("teleport", &objFighter->teleportFlag);
+	//ImGui::Checkbox("TimeLimitCancel", &objFighter->timeLimitcancel);
+	//imguiManager::PosDraw();
 }
 
 void GamePlayScene::ObjectsUpdate()
@@ -267,7 +266,7 @@ void GamePlayScene::GameOverStatus()
 		
 		//自機の初期化
 		objFighter->ReStart();
-		camera->rotaX = 180.0f;
+		camera->rota.x = 180.0f;
 		time = timeMax;
 	}
 	else

@@ -10,10 +10,9 @@
 #include "ColliderObject.h"
 #include "FbxObject3d.h"
 #include "Collision.h"
-#include "DebugCamera.h"
+#include "GameCamera.h"
 #include "Camera.h"
 #include "LightGroup.h"
-#include "InterpolationCamera.h"
 #include "Effect.h"
 #include "UI.h"
 #include "OpticalPost.h"
@@ -98,7 +97,7 @@ public:
 	/// ゲームシーン用
 	/// </summary>
 	
-	DebugCamera* camera = nullptr;
+	GameCamera* camera = nullptr;
 	//Camera *camera = nullptr;
 	Sprite *spriteBG = nullptr;
 	Sprite* smoke = nullptr;
@@ -128,8 +127,6 @@ public:
 	float circleShadowFactorAngle2[2] = { 0.0f, 2.0f };
 	FbxModel* fbxModels[15] = { nullptr, nullptr, nullptr, nullptr, nullptr,
 	nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, };
-	
-	InterpolationCamera interpolationCamera;
 
 	bool moveFlag = false;
 	bool smokeFlag = true;

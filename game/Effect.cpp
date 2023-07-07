@@ -2,7 +2,7 @@
 #include "SafeDelete.h"
 #include "WinApp.h"
 #include "Player.h"
-#include "DebugCamera.h"
+#include "GameCamera.h"
 
 //Effect2d* Effect::crystalEffect = nullptr;
 //std::vector<Effect2d*> Effect::crystalEffects;

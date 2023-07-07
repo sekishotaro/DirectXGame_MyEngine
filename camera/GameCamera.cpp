@@ -1,4 +1,4 @@
-#include "DebugCamera.h"
+#include "GameCamera.h"
 #include "Input.h"
 #include "Player.h"
 #include "SphereCollider.h"
@@ -7,20 +7,18 @@
 #include "MyMath.h"
 
 using namespace DirectX;
-float DebugCamera::dx = 0;
-float DebugCamera::dy = 0;
-float DebugCamera::dz = 0;
-XMFLOAT3 DebugCamera::eye;
-XMFLOAT3 DebugCamera::target;
-float DebugCamera::rotaX = 270.0f;
-float DebugCamera::rotaY = 70.0f;
-float DebugCamera::dis = 20.0f;
-bool DebugCamera::hitFlag = false;
-std::unique_ptr<Object3d> DebugCamera::Object;
-Model* DebugCamera::Model = nullptr;
+float GameCamera::dx = 0;
+float GameCamera::dy = 0;
+float GameCamera::dz = 0;
+XMFLOAT3 GameCamera::eye;
+XMFLOAT3 GameCamera::target;
+float GameCamera::dis = 20.0f;
+bool GameCamera::hitFlag = false;
+std::unique_ptr<Object3d> GameCamera::Object;
+Model* GameCamera::Model = nullptr;
 
 
-DebugCamera::DebugCamera(int window_width, int window_height) : Camera(window_width, window_height)
+GameCamera::GameCamera(int window_width, int window_height) : Camera(window_width, window_height)
 {
 	Model = Model::LoadFromOBJ("skydome");
 	Object = Object3d::Create();
@@ -33,15 +31,15 @@ DebugCamera::DebugCamera(int window_width, int window_height) : Camera(window_wi
 	collider = Object->GetBaseCollider();
 	collider->SetAttribute(COLLISION_ATTR_ALLIES); 
 	Object->SetBaseCollider(collider);
-	rotaX = 180.0f;
+	rota.x = 180.0f;
 }
 
-void DebugCamera::Update()
+void GameCamera::Update()
 {
 	//カメラの位置移動処理(球面上の角度移動)
 	XMFLOAT3 cameraPos = MoveUpdate();
 
-	UpdateProcess(cameraPos);
+	TerrainPushBackProcess(cameraPos);
 	//コライダー更新
 	Object->UpdateWorldMatrix();
 	collider->Update();
@@ -59,121 +57,43 @@ void DebugCamera::Update()
 	Camera::Update();
 }
 
-DebugCamera::XMFLOAT3 DebugCamera::SphereCoordinateSystem()
+void GameCamera::UpdateOnly()
 {
-	float radiusX = rotaX * 3.14f / 180.0f;
-	float radiusY = rotaY * 3.14f / 180.0f;
+	XMFLOAT3 cameraPos = {};
+	cameraPos = SphereCoordinateSystem();
+	SetEye(cameraPos);
+	//常時自機にターゲット
+	XMFLOAT3 targetPos = TargetProcess();
+	targetPos.y += 6.0f;
+	Camera::SetTarget(targetPos);
+	Camera::Update();
+}
+
+GameCamera::XMFLOAT3 GameCamera::SphereCoordinateSystem()
+{
+	XMFLOAT2 radius = { rota.x * 3.14f / 180.0f, rota.y * 3.14f / 180.0f };
 	XMFLOAT3 cameraPos = {};
 
 	cameraPos = TargetProcess();
 	
 	//球面座標系
-	cameraPos.y += (dis) * cos(radiusY);
-	cameraPos.x += (dis) * sin(radiusY) * cos(radiusX);
-	cameraPos.z += (dis) * sin(radiusY) * sin(radiusX);
+	cameraPos.y += (dis) * cos(radius.y);
+	cameraPos.x += (dis) * sin(radius.y) * cos(radius.x);
+	cameraPos.z += (dis) * sin(radius.y) * sin(radius.x);
 
 	return cameraPos;
 }
 
-DebugCamera::XMFLOAT3 DebugCamera::MoveUpdate()
+GameCamera::XMFLOAT3 GameCamera::MoveUpdate()
 {
 	XMFLOAT3 cameraPos = {};
-	//半径
-	float disMax = 20.0f;
-
-	if (PlayerJumpUp() != true)		//移動制限
-	{
-		//キーボード
-		if (Input::GetInstance()->PushKey(DIK_UP)) { rotaY -= 1.0f; }
-		else if (Input::GetInstance()->PushKey(DIK_DOWN)) { rotaY += 1.0f; }
-		if (Input::GetInstance()->PushKey(DIK_RIGHT)) { rotaX += 1.0f; }
-		else if (Input::GetInstance()->PushKey(DIK_LEFT)) { rotaX -= 1.0f; }
-		//コントローラー
-		if (Input::GetInstance()->RightStickIn(UP) && rotaY < 175)
-		{
-			rotaY += 1.0f;
-			slopeRotaFlag = false;
-			if (dis <= disMax && hitFlag == false) { dis += 0.5f; }
-		}
-		else if (Input::GetInstance()->RightStickIn(DOWN) && rotaY > 5)
-		{
-			rotaY -= 1.0f;
-			slopeRotaFlag = false;
-			if (dis <= disMax && hitFlag == false) { dis += 0.5f; }
-		}
-		if (Input::GetInstance()->RightStickIn(RIGHT))
-		{
-			rotaX -= 1.0f;
-			if (dis <= disMax && hitFlag == false) { dis += 0.5f; }
-		}
-		else if (Input::GetInstance()->RightStickIn(LEFT))
-		{
-			rotaX += 1.0f;
-			if (dis <= disMax && hitFlag == false) { dis += 0.5f; }
-		}
-
-		if (dis <= disMax && hitFlag == false) { dis += 0.5f; }
-	}
-	
+	//操作
+	Operation();
 	//坂
 	SlopeRotaYProcess();
 
 	//視点正面移動
-	static float endRota = 0;
-	if (Input::GetInstance()->PushPadbutton(GAMEPAD_RIGHT_SHOULDER) && viewpointSwitchFlag == false)
-	{
-		endRota = 0;
-		endRota -= Player::GetRot().y + 90.0f;
-		if (endRota >= 360.0f)
-		{
-			endRota -= 360.0f;
-		}
-		if (endRota <= 0.0f)
-		{
-			endRota += 360.0f;
-		}
-		viewpointSwitchFlag = true;
-		viewpointSwitchposParRotX = rotaX;
-		viewpointSwitchposParRotY = rotaY;
-	}
-
-	//崖上がり時視点正面移動
-	if (static_cast<int>(Player::GetStatus()) == 8 && static_cast<int>(Player::GetOldStatus()) != 15)
-	{
-		endRota = 0;
-		endRota -= Player::GetRot().y + 90.0f;
-		if (endRota >= 360.0f)
-		{
-			endRota -= 360.0f;
-		}
-		if (endRota <= 0.0f)
-		{
-			endRota += 360.0f;
-		}
-		viewpointSwitchFlag = true;
-		viewpointSwitchposParRotX = rotaX;
-		viewpointSwitchposParRotY = rotaY;
-	}
-
-	if (rotaX >= 360.0f)
-	{
-		rotaX -= 360.0f;
-	}
-	if (rotaX <= 0.0f)
-	{
-		rotaX += 360.0f;
-	}
-
-	if (rotaY >= 360.0f)
-	{
-		rotaY -= 360.0f;
-	}
-	if (rotaY <= 0.0f)
-	{
-		rotaY += 360.0f;
-	}
-
-	ViewpointSwitch(endRota);
+	NoticeProcess();
 
 	cameraPos = SphereCoordinateSystem();
 
@@ -181,7 +101,45 @@ DebugCamera::XMFLOAT3 DebugCamera::MoveUpdate()
 	return cameraPos;
 }
 
-void DebugCamera::UpdateProcess( XMFLOAT3& cameraPos)
+void GameCamera::Operation()
+{
+	if (PlayerJumpUp() == true) return;
+
+	//半径
+	float disMax = 20.0f;
+	//キーボード
+	if (Input::GetInstance()->PushKey(DIK_UP)) { rota.y -= 1.0f; }
+	else if (Input::GetInstance()->PushKey(DIK_DOWN)) { rota.y += 1.0f; }
+	if (Input::GetInstance()->PushKey(DIK_RIGHT)) { rota.x += 1.0f; }
+	else if (Input::GetInstance()->PushKey(DIK_LEFT)) { rota.x -= 1.0f; }
+	//コントローラー
+	if (Input::GetInstance()->RightStickIn(UP) && rota.y < 175)
+	{
+		rota.y += 1.0f;
+		slopeRotaFlag = false;
+		if (dis <= disMax && hitFlag == false) { dis += 0.5f; }
+	}
+	else if (Input::GetInstance()->RightStickIn(DOWN) && rota.y > 5)
+	{
+		rota.y -= 1.0f;
+		slopeRotaFlag = false;
+		if (dis <= disMax && hitFlag == false) { dis += 0.5f; }
+	}
+	if (Input::GetInstance()->RightStickIn(RIGHT))
+	{
+		rota.x -= 1.0f;
+		if (dis <= disMax && hitFlag == false) { dis += 0.5f; }
+	}
+	else if (Input::GetInstance()->RightStickIn(LEFT))
+	{
+		rota.x += 1.0f;
+		if (dis <= disMax && hitFlag == false) { dis += 0.5f; }
+	}
+
+	if (dis <= disMax && hitFlag == false) { dis += 0.5f; }
+}
+
+void GameCamera::TerrainPushBackProcess( XMFLOAT3& cameraPos)
 {
 	//球コライダーを取得
 	Object->SetPosition(cameraPos);
@@ -270,19 +228,30 @@ void DebugCamera::UpdateProcess( XMFLOAT3& cameraPos)
 	{
 		if (dis > 5.0f) { dis -= 1.0f; }
 		hitFlag = true;
-		rotaY -= 1.0f;
+		rota.y -= 1.0f;
 		slopeRotaFlag = false;
 		cameraPos = SphereCoordinateSystem();
 	}
 }
 
-void DebugCamera::UpdateOnly()
+void GameCamera::NoticeProcess()
 {
-	Camera::Update();
-}
+	//視点正面移動
+	static float endRota = 0;
+	if (Input::GetInstance()->PushPadbutton(GAMEPAD_RIGHT_SHOULDER) && viewpointSwitchFlag == false)
+	{
+		endRota = GetNoticeRot();
+	}
 
-void DebugCamera::ViewpointSwitch(float endRota)
-{
+	//崖上がり時視点正面移動
+	if (static_cast<int>(Player::GetStatus()) == 8 && static_cast<int>(Player::GetOldStatus()) != 15)
+	{
+		endRota = GetNoticeRot();
+	}
+
+	rota.x = AngleNormalize(rota.x);
+	rota.y = AngleNormalize(rota.y);
+
 	static float MoveTime = 0.0f;
 	if (viewpointSwitchFlag == false)
 	{
@@ -290,14 +259,7 @@ void DebugCamera::ViewpointSwitch(float endRota)
 		return;
 	}
 
-	if (endRota >= 360.0f)
-	{
-		endRota -= 360.0f;
-	}
-	if (endRota <= 0.0f)
-	{
-		endRota += 360.0f;
-	}
+	endRota = AngleNormalize(endRota);
 
 	const float MoveMaxTime = 0.3f; //移動にかかる時間
 	float timeRatio = MoveTime / MoveMaxTime;
@@ -313,18 +275,45 @@ void DebugCamera::ViewpointSwitch(float endRota)
 	}
 
 	if (dis <= 20.0f && hitFlag == false) { dis += 1.0f; }
-	rotaX = leap(viewpointSwitchposParRotX, endRota, timeRatio);
-	rotaY = leap(viewpointSwitchposParRotY, 60.0f, timeRatio);
+	rota.x = leap(viewpointSwitchposParRotX, endRota, timeRatio);
+	rota.y = leap(viewpointSwitchposParRotY, 60.0f, timeRatio);
 }
 
-float DebugCamera::leap(float rotaA, float rotaB, float timeRatio)
+float GameCamera::GetNoticeRot()
+{
+	float endRota = 0.0f;
+	endRota -= Player::GetRot().y + 90.0f;
+	endRota = AngleNormalize(endRota);
+	viewpointSwitchFlag = true;
+	viewpointSwitchposParRotX = rota.x;
+	viewpointSwitchposParRotY = rota.y;
+
+	return endRota;
+}
+
+float GameCamera::leap(float rotaA, float rotaB, float timeRatio)
 {
 	float result = 0.0f;
 	result = rotaA * (1.0f - timeRatio) + rotaB * timeRatio;
 	return result;
 }
 
-bool DebugCamera::PlayerJumpUp()
+float GameCamera::AngleNormalize(const float rot)
+{
+	float Rot = rot;
+	if (rot >= 360.0f)
+	{
+		Rot -= 360.0f;
+	}
+	if (rot <= 0.0f)
+	{
+		Rot += 360.0f;
+	}
+
+	return Rot;
+}
+
+bool GameCamera::PlayerJumpUp()
 {
 	if (Player::GetStatus() == 3 && Player::GetStatus() == 4)
 	{
@@ -342,7 +331,7 @@ bool DebugCamera::PlayerJumpUp()
 	return false;
 }
 
-DebugCamera::XMFLOAT3 DebugCamera::TargetProcess()
+GameCamera::XMFLOAT3 GameCamera::TargetProcess()
 {
 	XMFLOAT3 result = {};
 	//平面移動
@@ -389,7 +378,7 @@ DebugCamera::XMFLOAT3 DebugCamera::TargetProcess()
 	return result;
 }
 
-void DebugCamera::CliffFlagUpdate()
+void GameCamera::CliffFlagUpdate()
 {
 	//崖上りフラグが立っていたら早期リターン
 	if (cliffTargetFlag == true) return;
@@ -403,7 +392,7 @@ void DebugCamera::CliffFlagUpdate()
 	}
 }
 
-void DebugCamera::CorrectionProcess()
+void GameCamera::CorrectionProcess()
 {
 	static XMFLOAT3 moveVal = {};
 
@@ -453,7 +442,7 @@ void DebugCamera::CorrectionProcess()
 	correctionVal = moveVal;
 }
 
-bool DebugCamera::CorrectionCheck()
+bool GameCamera::CorrectionCheck()
 {
 	if (static_cast<int>(Player::GetStatus()) == 1) return true;
 	if (static_cast<int>(Player::GetStatus()) == 2) return true;
@@ -462,59 +451,75 @@ bool DebugCamera::CorrectionCheck()
 	return false;
 }
 
-void DebugCamera::SlopeRotaYProcess()
+void GameCamera::SlopeRotaYProcess()
 {
-	if (Player::GetSlopeFlag() == true)
+	if (Player::GetSlopeFlag() == true)	//坂の上にいる
 	{
-		if (slopeRotaFlag == false)
-		{
-			slopeRotaFlag = true;
-		}
-		
-		if (Player::GetRot().y >= 75.0f && Player::GetRot().y <= 105.0f)
-		{
-			if (rotaY < 100)
-			{
-				rotaY += 0.5f;
-			}
-		}
-		else if (Player::GetRot().y >= 255.0f && Player::GetRot().y <= 285.0f)
-		{
-			if (rotaY > 50)
-			{
-				rotaY -= 0.5f;
-			}
-
-			if (rotaX < 1.0f || rotaX > 359.0f)
-			{
-				rotaX = 0;
-			}
-			else if (rotaX <= 180 && rotaX > 0)
-			{
-				rotaX -= 1.0f;
-			}
-			else if (rotaX > 180 && rotaX < 360)
-			{
-				rotaX += 1.0f;
-			}
-		}
+		OnSlopeProcess();
 	}
 	else
 	{
-		if (slopeRotaFlag == false) return;
-		if (rotaY > 70)
+		UnSlopeProcess();
+	}
+}
+
+void GameCamera::OnSlopeProcess()
+{
+	if (slopeRotaFlag == false)
+	{
+		slopeRotaFlag = true;
+	}
+	//		坂の上下角度		右		左
+	const XMFLOAT2 slopeUp	= {  75.0f, 105.0f };
+	const XMFLOAT2 slopeDown	= { 255.0f, 285.0f };
+	//坂上下Y角度			上		下
+	XMFLOAT2 slopeRotY = { 100.0f, 50.0f };
+
+	if (Player::GetRot().y >= slopeUp.x && Player::GetRot().y <= slopeUp.y)
+	{
+		if (rota.y < slopeRotY.x)
 		{
-			rotaY -= 0.5f;
+			rota.y += 0.5f;
+		}
+	}
+	else if (Player::GetRot().y >= slopeDown.x && Player::GetRot().y <= slopeDown.y)
+	{
+		if (rota.y > slopeRotY.y)
+		{
+			rota.y -= 0.5f;
 		}
 
-		if (rotaY < 70)
+		if (rota.x < 1.0f || rota.x > 359.0f)
 		{
-			rotaY += 0.5f;
+			rota.x = 0;
+		}
+		else if (rota.x <= 180 && rota.x > 0)
+		{
+			rota.x -= 1.0f;
+		}
+		else if (rota.x > 180 && rota.x < 360)
+		{
+			rota.x += 1.0f;
 		}
 	}
 }
 
-float DebugCamera::CliffMoveTargetState()
+void GameCamera::UnSlopeProcess()
+{
+	if (slopeRotaFlag == false) return;
+	
+	if (rota.y > 70)
+	{
+		rota.y -= 0.5f;
+	}
+	
+	if (rota.y < 70)
+	{
+		rota.y += 0.5f;
+	}
+}
+
+float GameCamera::CliffMoveTargetState()
 {
 	const float timeMax = 1.0f;							//最大時間
 	float time = timeMax - cliffTargetCount;			//加算時間に変化

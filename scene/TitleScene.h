@@ -3,7 +3,7 @@
 #include "BaseScene.h"
 #include "Sprite.h"
 #include "Object3d.h"
-#include "DebugCamera.h"
+#include "GameCamera.h"
 #include "Camera.h"
 #include "LightGroup.h"
 #include <DirectXMath.h>
@@ -49,7 +49,7 @@ public:
 	/// <summary>
 	/// ゲームシーン用
 	/// </summary>
-	DebugCamera* camera = nullptr;
+	GameCamera* camera = nullptr;
 	Sprite *spriteBG = nullptr;
 	Sprite* spriteUI = nullptr;
 

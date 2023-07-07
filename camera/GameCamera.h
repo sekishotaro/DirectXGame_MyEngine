@@ -5,7 +5,7 @@
 #include "BaseCollider.h"
 #include "CollisionAttribute.h"
 
-class DebugCamera : public Camera
+class GameCamera : public Camera
 {
 public: // メンバ関数
 	/// <summary>
@@ -13,30 +13,49 @@ public: // メンバ関数
 	/// </summary>
 	/// <param name="window_width">画面幅</param>
 	/// <param name="window_height">画面高さ</param>
-	DebugCamera(int window_width, int window_height);
+	GameCamera(int window_width, int window_height);
 
 	/// <summary>
 	/// デストラクタ
 	/// </summary>
-	virtual ~DebugCamera() = default;
+	virtual ~GameCamera() = default;
 
 	/// <summary>
 	/// 毎フレーム更新
 	/// </summary>
 	virtual void Update();
-
+	/// <summary>
+	/// 球面座標系の位置決定
+	/// </summary>
+	/// <returns>カメラ位置</returns>
 	XMFLOAT3 SphereCoordinateSystem();
-
+	/// <summary>
+	/// カメラ移動処理
+	/// </summary>
+	/// <returns>カメラ位置</returns>
 	XMFLOAT3 MoveUpdate();
-
-	void UpdateProcess( XMFLOAT3 &cameraPos);
-
+	/// <summary>
+	/// カメラ操作
+	/// </summary>
+	void Operation();
+	/// <summary>
+	/// カメラ地形当たり判定
+	/// </summary>
+	/// <param name="cameraPos">押し返し</param>
+	void TerrainPushBackProcess( XMFLOAT3 &cameraPos);
+	/// <summary>
+	/// 
+	/// </summary>
 	void UpdateOnly();
-
-	void ViewpointSwitch(float endRota);
-
-	float leap(float rotaA, float rotaB, float timeRatio);
-
+	/// <summary>
+	/// 注目処理
+	/// </summary>
+	void NoticeProcess();
+	/// <summary>
+	/// 注目角度取得
+	/// </summary>
+	/// <returns>プレイヤーの向いている角度</returns>
+	float GetNoticeRot();
 	bool PlayerJumpUp();
 	/// <summary>
 	/// カメラターゲット座標の
@@ -47,24 +66,42 @@ public: // メンバ関数
 	/// </summary>
 	/// <returns></returns>
 	float CliffMoveTargetState();
-
+	/// <summary>
+	/// 崖上がりタイミング取得
+	/// </summary>
 	void CliffFlagUpdate();
-
+	/// <summary>
+	/// カメラ移動ディレイ
+	/// </summary>
 	void CorrectionProcess();
+	/// <summary>
+	/// ディレイ確認
+	/// </summary>
+	/// <returns>ディレイをするか</returns>
 	bool CorrectionCheck();
-
+	/// <summary>
+	/// 地面によるカメラの補正
+	/// </summary>
 	void SlopeRotaYProcess();
+	/// <summary>
+	/// 坂の上の処理
+	/// </summary>
+	void OnSlopeProcess();
+	/// <summary>
+	/// 坂の上でない処理
+	/// </summary>
+	void UnSlopeProcess();
 
-	static float GetRotaY() { return rotaY; }
-	static float GetRotaX() { return rotaX; }
+	float leap(float rotaA, float rotaB, float timeRatio);
+
+	float AngleNormalize(const float rot);
 public:
 	static XMFLOAT3 eye;
 	static XMFLOAT3 target;
 	static float dx;
 	static float dy;
 	static float dz;
-	static float rotaX;
-	static float rotaY;
+	XMFLOAT2 rota = { 270.0f, 70.0f };
 	static float dis;
 	float correctionDis = 0.0f;
 	XMFLOAT3 correctionVal = {};
