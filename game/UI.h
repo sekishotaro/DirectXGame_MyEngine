@@ -1,5 +1,6 @@
 #pragma once
 #include "Sprite.h"
+#include "Player.h"
 
 class UI
 {
@@ -13,23 +14,53 @@ public:
 
 public:
 	//èâä˙âª
-	void Initialize();
+	virtual void Initialize() = 0;
 	//çXêV
-	void Update();
+	virtual void Update() = 0;
 	//ï`âÊ
-	void Draw(int crystalNum);
+	virtual void Draw(int crystalNum) = 0;
+};
 
-private:
-	void timeUpdata();
-
-private:
+class StaminaUI : public UI
+{
+public:
+	void Initialize() override;
+	void Update(Player* player);
+	void Draw(Player* player);
+public:
 	Sprite* stamina[4] = { nullptr, nullptr, nullptr, nullptr };
-	XMFLOAT2 staminabarSize;
-	Sprite* crystalUI[26] = { nullptr, nullptr, nullptr, nullptr, nullptr,
-nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr,
-nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr };
+	XMFLOAT2 staminabarSize = {};
+};
+
+class TimeUI : public UI
+{
+public:
+	void Initialize() override;
+	void Update(Player* player);
+	void Draw(Player* player);
+public:
 	Sprite* timerCenter = nullptr;
-	Sprite* timerPetal[9] = { nullptr,nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr};
+	Sprite* timerPetal[9] = { nullptr,nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr };
+};
+
+class ControllerUI : public UI
+{
+public:
+	void Initialize() override;
+	void Update(Player* player);
+	void Draw(Player* player);
+public:
 	Sprite* controllerUI = nullptr;
 };
 
+class CrystalUI : public UI
+{
+public:
+	void Initialize() override;
+	void Update(Player* player);
+	void Draw(Player* player);
+public:
+	Sprite* crystalUI[26] = { nullptr, nullptr, nullptr, nullptr, nullptr,
+		nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr,
+		nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr };
+};

@@ -293,10 +293,6 @@ private:
 	static bool climbWallHit;
 	//前フレームの当たり判定の結果
 	bool climbWallHitPar = false;
-	/// <summary>
-	/// スタミナ消費確認フラグ
-	/// </summary>
-	static bool staminaBoostFlag;
 	//スタミナが使えるかどうか(スタミナを使い切った場合になる状態)
 	static bool staminaCut;
 	static bool crystalGetFlag;
@@ -317,9 +313,13 @@ private:
 	bool onObject = false;
 	//自機とゴールの当たり判定
 	bool goalFlag = true;
+public:
 	//クリスタルの数
 	int crystalNum = 0;
-public:
+	/// <summary>
+	/// スタミナ消費確認フラグ
+	/// </summary>
+	static bool staminaBoostFlag;
 	XMFLOAT3 moveBoxMax1 = { 0.0f, 0.0f, 0.0f };
 	//debug
 	bool teleportFlag = false;

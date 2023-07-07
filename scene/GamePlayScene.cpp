@@ -96,7 +96,12 @@ void GamePlayScene::Initialize()
 	objFighter->SetModel15(fbxModels[14]);
 	
 	effect->Effect::Initialize();
-	ui->UI::Initialize();
+	
+	staminaUI->StaminaUI::Initialize();
+	timeUI->TimeUI::Initialize();
+	controllerUI->ControllerUI::Initialize();
+	crystalUI->CrystalUI::Initialize();
+
 	opticalPost->OpticalPost::Initialize();
 }
 
@@ -110,7 +115,10 @@ void GamePlayScene::Finalize()
 	safe_delete(opticalPost);
 	effect->Finalize();
 	safe_delete(effect);
-	safe_delete(ui);
+	safe_delete(staminaUI);
+	safe_delete(timeUI);
+	safe_delete(controllerUI);
+	safe_delete(crystalUI);
 }
 
 void GamePlayScene::Update()
@@ -184,7 +192,10 @@ void GamePlayScene::Draw()
 	smokes[1]->Draw();
 	if (moveFlag != true)
 	{
-		ui->UI::Draw(objFighter->GetCrystal());
+		staminaUI->StaminaUI::Draw(objFighter);
+		timeUI->TimeUI::Draw(objFighter);
+		controllerUI->ControllerUI::Draw(objFighter);
+		crystalUI->CrystalUI::Draw(objFighter);
 	}
 	
 	effect->Draw();
@@ -238,8 +249,10 @@ void GamePlayScene::GameStatus()
 	opticalPost->Update(camera->GetEye());
 	opticalPost->SetDrawFlag(true);
 	
-	ui->UI::Update();
-	
+	staminaUI->StaminaUI::Update(objFighter);
+	timeUI->TimeUI::Update(objFighter);
+	controllerUI->ControllerUI::Update(objFighter);
+	crystalUI->CrystalUI::Update(objFighter);
 	effect->Update(camera->GetEye(), objFighter->GetCrystal());
 }
 
