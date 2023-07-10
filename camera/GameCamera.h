@@ -4,6 +4,7 @@
 #include "Object3d.h"
 #include "BaseCollider.h"
 #include "CollisionAttribute.h"
+#include "Player.h"
 
 class GameCamera : public Camera
 {
@@ -23,44 +24,40 @@ public: // メンバ関数
 	/// <summary>
 	/// 毎フレーム更新
 	/// </summary>
-	virtual void Update();
+	virtual void Update(Player* player);
 	/// <summary>
 	/// 球面座標系の位置決定
 	/// </summary>
 	/// <returns>カメラ位置</returns>
-	XMFLOAT3 SphereCoordinateSystem();
+	XMFLOAT3 SphereCoordinateSystem(Player* player);
 	/// <summary>
 	/// カメラ移動処理
 	/// </summary>
 	/// <returns>カメラ位置</returns>
-	XMFLOAT3 MoveUpdate();
+	XMFLOAT3 MoveUpdate(Player* player);
 	/// <summary>
 	/// カメラ操作
 	/// </summary>
-	void Operation();
+	void Operation(Player* player);
 	/// <summary>
 	/// カメラ地形当たり判定
 	/// </summary>
 	/// <param name="cameraPos">押し返し</param>
-	void TerrainPushBackProcess( XMFLOAT3 &cameraPos);
-	/// <summary>
-	/// 
-	/// </summary>
-	void UpdateOnly();
+	void TerrainPushBackProcess( XMFLOAT3 &cameraPos, Player* player);
 	/// <summary>
 	/// 注目処理
 	/// </summary>
-	void NoticeProcess();
+	void NoticeProcess(Player* player);
 	/// <summary>
 	/// 注目角度取得
 	/// </summary>
 	/// <returns>プレイヤーの向いている角度</returns>
-	float GetNoticeRot();
-	bool PlayerJumpUp();
+	float GetNoticeRot(Player* player);
+	bool PlayerJumpUp(Player* player);
 	/// <summary>
 	/// カメラターゲット座標の
 	/// </summary>
-	XMFLOAT3 TargetProcess();
+	XMFLOAT3 TargetProcess(Player* player);
 	/// <summary>
 	/// 崖つかみした瞬間から補間
 	/// </summary>
@@ -69,24 +66,24 @@ public: // メンバ関数
 	/// <summary>
 	/// 崖上がりタイミング取得
 	/// </summary>
-	void CliffFlagUpdate();
+	void CliffFlagUpdate(Player* player);
 	/// <summary>
 	/// カメラ移動ディレイ
 	/// </summary>
-	void CorrectionProcess();
+	void CorrectionProcess(Player* player);
 	/// <summary>
 	/// ディレイ確認
 	/// </summary>
 	/// <returns>ディレイをするか</returns>
-	bool CorrectionCheck();
+	bool CorrectionCheck(Player* player);
 	/// <summary>
 	/// 地面によるカメラの補正
 	/// </summary>
-	void SlopeRotaYProcess();
+	void SlopeRotaYProcess(Player* player);
 	/// <summary>
 	/// 坂の上の処理
 	/// </summary>
-	void OnSlopeProcess();
+	void OnSlopeProcess(Player* player);
 	/// <summary>
 	/// 坂の上でない処理
 	/// </summary>
@@ -96,20 +93,21 @@ public: // メンバ関数
 
 	float AngleNormalize(const float rot);
 public:
-	static XMFLOAT3 eye;
-	static XMFLOAT3 target;
-	static float dx;
-	static float dy;
-	static float dz;
+
+	XMFLOAT3 eye = {};
+	XMFLOAT3 target = {};
+	float dx = 0;
+	float dy = 0;
+	float dz = 0;
 	XMFLOAT2 rota = { 270.0f, 70.0f };
-	static float dis;
+	float dis = 20.0f;
 	float correctionDis = 0.0f;
 	XMFLOAT3 correctionVal = {};
-	static bool hitFlag;
+	bool hitFlag = false;
 
-	static std::unique_ptr<Object3d> Object;
+	std::unique_ptr<Object3d> Object;
 	float oldPosY = 0.0f;
-	static Model* Model;
+	Model* Model = nullptr;
 	BaseCollider* collider = nullptr;
 
 	bool viewpointSwitchFlag = false;

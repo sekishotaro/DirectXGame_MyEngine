@@ -20,12 +20,12 @@ void StaminaUI::Initialize()
 
 void StaminaUI::Update(Player* player)
 {
-	float staminaSizeY = staminabarSize.y * Player::GetStaminaQuantity() / 100.0f;
+	float staminaSizeY = staminabarSize.y * player->GetStaminaQuantity() / 100.0f;
 	stamina[1]->SetSize({ staminabarSize.x, staminaSizeY });
 
-	if (Player::GetStaminaCut() != true)
+	if (player->GetStaminaCutFlag() != true)
 	{
-		if (Player::GetStaminaQuantity() >= 30.0f)
+		if (player->GetStaminaQuantity() >= 30.0f)
 		{
 			stamina[1]->SetColor({ 1.0f, 1.0f, 1.0f, 1.0f });
 		}
@@ -42,7 +42,7 @@ void StaminaUI::Update(Player* player)
 
 void StaminaUI::Draw(Player* player)
 {
-	if (player->staminaBoostFlag == true || Player::GetStaminaQuantity() != 100.0f)
+	if (player->GetStaminaBoostFlag() == true || player->GetStaminaQuantity() != 100.0f)
 	{
 		stamina[0]->Draw();
 		stamina[1]->Draw();
@@ -53,44 +53,23 @@ void StaminaUI::Draw(Player* player)
 
 void TimeUI::Initialize()
 {
-	Sprite::LoadTexture(30, L"Resources/UI/timer/timerCenter.png");
-	Sprite::LoadTexture(31, L"Resources/UI/timer/timerPetal0.png");
-	Sprite::LoadTexture(32, L"Resources/UI/timer/timerPetal1.png");
-	Sprite::LoadTexture(33, L"Resources/UI/timer/timerPetal2.png");
-	Sprite::LoadTexture(34, L"Resources/UI/timer/timerPetal3.png");
-	Sprite::LoadTexture(35, L"Resources/UI/timer/timerPetal4.png");
-	Sprite::LoadTexture(36, L"Resources/UI/timer/timerPetal5.png");
+	Sprite::LoadTexture(20, L"Resources/UI/timer/timerCenter.png");
+	Sprite::LoadTexture(21, L"Resources/UI/timer/timerPetal0.png");
+	Sprite::LoadTexture(22, L"Resources/UI/timer/timerPetal1.png");
+	Sprite::LoadTexture(23, L"Resources/UI/timer/timerPetal2.png");
+	Sprite::LoadTexture(24, L"Resources/UI/timer/timerPetal3.png");
+	Sprite::LoadTexture(25, L"Resources/UI/timer/timerPetal4.png");
+	Sprite::LoadTexture(26, L"Resources/UI/timer/timerPetal5.png");
 
-	timerCenter = Sprite::Create(30, { 1174 , 83.0f });
+	timerCenter = Sprite::Create(20, { 1174 , 83.0f });
 	timerCenter->SetSize({ 32, 32 });
 
-	timerPetal[0] = Sprite::Create(31, { 1190 , 100.0f }, XMFLOAT4{ 1, 1, 1, 1 }, XMFLOAT2{ 0.5f, 1.0f });
-	timerPetal[0]->SetSize({ 32, 64 });
-	timerPetal[0]->SetRotation(0.0f);
-	timerPetal[1] = Sprite::Create(31, { 1190 , 100.0f }, XMFLOAT4{ 1, 1, 1, 1 }, XMFLOAT2{ 0.5f, 1.0f });
-	timerPetal[1]->SetSize({ 32, 64 });
-	timerPetal[1]->SetRotation(40.0f);
-	timerPetal[2] = Sprite::Create(31, { 1190 , 100.0f }, XMFLOAT4{ 1, 1, 1, 1 }, XMFLOAT2{ 0.5f, 1.0f });
-	timerPetal[2]->SetSize({ 32, 64 });
-	timerPetal[2]->SetRotation(80.0f);
-	timerPetal[3] = Sprite::Create(31, { 1190 , 100.0f }, XMFLOAT4{ 1, 1, 1, 1 }, XMFLOAT2{ 0.5f, 1.0f });
-	timerPetal[3]->SetSize({ 32, 64 });
-	timerPetal[3]->SetRotation(120.0f);
-	timerPetal[4] = Sprite::Create(31, { 1190 , 100.0f }, XMFLOAT4{ 1, 1, 1, 1 }, XMFLOAT2{ 0.5f, 1.0f });
-	timerPetal[4]->SetSize({ 32, 64 });
-	timerPetal[4]->SetRotation(160.0f);
-	timerPetal[5] = Sprite::Create(31, { 1190 , 100.0f }, XMFLOAT4{ 1, 1, 1, 1 }, XMFLOAT2{ 0.5f, 1.0f });
-	timerPetal[5]->SetSize({ 32, 64 });
-	timerPetal[5]->SetRotation(200.0f);
-	timerPetal[6] = Sprite::Create(31, { 1190 , 100.0f }, XMFLOAT4{ 1, 1, 1, 1 }, XMFLOAT2{ 0.5f, 1.0f });
-	timerPetal[6]->SetSize({ 32, 64 });
-	timerPetal[6]->SetRotation(240.0f);
-	timerPetal[7] = Sprite::Create(31, { 1190 , 100.0f }, XMFLOAT4{ 1, 1, 1, 1 }, XMFLOAT2{ 0.5f, 1.0f });
-	timerPetal[7]->SetSize({ 32, 64 });
-	timerPetal[7]->SetRotation(280.0f);
-	timerPetal[8] = Sprite::Create(31, { 1190 , 100.0f }, XMFLOAT4{ 1, 1, 1, 1 }, XMFLOAT2{ 0.5f, 1.0f });
-	timerPetal[8]->SetSize({ 32, 64 });
-	timerPetal[8]->SetRotation(320.0f);
+	for (int i = 0; i < 9; i++)
+	{
+		timerPetal[i] = Sprite::Create(21, { 1190 , 100.0f }, XMFLOAT4{ 1, 1, 1, 1 }, XMFLOAT2{ 0.5f, 1.0f });
+		timerPetal[i]->SetSize({ 32, 64 });
+		timerPetal[i]->SetRotation(i * 40.0f);
+	}
 }
 
 void TimeUI::Update(Player* player)
@@ -101,241 +80,240 @@ void TimeUI::Update(Player* player)
 
 	if (Player::GetCrystalGetFlag() || time == timeMax)
 	{
-		timerPetal[0]->SetTexNum(31);
-		timerPetal[1]->SetTexNum(31);
-		timerPetal[2]->SetTexNum(31);
-		timerPetal[3]->SetTexNum(31);
-		timerPetal[4]->SetTexNum(31);
-		timerPetal[5]->SetTexNum(31);
-		timerPetal[6]->SetTexNum(31);
-		timerPetal[7]->SetTexNum(31);
-		timerPetal[8]->SetTexNum(31);
+		timerPetal[0]->SetTexNum(21);
+		timerPetal[1]->SetTexNum(21);
+		timerPetal[2]->SetTexNum(21);
+		timerPetal[3]->SetTexNum(21);
+		timerPetal[4]->SetTexNum(21);
+		timerPetal[5]->SetTexNum(21);
+		timerPetal[6]->SetTexNum(21);
+		timerPetal[7]->SetTexNum(21);
+		timerPetal[8]->SetTexNum(21);
 	}
-
 
 	if (time <= timeMax * (53.0f / 53.0f))
 	{
-		timerPetal[0]->SetTexNum(31);
+		timerPetal[0]->SetTexNum(21);
 	}
 	if (time <= timeMax * (52.0f / 53.0f))
 	{
-		timerPetal[0]->SetTexNum(32);
+		timerPetal[0]->SetTexNum(22);
 	}
 	if (time <= timeMax * (51.0f / 53.0f))
 	{
-		timerPetal[0]->SetTexNum(33);
+		timerPetal[0]->SetTexNum(23);
 	}
 	if (time <= timeMax * (50.0f / 53.0f))
 	{
-		timerPetal[0]->SetTexNum(34);
+		timerPetal[0]->SetTexNum(24);
 	}
 	if (time <= timeMax * (49.0f / 53.0f))
 	{
-		timerPetal[0]->SetTexNum(35);
+		timerPetal[0]->SetTexNum(25);
 	}
 	if (time <= timeMax * (48.0f / 53.0f))
 	{
-		timerPetal[0]->SetTexNum(36);
+		timerPetal[0]->SetTexNum(26);
 	}
 
 	if (time <= timeMax * (47.0f / 53.0f))
 	{
-		timerPetal[1]->SetTexNum(31);
+		timerPetal[1]->SetTexNum(21);
 	}
 	if (time <= timeMax * (46.0f / 53.0f))
 	{
-		timerPetal[1]->SetTexNum(32);
+		timerPetal[1]->SetTexNum(22);
 	}
 	if (time <= timeMax * (45.0f / 53.0f))
 	{
-		timerPetal[1]->SetTexNum(33);
+		timerPetal[1]->SetTexNum(23);
 	}
 	if (time <= timeMax * (44.0f / 53.0f))
 	{
-		timerPetal[1]->SetTexNum(34);
+		timerPetal[1]->SetTexNum(24);
 	}
 	if (time <= timeMax * (43.0f / 53.0f))
 	{
-		timerPetal[1]->SetTexNum(35);
+		timerPetal[1]->SetTexNum(25);
 	}
 	if (time <= timeMax * (42.0f / 53.0f))
 	{
-		timerPetal[1]->SetTexNum(36);
+		timerPetal[1]->SetTexNum(26);
 	}
 
 	if (time <= timeMax * (41.0f / 53.0f))
 	{
-		timerPetal[2]->SetTexNum(31);
+		timerPetal[2]->SetTexNum(21);
 	}
 	if (time <= timeMax * (40.0f / 53.0f))
 	{
-		timerPetal[2]->SetTexNum(32);
+		timerPetal[2]->SetTexNum(22);
 	}
 	if (time <= timeMax * (39.0f / 53.0f))
 	{
-		timerPetal[2]->SetTexNum(33);
+		timerPetal[2]->SetTexNum(23);
 	}
 	if (time <= timeMax * (38.0f / 53.0f))
 	{
-		timerPetal[2]->SetTexNum(34);
+		timerPetal[2]->SetTexNum(24);
 	}
 	if (time <= timeMax * (37.0f / 53.0f))
 	{
-		timerPetal[2]->SetTexNum(35);
+		timerPetal[2]->SetTexNum(25);
 	}
 	if (time <= timeMax * (36.0f / 53.0f))
 	{
-		timerPetal[2]->SetTexNum(36);
+		timerPetal[2]->SetTexNum(26);
 	}
 
 	if (time <= timeMax * (35.0f / 53.0f))
 	{
-		timerPetal[3]->SetTexNum(31);
+		timerPetal[3]->SetTexNum(21);
 	}
 	if (time <= timeMax * (34.0f / 53.0f))
 	{
-		timerPetal[3]->SetTexNum(32);
+		timerPetal[3]->SetTexNum(22);
 	}
 	if (time <= timeMax * (33.0f / 53.0f))
 	{
-		timerPetal[3]->SetTexNum(33);
+		timerPetal[3]->SetTexNum(23);
 	}
 	if (time <= timeMax * (32.0f / 53.0f))
 	{
-		timerPetal[3]->SetTexNum(34);
+		timerPetal[3]->SetTexNum(24);
 	}
 	if (time <= timeMax * (31.0f / 53.0f))
 	{
-		timerPetal[3]->SetTexNum(35);
+		timerPetal[3]->SetTexNum(25);
 	}
 	if (time <= timeMax * (30.0f / 53.0f))
 	{
-		timerPetal[3]->SetTexNum(36);
+		timerPetal[3]->SetTexNum(26);
 	}
 
 	if (time <= timeMax * (29.0f / 53.0f))
 	{
-		timerPetal[4]->SetTexNum(31);
+		timerPetal[4]->SetTexNum(21);
 	}
 	if (time <= timeMax * (28.0f / 53.0f))
 	{
-		timerPetal[4]->SetTexNum(32);
+		timerPetal[4]->SetTexNum(22);
 	}
 	if (time <= timeMax * (27.0f / 53.0f))
 	{
-		timerPetal[4]->SetTexNum(33);
+		timerPetal[4]->SetTexNum(23);
 	}
 	if (time <= timeMax * (26.0f / 53.0f))
 	{
-		timerPetal[4]->SetTexNum(34);
+		timerPetal[4]->SetTexNum(24);
 	}
 	if (time <= timeMax * (25.0f / 53.0f))
 	{
-		timerPetal[4]->SetTexNum(35);
+		timerPetal[4]->SetTexNum(25);
 	}
 	if (time <= timeMax * (24.0f / 53.0f))
 	{
-		timerPetal[4]->SetTexNum(36);
+		timerPetal[4]->SetTexNum(26);
 	}
 
 	if (time <= timeMax * (23.0f / 53.0f))
 	{
-		timerPetal[5]->SetTexNum(31);
+		timerPetal[5]->SetTexNum(21);
 	}
 	if (time <= timeMax * (22.0f / 53.0f))
 	{
-		timerPetal[5]->SetTexNum(32);
+		timerPetal[5]->SetTexNum(22);
 	}
 	if (time <= timeMax * (21.0f / 53.0f))
 	{
-		timerPetal[5]->SetTexNum(33);
+		timerPetal[5]->SetTexNum(23);
 	}
 	if (time <= timeMax * (20.0f / 53.0f))
 	{
-		timerPetal[5]->SetTexNum(34);
+		timerPetal[5]->SetTexNum(24);
 	}
 	if (time <= timeMax * (19.0f / 53.0f))
 	{
-		timerPetal[5]->SetTexNum(35);
+		timerPetal[5]->SetTexNum(25);
 	}
 	if (time <= timeMax * (18.0f / 53.0f))
 	{
-		timerPetal[5]->SetTexNum(36);
+		timerPetal[5]->SetTexNum(26);
 	}
 
 	if (time <= timeMax * (17.0f / 53.0f))
 	{
-		timerPetal[6]->SetTexNum(31);
+		timerPetal[6]->SetTexNum(21);
 	}
 	if (time <= timeMax * (16.0f / 53.0f))
 	{
-		timerPetal[6]->SetTexNum(32);
+		timerPetal[6]->SetTexNum(22);
 	}
 	if (time <= timeMax * (15.0f / 53.0f))
 	{
-		timerPetal[6]->SetTexNum(33);
+		timerPetal[6]->SetTexNum(23);
 	}
 	if (time <= timeMax * (14.0f / 53.0f))
 	{
-		timerPetal[6]->SetTexNum(34);
+		timerPetal[6]->SetTexNum(24);
 	}
 	if (time <= timeMax * (13.0f / 53.0f))
 	{
-		timerPetal[6]->SetTexNum(35);
+		timerPetal[6]->SetTexNum(25);
 	}
 	if (time <= timeMax * (12.0f / 53.0f))
 	{
-		timerPetal[6]->SetTexNum(36);
+		timerPetal[6]->SetTexNum(26);
 	}
 
 	if (time <= timeMax * (11.0f / 53.0f))
 	{
-		timerPetal[7]->SetTexNum(31);
+		timerPetal[7]->SetTexNum(21);
 	}
 	if (time <= timeMax * (10.0f / 53.0f))
 	{
-		timerPetal[7]->SetTexNum(32);
+		timerPetal[7]->SetTexNum(22);
 	}
 	if (time <= timeMax * (9.0f / 53.0f))
 	{
-		timerPetal[7]->SetTexNum(33);
+		timerPetal[7]->SetTexNum(23);
 	}
 	if (time <= timeMax * (8.0f / 53.0f))
 	{
-		timerPetal[7]->SetTexNum(34);
+		timerPetal[7]->SetTexNum(24);
 	}
 	if (time <= timeMax * (7.0f / 53.0f))
 	{
-		timerPetal[7]->SetTexNum(35);
+		timerPetal[7]->SetTexNum(25);
 	}
 	if (time <= timeMax * (6.0f / 53.0f))
 	{
-		timerPetal[7]->SetTexNum(36);
+		timerPetal[7]->SetTexNum(26);
 	}
 
 	if (time <= timeMax * (5.0f / 53.0f))
 	{
-		timerPetal[8]->SetTexNum(31);
+		timerPetal[8]->SetTexNum(21);
 	}
 	if (time <= timeMax * (4.0f / 53.0f))
 	{
-		timerPetal[8]->SetTexNum(32);
+		timerPetal[8]->SetTexNum(22);
 	}
 	if (time <= timeMax * (3.0f / 53.0f))
 	{
-		timerPetal[8]->SetTexNum(33);
+		timerPetal[8]->SetTexNum(23);
 	}
 	if (time <= timeMax * (2.0f / 53.0f))
 	{
-		timerPetal[8]->SetTexNum(34);
+		timerPetal[8]->SetTexNum(24);
 	}
 	if (time <= timeMax * (1.0f / 53.0f))
 	{
-		timerPetal[8]->SetTexNum(35);
+		timerPetal[8]->SetTexNum(25);
 	}
 	if (time <= timeMax * (0.0f / 53.0f))
 	{
-		timerPetal[8]->SetTexNum(36);
+		timerPetal[8]->SetTexNum(26);
 	}
 }
 
@@ -366,7 +344,7 @@ void ControllerUI::Initialize()
 
 void ControllerUI::Update(Player* player)
 {
-	if (Player::GetStatus() == 6)
+	if (player->GetStatus() == 6)
 	{
 		controllerUI->SetTexNum(62);
 	}
@@ -374,7 +352,7 @@ void ControllerUI::Update(Player* player)
 	{
 		controllerUI->SetTexNum(63);
 	}
-	else if (Player::GetStatus() == 8)
+	else if (player->GetStatus() == 8)
 	{
 		controllerUI->SetTexNum(61);
 	}
@@ -391,16 +369,16 @@ void ControllerUI::Draw(Player* player)
 
 void CrystalUI::Initialize()
 {
-	Sprite::LoadTexture(20, L"Resources/UI/CrystalUI/Crystal_Null.png");
-	Sprite::LoadTexture(21, L"Resources/UI/CrystalUI/Crystal_1.png");
-	Sprite::LoadTexture(22, L"Resources/UI/CrystalUI/Crystal_2.png");
-	Sprite::LoadTexture(23, L"Resources/UI/CrystalUI/Crystal_3.png");
-	Sprite::LoadTexture(24, L"Resources/UI/CrystalUI/Crystal_4.png");
-	Sprite::LoadTexture(25, L"Resources/UI/CrystalUI/Crystal_5.png");
-	Sprite::LoadTexture(26, L"Resources/UI/CrystalUI/Crystal_6.png");
-	Sprite::LoadTexture(27, L"Resources/UI/CrystalUI/Crystal_7.png");
-	Sprite::LoadTexture(28, L"Resources/UI/CrystalUI/Crystal_8.png");
-	Sprite::LoadTexture(29, L"Resources/UI/CrystalUI/Crystal_9.png");
+	Sprite::LoadTexture(30, L"Resources/UI/CrystalUI/Crystal_Null.png");
+	Sprite::LoadTexture(31, L"Resources/UI/CrystalUI/Crystal_1.png");
+	Sprite::LoadTexture(32, L"Resources/UI/CrystalUI/Crystal_2.png");
+	Sprite::LoadTexture(33, L"Resources/UI/CrystalUI/Crystal_3.png");
+	Sprite::LoadTexture(34, L"Resources/UI/CrystalUI/Crystal_4.png");
+	Sprite::LoadTexture(35, L"Resources/UI/CrystalUI/Crystal_5.png");
+	Sprite::LoadTexture(36, L"Resources/UI/CrystalUI/Crystal_6.png");
+	Sprite::LoadTexture(37, L"Resources/UI/CrystalUI/Crystal_7.png");
+	Sprite::LoadTexture(38, L"Resources/UI/CrystalUI/Crystal_8.png");
+	Sprite::LoadTexture(39, L"Resources/UI/CrystalUI/Crystal_9.png");
 	Sprite::LoadTexture(40, L"Resources/UI/CrystalUI/Crystal_10.png");
 	Sprite::LoadTexture(41, L"Resources/UI/CrystalUI/Crystal_11.png");
 	Sprite::LoadTexture(42, L"Resources/UI/CrystalUI/Crystal_12.png");
@@ -417,63 +395,12 @@ void CrystalUI::Initialize()
 	Sprite::LoadTexture(53, L"Resources/UI/CrystalUI/Crystal_23.png");
 	Sprite::LoadTexture(54, L"Resources/UI/CrystalUI/Crystal_24.png");
 	Sprite::LoadTexture(55, L"Resources/UI/CrystalUI/Crystal_25.png");
-	Sprite::LoadTexture(60, L"Resources/UI/controller/controllerUI.png");
-	Sprite::LoadTexture(61, L"Resources/UI/controller/controllerUI2.png");
-	Sprite::LoadTexture(62, L"Resources/UI/controller/controllerUI3.png");
-	Sprite::LoadTexture(63, L"Resources/UI/controller/controllerUI4.png");
 
-	crystalUI[0] = Sprite::Create(20, { 1080.0f , 90.0f });
-	crystalUI[0]->SetSize({ 200, 500 });
-	crystalUI[1] = Sprite::Create(21, { 1080.0f , 90.0f });
-	crystalUI[1]->SetSize({ 200, 500 });
-	crystalUI[2] = Sprite::Create(22, { 1080.0f , 90.0f });
-	crystalUI[2]->SetSize({ 200, 500 });
-	crystalUI[3] = Sprite::Create(23, { 1080.0f , 90.0f });
-	crystalUI[3]->SetSize({ 200, 500 });
-	crystalUI[4] = Sprite::Create(24, { 1080.0f , 90.0f });
-	crystalUI[4]->SetSize({ 200, 500 });
-	crystalUI[5] = Sprite::Create(25, { 1080.0f , 90.0f });
-	crystalUI[5]->SetSize({ 200, 500 });
-	crystalUI[6] = Sprite::Create(26, { 1080.0f , 90.0f });
-	crystalUI[6]->SetSize({ 200, 500 });
-	crystalUI[7] = Sprite::Create(27, { 1080.0f , 90.0f });
-	crystalUI[7]->SetSize({ 200, 500 });
-	crystalUI[8] = Sprite::Create(28, { 1080.0f , 90.0f });
-	crystalUI[8]->SetSize({ 200, 500 });
-	crystalUI[9] = Sprite::Create(29, { 1080.0f , 90.0f });
-	crystalUI[9]->SetSize({ 200, 500 });
-	crystalUI[10] = Sprite::Create(40, { 1080.0f , 90.0f });
-	crystalUI[10]->SetSize({ 200, 500 });
-	crystalUI[11] = Sprite::Create(41, { 1080.0f , 90.0f });
-	crystalUI[11]->SetSize({ 200, 500 });
-	crystalUI[12] = Sprite::Create(42, { 1080.0f , 90.0f });
-	crystalUI[12]->SetSize({ 200, 500 });
-	crystalUI[13] = Sprite::Create(43, { 1080.0f , 90.0f });
-	crystalUI[13]->SetSize({ 200, 500 });
-	crystalUI[14] = Sprite::Create(44, { 1080.0f , 90.0f });
-	crystalUI[14]->SetSize({ 200, 500 });
-	crystalUI[15] = Sprite::Create(45, { 1080.0f , 90.0f });
-	crystalUI[15]->SetSize({ 200, 500 });
-	crystalUI[16] = Sprite::Create(46, { 1080.0f , 90.0f });
-	crystalUI[16]->SetSize({ 200, 500 });
-	crystalUI[17] = Sprite::Create(47, { 1080.0f , 90.0f });
-	crystalUI[17]->SetSize({ 200, 500 });
-	crystalUI[18] = Sprite::Create(48, { 1080.0f , 90.0f });
-	crystalUI[18]->SetSize({ 200, 500 });
-	crystalUI[19] = Sprite::Create(49, { 1080.0f , 90.0f });
-	crystalUI[19]->SetSize({ 200, 500 });
-	crystalUI[20] = Sprite::Create(50, { 1080.0f , 90.0f });
-	crystalUI[20]->SetSize({ 200, 500 });
-	crystalUI[21] = Sprite::Create(51, { 1080.0f , 90.0f });
-	crystalUI[21]->SetSize({ 200, 500 });
-	crystalUI[22] = Sprite::Create(52, { 1080.0f , 90.0f });
-	crystalUI[22]->SetSize({ 200, 500 });
-	crystalUI[23] = Sprite::Create(53, { 1080.0f , 90.0f });
-	crystalUI[23]->SetSize({ 200, 500 });
-	crystalUI[24] = Sprite::Create(54, { 1080.0f , 90.0f });
-	crystalUI[24]->SetSize({ 200, 500 });
-	crystalUI[25] = Sprite::Create(55, { 1080.0f , 90.0f });
-	crystalUI[25]->SetSize({ 200, 500 });
+	for (int i = 0; i < 26; i++)
+	{
+		crystalUI[i] = Sprite::Create(30 + i, { 1080.0f , 90.0f });
+		crystalUI[i]->SetSize({ 200, 500 });
+	}
 }
 
 void CrystalUI::Update(Player* player)

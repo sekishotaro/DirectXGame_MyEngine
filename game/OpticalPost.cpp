@@ -4,20 +4,6 @@
 #include "stdlib.h"
 #include "SafeDelete.h"
 
-//std::vector<std::unique_ptr<Object3d>> OpticalPost::OpticalPosts;
-//std::vector<std::unique_ptr<Object3d>> OpticalPost::smallOpticalPosts;
-//std::unique_ptr<Object3d> OpticalPost::goalOpticalPostObject;
-//Model* OpticalPost::modelOpticalPost = nullptr;
-//Model* OpticalPost::modelCrystalEffect = nullptr;
-//std::unique_ptr<Object3d> OpticalPost::CrystalEffectObject;
-//std::vector<float> OpticalPost::moveQuantitys;
-//
-//bool OpticalPost::drawFlag = false;
-//float OpticalPost::num = 0.0f;
-//int OpticalPost::effectNum = 7;
-//float OpticalPost::sizeNum = 3.0f;
-//float OpticalPost::moveQuantityMax = 3.0f;
-//const int OpticalPost::smallOpticalPostNum = 20;
 void OpticalPost::Initialize()
 {
 	modelOpticalPost = Model::LoadFromOBJ("opticalPost");
@@ -65,10 +51,9 @@ void OpticalPost::Initialize()
 	CrystalEffectObject->SetScale({ 3.0f, 3.0f, 3.0f });
 }
 
-void OpticalPost::Update(const XMFLOAT3& cameraPos)
+void OpticalPost::Update(const XMFLOAT3& cameraPos, Player* player)
 {
-	////光の柱用の板ポリを常に自機に向ける
-
+	//光の柱用の板ポリを常に自機に向ける
 	//光の柱の法線
 	XMFLOAT3 normal = { -1, 0, 0 };
 
@@ -102,7 +87,7 @@ void OpticalPost::Update(const XMFLOAT3& cameraPos)
 	}
 
 	//クリスタル周囲
-	int nearCrystalNum = NearCrystalNum();
+	int nearCrystalNum = NearCrystalNum(player);
 	float CrystalEffectObjectRota = RotaUpdate(cameraPos, OpticalPosts[nearCrystalNum].get()->GetPosition());
 	CrystalEffectObject->SetRotation({ 0, CrystalEffectObjectRota, 0 });
 	CrystalEffectObject->SetPosition(JsonLoader::crystalObjects[nearCrystalNum].get()->GetPosition());
@@ -194,9 +179,9 @@ float OpticalPost::RotaUpdate(const XMFLOAT3& cameraPos, const XMFLOAT3& crystal
 	return sita;
 }
 
-int OpticalPost::NearCrystalNum()
+int OpticalPost::NearCrystalNum(Player* player)
 {
-	XMFLOAT3 playerPos = Player::GetPos();
+	XMFLOAT3 playerPos = player->GetPosition();
 	XMFLOAT3 crystalPos = {};
 	float length = 0.0f;
 	float minLength = 0.0f;

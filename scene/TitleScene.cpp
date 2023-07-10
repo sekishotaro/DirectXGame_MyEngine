@@ -19,7 +19,7 @@ void TitleScene::Initialize()
 	spriteUI->SetPosition({ (float)WinApp::window_width / 2.0f,(float)WinApp::window_height * 2.5f / 3.0f });
 
 	// カメラ生成
-	camera = new GameCamera(WinApp::window_width, WinApp::window_height);
+	camera = new TitleCamera(WinApp::window_width, WinApp::window_height);
 	// カメラセット
 	Object3d::SetCamera(camera);
 	camera->SetEye({ 0, 100, -30 });
@@ -91,8 +91,7 @@ void TitleScene::Update()
 	terrainObjectB->Update();
 	terrainObjectC->Update();
 
-	camera->rota.x += 1.0f;
-	camera->UpdateOnly();
+	camera->Update(fbxObject->GetPosition());
 	fbxObject->Update();
 
 	if (input->TriggerKey(DIK_RETURN) || input->PushPadbutton(Button_A))

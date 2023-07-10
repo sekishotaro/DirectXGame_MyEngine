@@ -1,6 +1,7 @@
 #pragma once
 #include <DirectXMath.h>
 #include "Object3d.h"
+#include "Player.h"
 
 class OpticalPost
 {
@@ -15,7 +16,7 @@ public:
 
 	void Initialize();
 
-	void Update(const XMFLOAT3 &cameraPos);
+	void Update(const XMFLOAT3 &cameraPos, Player* player);
 
 	void Draw();
 
@@ -29,7 +30,7 @@ public:
 
 	float RotaUpdate(const XMFLOAT3& cameraPos, const XMFLOAT3 &crystalPos);
 
-	int NearCrystalNum();
+	int NearCrystalNum(Player* player);
 
 	void CrystalEfectSizeNumUpdate();
 

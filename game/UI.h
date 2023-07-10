@@ -16,9 +16,9 @@ public:
 	//‰Šú‰»
 	virtual void Initialize() = 0;
 	//XV
-	virtual void Update() = 0;
+	virtual void Update(Player* player) = 0;
 	//•`‰æ
-	virtual void Draw(int crystalNum) = 0;
+	virtual void Draw(Player* player) = 0;
 };
 
 class StaminaUI : public UI

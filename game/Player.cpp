@@ -12,22 +12,14 @@
 
 using namespace DirectX;
 
-XMFLOAT3 Player::pos = { 0,0,0 };
-XMFLOAT3 Player::rot = { 0,0,0 };
 XMFLOAT3 Player::moveV = { 0,0,0 };
 XMFLOAT3 Player::moveVal = { 0,0,0 };
 float Player::moveAdjustmentNum = 1.0f;
 float Player::timeLimit = 30.0f;
 const float Player::timeLimitMax = 20.0f;
-float Player::staminaQuantity = 100.0f;
 int Player::animeNum = 0;
 int Player::oldAnimeNum = 0;
-//int Player::crystalNum = 0;
 bool Player::slopeFlag = false;
-//bool Player::onGround = false;
-//bool Player::goalFlag = false;
-bool Player::staminaBoostFlag = false;
-bool Player::staminaCut = false;
 bool Player::crystalGetFlag = false;
 bool Player::moveBoxFlag = false;
 bool Player::moveBoxHitFlag = false;
@@ -35,9 +27,6 @@ bool Player::wallHittingFlag = false;
 bool Player::oldWallHittingFlag = false;
 bool Player::jumpWallHittingFlag = false;
 bool Player::animeFlag = false;
-
-Player::PlayerStatus Player::playerStatus = STATE_IDLING;
-Player::PlayerStatus Player::oldPlayerStatus = STATE_IDLING;
 
 //ƒ‚ƒfƒ‹
 FbxModel* Player::fbxModels[] = {nullptr,nullptr, nullptr, nullptr, nullptr, 
@@ -77,7 +66,6 @@ void Player::Initialize()
 	position = JsonLoader::goalObjects[0].get()->GetPosition();
 
 	rotation.y = 90.0f;
-	pos = position;
 
 	scale = { 0.01f ,0.01f ,0.01f };
 
@@ -140,9 +128,6 @@ void Player::Update()
 
 	//ŠRã‚ª‚è
 	climbingCliff();
-
-	pos = position;
-	rot = rotation;
 
 	if (playerStatus == STATE_CLIFF_IDLING)
 	{
@@ -237,7 +222,6 @@ void Player::ReStart()
 
 	position = JsonLoader::goalObjects[0].get()->GetPosition();
 	rotation.y = 90.0f;
-	pos = position;
 }
 
 void Player::PushBack(const DirectX::XMVECTOR& normal, const XMFLOAT3& distance)

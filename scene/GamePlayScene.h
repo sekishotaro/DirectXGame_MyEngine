@@ -115,11 +115,10 @@ public:
 	TouchableObject* objGround = nullptr;
 	Effect *effect = new Effect;
 	OpticalPost *opticalPost = new OpticalPost;
-	//UI* ui = new UI;
-	StaminaUI* staminaUI = new StaminaUI;
-	TimeUI* timeUI = new TimeUI;
-	ControllerUI* controllerUI = new ControllerUI;
-	CrystalUI* crystalUI = new CrystalUI;
+	StaminaUI* staminaUI = new StaminaUI();
+	TimeUI* timeUI = new TimeUI();
+	ControllerUI* controllerUI = new ControllerUI();
+	CrystalUI* crystalUI = new CrystalUI();
 	//ƒ‰ƒCƒg
 	LightGroup* lightGroup = nullptr;
 	float ambientColor0[3] = { 1,1,1 };

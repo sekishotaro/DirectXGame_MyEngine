@@ -215,16 +215,16 @@ private:
 	bool FallStateCheck();
 public:
 	//デバック用ゲッター
-	static XMFLOAT3 GetPos() { return pos; }
-	static XMFLOAT3 GetRot() { return rot; }
 	static XMFLOAT3 GetMove() { return moveVal; };
 	int GetCrystal() { return crystalNum; }
 	int GetCrystalGetNum() { return crystalGetNum; }
 	bool GetGoalFlag() { return goalFlag; }
+
+	int GetCrystalNum() { return crystalNum; }
+	bool GetStaminaCutFlag() { return staminaCut; }
+	float GetStaminaQuantity() { return staminaQuantity; }
 	static float GetTimeLimit() { return timeLimit; }
-	static bool GetStaminaFlag() { return staminaBoostFlag; }
-	static float GetStaminaQuantity() { return staminaQuantity; }
-	static bool GetStaminaCut() { return staminaCut; }
+	bool GetStaminaBoostFlag() { return staminaBoostFlag; }
 	static bool GetCrystalGetFlag() { return crystalGetFlag; }
 	static bool GetMoveBoxHitFlag() { return moveBoxHitFlag;}
 	static int GetAnimeNum() { return animeNum; }
@@ -232,8 +232,8 @@ public:
 	static bool GetWallHitFlag() { return wallHittingFlag; }
 	static float GetTimeMax() { return timeLimitMax; }
 
-	static PlayerStatus& GetStatus() { return playerStatus; }
-	static PlayerStatus& GetOldStatus() { return oldPlayerStatus; }
+	PlayerStatus& GetStatus() { return playerStatus; }
+	PlayerStatus& GetOldStatus() { return oldPlayerStatus; }
 
 	void SetModel1(FbxModel* fbxModel) { this->fbxModels[0] = fbxModel; };
 	void SetModel2(FbxModel* fbxModel) { this->fbxModels[1] = fbxModel; };
@@ -252,9 +252,7 @@ public:
 	void SetModel15(FbxModel* fbxModel) { this->fbxModels[14] = fbxModel; };
 private:
 	
-	static XMFLOAT3 pos;				//プレイヤーの位置
 	XMFLOAT3 parPos;					//前フレームの位置
-	static XMFLOAT3 rot;				//プレイヤーの角度
 	static XMFLOAT3 moveV;
 	static XMFLOAT3 moveVal;			//プレイヤーの移動量
 	DirectX::XMVECTOR fallV = {};		//落下ベクトル
@@ -265,7 +263,6 @@ private:
 	DirectX::XMVECTOR climbNormal = {};	//壁のぼり用保存めり込み法線
 	static float timeLimit;				//現在の時間
 	static const float timeLimitMax;	//制限時間
-	static float staminaQuantity;		// スタミナ残量
 	float forciblyRecoveryTime = 10.0f;	//スタミナがなくなった時の回復時間
 	float staminaRecoveryTime = 5.0f;	//スタミナ回復待機時間
 	float jumpHeightPosY = 0.0f;		//ジャンプした時に壁と接触しない高さ
@@ -274,8 +271,8 @@ private:
 	/// </summary>
 	PlayerAnimeState PlayerState = idling;			//アニメーション
 	PlayerAnimeState oldPlayerState = idling;		//前フレームのアニメーション
-	static PlayerStatus playerStatus;				//プレイヤー
-	static PlayerStatus oldPlayerStatus;			//前フレームのプレイヤー
+	PlayerStatus playerStatus = STATE_IDLING;		//プレイヤー
+	PlayerStatus oldPlayerStatus = STATE_IDLING;	//前フレームのプレイヤー
 	StaminaStatus staminaStatus = sutaminaMax;		//スタミナ
 
 	//アニメーション
@@ -294,7 +291,6 @@ private:
 	//前フレームの当たり判定の結果
 	bool climbWallHitPar = false;
 	//スタミナが使えるかどうか(スタミナを使い切った場合になる状態)
-	static bool staminaCut;
 	static bool crystalGetFlag;
 	int crystalGetNum = 0;
 	//壁と接触確認フラグ
@@ -313,13 +309,13 @@ private:
 	bool onObject = false;
 	//自機とゴールの当たり判定
 	bool goalFlag = true;
-public:
 	//クリスタルの数
 	int crystalNum = 0;
-	/// <summary>
-	/// スタミナ消費確認フラグ
-	/// </summary>
-	static bool staminaBoostFlag;
+	bool staminaCut = false;
+	float staminaQuantity = 100.0f;		// スタミナ残量
+	// スタミナ消費確認フラグ
+	bool staminaBoostFlag = false;
+public:
 	XMFLOAT3 moveBoxMax1 = { 0.0f, 0.0f, 0.0f };
 	//debug
 	bool teleportFlag = false;

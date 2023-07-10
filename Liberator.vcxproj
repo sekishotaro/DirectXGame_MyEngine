@@ -251,6 +251,7 @@
     <ClCompile Include="collision\SphereCollider.cpp" />
     <ClCompile Include="collision\TouchableObject.cpp" />
     <ClCompile Include="game\UI.cpp" />
+    <ClCompile Include="camera\TitleCamera.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="3d\FbxLoader.h" />
@@ -319,6 +320,7 @@
     <ClInclude Include="light\SpotLight.h" />
     <ClInclude Include="collision\TouchableObject.h" />
     <ClInclude Include="game\UI.h" />
+    <ClInclude Include="camera\TitleCamera.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

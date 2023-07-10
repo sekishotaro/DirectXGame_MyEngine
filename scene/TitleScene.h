@@ -3,10 +3,12 @@
 #include "BaseScene.h"
 #include "Sprite.h"
 #include "Object3d.h"
-#include "GameCamera.h"
+#include "TitleCamera.h"
 #include "Camera.h"
 #include "LightGroup.h"
 #include <DirectXMath.h>
+#include "FbxObject3d.h"
+#include "FbxModel.h"
 
 class TitleScene : public BaseScene
 {
@@ -49,7 +51,7 @@ public:
 	/// <summary>
 	/// ゲームシーン用
 	/// </summary>
-	GameCamera* camera = nullptr;
+	TitleCamera* camera = nullptr;
 	Sprite *spriteBG = nullptr;
 	Sprite* spriteUI = nullptr;
 

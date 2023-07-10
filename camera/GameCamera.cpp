@@ -7,16 +7,6 @@
 #include "MyMath.h"
 
 using namespace DirectX;
-float GameCamera::dx = 0;
-float GameCamera::dy = 0;
-float GameCamera::dz = 0;
-XMFLOAT3 GameCamera::eye;
-XMFLOAT3 GameCamera::target;
-float GameCamera::dis = 20.0f;
-bool GameCamera::hitFlag = false;
-std::unique_ptr<Object3d> GameCamera::Object;
-Model* GameCamera::Model = nullptr;
-
 
 GameCamera::GameCamera(int window_width, int window_height) : Camera(window_width, window_height)
 {
@@ -34,22 +24,22 @@ GameCamera::GameCamera(int window_width, int window_height) : Camera(window_widt
 	rota.x = 180.0f;
 }
 
-void GameCamera::Update()
+void GameCamera::Update(Player* player)
 {
 	//カメラの位置移動処理(球面上の角度移動)
-	XMFLOAT3 cameraPos = MoveUpdate();
+	XMFLOAT3 cameraPos = MoveUpdate(player);
 
-	TerrainPushBackProcess(cameraPos);
+	TerrainPushBackProcess(cameraPos, player);
 	//コライダー更新
 	Object->UpdateWorldMatrix();
 	collider->Update();
 
-	CorrectionProcess();
+	CorrectionProcess(player);
 	cameraPos = cameraPos + correctionVal;
 	SetEye(cameraPos);
 	
 	//常時自機にターゲット
-	XMFLOAT3 targetPos = TargetProcess();
+	XMFLOAT3 targetPos = TargetProcess(player);
 	
 	targetPos.y += 6.0f;
 	
@@ -57,24 +47,12 @@ void GameCamera::Update()
 	Camera::Update();
 }
 
-void GameCamera::UpdateOnly()
-{
-	XMFLOAT3 cameraPos = {};
-	cameraPos = SphereCoordinateSystem();
-	SetEye(cameraPos);
-	//常時自機にターゲット
-	XMFLOAT3 targetPos = TargetProcess();
-	targetPos.y += 6.0f;
-	Camera::SetTarget(targetPos);
-	Camera::Update();
-}
-
-GameCamera::XMFLOAT3 GameCamera::SphereCoordinateSystem()
+GameCamera::XMFLOAT3 GameCamera::SphereCoordinateSystem(Player* player)
 {
 	XMFLOAT2 radius = { rota.x * 3.14f / 180.0f, rota.y * 3.14f / 180.0f };
 	XMFLOAT3 cameraPos = {};
 
-	cameraPos = TargetProcess();
+	cameraPos = TargetProcess(player);
 	
 	//球面座標系
 	cameraPos.y += (dis) * cos(radius.y);
@@ -84,26 +62,26 @@ GameCamera::XMFLOAT3 GameCamera::SphereCoordinateSystem()
 	return cameraPos;
 }
 
-GameCamera::XMFLOAT3 GameCamera::MoveUpdate()
+GameCamera::XMFLOAT3 GameCamera::MoveUpdate(Player* player)
 {
 	XMFLOAT3 cameraPos = {};
 	//操作
-	Operation();
+	Operation(player);
 	//坂
-	SlopeRotaYProcess();
+	SlopeRotaYProcess(player);
 
 	//視点正面移動
-	NoticeProcess();
+	NoticeProcess(player);
 
-	cameraPos = SphereCoordinateSystem();
+	cameraPos = SphereCoordinateSystem(player);
 
 	oldPosY = cameraPos.y;
 	return cameraPos;
 }
 
-void GameCamera::Operation()
+void GameCamera::Operation(Player* player)
 {
-	if (PlayerJumpUp() == true) return;
+	if (PlayerJumpUp(player) == true) return;
 
 	//半径
 	float disMax = 20.0f;
@@ -139,7 +117,7 @@ void GameCamera::Operation()
 	if (dis <= disMax && hitFlag == false) { dis += 0.5f; }
 }
 
-void GameCamera::TerrainPushBackProcess( XMFLOAT3& cameraPos)
+void GameCamera::TerrainPushBackProcess( XMFLOAT3& cameraPos, Player* player)
 {
 	//球コライダーを取得
 	Object->SetPosition(cameraPos);
@@ -198,19 +176,19 @@ void GameCamera::TerrainPushBackProcess( XMFLOAT3& cameraPos)
 	{
 		hitFlag = true;
 		if (dis > 5.0f) { dis -= 0.5f; }
-		cameraPos = SphereCoordinateSystem();
+		cameraPos = SphereCoordinateSystem(player);
 	} 
 	else if (callback.move.m128_f32[1] != 0)
 	{
 		hitFlag = true;
 		if (dis > 5.0f) { dis -= 0.5f; }
-		cameraPos = SphereCoordinateSystem();
+		cameraPos = SphereCoordinateSystem(player);
 	}
 	else if (callback.move.m128_f32[2] != 0)
 	{
 		hitFlag = true;
 		if (dis > 5.0f) { dis -= 0.5f; }
-		cameraPos = SphereCoordinateSystem();
+		cameraPos = SphereCoordinateSystem(player);
 	}
 	else
 	{
@@ -230,23 +208,23 @@ void GameCamera::TerrainPushBackProcess( XMFLOAT3& cameraPos)
 		hitFlag = true;
 		rota.y -= 1.0f;
 		slopeRotaFlag = false;
-		cameraPos = SphereCoordinateSystem();
+		cameraPos = SphereCoordinateSystem(player);
 	}
 }
 
-void GameCamera::NoticeProcess()
+void GameCamera::NoticeProcess(Player* player)
 {
 	//視点正面移動
 	static float endRota = 0;
 	if (Input::GetInstance()->PushPadbutton(GAMEPAD_RIGHT_SHOULDER) && viewpointSwitchFlag == false)
 	{
-		endRota = GetNoticeRot();
+		endRota = GetNoticeRot(player);
 	}
 
 	//崖上がり時視点正面移動
-	if (static_cast<int>(Player::GetStatus()) == 8 && static_cast<int>(Player::GetOldStatus()) != 15)
+	if (static_cast<int>(player->GetStatus()) == 8 && static_cast<int>(player->GetOldStatus()) != 15)
 	{
-		endRota = GetNoticeRot();
+		endRota = GetNoticeRot(player);
 	}
 
 	rota.x = AngleNormalize(rota.x);
@@ -279,10 +257,10 @@ void GameCamera::NoticeProcess()
 	rota.y = leap(viewpointSwitchposParRotY, 60.0f, timeRatio);
 }
 
-float GameCamera::GetNoticeRot()
+float GameCamera::GetNoticeRot(Player* player)
 {
 	float endRota = 0.0f;
-	endRota -= Player::GetRot().y + 90.0f;
+	endRota -= player->GetRotation().y + 90.0f;
 	endRota = AngleNormalize(endRota);
 	viewpointSwitchFlag = true;
 	viewpointSwitchposParRotX = rota.x;
@@ -313,17 +291,17 @@ float GameCamera::AngleNormalize(const float rot)
 	return Rot;
 }
 
-bool GameCamera::PlayerJumpUp()
+bool GameCamera::PlayerJumpUp(Player* player)
 {
-	if (Player::GetStatus() == 3 && Player::GetStatus() == 4)
+	if (player->GetStatus() == 3 && player->GetStatus() == 4)
 	{
 		return true;
 	}
-	else if (Player::GetAnimeNum() == 13)
+	else if (player->GetAnimeNum() == 13)
 	{
 		return true;
 	}
-	else if (Player::GetAnimeNum() == 14)
+	else if (player->GetAnimeNum() == 14)
 	{
 		return true;
 	}
@@ -331,36 +309,36 @@ bool GameCamera::PlayerJumpUp()
 	return false;
 }
 
-GameCamera::XMFLOAT3 GameCamera::TargetProcess()
+GameCamera::XMFLOAT3 GameCamera::TargetProcess(Player* player)
 {
 	XMFLOAT3 result = {};
 	//平面移動
-	result = { Player::GetPos().x, 0.0f,Player::GetPos().z };
+	result = { player->GetPosition().x, 0.0f, player->GetPosition().z};
 
-	CliffFlagUpdate();
+	CliffFlagUpdate(player);
 
 	//Y座標移動
-	if (static_cast<int>(Player::GetStatus()) == 3)			//通常ジャンプ上昇中※△
+	if (static_cast<int>(player->GetStatus()) == 3)			//通常ジャンプ上昇中※△
 	{
 		//ジャンプ前座標
 		result.y = oldTargetPos.y;
 	}
-	else if (static_cast<int>(Player::GetStatus()) == 4)	//通常ジャンプ下降中※△
+	else if (static_cast<int>(player->GetStatus()) == 4)	//通常ジャンプ下降中※△
 	{
 		//ジャンプ前座標
 		result.y = oldTargetPos.y;
 	}
-	else if (static_cast<int>(Player::GetStatus()) == 13)	// 壁蹴りジャンプ上昇中※〇
+	else if (static_cast<int>(player->GetStatus()) == 13)	// 壁蹴りジャンプ上昇中※〇
 	{
 		//崖上がり前座標
 		result.y = oldTargetPos.y;
 	}
-	else if (static_cast<int>(Player::GetStatus()) == 14)	// 壁蹴りジャンプ下降中※〇
+	else if (static_cast<int>(player->GetStatus()) == 14)	// 壁蹴りジャンプ下降中※〇
 	{
 		//崖上がり前座標
 		result.y = oldTargetPos.y;
 	}
-	else if (static_cast<int>(Player::GetStatus()) == 8)	// 崖つかみ中
+	else if (static_cast<int>(player->GetStatus()) == 8)	// 崖つかみ中
 	{
 		//崖上がり前座標
 		result.y = oldTargetPos.y;
@@ -371,41 +349,41 @@ GameCamera::XMFLOAT3 GameCamera::TargetProcess()
 	}
 	else //その他移動は自機の位置にマーク
 	{
-		result.y = Player::GetPos().y;
+		result.y = player->GetPosition().y;
 	}
 
 	oldTargetPos = result;
 	return result;
 }
 
-void GameCamera::CliffFlagUpdate()
+void GameCamera::CliffFlagUpdate(Player* player)
 {
 	//崖上りフラグが立っていたら早期リターン
 	if (cliffTargetFlag == true) return;
 
 	//崖上がりをした瞬間
-	if (static_cast<int>(Player::GetStatus()) == 15 && static_cast<int>(Player::GetOldStatus()) == 8)
+	if (static_cast<int>(player->GetStatus()) == 15 && static_cast<int>(player->GetOldStatus()) == 8)
 	{
 		cliffTargetFlag = true;
-		moveAftaerPosY = Player::GetPos().y;
+		moveAftaerPosY = player->GetPosition().y;
 		movePreviousPosY = oldTargetPos.y;
 	}
 }
 
-void GameCamera::CorrectionProcess()
+void GameCamera::CorrectionProcess(Player* player)
 {
 	static XMFLOAT3 moveVal = {};
 
-	if (CorrectionCheck() == true) //移動
+	if (CorrectionCheck(player) == true) //移動
 	{
 		if (moveVal.x < 1.0f && moveVal.x > -1.0f)
 		{
-			moveVal.x += (-1.0f) * Player::GetMove().x;
+			moveVal.x += (-1.0f) * player->GetMove().x;
 		}
 
 		if (moveVal.z < 1.0f && moveVal.z > -1.0f)
 		{
-			moveVal.z += (-1.0f) * Player::GetMove().z;
+			moveVal.z += (-1.0f) * player->GetMove().z;
 		}
 	}
 	else
@@ -442,20 +420,20 @@ void GameCamera::CorrectionProcess()
 	correctionVal = moveVal;
 }
 
-bool GameCamera::CorrectionCheck()
+bool GameCamera::CorrectionCheck(Player* player)
 {
-	if (static_cast<int>(Player::GetStatus()) == 1) return true;
-	if (static_cast<int>(Player::GetStatus()) == 2) return true;
-	if (static_cast<int>(Player::GetStatus()) == 3) return true;
-	if (static_cast<int>(Player::GetStatus()) == 4) return true;
+	if (static_cast<int>(player->GetStatus()) == 1) return true;
+	if (static_cast<int>(player->GetStatus()) == 2) return true;
+	if (static_cast<int>(player->GetStatus()) == 3) return true;
+	if (static_cast<int>(player->GetStatus()) == 4) return true;
 	return false;
 }
 
-void GameCamera::SlopeRotaYProcess()
+void GameCamera::SlopeRotaYProcess(Player* player)
 {
-	if (Player::GetSlopeFlag() == true)	//坂の上にいる
+	if (player->GetSlopeFlag() == true)	//坂の上にいる
 	{
-		OnSlopeProcess();
+		OnSlopeProcess(player);
 	}
 	else
 	{
@@ -463,7 +441,7 @@ void GameCamera::SlopeRotaYProcess()
 	}
 }
 
-void GameCamera::OnSlopeProcess()
+void GameCamera::OnSlopeProcess(Player* player)
 {
 	if (slopeRotaFlag == false)
 	{
@@ -475,14 +453,14 @@ void GameCamera::OnSlopeProcess()
 	//坂上下Y角度			上		下
 	XMFLOAT2 slopeRotY = { 100.0f, 50.0f };
 
-	if (Player::GetRot().y >= slopeUp.x && Player::GetRot().y <= slopeUp.y)
+	if (player->GetRotation().y >= slopeUp.x && player->GetRotation().y <= slopeUp.y)
 	{
 		if (rota.y < slopeRotY.x)
 		{
 			rota.y += 0.5f;
 		}
 	}
-	else if (Player::GetRot().y >= slopeDown.x && Player::GetRot().y <= slopeDown.y)
+	else if (player->GetRotation().y >= slopeDown.x && player->GetRotation().y <= slopeDown.y)
 	{
 		if (rota.y > slopeRotY.y)
 		{

@@ -226,11 +226,11 @@ void GamePlayScene::ObjectsUpdate()
 	//Json読み込みのオブジェクトのアップデート
 	JsonLoader::Update();
 	//光の柱オブジェクトのアップデート
-	opticalPost->Update(camera->GetEye());
+	opticalPost->Update(camera->GetEye(), objFighter);
 	//スカイドーム
 	skydomeObject->Update();
 	//カメラ
-	camera->Update();
+	camera->Update(objFighter);
 }
 
 void GamePlayScene::StartStatus()
@@ -241,18 +241,19 @@ void GamePlayScene::GameStatus()
 {
 	//アップデート
 	objFighter->Update();
-	camera->Update();
+	camera->Update(objFighter);
 	lightGroup->Update();
 	skydomeObject->Update();
 	JsonLoader::Update();
 	opticalPost->Erase(objFighter->GetCrystalGetFlag(), objFighter->GetCrystalGetNum());
-	opticalPost->Update(camera->GetEye());
+	opticalPost->Update(camera->GetEye(), objFighter);
 	opticalPost->SetDrawFlag(true);
 	
 	staminaUI->StaminaUI::Update(objFighter);
 	timeUI->TimeUI::Update(objFighter);
 	controllerUI->ControllerUI::Update(objFighter);
 	crystalUI->CrystalUI::Update(objFighter);
+
 	effect->Update(camera->GetEye(), objFighter->GetCrystal());
 }
 
@@ -281,10 +282,6 @@ void GamePlayScene::GameOverStatus()
 		objFighter->ReStart();
 		camera->rota.x = 180.0f;
 		time = timeMax;
-	}
-	else
-	{
-		//smokes[1]->SetColor({ 1.0f,1.0f,1.0f,alpha });
 	}
 }
 
