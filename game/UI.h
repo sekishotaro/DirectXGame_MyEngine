@@ -38,6 +38,9 @@ public:
 	void Initialize() override;
 	void Update(Player* player);
 	void Draw(Player* player);
+private:
+	const int timePetalNum = 9;
+	const int timePetalPattern = 6;
 public:
 	Sprite* timerCenter = nullptr;
 	Sprite* timerPetal[9] = { nullptr,nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr };

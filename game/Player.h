@@ -219,7 +219,7 @@ public:
 	int GetCrystal() { return crystalNum; }
 	int GetCrystalGetNum() { return crystalGetNum; }
 	bool GetGoalFlag() { return goalFlag; }
-
+	int GetCrystalMaxNum() { return crystalMaxNum; }
 	int GetCrystalNum() { return crystalNum; }
 	bool GetStaminaCutFlag() { return staminaCut; }
 	float GetStaminaQuantity() { return staminaQuantity; }
@@ -228,8 +228,7 @@ public:
 	static bool GetCrystalGetFlag() { return crystalGetFlag; }
 	static bool GetMoveBoxHitFlag() { return moveBoxHitFlag;}
 	static int GetAnimeNum() { return animeNum; }
-	static bool &GetSlopeFlag() { return slopeFlag; }
-	static bool GetWallHitFlag() { return wallHittingFlag; }
+	static bool GetSlopeFlag() { return slopeFlag; }
 	static float GetTimeMax() { return timeLimitMax; }
 
 	PlayerStatus& GetStatus() { return playerStatus; }
@@ -294,9 +293,9 @@ private:
 	static bool crystalGetFlag;
 	int crystalGetNum = 0;
 	//壁と接触確認フラグ
-	static bool wallHittingFlag;
-	static bool oldWallHittingFlag;
-	static bool jumpWallHittingFlag;
+	bool wallHittingFlag = false;
+	bool oldWallHittingFlag = false;
+	bool jumpWallHittingFlag = false;
 	//崖上がり
 	int climbingCliffBoxNum = 0;
 	//箱移動してた確認フラグ
@@ -311,6 +310,7 @@ private:
 	bool goalFlag = true;
 	//クリスタルの数
 	int crystalNum = 0;
+	int crystalMaxNum = 0;
 	bool staminaCut = false;
 	float staminaQuantity = 100.0f;		// スタミナ残量
 	// スタミナ消費確認フラグ

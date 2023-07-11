@@ -23,9 +23,6 @@ bool Player::slopeFlag = false;
 bool Player::crystalGetFlag = false;
 bool Player::moveBoxFlag = false;
 bool Player::moveBoxHitFlag = false;
-bool Player::wallHittingFlag = false;
-bool Player::oldWallHittingFlag = false;
-bool Player::jumpWallHittingFlag = false;
 bool Player::animeFlag = false;
 
 //ƒ‚ƒfƒ‹
@@ -75,9 +72,8 @@ void Player::Initialize()
 	SetCollider(new SphereCollider(XMVECTOR({ 0, radius * 1.8f, 0, 0 }), radius));
 
 	collider->SetAttribute(COLLISION_ATTR_ALLIES);
-
 	crystalNum = (int)JsonLoader::crystalObjects.size();
-
+	crystalMaxNum = crystalNum;
 	return;
 }
 
