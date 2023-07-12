@@ -7,6 +7,7 @@
 #include "Sprite.h"
 #include "Effect2d.h"
 #include "Camera.h"
+#include "Player.h"
 
 
 class Effect
@@ -35,7 +36,7 @@ public:
 	/// <summary>
 	/// アップデート
 	/// </summary>
-	void Update(XMFLOAT3 cameraPos, int crystalNum);
+	void Update(XMFLOAT3 cameraPos, Player* player);
 
 	/// <summary>
 	/// 描画
@@ -43,7 +44,7 @@ public:
 	void Draw();
 
 private:
-	void ClystalEffectUpdate(int crystalNum);
+	void ClystalEffectUpdate(Player* player);
 
 	XMFLOAT2 leap(XMFLOAT2 start, XMFLOAT2 end, float time);
 

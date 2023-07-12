@@ -254,7 +254,7 @@ void GamePlayScene::GameStatus()
 	controllerUI->ControllerUI::Update(objFighter);
 	crystalUI->CrystalUI::Update(objFighter);
 
-	effect->Update(camera->GetEye(), objFighter->GetCrystal());
+	effect->Update(camera->GetEye(), objFighter);
 }
 
 void GamePlayScene::GameOverStatus()
@@ -288,7 +288,7 @@ void GamePlayScene::GameOverStatus()
 void GamePlayScene::ClearStatus()
 {
 	//ƒQ[ƒ€I—¹ˆ—
-	if (objFighter->GetCrystal() == 0 && objFighter->GetGoalFlag() == true)
+	if (objFighter->GetCrystalNum() == 0 && objFighter->GetGoalFlag() == true)
 	{
 		SceneManager::GetInstance()->ChangeScene("TITLE");
 		return;

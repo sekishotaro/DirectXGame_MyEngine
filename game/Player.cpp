@@ -12,18 +12,7 @@
 
 using namespace DirectX;
 
-XMFLOAT3 Player::moveV = { 0,0,0 };
-XMFLOAT3 Player::moveVal = { 0,0,0 };
-float Player::moveAdjustmentNum = 1.0f;
-float Player::timeLimit = 30.0f;
-const float Player::timeLimitMax = 20.0f;
-int Player::animeNum = 0;
-int Player::oldAnimeNum = 0;
 bool Player::slopeFlag = false;
-bool Player::crystalGetFlag = false;
-bool Player::moveBoxFlag = false;
-bool Player::moveBoxHitFlag = false;
-bool Player::animeFlag = false;
 
 //ƒ‚ƒfƒ‹
 FbxModel* Player::fbxModels[] = {nullptr,nullptr, nullptr, nullptr, nullptr, 

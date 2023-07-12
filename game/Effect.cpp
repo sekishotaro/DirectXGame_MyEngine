@@ -31,10 +31,10 @@ void Effect::Finalize()
 {
 }
 
-void Effect::Update(XMFLOAT3 cameraPos, int crystalNum)
+void Effect::Update(XMFLOAT3 cameraPos, Player* player)
 {
 
-	ClystalEffectUpdate(crystalNum);
+	ClystalEffectUpdate(player);
 }
 
 void Effect::Draw()
@@ -45,10 +45,10 @@ void Effect::Draw()
 	}
 }
 
-void Effect::ClystalEffectUpdate(int crystalNum)
+void Effect::ClystalEffectUpdate(Player* player)
 {
 	//Žæ“¾ƒAƒCƒeƒ€‚ðŽæ“¾‚µ‚½Žž‚©‚ç
-	if (Player::GetCrystalGetFlag() != true && crystalMoveTime == 0.0f) return;
+	if (player->GetCrystalGetFlag() != true && crystalMoveTime == 0.0f) return;
 
 	if (crystalMoveTime <= 5.0f)
 	{
@@ -73,7 +73,7 @@ void Effect::ClystalEffectUpdate(int crystalNum)
 
 	int crystalNumS = 7;
 
-	crystalNumS -= crystalNum;
+	crystalNumS -= player->GetCrystalNum();
 
 	XMFLOAT2 endPos = { 1190.0f, 50.0f };
 

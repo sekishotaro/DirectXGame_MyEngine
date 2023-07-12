@@ -74,12 +74,12 @@ void TimeUI::Initialize()
 
 void TimeUI::Update(Player* player)
 {
-	const int timeMax = (int)Player::GetTimeMax();	//§ŒÀŽžŠÔ‚ÌÅ‘å”
-	const int time = (int)Player::GetTimeLimit();	//Œ»Ý‚Ì§ŒÀŽžŠÔ”
+	const int timeMax = (int)player->GetTimeMax();	//§ŒÀŽžŠÔ‚ÌÅ‘å”
+	const int time = (int)player->GetTimeLimit();	//Œ»Ý‚Ì§ŒÀŽžŠÔ”
 	const int petalNum = 53;						//‰Ô‚Ñ‚ç‚Ìƒpƒ^[ƒ“”
 
 	//§ŒÀŽžŠÔ‰ñ•œ
-	if (Player::GetCrystalGetFlag() || time == timeMax)
+	if (player->GetCrystalGetFlag() || time == timeMax)
 	{
 		for (int i = 0; i < 9; i++)
 		{
@@ -129,7 +129,7 @@ void ControllerUI::Update(Player* player)
 	{
 		controllerUI->SetTexNum(62);
 	}
-	else if (Player::GetMoveBoxHitFlag())
+	else if (player->GetMoveBoxHitFlag())
 	{
 		controllerUI->SetTexNum(63);
 	}
@@ -191,7 +191,7 @@ void CrystalUI::Update(Player* player)
 
 void CrystalUI::Draw(Player* player)
 {
-	int crystalNum = player->GetCrystalMaxNum() - player->GetCrystal();
+	int crystalNum = player->GetCrystalMaxNum() - player->GetCrystalNum();
 
 	crystalUI[crystalNum]->Draw();
 }
