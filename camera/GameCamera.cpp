@@ -103,6 +103,7 @@ void GameCamera::Operation(Player* player)
 		slopeRotaFlag = false;
 		if (dis <= disMax && hitFlag == false) { dis += 0.5f; }
 	}
+	
 	if (Input::GetInstance()->RightStickIn(RIGHT))
 	{
 		rota.x -= 1.0f;
@@ -112,6 +113,10 @@ void GameCamera::Operation(Player* player)
 	{
 		rota.x += 1.0f;
 		if (dis <= disMax && hitFlag == false) { dis += 0.5f; }
+	}
+	else if (player->GetStatus() == Player::STATE_RUNNING)
+	{
+		RotaXAutoProcess(player);
 	}
 
 	if (dis <= disMax && hitFlag == false) { dis += 0.5f; }
@@ -291,17 +296,28 @@ float GameCamera::AngleNormalize(const float rot)
 	return Rot;
 }
 
+void GameCamera::RotaXAutoProcess(Player* player)
+{
+
+
+	float endRota = 0.0f;
+	endRota -= player->GetRotation().y + 90.0f;
+	endRota = AngleNormalize(endRota);
+
+	rota.x = endRota;
+}
+
 bool GameCamera::PlayerJumpUp(Player* player)
 {
-	if (player->GetStatus() == 3 && player->GetStatus() == 4)
+	if (player->GetStatus() == Player::jump && player->GetStatus() == Player::fall)
 	{
 		return true;
 	}
-	else if (player->GetAnimeNum() == 13)
+	else if (player->GetAnimeNum() == Player::wallKickUp)
 	{
 		return true;
 	}
-	else if (player->GetAnimeNum() == 14)
+	else if (player->GetAnimeNum() == Player::hangingCliffUp)
 	{
 		return true;
 	}
@@ -318,27 +334,27 @@ GameCamera::XMFLOAT3 GameCamera::TargetProcess(Player* player)
 	CliffFlagUpdate(player);
 
 	//Y座標移動
-	if (static_cast<int>(player->GetStatus()) == 3)			//通常ジャンプ上昇中※△
+	if (static_cast<int>(player->GetStatus()) == Player::STATE_JUMP_UP)			//通常ジャンプ上昇中※△
 	{
 		//ジャンプ前座標
 		result.y = oldTargetPos.y;
 	}
-	else if (static_cast<int>(player->GetStatus()) == 4)	//通常ジャンプ下降中※△
+	else if (static_cast<int>(player->GetStatus()) == Player::STATE_JUMP_DOWN)	//通常ジャンプ下降中※△
 	{
 		//ジャンプ前座標
 		result.y = oldTargetPos.y;
 	}
-	else if (static_cast<int>(player->GetStatus()) == 13)	// 壁蹴りジャンプ上昇中※〇
+	else if (static_cast<int>(player->GetStatus()) == Player::STATE_WALLKICK_UP)	// 壁蹴りジャンプ上昇中※〇
 	{
 		//崖上がり前座標
 		result.y = oldTargetPos.y;
 	}
-	else if (static_cast<int>(player->GetStatus()) == 14)	// 壁蹴りジャンプ下降中※〇
+	else if (static_cast<int>(player->GetStatus()) == Player::STATE_WALLKICK_DOWN)	// 壁蹴りジャンプ下降中※〇
 	{
 		//崖上がり前座標
 		result.y = oldTargetPos.y;
 	}
-	else if (static_cast<int>(player->GetStatus()) == 8)	// 崖つかみ中
+	else if (static_cast<int>(player->GetStatus()) == Player::STATE_CLIFF_IDLING)	// 崖つかみ中
 	{
 		//崖上がり前座標
 		result.y = oldTargetPos.y;
@@ -486,12 +502,14 @@ void GameCamera::UnSlopeProcess()
 {
 	if (slopeRotaFlag == false) return;
 	
-	if (rota.y > 70)
+	float flatRotaY = 70.0f;
+
+	if (rota.y > flatRotaY)
 	{
 		rota.y -= 0.5f;
 	}
 	
-	if (rota.y < 70)
+	if (rota.y < flatRotaY)
 	{
 		rota.y += 0.5f;
 	}

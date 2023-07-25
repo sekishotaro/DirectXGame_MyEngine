@@ -207,16 +207,17 @@ void GamePlayScene::Draw()
 	Sprite::PostDraw();
 	Effect2d::PostDraw();
 	//imguiの描画
-	//imguiManager::PraDraw();
-	//ImGui::NewFrame();
-	//ImGui::Begin("config1");//ウィンドウの名前
-	//ImGui::SetWindowSize(ImVec2(400, 500), ImGuiCond_::ImGuiCond_FirstUseEver);
-	//ImGui::Text("rotY :%f", objFighter->GetRotation().y);
-	//ImGui::Text("posZ :%f", objFighter->GetPosition().z);
-	//ImGui::Text("playerState :%d", static_cast<int>(objFighter->GetStatus()));
-	//ImGui::Checkbox("teleport", &objFighter->teleportFlag);
-	//ImGui::Checkbox("TimeLimitCancel", &objFighter->timeLimitcancel);
-	//imguiManager::PosDraw();
+	imguiManager::PraDraw();
+	ImGui::NewFrame();
+	ImGui::Begin("config1");//ウィンドウの名前
+	ImGui::SetWindowSize(ImVec2(400, 500), ImGuiCond_::ImGuiCond_FirstUseEver);
+	ImGui::Text("rotY    :%f", objFighter->GetRotation().y);
+	ImGui::Text("cameraY :%f", camera->rota.x);
+	ImGui::Text("playerState :%d", static_cast<int>(objFighter->GetStatus()));
+	ImGui::Checkbox("cameraAutoX", &camera->rotaAuto);
+	ImGui::Checkbox("teleport", &objFighter->teleportFlag);
+	ImGui::Checkbox("TimeLimitCancel", &objFighter->timeLimitcancel);
+	imguiManager::PosDraw();
 }
 
 void GamePlayScene::ObjectsUpdate()

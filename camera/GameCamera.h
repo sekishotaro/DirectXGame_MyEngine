@@ -92,6 +92,8 @@ public: // ÉÅÉìÉoä÷êî
 	float leap(float rotaA, float rotaB, float timeRatio);
 
 	float AngleNormalize(const float rot);
+
+	void RotaXAutoProcess(Player* player);
 public:
 
 	XMFLOAT3 eye = {};
@@ -104,25 +106,21 @@ public:
 	float correctionDis = 0.0f;
 	XMFLOAT3 correctionVal = {};
 	bool hitFlag = false;
-
 	std::unique_ptr<Object3d> Object;
 	float oldPosY = 0.0f;
 	Model* Model = nullptr;
 	BaseCollider* collider = nullptr;
-
 	bool viewpointSwitchFlag = false;
 	float viewpointSwitchposParRotX = 0.0f;
 	float viewpointSwitchposParRotY = 0.0f;
 	float viewpointSwitchposParDis = 0.0f;
-
 	XMFLOAT3 oldTargetPos = {};
-
 	bool cliffTargetFlag = false;
-
 	float cliffTargetCount = 1.0f;
 	float movePreviousPosY = 0.0f;
 	float moveAftaerPosY = 0.0f;
-
 	bool slopeRotaFlag = true;
+
+	bool rotaAuto = false;
 };
 

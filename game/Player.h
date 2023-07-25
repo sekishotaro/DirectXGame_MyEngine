@@ -20,45 +20,6 @@ private: // エイリアス
 	using XMFLOAT4 = DirectX::XMFLOAT4;
 	using XMMATRIX = DirectX::XMMATRIX;
 
-	enum PlayerAnimeState
-	{
-		idling,				// 0：アイドリング
-		walking,			// 1：ウォーキング
-		running,			// 2：ランニング
-		jump,				// 3：ジャンプ
-		fall,				// 4：落下
-		climbing,			// 5：壁のぼり
-		landing,			// 6：着地
-		hangingCliff,		// 7：崖ぶら下がりアイドリング
-		kick,				// 8：キック
-		sliding,			// 9：スライディング
-		pushingWalking,		// 10：押し歩き
-		tiredWalking,		// 11：スタミナ切れ歩き
-		tiredIdling,		// 12：スタミナ切れアイドリング
-		wallKickUp,			// 13：壁蹴りジャンプ
-		hangingCliffUp		// 14：崖上がり
-	};
-
-	enum PlayerStatus
-	{
-		STATE_IDLING,				//00:アイドル状態
-		STATE_WALKING,				//01:歩き
-		STATE_RUNNING,				//02:走り
-		STATE_JUMP_UP,				//03:ジャンプ上昇
-		STATE_JUMP_DOWN,			//04:ジャンプ下降
-		STATE_FALL,					//05:落下
-		STATE_CLIMBING,				//06:壁のぼり
-		STATE_LANDING,				//07:着地
-		STATE_CLIFF_IDLING,			//08:崖つかみアイドル状態
-		STATE_SLOPE_SLIDING,		//09:坂滑り落ち
-		STATE_PUSHBOX,				//10:箱押し状態
-		STATE_TIRED_IDLING,			//11:スタミナ切れ
-		STATE_TIRED_WALKING,		//12:スタミナ切れ歩き
-		STATE_WALLKICK_UP,			//13:壁蹴りジャンプ上昇
-		STATE_WALLKICK_DOWN,		//14:壁蹴りジャンプ下降
-		STATE_CLIFFUP,				//15:崖上がり
-	};
-
 	enum StaminaStatus
 	{
 		sutaminaMax,		// 0：満タン時
@@ -84,6 +45,44 @@ private: // エイリアス
 	};
 
 public:
+	enum PlayerStatus
+	{
+		STATE_IDLING,				//00:アイドル状態
+		STATE_WALKING,				//01:歩き
+		STATE_RUNNING,				//02:走り
+		STATE_JUMP_UP,				//03:ジャンプ上昇
+		STATE_JUMP_DOWN,			//04:ジャンプ下降
+		STATE_FALL,					//05:落下
+		STATE_CLIMBING,				//06:壁のぼり
+		STATE_LANDING,				//07:着地
+		STATE_CLIFF_IDLING,			//08:崖つかみアイドル状態
+		STATE_SLOPE_SLIDING,		//09:坂滑り落ち
+		STATE_PUSHBOX,				//10:箱押し状態
+		STATE_TIRED_IDLING,			//11:スタミナ切れ
+		STATE_TIRED_WALKING,		//12:スタミナ切れ歩き
+		STATE_WALLKICK_UP,			//13:壁蹴りジャンプ上昇
+		STATE_WALLKICK_DOWN,		//14:壁蹴りジャンプ下降
+		STATE_CLIFFUP,				//15:崖上がり
+	};
+
+	enum PlayerAnimeState
+	{
+		idling,				// 0：アイドリング
+		walking,			// 1：ウォーキング
+		running,			// 2：ランニング
+		jump,				// 3：ジャンプ
+		fall,				// 4：落下
+		climbing,			// 5：壁のぼり
+		landing,			// 6：着地
+		hangingCliff,		// 7：崖ぶら下がりアイドリング
+		kick,				// 8：キック
+		sliding,			// 9：スライディング
+		pushingWalking,		// 10：押し歩き
+		tiredWalking,		// 11：スタミナ切れ歩き
+		tiredIdling,		// 12：スタミナ切れアイドリング
+		wallKickUp,			// 13：壁蹴りジャンプ
+		hangingCliffUp		// 14：崖上がり
+	};
 
 	/// <summary>
 	/// 3Dオブジェクト生成
