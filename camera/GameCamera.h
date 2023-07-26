@@ -94,14 +94,13 @@ public: // メンバ関数
 	float AngleNormalize(const float rot);
 
 	void RotaXAutoProcess(Player* player);
-public:
-
+private:
+	float disMax = 20.0f;
 	XMFLOAT3 eye = {};
 	XMFLOAT3 target = {};
 	float dx = 0;
 	float dy = 0;
 	float dz = 0;
-	XMFLOAT2 rota = { 270.0f, 70.0f };
 	float dis = 20.0f;
 	float correctionDis = 0.0f;
 	XMFLOAT3 correctionVal = {};
@@ -121,6 +120,12 @@ public:
 	float moveAftaerPosY = 0.0f;
 	bool slopeRotaFlag = true;
 
+	const float limitAngleY[2] = {5.0f, 175.0f};
+	const float disAddPower = 0.5f;
+	//プレイヤー角度とカメラ角度の基準差
+	float difference = 90.0f;
+public:
+	XMFLOAT2 rota = { 270.0f, 70.0f };
 	bool rotaAuto = false;
 };
 

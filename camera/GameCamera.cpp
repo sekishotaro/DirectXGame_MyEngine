@@ -40,7 +40,7 @@ void GameCamera::Update(Player* player)
 	
 	//常時自機にターゲット
 	XMFLOAT3 targetPos = TargetProcess(player);
-	
+	//カメラ位置微調整
 	targetPos.y += 6.0f;
 	
 	Camera::SetTarget(targetPos);
@@ -83,38 +83,37 @@ void GameCamera::Operation(Player* player)
 {
 	if (PlayerJumpUp(player) == true) return;
 
-	//半径
-	float disMax = 20.0f;
+
 	//キーボード
 	if (Input::GetInstance()->PushKey(DIK_UP)) { rota.y -= 1.0f; }
 	else if (Input::GetInstance()->PushKey(DIK_DOWN)) { rota.y += 1.0f; }
 	if (Input::GetInstance()->PushKey(DIK_RIGHT)) { rota.x += 1.0f; }
 	else if (Input::GetInstance()->PushKey(DIK_LEFT)) { rota.x -= 1.0f; }
 	//コントローラー
-	if (Input::GetInstance()->RightStickIn(UP) && rota.y < 175)
+	if (Input::GetInstance()->RightStickIn(UP) && rota.y < limitAngleY[1])
 	{
 		rota.y += 1.0f;
 		slopeRotaFlag = false;
-		if (dis <= disMax && hitFlag == false) { dis += 0.5f; }
+		if (dis <= disMax && hitFlag == false) { dis += disAddPower; }
 	}
-	else if (Input::GetInstance()->RightStickIn(DOWN) && rota.y > 5)
+	else if (Input::GetInstance()->RightStickIn(DOWN) && rota.y > limitAngleY[0])
 	{
 		rota.y -= 1.0f;
 		slopeRotaFlag = false;
-		if (dis <= disMax && hitFlag == false) { dis += 0.5f; }
+		if (dis <= disMax && hitFlag == false) { dis += disAddPower; }
 	}
 	
 	if (Input::GetInstance()->RightStickIn(RIGHT))
 	{
 		rota.x -= 1.0f;
-		if (dis <= disMax && hitFlag == false) { dis += 0.5f; }
+		if (dis <= disMax && hitFlag == false) { dis += disAddPower; }
 	}
 	else if (Input::GetInstance()->RightStickIn(LEFT))
 	{
 		rota.x += 1.0f;
-		if (dis <= disMax && hitFlag == false) { dis += 0.5f; }
+		if (dis <= disMax && hitFlag == false) { dis += disAddPower; }
 	}
-	else if (player->GetStatus() == Player::STATE_RUNNING)
+	else if (player->GetStatus() == Player::STATE_RUNNING && rotaAuto == true)
 	{
 		RotaXAutoProcess(player);
 	}
@@ -180,19 +179,19 @@ void GameCamera::TerrainPushBackProcess( XMFLOAT3& cameraPos, Player* player)
 	if (callback.move.m128_f32[0] != 0)
 	{
 		hitFlag = true;
-		if (dis > 5.0f) { dis -= 0.5f; }
+		if (dis > 5.0f) { dis -= disAddPower; }
 		cameraPos = SphereCoordinateSystem(player);
 	} 
 	else if (callback.move.m128_f32[1] != 0)
 	{
 		hitFlag = true;
-		if (dis > 5.0f) { dis -= 0.5f; }
+		if (dis > 5.0f) { dis -= disAddPower; }
 		cameraPos = SphereCoordinateSystem(player);
 	}
 	else if (callback.move.m128_f32[2] != 0)
 	{
 		hitFlag = true;
-		if (dis > 5.0f) { dis -= 0.5f; }
+		if (dis > 5.0f) { dis -= disAddPower; }
 		cameraPos = SphereCoordinateSystem(player);
 	}
 	else
@@ -227,7 +226,7 @@ void GameCamera::NoticeProcess(Player* player)
 	}
 
 	//崖上がり時視点正面移動
-	if (static_cast<int>(player->GetStatus()) == 8 && static_cast<int>(player->GetOldStatus()) != 15)
+	if (static_cast<int>(player->GetStatus()) == Player::STATE_CLIFF_IDLING && static_cast<int>(player->GetOldStatus()) != Player::STATE_CLIFFUP)
 	{
 		endRota = GetNoticeRot(player);
 	}
@@ -257,7 +256,7 @@ void GameCamera::NoticeProcess(Player* player)
 		return;
 	}
 
-	if (dis <= 20.0f && hitFlag == false) { dis += 1.0f; }
+	if (dis <= disMax && hitFlag == false) { dis += disAddPower; }
 	rota.x = leap(viewpointSwitchposParRotX, endRota, timeRatio);
 	rota.y = leap(viewpointSwitchposParRotY, 60.0f, timeRatio);
 }
@@ -265,7 +264,7 @@ void GameCamera::NoticeProcess(Player* player)
 float GameCamera::GetNoticeRot(Player* player)
 {
 	float endRota = 0.0f;
-	endRota -= player->GetRotation().y + 90.0f;
+	endRota -= player->GetRotation().y + difference;
 	endRota = AngleNormalize(endRota);
 	viewpointSwitchFlag = true;
 	viewpointSwitchposParRotX = rota.x;
@@ -298,10 +297,8 @@ float GameCamera::AngleNormalize(const float rot)
 
 void GameCamera::RotaXAutoProcess(Player* player)
 {
-
-
 	float endRota = 0.0f;
-	endRota -= player->GetRotation().y + 90.0f;
+	endRota -= player->GetRotation().y + difference;
 	endRota = AngleNormalize(endRota);
 
 	rota.x = endRota;
@@ -378,7 +375,8 @@ void GameCamera::CliffFlagUpdate(Player* player)
 	if (cliffTargetFlag == true) return;
 
 	//崖上がりをした瞬間
-	if (static_cast<int>(player->GetStatus()) == 15 && static_cast<int>(player->GetOldStatus()) == 8)
+	if (static_cast<int>(player->GetStatus()) == Player::STATE_CLIFFUP &&
+		static_cast<int>(player->GetOldStatus()) == Player::STATE_CLIFF_IDLING)
 	{
 		cliffTargetFlag = true;
 		moveAftaerPosY = player->GetPosition().y;
@@ -438,10 +436,10 @@ void GameCamera::CorrectionProcess(Player* player)
 
 bool GameCamera::CorrectionCheck(Player* player)
 {
-	if (static_cast<int>(player->GetStatus()) == 1) return true;
-	if (static_cast<int>(player->GetStatus()) == 2) return true;
-	if (static_cast<int>(player->GetStatus()) == 3) return true;
-	if (static_cast<int>(player->GetStatus()) == 4) return true;
+	if (static_cast<int>(player->GetStatus()) == Player::STATE_IDLING) return true;
+	if (static_cast<int>(player->GetStatus()) == Player::STATE_WALKING) return true;
+	if (static_cast<int>(player->GetStatus()) == Player::STATE_RUNNING) return true;
+	if (static_cast<int>(player->GetStatus()) == Player::STATE_JUMP_UP) return true;
 	return false;
 }
 
@@ -468,6 +466,8 @@ void GameCamera::OnSlopeProcess(Player* player)
 	const XMFLOAT2 slopeDown	= { 255.0f, 285.0f };
 	//坂上下Y角度			上		下
 	XMFLOAT2 slopeRotY = { 100.0f, 50.0f };
+	float slope_lower[2] = { 180.0f, 360.0f };
+
 
 	if (player->GetRotation().y >= slopeUp.x && player->GetRotation().y <= slopeUp.y)
 	{
@@ -487,11 +487,11 @@ void GameCamera::OnSlopeProcess(Player* player)
 		{
 			rota.x = 0;
 		}
-		else if (rota.x <= 180 && rota.x > 0)
+		else if (rota.x <= slope_lower[0] && rota.x > 0)
 		{
 			rota.x -= 1.0f;
 		}
-		else if (rota.x > 180 && rota.x < 360)
+		else if (rota.x > slope_lower[0] && rota.x < slope_lower[1])
 		{
 			rota.x += 1.0f;
 		}
@@ -502,6 +502,7 @@ void GameCamera::UnSlopeProcess()
 {
 	if (slopeRotaFlag == false) return;
 	
+	//基本角度
 	float flatRotaY = 70.0f;
 
 	if (rota.y > flatRotaY)
@@ -517,6 +518,7 @@ void GameCamera::UnSlopeProcess()
 
 float GameCamera::CliffMoveTargetState()
 {
+	float flame = 60.0f;
 	const float timeMax = 1.0f;							//最大時間
 	float time = timeMax - cliffTargetCount;			//加算時間に変化
 	float timeRate = min(time / timeMax, 1.0f);			//タイムレート 0.0f->1.0f
@@ -531,7 +533,7 @@ float GameCamera::CliffMoveTargetState()
 
 	XMFLOAT3 pos = MyMath::lerp({0.0f, movePreviousPosY, 0.0f }, { 0.0f, moveAftaerPosY, 0.0f }, timeRate);
 
-	cliffTargetCount -= 1.0f / 60.0f;
+	cliffTargetCount -= 1.0f / flame;
 
 	return pos.y;
 }
