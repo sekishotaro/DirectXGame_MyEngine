@@ -93,6 +93,7 @@ public: // ƒƒ“ƒoŠÖ”
 
 	float AngleNormalize(const float rot);
 
+	bool XAutoCheck(Player* player);
 	void RotaXAutoProcess(Player* player);
 private:
 	float disMax = 20.0f;

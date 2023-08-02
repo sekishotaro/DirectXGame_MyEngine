@@ -295,13 +295,51 @@ float GameCamera::AngleNormalize(const float rot)
 	return Rot;
 }
 
+bool GameCamera::XAutoCheck(Player* player)
+{
+	static int oldInputX = 0;
+	static int oldInputY = 0;
+	bool result = false;
+	if (player->GetInputX() != oldInputX) result = true;
+	if (player->GetInputY() != oldInputY) result = true;
+	if (player->GetStatus() != Player::STATE_RUNNING) result = true;
+
+	oldInputX = player->GetInputX();
+	oldInputY = player->GetInputY();
+	return result;
+}
+
 void GameCamera::RotaXAutoProcess(Player* player)
 {
+	static float MoveTime = 0.0f;
+
+	//進む方向が切り替わった時
+	if (XAutoCheck(player) == true)
+	{
+		MoveTime = 0.0f;
+		viewpointSwitchposParRotX = rota.x;
+	}
+
+
 	float endRota = 0.0f;
 	endRota -= player->GetRotation().y + difference;
 	endRota = AngleNormalize(endRota);
 
-	rota.x = endRota;
+	
+
+	endRota = AngleNormalize(endRota);
+
+	const float MoveMaxTime = 1.0f; //移動にかかる時間
+	float timeRatio = MoveTime / MoveMaxTime;
+	if (MoveTime <= MoveMaxTime)
+	{
+		//エフェクトの時間を進める
+		MoveTime += 1.0f / 60.0f;
+	}
+	
+
+	rota.x = leap(viewpointSwitchposParRotX, endRota, timeRatio);
+	//rota.x = endRota;
 }
 
 bool GameCamera::PlayerJumpUp(Player* player)

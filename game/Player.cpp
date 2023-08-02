@@ -452,6 +452,7 @@ void Player::MoveNormal(DirectX::XMVECTOR& move, float& power)
 
 		if (Input::GetInstance()->PushPadbutton(Button_A))
 		{
+			//Šp“x‚¸‚êC³
 			rotation.y = rot1 + 90.0f;
 		}
 		else

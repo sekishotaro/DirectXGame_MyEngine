@@ -213,7 +213,7 @@ private:
 	bool MoveStickCheck();
 	bool FallStateCheck();
 public:
-	//デバック用ゲッター
+	//ゲッター
 	XMFLOAT3 GetMove() { return moveVal; };
 	int GetCrystalGetNum() { return crystalGetNum; }
 	bool GetGoalFlag() { return goalFlag; }
@@ -227,6 +227,8 @@ public:
 	bool GetMoveBoxHitFlag() { return moveBoxHitFlag;}
 	int GetAnimeNum() { return animeNum; }
 	float GetTimeMax() { return timeLimitMax; }
+	int GetInputX() { return inputX; };
+	int GetInputY() { return inputY; };
 
 	static bool GetSlopeFlag() { return slopeFlag; }
 	PlayerStatus& GetStatus() { return playerStatus; }
